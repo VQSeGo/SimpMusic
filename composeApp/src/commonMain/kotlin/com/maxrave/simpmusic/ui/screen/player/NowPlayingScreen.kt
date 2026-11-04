@@ -64,7 +64,6 @@ import com.kmpalette.rememberPaletteState
 import com.maxrave.common.Config.MAIN_PLAYER
 import com.maxrave.common.MERGING_DATA_TYPE
 import com.maxrave.domain.extension.isVideo
-import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.mediaservice.handler.MediaPlayerHandler
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
@@ -99,9 +98,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.LoginDestination
 import com.maxrave.simpmusic.ui.navigation.destination.player.FullscreenDestination
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentActions
-import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentAppleMusic
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentM3Expressive
-import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentSpotify
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentState
 import com.maxrave.simpmusic.ui.screen.player.content.PlayerBackdropColor
 import com.maxrave.simpmusic.ui.screen.player.content.fullscreenCanvas
@@ -207,11 +204,6 @@ fun NowPlayingScreenContent(
     val isUserLoggedIn by sharedViewModel
         .isUserLoggedInFlow()
         .collectAsStateWithLifecycle(initialValue = false)
-
-    // Which Now Playing style renders the content layer (Settings → Now Playing style).
-    val nowPlayingStyle by sharedViewModel
-        .getNowPlayingStyle()
-        .collectAsStateWithLifecycle(initialValue = DataStoreManager.NOW_PLAYING_STYLE_SPOTIFY)
 
     // Artwork Pager state — Spotify-style horizontal swipe between queue tracks.
     // The pager wraps the Canvas + Thumbnail layers. Controller layout below stays fixed.
@@ -794,7 +786,6 @@ fun NowPlayingScreenContent(
                             color = startColor.value,
                             state = state,
                             actions = actions,
-                            nowPlayingStyle = nowPlayingStyle,
                             onDismiss = closePage,
                         )
                     }
@@ -807,7 +798,6 @@ fun NowPlayingScreenContent(
                 color = startColor.value,
                 state = state,
                 actions = actions,
-                nowPlayingStyle = nowPlayingStyle,
             ) {
                 showFullscreenLyrics = false
             }
@@ -974,23 +964,8 @@ fun NowPlayingScreenContent(
         )
     }
 
-    when (nowPlayingStyle) {
-        DataStoreManager.NOW_PLAYING_STYLE_M3_EXPRESSIVE ->
-            NowPlayingContentM3Expressive(
-                state = state,
-                actions = actions,
-            )
-
-        DataStoreManager.NOW_PLAYING_STYLE_APPLE_MUSIC ->
-            NowPlayingContentAppleMusic(
-                state = state,
-                actions = actions,
-            )
-
-        else ->
-            NowPlayingContentSpotify(
-                state = state,
-                actions = actions,
-            )
-    }
+    NowPlayingContentM3Expressive(
+        state = state,
+        actions = actions,
+    )
 }

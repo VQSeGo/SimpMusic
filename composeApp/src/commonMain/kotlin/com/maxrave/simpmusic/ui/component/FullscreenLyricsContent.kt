@@ -109,17 +109,11 @@ import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.icon.VolumeOff
 import com.maxrave.simpmusic.ui.icon.VolumeUp
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
-import com.maxrave.simpmusic.ui.screen.player.content.AppleMusicArtworkBackdrop
-import com.maxrave.simpmusic.ui.screen.player.content.AppleMusicMainTitleRow
 import com.maxrave.simpmusic.ui.screen.player.content.ExpressivePlaybackControls
 import com.maxrave.simpmusic.ui.screen.player.content.ExpressiveTrackInfoRow
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentActions
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentState
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingExpressiveTheme
-import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingTrackInfoRow
-import com.maxrave.simpmusic.ui.screen.player.content.SpotifyPlaybackControls
-import com.maxrave.simpmusic.ui.screen.player.content.applemusic.AppleMusicPlaybackControls
-import com.maxrave.simpmusic.ui.screen.player.content.applemusic.rememberAppleMusicTypography
 import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
@@ -167,7 +161,6 @@ fun FullscreenLyricsContent(
     color: Color,
     state: NowPlayingContentState,
     actions: NowPlayingContentActions,
-    nowPlayingStyle: String,
     onDismiss: () -> Unit,
 ) {
     // The Apple Music renderer applies its own gutter inside LyricsView — it has to, because the
@@ -278,7 +271,6 @@ fun FullscreenLyricsContent(
                 color = color,
                 state = state,
                 actions = actions,
-                nowPlayingStyle = nowPlayingStyle,
                 backdrop = backdrop,
             )
             if (isDesktop) {
@@ -813,7 +805,6 @@ private fun FullscreenLyricsLandscape(
     color: Color,
     state: NowPlayingContentState,
     actions: NowPlayingContentActions,
-    nowPlayingStyle: String,
     backdrop: PlatformBackdrop,
 ) {
     val localDensity = LocalDensity.current
@@ -821,18 +812,7 @@ private fun FullscreenLyricsLandscape(
         // The glass backdrop source. The Desktop chrome drawn over this layout is a sibling of this
         // whole Box, never a child of it.
         Box(modifier = Modifier.fillMaxSize().layerBackdrop(backdrop)) {
-            if (nowPlayingStyle == DataStoreManager.NOW_PLAYING_STYLE_APPLE_MUSIC) {
-                // The same seed rule the Apple Music page applies: the shell's colour starts on black
-                // and only turns into the palette colour once the palette resolves.
-                val paletteColor = state.startColor.value
-                AppleMusicArtworkBackdrop(
-                    state = state,
-                    actions = actions,
-                    seedColor = if (paletteColor == Color.Black) seed else paletteColor,
-                )
-            } else {
-                AnimatedLyricsGradientBackground(color = color)
-            }
+            AnimatedLyricsGradientBackground(color = color)
         }
         Row(
             modifier =
@@ -896,57 +876,21 @@ private fun FullscreenLyricsLandscape(
                                     .clip(RoundedCornerShape(12.dp)),
                         )
                         Spacer(modifier = Modifier.height(20.dp))
-                        when (nowPlayingStyle) {
-                            DataStoreManager.NOW_PLAYING_STYLE_M3_EXPRESSIVE ->
-                                NowPlayingExpressiveTheme(state = state) {
-                                    Column {
-                                        ExpressiveTrackInfoRow(
-                                            state = state,
-                                            actions = actions,
-                                            showCanvasThumbnail = false,
-                                        )
-                                        // Shuffle and repeat live in the connected group on Now
-                                        // Playing, which this page leaves out — so the transport
-                                        // carries them here.
-                                        ExpressivePlaybackControls(
-                                            state = state,
-                                            actions = actions,
-                                            showShuffleAndRepeat = true,
-                                        )
-                                    }
-                                }
-
-                            DataStoreManager.NOW_PLAYING_STYLE_APPLE_MUSIC -> {
-                                val typography = rememberAppleMusicTypography()
-                                AppleMusicMainTitleRow(state = state, actions = actions, typography = typography)
-                                Spacer(modifier = Modifier.height(16.dp))
-                                // The gutter and top inset AppleMusicBottomCluster gives these
-                                // controls on the Now Playing page; the controls leave both to
-                                // their Column.
-                                Column(
-                                    modifier =
-                                        Modifier
-                                            .padding(horizontal = 20.dp)
-                                            .padding(top = 8.dp),
-                                ) {
-                                    // Apple's own desktop player puts shuffle and repeat at the
-                                    // two ends of this row; Now Playing keeps them in the queue.
-                                    AppleMusicPlaybackControls(
-                                        state = state,
-                                        actions = actions,
-                                        typography = typography,
-                                        showShuffleAndRepeat = true,
-                                    )
-                                }
-                            }
-
-                            else -> {
-                                NowPlayingTrackInfoRow(
+                        NowPlayingExpressiveTheme(state = state) {
+                            Column {
+                                ExpressiveTrackInfoRow(
                                     state = state,
                                     actions = actions,
                                     showCanvasThumbnail = false,
                                 )
-                                SpotifyPlaybackControls(state = state, actions = actions)
+                                // Shuffle and repeat live in the connected group on Now
+                                // Playing, which this page leaves out — so the transport
+                                // carries them here.
+                                ExpressivePlaybackControls(
+                                    state = state,
+                                    actions = actions,
+                                    showShuffleAndRepeat = true,
+                                )
                             }
                         }
                     }

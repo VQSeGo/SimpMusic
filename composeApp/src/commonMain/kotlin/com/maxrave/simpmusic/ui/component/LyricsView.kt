@@ -1385,7 +1385,6 @@ fun FullscreenLyricsSheet(
     color: Color = Color(0xFF242424),
     state: NowPlayingContentState,
     actions: NowPlayingContentActions,
-    nowPlayingStyle: String,
     onDismiss: () -> Unit,
 ) {
     val sheetState =
@@ -1420,7 +1419,6 @@ fun FullscreenLyricsSheet(
             color = color,
             state = state,
             actions = actions,
-            nowPlayingStyle = nowPlayingStyle,
             // A dismiss the page asks for itself slides the sheet away before it leaves
             // composition, instead of cutting it off mid-screen.
             onDismiss = {

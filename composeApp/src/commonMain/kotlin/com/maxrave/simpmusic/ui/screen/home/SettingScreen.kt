@@ -356,10 +356,6 @@ import simpmusic.composeapp.generated.resources.never
 import simpmusic.composeapp.generated.resources.no_account
 import simpmusic.composeapp.generated.resources.normalize_volume
 import simpmusic.composeapp.generated.resources.not_available_while_casting
-import simpmusic.composeapp.generated.resources.now_playing_style
-import simpmusic.composeapp.generated.resources.now_playing_style_apple_music
-import simpmusic.composeapp.generated.resources.now_playing_style_m3_expressive
-import simpmusic.composeapp.generated.resources.now_playing_style_spotify
 import simpmusic.composeapp.generated.resources.ok
 import simpmusic.composeapp.generated.resources.open_system_equalizer
 import simpmusic.composeapp.generated.resources.openai
@@ -580,7 +576,6 @@ fun SettingScreen(
     val themeMode by sharedViewModel.getThemeMode().collectAsStateWithLifecycle(DataStoreManager.THEME_MODE_DARK)
     val themeColorSource by sharedViewModel.getThemeColorSource().collectAsStateWithLifecycle(DataStoreManager.THEME_COLOR_DEFAULT)
     val customThemeColorHex by sharedViewModel.getCustomThemeColor().collectAsStateWithLifecycle(DataStoreManager.DEFAULT_THEME_COLOR_HEX)
-    val nowPlayingStyle by sharedViewModel.getNowPlayingStyle().collectAsStateWithLifecycle(DataStoreManager.NOW_PLAYING_STYLE_SPOTIFY)
     val lyricsStyle by sharedViewModel.getLyricsStyle().collectAsStateWithLifecycle(DataStoreManager.LYRICS_STYLE_CLASSIC)
     val romanizationStored by sharedViewModel.getRomanizationLanguages().collectAsStateWithLifecycle("")
     val japaneseDictionaryState by viewModel.japaneseDictionaryState.collectAsStateWithLifecycle()
@@ -760,36 +755,6 @@ fun SettingScreen(
                     // themselves. The requirement is spelled out on the option itself rather than left
                     // for the user to discover after switching.
                     val requiresAndroid12 = " (" + stringResource(Res.string.requires_android_12) + ")"
-                    val nowPlayingStyleLabels =
-                        listOf(
-                            DataStoreManager.NOW_PLAYING_STYLE_SPOTIFY to stringResource(Res.string.now_playing_style_spotify),
-                            DataStoreManager.NOW_PLAYING_STYLE_M3_EXPRESSIVE to stringResource(Res.string.now_playing_style_m3_expressive),
-                            DataStoreManager.NOW_PLAYING_STYLE_APPLE_MUSIC to
-                                stringResource(Res.string.now_playing_style_apple_music) + requiresAndroid12,
-                        )
-                    SettingItem(
-                        title = stringResource(Res.string.now_playing_style),
-                        subtitle = nowPlayingStyleLabels.firstOrNull { it.first == nowPlayingStyle }?.second ?: "",
-                        onClick = {
-                            viewModel.setAlertData(
-                                SettingAlertState(
-                                    title = runBlocking { getString(Res.string.now_playing_style) },
-                                    selectOne =
-                                        SettingAlertState.SelectData(
-                                            listSelect = nowPlayingStyleLabels.map { (it.first == nowPlayingStyle) to it.second },
-                                        ),
-                                    confirm =
-                                        runBlocking { getString(Res.string.change) } to { state ->
-                                            val selected = state.selectOne?.getSelected()
-                                            nowPlayingStyleLabels.firstOrNull { it.second == selected }?.first?.let {
-                                                sharedViewModel.setNowPlayingStyle(it)
-                                            }
-                                        },
-                                    dismiss = runBlocking { getString(Res.string.cancel) },
-                                ),
-                            )
-                        },
-                    )
                     // Hidden outright below Android 12 rather than offered with one option: the Apple
                     // Music treatment IS the blur, and Modifier.blur is a documented no-op there, so
                     // the choice would be between Classic and a broken-looking Classic.
