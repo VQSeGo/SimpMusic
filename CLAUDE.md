@@ -37,10 +37,12 @@
 - Запуск с hot reload: `./gradlew :desktopApp:hotRunJvm --auto --no-configuration-cache`.
   Обычный `:desktopApp:run` окно не открывает. Koin-синглтоны (обработчик плеера) hot reload не
   подхватывает, после правок в `core` нужен перезапуск.
-- AppImage: `:composeApp:mpvSetupAll`, `:desktopApp:writeConveyorConfig`, затем
+- AppImage одной командой: `scripts/build-appimage.sh`. Результат копируется в
+  `~/TorvaldsVPN/Music/builds/SimpMusic-<ветка>-x86_64.AppImage` (папку можно сменить через `OUT_DIR`).
+  Шаги вручную: `:composeApp:mpvSetupAll`, `:desktopApp:writeConveyorConfig`, затем
   `conveyor --agree-to-license=1 -Kapp.machines=linux.amd64.glibc make linux-app`, затем
   `:desktopApp:packageConveyorAppImage --no-configuration-cache`.
-  Результат: `desktopApp/build/appimage/conveyor/SimpMusic-x86_64.AppImage`.
+  Сырой результат: `desktopApp/build/appimage/conveyor/SimpMusic-x86_64.AppImage`.
 
 ## Решения по дизайну (состояние форка)
 
