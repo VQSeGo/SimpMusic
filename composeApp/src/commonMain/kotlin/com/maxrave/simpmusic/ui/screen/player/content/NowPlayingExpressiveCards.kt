@@ -567,6 +567,8 @@ internal fun ExpressiveBelowTheFold(
     val colorScheme = MaterialTheme.colorScheme
     val localDensity = LocalDensity.current
     val uriHandler = LocalUriHandler.current
+    // Rating and sharing lyrics are phone features; the Desktop card keeps only timing and fullscreen.
+    val isDesktop = getPlatform() == Platform.Desktop
     var showShareLyricsSheet by rememberSaveable { mutableStateOf(false) }
     var showLyricsOffsetBar by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.padding(horizontal = 20.dp)) {
@@ -595,7 +597,7 @@ internal fun ExpressiveBelowTheFold(
                         // Vote button — only when the lyrics or the translation come from SimpMusic
                         // Lyrics. The rule itself lives on the shared contract (canVote), so a style
                         // cannot ship without it the way the Apple Music tab did.
-                        if (state.screenData.lyricsData.canVote()) {
+                        if (!isDesktop && state.screenData.lyricsData.canVote()) {
                             CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
                                 IconButton(
                                     onClick = {
@@ -627,19 +629,21 @@ internal fun ExpressiveBelowTheFold(
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                         }
-                        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-                            IconButton(
-                                onClick = { showShareLyricsSheet = true },
-                            ) {
-                                Icon(
-                                    imageVector = SimpIcons.Share,
-                                    contentDescription = stringResource(Res.string.share_lyrics),
-                                    tint = colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(16.dp),
-                                )
+                        if (!isDesktop) {
+                            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
+                                IconButton(
+                                    onClick = { showShareLyricsSheet = true },
+                                ) {
+                                    Icon(
+                                        imageVector = SimpIcons.Share,
+                                        contentDescription = stringResource(Res.string.share_lyrics),
+                                        tint = colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(16.dp),
+                                    )
+                                }
                             }
+                            Spacer(modifier = Modifier.width(8.dp))
                         }
-                        Spacer(modifier = Modifier.width(8.dp))
                         CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
                             TextButton(
                                 onClick = {

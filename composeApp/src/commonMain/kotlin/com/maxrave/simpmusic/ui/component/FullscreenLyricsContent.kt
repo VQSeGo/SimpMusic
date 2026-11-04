@@ -433,8 +433,9 @@ fun FullscreenLyricsContent(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        // Share lyrics — only when there are lyrics to share.
-                        if (screenDataState.lyricsData != null) {
+                        // Share lyrics — only when there are lyrics to share, and not on Desktop,
+                        // where nobody shares an image from the player.
+                        if (screenDataState.lyricsData != null && !isDesktop) {
                             IconButton(
                                 onClick = { showShareLyricsSheet = true },
                             ) {
