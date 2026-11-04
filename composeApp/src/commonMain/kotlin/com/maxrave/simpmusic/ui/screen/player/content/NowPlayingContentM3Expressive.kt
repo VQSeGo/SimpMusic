@@ -951,8 +951,10 @@ internal fun ColumnScope.ExpressivePlaybackControls(
 }
 
 /**
- * Connected button group: seven 48dp-tall slots with 3dp gaps and rounded end caps —
- * Info | Output | Shuffle | Repeat | Add-to-playlist | Queue | Comments.
+ * Connected button group: 48dp-tall slots with 3dp gaps and rounded end caps —
+ * Info | Output | Shuffle | Repeat | Add-to-playlist | Queue | Comments on a phone.
+ * Desktop keeps Shuffle | Repeat | Queue: Info and Add-to-playlist live in the "⋯" menu, and
+ * Output and Comments are not offered there.
  */
 @Composable
 private fun ExpressiveConnectedGroup(
@@ -964,6 +966,7 @@ private fun ExpressiveConnectedGroup(
     val startCap = RoundedCornerShape(topStart = 24.dp, topEnd = 6.dp, bottomEnd = 6.dp, bottomStart = 24.dp)
     val endCap = RoundedCornerShape(topStart = 6.dp, topEnd = 24.dp, bottomEnd = 24.dp, bottomStart = 6.dp)
     val middle = RoundedCornerShape(6.dp)
+    val isDesktop = getPlatform() == Platform.Desktop
     Row(
         horizontalArrangement = Arrangement.spacedBy(3.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -973,33 +976,35 @@ private fun ExpressiveConnectedGroup(
                 .padding(horizontal = 20.dp)
                 .height(48.dp),
     ) {
-        ExpressiveConnectedSlot(
-            shape = startCap,
-            onClick = { actions.onShowInfo() },
-        ) {
-            Icon(
-                imageVector = SimpIcons.Info,
-                contentDescription = "",
-                tint = colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(22.dp),
-            )
+        if (!isDesktop) {
+            ExpressiveConnectedSlot(
+                shape = startCap,
+                onClick = { actions.onShowInfo() },
+            ) {
+                Icon(
+                    imageVector = SimpIcons.Info,
+                    contentDescription = "",
+                    tint = colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(22.dp),
+                )
+            }
+            // Output — the phone's own outputs and the Cast receivers in one sheet, the same one the
+            // Apple Music style opens. Every build has outputs to pick, so the slot is never hidden.
+            // An active Cast session tints primary, like Classic's cyan.
+            ExpressiveConnectedSlot(
+                shape = middle,
+                onClick = onOpenOutput,
+            ) {
+                Icon(
+                    imageVector = SimpIcons.Headphones,
+                    contentDescription = stringResource(Res.string.audio_output),
+                    tint = if (state.castState.isRemote) colorScheme.primary else colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(22.dp),
+                )
+            }
         }
-        // Output — the phone's own outputs and the Cast receivers in one sheet, the same one the
-        // Apple Music style opens. Every build has outputs to pick, so the slot is never hidden.
-        // An active Cast session tints primary, like Classic's cyan.
         ExpressiveConnectedSlot(
-            shape = middle,
-            onClick = onOpenOutput,
-        ) {
-            Icon(
-                imageVector = SimpIcons.Headphones,
-                contentDescription = stringResource(Res.string.audio_output),
-                tint = if (state.castState.isRemote) colorScheme.primary else colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(22.dp),
-            )
-        }
-        ExpressiveConnectedSlot(
-            shape = middle,
+            shape = if (isDesktop) startCap else middle,
             active = state.controllerState.isShuffle,
             onClick = { actions.onUIEvent(UIEvent.Shuffle) },
         ) {
@@ -1048,19 +1053,21 @@ private fun ExpressiveConnectedGroup(
                 }
             }
         }
-        ExpressiveConnectedSlot(
-            shape = middle,
-            onClick = { actions.onShowAddToPlaylist() },
-        ) {
-            Icon(
-                imageVector = SimpIcons.PlaylistAdd,
-                contentDescription = "Add to Playlist",
-                tint = colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(22.dp),
-            )
+        if (!isDesktop) {
+            ExpressiveConnectedSlot(
+                shape = middle,
+                onClick = { actions.onShowAddToPlaylist() },
+            ) {
+                Icon(
+                    imageVector = SimpIcons.PlaylistAdd,
+                    contentDescription = "Add to Playlist",
+                    tint = colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(22.dp),
+                )
+            }
         }
         ExpressiveConnectedSlot(
-            shape = middle,
+            shape = if (isDesktop) endCap else middle,
             onClick = { actions.onShowQueue() },
         ) {
             Icon(
@@ -1070,16 +1077,18 @@ private fun ExpressiveConnectedGroup(
                 modifier = Modifier.size(22.dp),
             )
         }
-        ExpressiveConnectedSlot(
-            shape = endCap,
-            onClick = { actions.onShowComments() },
-        ) {
-            Icon(
-                imageVector = SimpIcons.CommentOutline,
-                contentDescription = stringResource(Res.string.comments),
-                tint = colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(22.dp),
-            )
+        if (!isDesktop) {
+            ExpressiveConnectedSlot(
+                shape = endCap,
+                onClick = { actions.onShowComments() },
+            ) {
+                Icon(
+                    imageVector = SimpIcons.CommentOutline,
+                    contentDescription = stringResource(Res.string.comments),
+                    tint = colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(22.dp),
+                )
+            }
         }
     }
 }

@@ -1001,4 +1001,5 @@
     <string name="comments_need_channel">Создайте YouTube канал, чтобы прокомментировать</string>
     <string name="show_notifications_entry">Уведомления в боковой панели</string>
     <string name="show_notifications_entry_description">Показывает список уведомлений в левой панели на десктопе</string>
+    <string name="track_info">О треке</string>
 </resources>
