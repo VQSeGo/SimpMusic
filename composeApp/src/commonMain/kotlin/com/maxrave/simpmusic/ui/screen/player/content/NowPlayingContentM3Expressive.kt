@@ -52,14 +52,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -117,8 +114,6 @@ import com.maxrave.simpmusic.ui.icon.Repeat
 import com.maxrave.simpmusic.ui.icon.RepeatOne
 import com.maxrave.simpmusic.ui.icon.Shuffle
 import com.maxrave.simpmusic.ui.icon.SimpIcons
-import com.maxrave.simpmusic.ui.icon.VolumeOff
-import com.maxrave.simpmusic.ui.icon.VolumeUp
 import com.maxrave.simpmusic.ui.screen.player.content.applemusic.AudioOutputSheetHost
 import com.maxrave.simpmusic.ui.screen.player.content.expressive.ExpressiveTransportRow
 import com.maxrave.simpmusic.ui.screen.player.content.expressive.WavySeekBar
@@ -183,13 +178,16 @@ internal fun NowPlayingExpressiveTheme(
     // stray hue the Vibrant style below blows up into a colour the cover does not have (a pink
     // sleeve came out green). The app seed stands in until it resolves, and for a colourless cover.
     val artwork = state.screenData.bitmap
+    // A track change clears the bitmap, and a track from the same album never refills it: the cover
+    // URL is unchanged, so the image does not load again. Holding the last seed through that gap
+    // keeps the album's colour instead of dropping to the app seed.
     val artworkSeed by produceState<Color?>(initialValue = null, artwork) {
-        value =
-            artwork?.let { image ->
+        if (artwork != null) {
+            value =
                 withContext(Dispatchers.Default) {
-                    runCatching { image.toReadableBitmap(SEED_SAMPLE_PX, SEED_SAMPLE_PX).themeColorOrNull() }.getOrNull()
+                    runCatching { artwork.toReadableBitmap(SEED_SAMPLE_PX, SEED_SAMPLE_PX).themeColorOrNull() }.getOrNull()
                 }
-            }
+        }
     }
     val seedColor = artworkSeed ?: seed
     // Track changes must GLIDE between palettes: the shell's startColor spring is quick, and a
@@ -545,9 +543,6 @@ private fun NowPlayingM3ExpressiveLayout(
                                             actions.onToolbarVisibilityChange(!it && state.isExpanded && state.mainScrollState.value > 0)
                                         },
                                 )
-                                if (getPlatform() == Platform.Desktop) {
-                                    ExpressiveVolumeRow(state = state, actions = actions)
-                                }
                                 Spacer(Modifier.height(12.dp))
                                 ExpressiveConnectedGroup(
                                     state = state,
@@ -958,53 +953,6 @@ internal fun ColumnScope.ExpressivePlaybackControls(
         modifier = Modifier.padding(horizontal = 20.dp),
         showShuffleAndRepeat = showShuffleAndRepeat,
     )
-}
-
-/**
- * Desktop's volume: a mute button and a slider under the transport. The bottom player used to carry
- * it; a phone has hardware keys instead. Unmuting goes back to the level the user left, not to full.
- */
-@Composable
-private fun ExpressiveVolumeRow(
-    state: NowPlayingContentState,
-    actions: NowPlayingContentActions,
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    val volume = state.controllerState.volume
-    var dragging by remember { mutableStateOf(false) }
-    var draggedValue by remember { mutableFloatStateOf(volume) }
-    var restoreTo by remember { mutableFloatStateOf(volume.takeIf { it > 0f } ?: 1f) }
-    LaunchedEffect(volume) { if (volume > 0f) restoreTo = volume }
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(
-            onClick = { actions.onUIEvent(UIEvent.UpdateVolume(if (volume > 0f) 0f else restoreTo.coerceIn(0.1f, 1f))) },
-        ) {
-            Icon(
-                imageVector = if (volume > 0f) SimpIcons.VolumeUp else SimpIcons.VolumeOff,
-                contentDescription = "",
-                tint = colorScheme.onSurfaceVariant,
-            )
-        }
-        Slider(
-            value = if (dragging) draggedValue else volume,
-            onValueChange = {
-                dragging = true
-                draggedValue = it
-                actions.onUIEvent(UIEvent.UpdateVolume(it))
-            },
-            onValueChangeFinished = { dragging = false },
-            colors =
-                SliderDefaults.colors(
-                    thumbColor = colorScheme.primary,
-                    activeTrackColor = colorScheme.primary,
-                    inactiveTrackColor = colorScheme.secondaryContainer,
-                ),
-            modifier = Modifier.weight(1f),
-        )
-    }
 }
 
 /**
