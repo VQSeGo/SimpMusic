@@ -2099,8 +2099,6 @@ class SharedViewModel(
 
     fun getCustomThemeColor() = dataStoreManager.customThemeColor
 
-    fun getNowPlayingStyle() = dataStoreManager.nowPlayingStyle
-
     fun getLyricsStyle() = dataStoreManager.lyricsStyle
 
     fun getLyricsOffsetMs() = dataStoreManager.lyricsOffsetMs
@@ -2126,12 +2124,6 @@ class SharedViewModel(
     fun setCustomThemeColor(argbHex: String) {
         viewModelScope.launch {
             dataStoreManager.setCustomThemeColor(argbHex)
-        }
-    }
-
-    fun setNowPlayingStyle(style: String) {
-        viewModelScope.launch {
-            dataStoreManager.setNowPlayingStyle(style)
         }
     }
 
