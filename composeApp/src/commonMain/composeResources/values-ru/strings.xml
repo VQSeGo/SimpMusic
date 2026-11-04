@@ -999,4 +999,6 @@
     <string name="comments_load_error">Не удалось загрузить комментарии</string>
     <string name="comment_post_error">Не удалось опубликовать ваш комментарий</string>
     <string name="comments_need_channel">Создайте YouTube канал, чтобы прокомментировать</string>
+    <string name="show_notifications_entry">Уведомления в боковой панели</string>
+    <string name="show_notifications_entry_description">Показывает список уведомлений в левой панели на десктопе</string>
 </resources>

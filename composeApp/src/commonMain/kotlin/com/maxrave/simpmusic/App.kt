@@ -169,6 +169,7 @@ fun App(
     // same condition that used to hide the chip inside Library.
     val isYouTubeLoggedIn by viewModel.getYouTubeLoggedIn().collectAsStateWithLifecycle(DataStoreManager.FALSE)
     val showMixForYouTab = isYouTubeLoggedIn == TRUE
+    val showNotificationsEntry by viewModel.showNotificationsEntry.collectAsStateWithLifecycle(true)
 
     val themeMode by viewModel.getThemeMode().collectAsStateWithLifecycle(DataStoreManager.THEME_MODE_DARK)
     val themeColorSource by viewModel.getThemeColorSource().collectAsStateWithLifecycle(DataStoreManager.THEME_COLOR_DEFAULT)
@@ -710,6 +711,7 @@ fun App(
                                             containerColor = desktopPanel,
                                             showAnalyticsTab = showAnalyticsTab,
                                             showMixForYouTab = showMixForYouTab,
+                                            showNotifications = showNotificationsEntry,
                                             // No end padding: the content panel's own 8dp is the gap between the two.
                                             modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp),
                                         ) { klass ->

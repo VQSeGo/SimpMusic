@@ -1074,7 +1074,10 @@ fun HomeScreen(
                 // strip, so at rest Create sits at the right edge, and a Mood that opens wide pushes it
                 // along instead of sliding under it. On Desktop and in landscape Create stays put at the
                 // right edge, like the avatar.
-                val createPinned = getPlatform() == Platform.Desktop || getScreenSizeInfo().let { it.wDP >= it.hDP }
+                // Desktop has neither the avatar nor Create here: Settings, Notifications and Create live in
+                // the sidebar, and signing in is in Settings.
+                val isDesktop = getPlatform() == Platform.Desktop
+                val createPinned = isDesktop || getScreenSizeInfo().let { it.wDP >= it.hDP }
                 val chipHeadFade by animateFloatAsState(if (chipRowState.canScrollBackward) 1f else 0f)
                 val chipTailFade by animateFloatAsState(if (chipRowState.canScrollForward) 1f else 0f)
                 // Notifications moved into the avatar menu, Listen Together into the Create sheet.
@@ -1092,12 +1095,16 @@ fun HomeScreen(
                             .height(56.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Box(Modifier.padding(start = 16.dp, end = 8.dp)) {
-                        HomeAccountButton(
-                            accountName = accountInfo?.first,
-                            thumbnailUrl = accountInfo?.second,
-                            navController = navController,
-                        )
+                    if (isDesktop) {
+                        Spacer(Modifier.width(16.dp))
+                    } else {
+                        Box(Modifier.padding(start = 16.dp, end = 8.dp)) {
+                            HomeAccountButton(
+                                accountName = accountInfo?.first,
+                                thumbnailUrl = accountInfo?.second,
+                                navController = navController,
+                            )
+                        }
                     }
                     BoxWithConstraints(
                         Modifier
@@ -1112,7 +1119,7 @@ fun HomeScreen(
                                     .mouseDragScroll(chipRowState)
                                     .horizontalScroll(chipRowState)
                                     .widthIn(min = maxWidth)
-                                    .padding(end = if (createPinned) 0.dp else 16.dp),
+                                    .padding(end = if (createPinned && !isDesktop) 0.dp else 16.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -1148,7 +1155,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                    if (createPinned) {
+                    if (createPinned && !isDesktop) {
                         Box(Modifier.padding(start = 8.dp, end = 16.dp)) { createActions() }
                     }
                 }

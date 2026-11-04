@@ -1072,4 +1072,6 @@
     <string name="recognize_mic_needed">Microphone access needed</string>
     <string name="recognize_mic_hint">SimpMusic listens for a few seconds to find the song playing near you</string>
     <string name="recognize_allow_mic">Allow microphone</string>
+    <string name="show_notifications_entry">Show notifications in the sidebar</string>
+    <string name="show_notifications_entry_description">Adds the notification list to the left panel on Desktop</string>
 </resources>

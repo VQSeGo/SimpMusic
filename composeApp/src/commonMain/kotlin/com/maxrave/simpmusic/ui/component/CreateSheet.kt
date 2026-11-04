@@ -86,11 +86,9 @@ fun CreateActions(
     backdrop: PlatformBackdrop,
     navController: NavController,
     onSettings: (() -> Unit)? = null,
-    sharedViewModel: SharedViewModel = koinInject(),
 ) {
     val room by koinInject<ListenTogetherRepository>().room.collectAsStateWithLifecycle()
     var showCreate by remember { mutableStateOf(false) }
-    var showPlaylistName by remember { mutableStateOf(false) }
     val tint = MaterialTheme.colorScheme.onBackground
 
     val createButton: @Composable () -> Unit = {
@@ -149,16 +147,32 @@ fun CreateActions(
         }
     }
 
-    if (showCreate) {
+    CreateDialogs(visible = showCreate, onDismiss = { showCreate = false }, navController = navController)
+}
+
+/**
+ * The Create sheet (local playlist or Listen Together room) and the playlist-name sheet it leads to,
+ * for any button that wants to open them: the Home top bar's "+" and the Desktop sidebar's.
+ */
+@Composable
+fun CreateDialogs(
+    visible: Boolean,
+    onDismiss: () -> Unit,
+    navController: NavController,
+    sharedViewModel: SharedViewModel = koinInject(),
+) {
+    val room by koinInject<ListenTogetherRepository>().room.collectAsStateWithLifecycle()
+    var showPlaylistName by remember { mutableStateOf(false) }
+    if (visible) {
         CreateSheet(
             liveRoom = room.inRoom,
-            onDismiss = { showCreate = false },
+            onDismiss = onDismiss,
             onPlaylist = {
-                showCreate = false
+                onDismiss()
                 showPlaylistName = true
             },
             onListenTogether = {
-                showCreate = false
+                onDismiss()
                 navController.navigate(ListenTogetherDestination)
             },
         )

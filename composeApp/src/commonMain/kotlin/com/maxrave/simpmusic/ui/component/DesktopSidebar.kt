@@ -84,16 +84,21 @@ import com.maxrave.simpmusic.expect.ui.layerBackdrop
 import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.extension.barBlurStyle
 import com.maxrave.simpmusic.extension.mouseDragScroll
+import com.maxrave.simpmusic.ui.icon.Add
 import com.maxrave.simpmusic.ui.icon.Close
 import com.maxrave.simpmusic.ui.icon.FormatListBulleted
 import com.maxrave.simpmusic.ui.icon.LeftPanelClose
 import com.maxrave.simpmusic.ui.icon.LeftPanelOpen
 import com.maxrave.simpmusic.ui.icon.LibraryMusic
+import com.maxrave.simpmusic.ui.icon.Notifications
 import com.maxrave.simpmusic.ui.icon.PushPin
 import com.maxrave.simpmusic.ui.icon.Search
+import com.maxrave.simpmusic.ui.icon.Settings
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.icon.TrendingUp
 import com.maxrave.simpmusic.ui.icon.VolumeUp
+import com.maxrave.simpmusic.ui.navigation.destination.home.NotificationDestination
+import com.maxrave.simpmusic.ui.navigation.destination.home.SettingsDestination
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
 import com.maxrave.simpmusic.ui.screen.home.chipStripEdgeFades
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
@@ -106,6 +111,7 @@ import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
+import kotlin.reflect.KClass
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
@@ -120,19 +126,21 @@ import simpmusic.composeapp.generated.resources.artists
 import simpmusic.composeapp.generated.resources.baseline_downloaded
 import simpmusic.composeapp.generated.resources.baseline_favorite_24
 import simpmusic.composeapp.generated.resources.collapse_your_library
+import simpmusic.composeapp.generated.resources.create
 import simpmusic.composeapp.generated.resources.downloaded
 import simpmusic.composeapp.generated.resources.expand_your_library
 import simpmusic.composeapp.generated.resources.favorite
 import simpmusic.composeapp.generated.resources.liked_songs_count
 import simpmusic.composeapp.generated.resources.most_played
+import simpmusic.composeapp.generated.resources.notification
 import simpmusic.composeapp.generated.resources.playlist
 import simpmusic.composeapp.generated.resources.playlists
 import simpmusic.composeapp.generated.resources.podcast
 import simpmusic.composeapp.generated.resources.podcasts
 import simpmusic.composeapp.generated.resources.recents
 import simpmusic.composeapp.generated.resources.search_in_your_library
+import simpmusic.composeapp.generated.resources.settings
 import simpmusic.composeapp.generated.resources.your_library
-import kotlin.reflect.KClass
 
 private val SidebarExpandedWidth = 280.dp
 private val SidebarCollapsedWidth = 72.dp
@@ -149,6 +157,7 @@ fun DesktopSidebar(
     containerColor: Color,
     showAnalyticsTab: Boolean,
     showMixForYouTab: Boolean,
+    showNotifications: Boolean,
     modifier: Modifier = Modifier,
     viewModel: LibrarySidebarViewModel = koinViewModel(),
     reloadDestinationIfNeeded: (KClass<*>) -> Unit = { _ -> },
@@ -202,6 +211,7 @@ fun DesktopSidebar(
     var filter by remember { mutableStateOf<LibrarySidebarKind?>(null) }
     var alphabetical by remember { mutableStateOf(false) }
     var searching by remember { mutableStateOf(false) }
+    var showCreate by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     // The search field is hidden while folded, so its text must not keep filtering the strip.
     val activeQuery = if (collapsed) "" else query.trim()
@@ -228,6 +238,8 @@ fun DesktopSidebar(
             },
         ).filter { filter == null || filter == LibrarySidebarKind.PLAYLIST }
     val pinnedTitles = pinned.map { stringResource(it.title) }
+
+    CreateDialogs(visible = showCreate, onDismiss = { showCreate = false }, navController = navController)
 
     val width by animateDpAsState(if (collapsed) SidebarCollapsedWidth else SidebarExpandedWidth, label = "sidebarWidth")
     // What the glass controls refract: the panel's own colour, recorded by a box that is their sibling,
@@ -328,6 +340,26 @@ fun DesktopSidebar(
                         icon = screen.icon,
                     )
                 }
+                // Not tabs: they open over the back stack, so they light up from the destination
+                // the nav controller is on rather than from selectedIndex.
+                SidebarNavRow(
+                    backdrop = backdrop,
+                    label = stringResource(Res.string.settings),
+                    selected = currentBackStackEntry?.destination?.hierarchy?.any { it.hasRoute(SettingsDestination::class) } == true,
+                    collapsed = collapsed,
+                    onClick = { navController.navigate(SettingsDestination) },
+                    icon = { Icon(SimpIcons.Settings, contentDescription = null) },
+                )
+                if (showNotifications) {
+                    SidebarNavRow(
+                        backdrop = backdrop,
+                        label = stringResource(Res.string.notification),
+                        selected = currentBackStackEntry?.destination?.hierarchy?.any { it.hasRoute(NotificationDestination::class) } == true,
+                        collapsed = collapsed,
+                        onClick = { navController.navigate(NotificationDestination) },
+                        icon = { Icon(SimpIcons.Notifications, contentDescription = null) },
+                    )
+                }
                 HorizontalDivider(
                     Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
@@ -345,6 +377,7 @@ fun DesktopSidebar(
                         viewModel.setCollapsed(!collapsed)
                     },
                     onStartSearch = { searching = true },
+                    onCreate = { showCreate = true },
                     onQueryChange = { query = it },
                     onCloseSearch = {
                         searching = false
@@ -438,6 +471,7 @@ private fun LibraryHeader(
     onOpenLibrary: () -> Unit,
     onToggle: () -> Unit,
     onStartSearch: () -> Unit,
+    onCreate: () -> Unit,
     onQueryChange: (String) -> Unit,
     onCloseSearch: () -> Unit,
 ) {
@@ -502,6 +536,7 @@ private fun LibraryHeader(
                 LibrarySearchField(backdrop, query, onQueryChange, onCloseSearch, Modifier.fillMaxWidth())
             }
         }
+        SidebarGlassButton(backdrop, SimpIcons.Add, stringResource(Res.string.create), onCreate)
         SidebarGlassButton(backdrop, SimpIcons.LeftPanelClose, stringResource(Res.string.collapse_your_library), onToggle)
     }
 }

@@ -390,6 +390,8 @@ import simpmusic.composeapp.generated.resources.scrobbling_info
 import simpmusic.composeapp.generated.resources.send_back_listening_data_to_google
 import simpmusic.composeapp.generated.resources.set
 import simpmusic.composeapp.generated.resources.settings
+import simpmusic.composeapp.generated.resources.show_notifications_entry
+import simpmusic.composeapp.generated.resources.show_notifications_entry_description
 import simpmusic.composeapp.generated.resources.signed_in
 import simpmusic.composeapp.generated.resources.simpmusic_lyrics
 import simpmusic.composeapp.generated.resources.skip_no_music_part
@@ -517,6 +519,7 @@ fun SettingScreen(
     val keepYoutubePlaylistOffline by viewModel.keepYouTubePlaylistOffline.collectAsStateWithLifecycle()
     val localTrackingEnabled by viewModel.localTrackingEnabled.collectAsStateWithLifecycle(initialValue = false)
     val blogNotificationEnabled by viewModel.blogNotificationEnabled.collectAsStateWithLifecycle()
+    val showNotificationsEntry by sharedViewModel.showNotificationsEntry.collectAsStateWithLifecycle(true)
     val combineLocalAndYouTubeLiked by viewModel.combineLocalAndYouTubeLiked.collectAsStateWithLifecycle()
     val playVideo by remember { viewModel.playVideoInsteadOfAudio.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
     val radioAudioOnly by remember { viewModel.radioAudioOnly.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
@@ -2714,6 +2717,13 @@ fun SettingScreen(
                         uriHandler.openUri("https://www.simpmusic.org/blogs")
                     },
                 )
+                if (getPlatform() == Platform.Desktop) {
+                    SettingItem(
+                        title = stringResource(Res.string.show_notifications_entry),
+                        subtitle = stringResource(Res.string.show_notifications_entry_description),
+                        switch = (showNotificationsEntry to { sharedViewModel.setShowNotificationsEntry(it) }),
+                    )
+                }
                 if (getPlatform() == Platform.Android) {
                     SettingItem(
                         title = stringResource(Res.string.blog_notification_title),
