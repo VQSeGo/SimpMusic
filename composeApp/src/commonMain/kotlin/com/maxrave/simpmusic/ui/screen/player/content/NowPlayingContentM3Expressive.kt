@@ -52,11 +52,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -90,13 +93,13 @@ import com.maxrave.simpmusic.expect.ui.toReadableBitmap
 import com.maxrave.simpmusic.extension.LeftToRight
 import com.maxrave.simpmusic.extension.elapsedLabel
 import com.maxrave.simpmusic.extension.formatDuration
-import com.maxrave.simpmusic.extension.lengthLabel
 import com.maxrave.simpmusic.extension.getScreenSizeInfo
 import com.maxrave.simpmusic.extension.isElementVisible
+import com.maxrave.simpmusic.extension.lengthLabel
 import com.maxrave.simpmusic.extension.smoothScrimBrush
 import com.maxrave.simpmusic.getPlatform
-import com.maxrave.simpmusic.ui.component.LyricText
 import com.maxrave.simpmusic.ui.component.ExplicitBadge
+import com.maxrave.simpmusic.ui.component.LyricText
 import com.maxrave.simpmusic.ui.component.heartBurst
 import com.maxrave.simpmusic.ui.component.rememberHeartBurstState
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
@@ -114,6 +117,8 @@ import com.maxrave.simpmusic.ui.icon.Repeat
 import com.maxrave.simpmusic.ui.icon.RepeatOne
 import com.maxrave.simpmusic.ui.icon.Shuffle
 import com.maxrave.simpmusic.ui.icon.SimpIcons
+import com.maxrave.simpmusic.ui.icon.VolumeOff
+import com.maxrave.simpmusic.ui.icon.VolumeUp
 import com.maxrave.simpmusic.ui.screen.player.content.applemusic.AudioOutputSheetHost
 import com.maxrave.simpmusic.ui.screen.player.content.expressive.ExpressiveTransportRow
 import com.maxrave.simpmusic.ui.screen.player.content.expressive.WavySeekBar
@@ -352,20 +357,26 @@ private fun NowPlayingM3ExpressiveLayout(
                                 top = with(localDensity) { WindowInsets.statusBars.getTop(localDensity).toDp() },
                             ).padding(top = 8.dp, start = 20.dp, end = 20.dp),
                 ) {
-                    IconButton(
-                        onClick = { actions.onDismiss() },
-                        shape = CircleShape,
-                        colors =
-                            IconButtonDefaults.iconButtonColors(
-                                containerColor = colorScheme.surfaceContainerHigh,
-                                contentColor = colorScheme.onSurface,
-                            ),
-                        modifier = Modifier.size(44.dp),
-                    ) {
-                        Icon(
-                            imageVector = state.dismissIcon,
-                            contentDescription = "",
-                        )
+                    // The Desktop panel is always open, so it has nothing to dismiss; the spacer keeps
+                    // the title centred between the two ends.
+                    if (getPlatform() == Platform.Desktop) {
+                        Spacer(Modifier.size(44.dp))
+                    } else {
+                        IconButton(
+                            onClick = { actions.onDismiss() },
+                            shape = CircleShape,
+                            colors =
+                                IconButtonDefaults.iconButtonColors(
+                                    containerColor = colorScheme.surfaceContainerHigh,
+                                    contentColor = colorScheme.onSurface,
+                                ),
+                            modifier = Modifier.size(44.dp),
+                        ) {
+                            Icon(
+                                imageVector = state.dismissIcon,
+                                contentDescription = "",
+                            )
+                        }
                     }
                     Column(
                         modifier =
@@ -526,17 +537,16 @@ private fun NowPlayingM3ExpressiveLayout(
                                     },
                             ) {
                                 ExpressiveTrackInfoRow(state = state, actions = actions)
-                                if (getPlatform() == Platform.Android) {
-                                    ExpressivePlaybackControls(
-                                        state = state,
-                                        actions = actions,
-                                        sliderModifier =
-                                            Modifier.isElementVisible {
-                                                actions.onToolbarVisibilityChange(!it && state.isExpanded && state.mainScrollState.value > 0)
-                                            },
-                                    )
-                                } else {
-                                    Spacer(Modifier.height(16.dp))
+                                ExpressivePlaybackControls(
+                                    state = state,
+                                    actions = actions,
+                                    sliderModifier =
+                                        Modifier.isElementVisible {
+                                            actions.onToolbarVisibilityChange(!it && state.isExpanded && state.mainScrollState.value > 0)
+                                        },
+                                )
+                                if (getPlatform() == Platform.Desktop) {
+                                    ExpressiveVolumeRow(state = state, actions = actions)
                                 }
                                 Spacer(Modifier.height(12.dp))
                                 ExpressiveConnectedGroup(
@@ -948,6 +958,53 @@ internal fun ColumnScope.ExpressivePlaybackControls(
         modifier = Modifier.padding(horizontal = 20.dp),
         showShuffleAndRepeat = showShuffleAndRepeat,
     )
+}
+
+/**
+ * Desktop's volume: a mute button and a slider under the transport. The bottom player used to carry
+ * it; a phone has hardware keys instead. Unmuting goes back to the level the user left, not to full.
+ */
+@Composable
+private fun ExpressiveVolumeRow(
+    state: NowPlayingContentState,
+    actions: NowPlayingContentActions,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val volume = state.controllerState.volume
+    var dragging by remember { mutableStateOf(false) }
+    var draggedValue by remember { mutableFloatStateOf(volume) }
+    var restoreTo by remember { mutableFloatStateOf(volume.takeIf { it > 0f } ?: 1f) }
+    LaunchedEffect(volume) { if (volume > 0f) restoreTo = volume }
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(
+            onClick = { actions.onUIEvent(UIEvent.UpdateVolume(if (volume > 0f) 0f else restoreTo.coerceIn(0.1f, 1f))) },
+        ) {
+            Icon(
+                imageVector = if (volume > 0f) SimpIcons.VolumeUp else SimpIcons.VolumeOff,
+                contentDescription = "",
+                tint = colorScheme.onSurfaceVariant,
+            )
+        }
+        Slider(
+            value = if (dragging) draggedValue else volume,
+            onValueChange = {
+                dragging = true
+                draggedValue = it
+                actions.onUIEvent(UIEvent.UpdateVolume(it))
+            },
+            onValueChangeFinished = { dragging = false },
+            colors =
+                SliderDefaults.colors(
+                    thumbColor = colorScheme.primary,
+                    activeTrackColor = colorScheme.primary,
+                    inactiveTrackColor = colorScheme.secondaryContainer,
+                ),
+            modifier = Modifier.weight(1f),
+        )
+    }
 }
 
 /**

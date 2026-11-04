@@ -691,19 +691,7 @@ fun App(
                                 .weight(1f)
                                 .fillMaxHeight(),
                         ) {
-                            Row(
-                                Modifier
-                                    .fillMaxSize()
-                                    .then(
-                                        // The Desktop capsule player's glass refracts this. Off, the capsule
-                                        // draws flat and nothing reads the recording, so skip it.
-                                        if (isLiquidGlassEnabled == TRUE && isDesktopShell && isTablet && !isInFullscreen) {
-                                            Modifier.layerBackdrop(backdrop)
-                                        } else {
-                                            Modifier
-                                        },
-                                    ),
-                            ) {
+                            Row(Modifier.fillMaxSize()) {
                                 if (isTablet && !isInFullscreen) {
                                     if (isDesktopShell) {
                                         DesktopSidebar(
@@ -787,13 +775,12 @@ fun App(
                                     }
                                 }
                             }
-                            if (isDesktopShell) {
-                                tabletMiniPlayer(Modifier.padding(innerPadding).align(Alignment.BottomCenter))
-                            }
                         }
                         if (isTablet && isTabletLandscape && !isInFullscreen) {
+                            // Desktop has no bottom player to open it from, so the panel simply follows the
+                            // queue: there whenever something is loaded.
                             AnimatedVisibility(
-                                isShowNowPlaylistScreen,
+                                if (isDesktopShell) isShowMiniPlayer else isShowNowPlaylistScreen,
                                 enter = expandHorizontally() + fadeIn(),
                                 exit = fadeOut() + shrinkHorizontally(),
                             ) {

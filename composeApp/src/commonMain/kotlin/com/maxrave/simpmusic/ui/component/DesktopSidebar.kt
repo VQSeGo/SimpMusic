@@ -268,9 +268,7 @@ fun DesktopSidebar(
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxSize().hazeSource(hazeState),
-            // The capsule player floats over the panel's bottom (60dp tall, 20dp above the window's
-            // edge, i.e. 72dp above this panel's), so the last row can scroll up clear of it.
-            contentPadding = PaddingValues(top = with(LocalDensity.current) { headerHeightPx.toDp() }, bottom = 80.dp),
+            contentPadding = PaddingValues(top = with(LocalDensity.current) { headerHeightPx.toDp() }, bottom = 8.dp),
         ) {
             pinned.forEachIndexed { index, collection ->
                 if (pinnedTitles[index].contains(activeQuery, ignoreCase = true)) {
