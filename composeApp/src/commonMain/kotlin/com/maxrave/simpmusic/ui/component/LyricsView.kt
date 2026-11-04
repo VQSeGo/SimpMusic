@@ -455,13 +455,9 @@ fun LyricsView(
     // time the song has not reached its first line.
     val lyricsOffsetMs by dataStoreManager.lyricsOffsetMs.collectAsStateWithLifecycle(0)
 
-    // Read here rather than taken as a parameter: all four call sites (the fullscreen sheet and
-    // the three player styles) want the user's one choice, so making them each thread it through
-    // would be four copies of the same lookup. Re-checked against isLyricsBlurSupported() even
-    // though Settings hides the option below Android 12 — a DataStore restored from a backup, or
-    // carried to another device, can still hold APPLE_MUSIC on a phone that cannot draw it.
-    val lyricsStyle by dataStoreManager.lyricsStyle.collectAsStateWithLifecycle(DataStoreManager.LYRICS_STYLE_CLASSIC)
-    val appleStyle = lyricsStyle == DataStoreManager.LYRICS_STYLE_APPLE_MUSIC && isLyricsBlurSupported()
+    // Apple Music is the lyrics style wherever the blur can be drawn; Classic stays only as the
+    // fallback below Android 12, where Modifier.blur is a documented no-op.
+    val appleStyle = isLyricsBlurSupported()
 
     // Read here for the same reason the style is: all four call sites want the user's one choice,
     // so threading it through each of them would be four copies of the same lookup. The stored

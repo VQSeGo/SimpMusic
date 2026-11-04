@@ -113,7 +113,6 @@ import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.expect.ui.LoginSyncDialog
 import com.maxrave.simpmusic.expect.ui.filePickerResult
 import com.maxrave.simpmusic.expect.ui.fileSaverResult
-import com.maxrave.simpmusic.expect.ui.isLyricsBlurSupported
 import com.maxrave.simpmusic.expect.ui.isWallpaperDynamicColorSupported
 import com.maxrave.simpmusic.expect.ui.openEqResult
 import com.maxrave.simpmusic.expect.ui.rememberLocalNetworkPermission
@@ -325,7 +324,6 @@ import simpmusic.composeapp.generated.resources.login_sync_desktop_title
 import simpmusic.composeapp.generated.resources.login_sync_section
 import simpmusic.composeapp.generated.resources.lrclib
 import simpmusic.composeapp.generated.resources.lyrics
-import simpmusic.composeapp.generated.resources.lyrics_style
 import simpmusic.composeapp.generated.resources.lyrics_offset
 import simpmusic.composeapp.generated.resources.lyrics_offset_invalid
 import simpmusic.composeapp.generated.resources.lyrics_offset_message
@@ -346,8 +344,6 @@ import simpmusic.composeapp.generated.resources.romanization_punjabi
 import simpmusic.composeapp.generated.resources.romanization_russian
 import simpmusic.composeapp.generated.resources.romanization_serbian
 import simpmusic.composeapp.generated.resources.romanization_ukrainian
-import simpmusic.composeapp.generated.resources.lyrics_style_apple_music
-import simpmusic.composeapp.generated.resources.lyrics_style_classic
 import simpmusic.composeapp.generated.resources.main_lyrics_provider
 import simpmusic.composeapp.generated.resources.manage_your_youtube_accounts
 import simpmusic.composeapp.generated.resources.maxrave_dev
@@ -383,7 +379,6 @@ import simpmusic.composeapp.generated.resources.proxy_username_message
 import simpmusic.composeapp.generated.resources.quality
 import simpmusic.composeapp.generated.resources.radio_audio_only
 import simpmusic.composeapp.generated.resources.radio_audio_only_description
-import simpmusic.composeapp.generated.resources.requires_android_12
 import simpmusic.composeapp.generated.resources.restore_your_data
 import simpmusic.composeapp.generated.resources.restore_your_saved_data
 import simpmusic.composeapp.generated.resources.rich_presence_info
@@ -576,7 +571,6 @@ fun SettingScreen(
     val themeMode by sharedViewModel.getThemeMode().collectAsStateWithLifecycle(DataStoreManager.THEME_MODE_DARK)
     val themeColorSource by sharedViewModel.getThemeColorSource().collectAsStateWithLifecycle(DataStoreManager.THEME_COLOR_DEFAULT)
     val customThemeColorHex by sharedViewModel.getCustomThemeColor().collectAsStateWithLifecycle(DataStoreManager.DEFAULT_THEME_COLOR_HEX)
-    val lyricsStyle by sharedViewModel.getLyricsStyle().collectAsStateWithLifecycle(DataStoreManager.LYRICS_STYLE_CLASSIC)
     val romanizationStored by sharedViewModel.getRomanizationLanguages().collectAsStateWithLifecycle("")
     val japaneseDictionaryState by viewModel.japaneseDictionaryState.collectAsStateWithLifecycle()
     var showColorPickerDialog by rememberSaveable { mutableStateOf(false) }
@@ -749,48 +743,7 @@ fun SettingScreen(
                             )
                         },
                     )
-                    // The Apple Music treatments ARE the blur — the frosted page behind the player, and
-                    // the depth of field on the lyrics — and Modifier.blur is a documented no-op below
-                    // Android 12, so on an older device they render as a flat, wrong-looking version of
-                    // themselves. The requirement is spelled out on the option itself rather than left
-                    // for the user to discover after switching.
-                    val requiresAndroid12 = " (" + stringResource(Res.string.requires_android_12) + ")"
-                    // Hidden outright below Android 12 rather than offered with one option: the Apple
-                    // Music treatment IS the blur, and Modifier.blur is a documented no-op there, so
-                    // the choice would be between Classic and a broken-looking Classic.
-                    if (isLyricsBlurSupported()) {
-                        val lyricsStyleLabels =
-                            listOf(
-                                DataStoreManager.LYRICS_STYLE_CLASSIC to stringResource(Res.string.lyrics_style_classic),
-                                DataStoreManager.LYRICS_STYLE_APPLE_MUSIC to
-                                    stringResource(Res.string.lyrics_style_apple_music) + requiresAndroid12,
-                            )
-                        SettingItem(
-                            title = stringResource(Res.string.lyrics_style),
-                            subtitle = lyricsStyleLabels.firstOrNull { it.first == lyricsStyle }?.second ?: "",
-                            onClick = {
-                                viewModel.setAlertData(
-                                    SettingAlertState(
-                                        title = runBlocking { getString(Res.string.lyrics_style) },
-                                        selectOne =
-                                            SettingAlertState.SelectData(
-                                                listSelect = lyricsStyleLabels.map { (it.first == lyricsStyle) to it.second },
-                                            ),
-                                        confirm =
-                                            runBlocking { getString(Res.string.change) } to { state ->
-                                                val selected = state.selectOne?.getSelected()
-                                                lyricsStyleLabels.firstOrNull { it.second == selected }?.first?.let {
-                                                    sharedViewModel.setLyricsStyle(it)
-                                                }
-                                            },
-                                        dismiss = runBlocking { getString(Res.string.cancel) },
-                                    ),
-                                )
-                            },
-                        )
-                    }
-
-                    // Independent of BOTH style settings, and not gated on Android 12: this changes
+                    // Not gated on Android 12: this changes
                     // what the words SAY, not how they are drawn, so it applies to every style on
                     // every version. Sits next to them because a user looking for "something about
                     // lyrics" looks in one place.

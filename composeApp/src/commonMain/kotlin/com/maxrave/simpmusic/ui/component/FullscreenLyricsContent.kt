@@ -82,7 +82,6 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.kyant.backdrop.highlight.Highlight
-import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.expect.toggleMiniPlayer
 import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
@@ -166,11 +165,7 @@ fun FullscreenLyricsContent(
     // The Apple Music renderer applies its own gutter inside LyricsView — it has to, because the
     // blur needs margin of its own to spill into and a caller-side gutter leaves it sliced flat at
     // the edge. This sheet's own 50dp then stacked on top of it, insetting the text by 70dp.
-    val fullscreenLyricsStyle by sharedViewModel
-        .getLyricsStyle()
-        .collectAsStateWithLifecycle(DataStoreManager.LYRICS_STYLE_CLASSIC)
-    val fullscreenAppleLyrics =
-        fullscreenLyricsStyle == DataStoreManager.LYRICS_STYLE_APPLE_MUSIC && isLyricsBlurSupported()
+    val fullscreenAppleLyrics = isLyricsBlurSupported()
     val screenDataState by sharedViewModel.nowPlayingScreenData.collectAsStateWithLifecycle()
     val timelineState by sharedViewModel.timeline.collectAsStateWithLifecycle()
     // Same correction LyricsView applies to the sheet itself, so the line the share picker opens on
