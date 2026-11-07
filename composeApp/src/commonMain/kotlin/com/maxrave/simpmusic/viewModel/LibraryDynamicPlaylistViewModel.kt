@@ -128,12 +128,18 @@ class LibraryDynamicPlaylistViewModel(
 
     private fun getFollowedArtist() {
         viewModelScope.launch {
-            artistRepository.getFollowedArtists().collectLatest { followedArtist ->
-                _listFollowedArtist.value =
-                    followedArtist.sortedByDescending {
-                        it.followedAt ?: REMOVED_SONG_DATE_TIME
-                    }
+            suspend fun loadFollowedArtists() {
+                artistRepository.getFollowedArtists().collectLatest { followedArtist ->
+                    _listFollowedArtist.value =
+                        followedArtist.sortedByDescending {
+                            it.followedAt ?: REMOVED_SONG_DATE_TIME
+                        }
+                }
             }
+            // The local copy first, as with the liked songs.
+            loadFollowedArtists()
+            artistRepository.syncFollowedArtists()
+            loadFollowedArtists()
         }
     }
 

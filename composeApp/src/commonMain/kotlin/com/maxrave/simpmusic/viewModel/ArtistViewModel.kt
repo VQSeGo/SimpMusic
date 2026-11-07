@@ -179,9 +179,7 @@ class ArtistViewModel(
     ) {
         viewModelScope.launch {
             _followed.value = (followed == 1)
-            // Both outcomes are reported; only null stays quiet, because that means mirroring
-            // is switched off and nothing was attempted. The local follow above stands either
-            // way — these toasts speak for the account, not for the follow itself.
+            // Only null stays quiet: signed out, so nothing was attempted.
             val synced = artistRepository.updateFollowedStatus(channelId, followed)
             when (synced) {
                 true ->
@@ -195,7 +193,11 @@ class ArtistViewModel(
                         ),
                     )
 
-                false -> makeToast(getString(Res.string.sync_follow_failed))
+                false -> {
+                    // The repository has put the follow back, so the button goes with it.
+                    _followed.value = followed != 1
+                    makeToast(getString(Res.string.sync_follow_failed))
+                }
                 null -> Unit
             }
             log("updateFollowed: ${_followed.value}, synced: $synced")

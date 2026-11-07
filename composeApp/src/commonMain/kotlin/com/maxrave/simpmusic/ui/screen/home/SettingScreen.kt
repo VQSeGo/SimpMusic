@@ -406,8 +406,6 @@ import simpmusic.composeapp.generated.resources.spotify_canvas_cache
 import simpmusic.composeapp.generated.resources.spotify_lyrícs_info
 import simpmusic.composeapp.generated.resources.storage
 import simpmusic.composeapp.generated.resources.such_as_music_video_lyrics_video_podcasts_and_more
-import simpmusic.composeapp.generated.resources.sync_follow_to_youtube
-import simpmusic.composeapp.generated.resources.sync_follow_to_youtube_description
 import simpmusic.composeapp.generated.resources.theme
 import simpmusic.composeapp.generated.resources.theme_color
 import simpmusic.composeapp.generated.resources.theme_color_custom
@@ -573,7 +571,6 @@ fun SettingScreen(
     var showColorPickerDialog by rememberSaveable { mutableStateOf(false) }
     val discordLoggedIn by viewModel.discordLoggedIn.collectAsStateWithLifecycle()
     val loggedIn by viewModel.loggedIn.collectAsStateWithLifecycle()
-    val syncFollowToYouTube by viewModel.syncFollowToYouTube.collectAsStateWithLifecycle()
     val equalizerEnabled by viewModel.equalizerEnabled.collectAsStateWithLifecycle()
     val equalizerType by viewModel.equalizerType.collectAsStateWithLifecycle()
     val delayEnabled by viewModel.delayEnabled.collectAsStateWithLifecycle()
@@ -1123,17 +1120,6 @@ fun SettingScreen(
                     subtitle = stringResource(Res.string.radio_audio_only_description),
                     smallSubtitle = true,
                     switch = (radioAudioOnly to { viewModel.setRadioAudioOnly(it) }),
-                )
-                SettingItem(
-                    title = stringResource(Res.string.sync_follow_to_youtube),
-                    subtitle = stringResource(Res.string.sync_follow_to_youtube_description),
-                    smallSubtitle = true,
-                    switch = (syncFollowToYouTube to { viewModel.setSyncFollowToYouTube(it) }),
-                    // Writing to someone's YouTube account needs a session, so the row is dead
-                    // while signed out. Clearing the stored flag is NOT done from here: the reset
-                    // belongs to the logout itself (SettingsViewModel.setUsedAccount /
-                    // logOutAllYouTube), which runs whether or not Settings is ever opened.
-                    isEnable = loggedIn == DataStoreManager.TRUE,
                 )
                 SettingItem(
                     title = stringResource(Res.string.send_back_listening_data_to_google),

@@ -18,7 +18,6 @@ import com.maxrave.domain.extension.toNetScapeString
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.repository.AccountRepository
-import com.maxrave.domain.repository.ArtistRepository
 import com.maxrave.domain.repository.CacheRepository
 import com.maxrave.domain.repository.DiscordRepository
 import com.maxrave.domain.repository.CommonRepository
@@ -78,7 +77,6 @@ class SettingsViewModel(
     private val songRepository: SongRepository,
     private val accountRepository: AccountRepository,
     private val cacheRepository: CacheRepository,
-    private val artistRepository: ArtistRepository,
     private val lyricsRomanizerRepository: LyricsRomanizerRepository,
     private val discordRepository: DiscordRepository,
 ) : BaseViewModel() {
@@ -293,7 +291,6 @@ class SettingsViewModel(
         getVideoQuality()
         getSpotifyLogIn()
         getSpotifyLyrics()
-        getSyncFollowToYouTube()
         getEqualizer()
         getAudioEffects()
         getSpotifyCanvas()
@@ -1643,10 +1640,6 @@ class SettingsViewModel(
                 dataStoreManager.setLoggedIn(false)
                 dataStoreManager.setCookie("", null)
                 Logger.i("Auth", "YouTube: signed out")
-                // Mirroring follows needs a session to write to, so signing out clears the flag
-                // here rather than from the Settings row — same teardown as setSpotifyLogIn and
-                // logOutDiscord. Only this branch: acc != null is switching account, not logout.
-                dataStoreManager.setSyncFollowToYouTube(false)
                 delay(500)
                 getAllGoogleAccount()
                 getLoggedIn()
@@ -1664,7 +1657,6 @@ class SettingsViewModel(
             dataStoreManager.setLoggedIn(false)
             dataStoreManager.setCookie("", null)
             Logger.i("Auth", "YouTube: signed out of all accounts")
-            dataStoreManager.setSyncFollowToYouTube(false)
             delay(500)
             getAllGoogleAccount()
             getLoggedIn()
@@ -1929,33 +1921,6 @@ class SettingsViewModel(
             dataStoreManager.setDelayTimeMs(timeMs)
             dataStoreManager.setDelayFeedback(feedback)
             dataStoreManager.setDelayMix(mix)
-        }
-    }
-
-    private var _syncFollowToYouTube: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val syncFollowToYouTube: StateFlow<Boolean> = _syncFollowToYouTube
-
-    fun getSyncFollowToYouTube() {
-        viewModelScope.launch {
-            dataStoreManager.syncFollowToYouTube.collect {
-                _syncFollowToYouTube.emit(it == DataStoreManager.TRUE)
-            }
-        }
-    }
-
-    fun setSyncFollowToYouTube(enabled: Boolean) {
-        viewModelScope.launch {
-            dataStoreManager.setSyncFollowToYouTube(enabled)
-            // Turning it on is a statement about the whole library: artists followed before the
-            // switch would otherwise never reach the account. Turning it off deliberately does
-            // NOT unsubscribe — stopping the mirroring is not the same as asking us to undo it.
-            if (enabled) {
-                // Runs silently. The only toast in this feature belongs to the Follow button on
-                // the artist screen, where the user performed the action and is waiting to see it
-                // take effect; a switch in Settings is not the place to report on a background
-                // sweep the user is not watching.
-                artistRepository.syncFollowedArtistsToYouTube().collect { }
-            }
         }
     }
 

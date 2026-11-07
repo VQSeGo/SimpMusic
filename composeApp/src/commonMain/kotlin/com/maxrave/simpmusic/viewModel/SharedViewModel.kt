@@ -53,6 +53,7 @@ import com.maxrave.domain.mediaservice.handler.SimpleMediaState
 import com.maxrave.domain.mediaservice.handler.SleepTimerState
 import com.maxrave.domain.mediaservice.handler.addToQueueBlock
 import com.maxrave.domain.repository.AlbumRepository
+import com.maxrave.domain.repository.ArtistRepository
 import com.maxrave.domain.repository.CacheRepository
 import com.maxrave.domain.repository.DiscordRepository
 import com.maxrave.domain.repository.LocalPlaylistRepository
@@ -150,6 +151,7 @@ class SharedViewModel(
     private val lyricsCanvasRepository: LyricsCanvasRepository,
     private val cacheRepository: CacheRepository,
     private val discordRepository: DiscordRepository,
+    private val artistRepository: ArtistRepository,
 ) : BaseViewModel() {
     var isFirstLiked: Boolean = false
     var isFirstMiniplayer: Boolean = false
@@ -2044,7 +2046,10 @@ class SharedViewModel(
             }
             launch {
                 dataStoreManager.loggedIn.distinctUntilChanged().collect { loggedIn ->
-                    if (loggedIn == TRUE) songRepository.syncLikedSongs()
+                    if (loggedIn == TRUE) {
+                        songRepository.syncLikedSongs()
+                        artistRepository.syncFollowedArtists()
+                    }
                 }
             }
             timeLineJob.join()
