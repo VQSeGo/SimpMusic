@@ -141,6 +141,7 @@ import kotlin.time.Duration.Companion.days
 // DataStore key for the kotlin-footguns star prompt. Cleared on every version bump,
 // so the ask comes back after an update - same policy as OPEN_APP_TIME.
 private const val SHOW_NOTIFICATIONS_ENTRY_KEY = "show_notifications_entry"
+private const val SHOW_ANALYTICS_TAB_KEY = "show_analytics_tab"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SharedViewModel(
@@ -489,6 +490,13 @@ class SharedViewModel(
     /** Whether the Desktop sidebar lists Notifications. On unless the user switched it off. */
     val showNotificationsEntry: Flow<Boolean> =
         dataStoreManager.getString(SHOW_NOTIFICATIONS_ENTRY_KEY).map { it != "false" }
+
+    val analyticsTabEnabled: Flow<Boolean> =
+        dataStoreManager.getString(SHOW_ANALYTICS_TAB_KEY).map { it != "false" }
+
+    fun setAnalyticsTabEnabled(show: Boolean) {
+        putString(SHOW_ANALYTICS_TAB_KEY, show.toString())
+    }
 
     fun setShowNotificationsEntry(show: Boolean) {
         putString(SHOW_NOTIFICATIONS_ENTRY_KEY, show.toString())

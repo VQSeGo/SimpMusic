@@ -386,6 +386,8 @@ import simpmusic.composeapp.generated.resources.scrobbling_info
 import simpmusic.composeapp.generated.resources.send_back_listening_data_to_google
 import simpmusic.composeapp.generated.resources.set
 import simpmusic.composeapp.generated.resources.settings
+import simpmusic.composeapp.generated.resources.show_analytics_tab
+import simpmusic.composeapp.generated.resources.show_analytics_tab_description
 import simpmusic.composeapp.generated.resources.show_notifications_entry
 import simpmusic.composeapp.generated.resources.show_notifications_entry_description
 import simpmusic.composeapp.generated.resources.signed_in
@@ -512,6 +514,7 @@ fun SettingScreen(
     val videoDownloadQuality by viewModel.videoDownloadQuality.collectAsStateWithLifecycle()
     val keepYoutubePlaylistOffline by viewModel.keepYouTubePlaylistOffline.collectAsStateWithLifecycle()
     val localTrackingEnabled by viewModel.localTrackingEnabled.collectAsStateWithLifecycle(initialValue = false)
+    val analyticsTabEnabled by sharedViewModel.analyticsTabEnabled.collectAsStateWithLifecycle(initialValue = true)
     val blogNotificationEnabled by viewModel.blogNotificationEnabled.collectAsStateWithLifecycle()
     val showNotificationsEntry by sharedViewModel.showNotificationsEntry.collectAsStateWithLifecycle(true)
     val playVideo by remember { viewModel.playVideoInsteadOfAudio.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
@@ -1545,6 +1548,12 @@ fun SettingScreen(
                     title = stringResource(Res.string.local_tracking_title),
                     subtitle = stringResource(Res.string.local_tracking_description),
                     switch = (localTrackingEnabled to { viewModel.setLocalTrackingEnabled(it) }),
+                )
+                SettingItem(
+                    title = stringResource(Res.string.show_analytics_tab),
+                    subtitle = stringResource(Res.string.show_analytics_tab_description),
+                    switch = (analyticsTabEnabled to { sharedViewModel.setAnalyticsTabEnabled(it) }),
+                    isEnable = localTrackingEnabled,
                 )
                 SettingItem(
                     title = stringResource(Res.string.clear_listening_history),
