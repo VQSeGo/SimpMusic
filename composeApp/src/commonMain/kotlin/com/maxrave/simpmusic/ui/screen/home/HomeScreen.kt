@@ -131,31 +131,22 @@ import com.maxrave.simpmusic.extension.mouseDragScroll
 import com.maxrave.simpmusic.extension.rgbFactor
 import com.maxrave.simpmusic.extension.ultraThinBarStyle
 import com.maxrave.simpmusic.getPlatform
-import com.maxrave.simpmusic.ui.component.BlogPromoDialog
 import com.maxrave.simpmusic.ui.component.CenterLoadingBox
 import com.maxrave.simpmusic.ui.component.Chip
 import com.maxrave.simpmusic.ui.component.CreateActions
 import com.maxrave.simpmusic.ui.component.DropdownButton
 import com.maxrave.simpmusic.ui.component.EndOfPage
 import com.maxrave.simpmusic.ui.component.ExpandableChip
-import com.maxrave.simpmusic.ui.component.FootgunsStarDialog
 import com.maxrave.simpmusic.ui.component.HomeDiscoverSection
 import com.maxrave.simpmusic.ui.component.HomeItem
 import com.maxrave.simpmusic.ui.component.HomeItemContentPlaylist
 import com.maxrave.simpmusic.ui.component.HomeShimmer
 import com.maxrave.simpmusic.ui.component.ItemArtistChart
-import com.maxrave.simpmusic.ui.component.LocalAppDialogOpen
-import com.maxrave.simpmusic.ui.component.LocalNowPlayingOpen
-import com.maxrave.simpmusic.ui.component.LocalUserStarted
 import com.maxrave.simpmusic.ui.component.MoodMomentAndGenreHomeItem
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.OfflineErrorState
-import com.maxrave.simpmusic.ui.component.PromoBanner
-import com.maxrave.simpmusic.ui.component.PromoBannerData
 import com.maxrave.simpmusic.ui.component.QuickPicksItem
-import com.maxrave.simpmusic.ui.component.ReviewDialog
 import com.maxrave.simpmusic.ui.component.SectionHeaderButton
-import com.maxrave.simpmusic.ui.component.ShareSavedLyricsDialog
 import com.maxrave.simpmusic.ui.component.homeCardAspectRatio
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
 import com.maxrave.simpmusic.ui.icon.Notifications
@@ -177,7 +168,6 @@ import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.utils.VersionManager
 import com.maxrave.simpmusic.utils.eligiblePromos
 import com.maxrave.simpmusic.utils.osRequirementOf
-import com.maxrave.simpmusic.viewModel.FOOTGUNS_STAR_KEY
 import com.maxrave.simpmusic.viewModel.HomeViewModel
 import com.maxrave.simpmusic.viewModel.HomeViewModel.Companion.HOME_PARAMS_COMMUTE
 import com.maxrave.simpmusic.viewModel.HomeViewModel.Companion.HOME_PARAMS_ENERGIZE
@@ -238,14 +228,6 @@ import simpmusic.composeapp.generated.resources.warning
 import simpmusic.composeapp.generated.resources.what_is_best_choice_today
 import simpmusic.composeapp.generated.resources.workout
 
-// DataStore key for blog-promo one-shot dialog. Bump the suffix (v2, v3, …) to re-promote.
-private const val BLOG_PROMO_KEY = "blog_promo_v1_seen"
-
-// Launch banner timing: how long Home's own launch dialogs get to settle, and how long the screen must
-// stay free of other dialogs before the banner draws.
-private const val PROMO_SETTLE_MS = 1_000L
-private const val PROMO_CLEAR_MS = 400L
-
 // The height the first item lost with the old app bar (64dp + the 50dp chip row, now one 56dp row) and
 // the Welcome back row (81dp), which Home's top glow still has to cover.
 private val HomeGlowOverflow = 140.dp
@@ -282,7 +264,7 @@ fun HomeScreen(
     val accountInfo by viewModel.accountInfo.collectAsStateWithLifecycle()
     val homeData by viewModel.homeItemList.collectAsStateWithLifecycle()
     // Any shelf YouTube heads with the listener's own avatar over its title (Listen again is one of
-    // several). Home's header already shows the avatar, so those shelves drop it and keep their name
+    // several). The app shows no avatar on Home, so those shelves drop it and keep their name
     // and title. Matched on the name rather than on any shelf title, the way the old Welcome back row did.
     val homeShelves =
         remember(homeData, accountInfo) {
@@ -310,21 +292,6 @@ fun HomeScreen(
     val continuation by viewModel.continuation.collectAsStateWithLifecycle()
 
     val shouldShowLogInAlert by viewModel.showLogInAlert.collectAsStateWithLifecycle()
-
-    val openAppTime by sharedViewModel.openAppTime.collectAsStateWithLifecycle()
-    val shareLyricsPermissions by sharedViewModel.shareSavedLyrics.collectAsStateWithLifecycle()
-
-    // Launch banner inputs. App.kt's own dialogs, its Now Playing sheet and whether the user has
-    // started using the app come down from App.kt; Home's dialogs are read where the banner is drawn.
-    val appDialogOpen = LocalAppDialogOpen.current
-    val nowPlayingOpen = LocalNowPlayingOpen.current
-    val userStarted by rememberUpdatedState(LocalUserStarted.current)
-    // Home's own lifecycle: RESUMED only while it is the screen in front (not mid-transition to another
-    // tab, not behind a system prompt). On Desktop STARTED means its window is showing.
-    val homeLifecycle by LocalLifecycleOwner.current.lifecycle.currentStateAsState()
-    // The language part of the BCP 47 tag: Android's Locale.language still reports the legacy "in"
-    // for Indonesian and "iw" for Hebrew, while the config is keyed "id" and "he".
-    val language = Locale.current.toLanguageTag().substringBefore('-')
 
     val backgroundColor = MaterialTheme.colorScheme.background
     val isLightTheme = backgroundColor.luminance() > 0.5f
@@ -369,30 +336,6 @@ fun HomeScreen(
             // dark theme keeps the original darkened tone.
             topHeaderColor = if (isLightTheme) lerp(it, Color.White, 0.85f) else it.rgbFactor(0.3f)
         }
-    }
-
-    var showReviewDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var showRequestShareLyricsPermissions by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var showBlogPromoDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var showFootgunsDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-    // Decided once per launch (saveable, so a rotation does not count as a new launch).
-    var promoLaunchDecided by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var promoBanner by remember {
-        mutableStateOf<PromoBannerData?>(null)
-    }
-    // The banner that has gone a moment with nothing keeping it off screen; see where it is drawn.
-    var promoClearFor by remember {
-        mutableStateOf<PromoBannerData?>(null)
     }
 
     var topAppBarHeightPx by rememberSaveable {
@@ -449,31 +392,6 @@ fun HomeScreen(
             }
         }
     }
-    LaunchedEffect(openAppTime, shareLyricsPermissions) {
-        Logger.w("HomeScreen", "openAppTime: $openAppTime, shareLyricsPermissions: $shareLyricsPermissions")
-        if (openAppTime >= 10 && openAppTime % 10 == 0 && openAppTime <= 50) {
-            showReviewDialog = true
-        } else if ((openAppTime == 1 || openAppTime % 15 == 0) && openAppTime <= 60 && !shareLyricsPermissions) {
-            showRequestShareLyricsPermissions = true
-        } else if (openAppTime == 5) {
-            // Blog promo: one-shot after 5 app opens, bump key suffix to re-promote later
-            if (sharedViewModel.getString(BLOG_PROMO_KEY) != "true") {
-                showBlogPromoDialog = true
-            }
-        } else if (openAppTime % 10 == 6 &&
-            openAppTime <= 46 &&
-            sharedViewModel.getString(FOOTGUNS_STAR_KEY) != "true"
-        ) {
-            // kotlin-footguns star prompt: 6, 16, 26, 36, 46 - one open after each review milestone,
-            // and clear of the share-lyrics (15, 45) and blog-promo (5) milestones
-            showFootgunsDialog = true
-        } else {
-            showReviewDialog = false
-            showFootgunsDialog = false
-            showRequestShareLyricsPermissions = false
-        }
-    }
-
     val shouldStartPaginate =
         remember {
             derivedStateOf {
@@ -505,182 +423,6 @@ fun HomeScreen(
 //            },
 //        )
 //    }
-
-    if (showReviewDialog) {
-        ReviewDialog(
-            onDismissRequest = {
-                sharedViewModel.onDoneReview(
-                    isDismissOnly = true,
-                )
-                showReviewDialog = false
-            },
-            onDoneReview = {
-                sharedViewModel.onDoneReview(
-                    isDismissOnly = false,
-                )
-                showReviewDialog = false
-            },
-        )
-    }
-
-    if (showFootgunsDialog) {
-        FootgunsStarDialog(
-            onDismissRequest = {
-                // "Later" advances OPEN_APP_TIME, the same way the review and share-lyrics dialogs do.
-                // Home's launch effect runs again every time Home re-enters composition, reading the
-                // stored count; leaving it untouched kept the milestone condition true, so the prompt
-                // came back on every return to Home until the app was restarted.
-                showFootgunsDialog = false
-                sharedViewModel.onDoneReview(isDismissOnly = true)
-            },
-            onDoneStar = {
-                sharedViewModel.putString(FOOTGUNS_STAR_KEY, "true")
-                showFootgunsDialog = false
-            },
-        )
-    }
-
-    if (showBlogPromoDialog) {
-        BlogPromoDialog(
-            onDismissRequest = {
-                sharedViewModel.putString(BLOG_PROMO_KEY, "true")
-                showBlogPromoDialog = false
-            },
-            onVisitBlog = {
-                sharedViewModel.putString(BLOG_PROMO_KEY, "true")
-                showBlogPromoDialog = false
-            },
-        )
-    }
-
-    if (showRequestShareLyricsPermissions) {
-        ShareSavedLyricsDialog(
-            onDismissRequest = {
-                showRequestShareLyricsPermissions = false
-                sharedViewModel.onDoneReview(
-                    isDismissOnly = true,
-                )
-            },
-            onConfirm = { contributor ->
-                sharedViewModel.onDoneRequestingShareLyrics(
-                    contributor,
-                )
-            },
-        )
-    }
-
-    val otherDialogOpen =
-        appDialogOpen || showReviewDialog || showRequestShareLyricsPermissions || showBlogPromoDialog ||
-            showFootgunsDialog || shouldShowLogInAlert
-    // The launch banner, decided once per launch. It waits for Home to settle on its own dialogs (the
-    // open count and the lyrics-sharing flag load just after the first frame) and for the update check
-    // started at launch, however long that takes, so an update dialog comes first. Then it takes the
-    // first banner this version has not shown yet.
-    LaunchedEffect(Unit) {
-        if (promoLaunchDecided) return@LaunchedEffect
-        // Marked at the start, not the end: leaving Home cancels this for good (by then the user is
-        // busy elsewhere), and a value written while Home is being left would not be saved.
-        promoLaunchDecided = true
-        snapshotFlow { openAppTime }.first { it > 0 }
-        delay(PROMO_SETTLE_MS)
-        sharedViewModel.isCheckingUpdate.first { !it }
-        if (userStarted) {
-            Logger.i("Promo", "Skipped: the user started before the banner's turn")
-            return@LaunchedEffect
-        }
-        val localTracking = sharedViewModel.getLocalTrackingEnabled().first() == TRUE
-        val youTubeLoggedIn = sharedViewModel.getYouTubeLoggedIn().first() == TRUE
-        val shown = sharedViewModel.shownPromos()
-        val promos = sharedViewModel.cachedPromos().first()
-        val os = osRequirementOf(getPlatform().osName())
-        val eligible = eligiblePromos(promos, VersionManager.getVersionName(), language, localTracking, youTubeLoggedIn, os)
-        val banner =
-            eligible
-                .firstOrNull { (promo, _) -> promo.id.orEmpty() !in shown }
-                ?.let { (promo, url) -> PromoBannerData(id = promo.id.orEmpty(), imageUrl = url, link = promo.link.orEmpty()) }
-        when {
-            banner == null ->
-                Logger.i(
-                    "Promo",
-                    "Nothing to show: ${eligible.size} of ${promos.size} banners usable here " +
-                        "(local tracking ${if (localTracking) "on" else "off"}, " +
-                        "YouTube ${if (youTubeLoggedIn) "signed in" else "signed out"}), " +
-                        "already shown in ${VersionManager.getVersionName()}: $shown",
-                )
-
-            userStarted -> Logger.i("Promo", "Skipped ${banner.id}: the user started before its turn")
-
-            else -> {
-                Logger.i("Promo", "Picked ${banner.id}, waiting for its turn")
-                promoBanner = banner
-            }
-        }
-    }
-    // Everything that keeps the banner off screen: any other dialog (it waits its turn behind them),
-    // Now Playing, and Home not being in front. On Desktop that only asks for a showing window: one
-    // opened from a terminal or an IDE may start without focus, and the click that focuses it would
-    // count as the user starting, so the banner would never get its turn.
-    val homeInFront =
-        homeLifecycle.isAtLeast(
-            if (getPlatform() == Platform.Desktop) Lifecycle.State.STARTED else Lifecycle.State.RESUMED,
-        )
-    val promoBlocked = otherDialogOpen || nowPlayingOpen || !homeInFront
-    // It draws only once the banner has gone a moment unblocked since it was decided. The wait belongs
-    // to that banner, so nothing left over from before it arrived can let it through early: it never
-    // flashes in the gap between two dialogs, and the update dialog, raised a frame after its check
-    // ends, still gets there first.
-    LaunchedEffect(promoBlocked, promoBanner) {
-        val banner = promoBanner
-        promoClearFor = null
-        if (!promoBlocked && banner != null) {
-            delay(PROMO_CLEAR_MS)
-            promoClearFor = banner
-        }
-    }
-    // Whatever the user starts before the banner's turn puts it off to a later launch, uncounted.
-    LaunchedEffect(userStarted) {
-        val pending = promoBanner
-        if (userStarted && pending != null) {
-            Logger.i("Promo", "Put off ${pending.id}: the user started before its turn")
-            promoBanner = null
-        }
-    }
-    promoBanner?.takeIf { it == promoClearFor && !promoBlocked }?.let { banner ->
-        LaunchedEffect(banner.id) { Logger.i("Promo", "On screen: ${banner.id}") }
-        PromoBanner(
-            banner = banner,
-            onOpen = {
-                Logger.i("Promo", "Opened ${banner.id}: ${banner.link}")
-                promoBanner = null
-                sharedViewModel.markPromoShown(banner.id)
-                val link = banner.link
-                when {
-                    // The same router as links from the web and the widgets.
-                    link.startsWith("simpmusic://") -> {
-                        runCatching { Uri.parse(link) }.getOrNull()?.let {
-                            sharedViewModel.setIntent(GenericIntent(data = it))
-                        }
-                    }
-
-                    // openUrl rather than LocalUriHandler, which throws where no browser answers.
-                    link.startsWith("https://", ignoreCase = true) -> {
-                        runCatching { openUrl(link) }
-                    }
-                    // Anything else is a mistake in the config: ignoring it beats crashing on a tap.
-                }
-            },
-            onClose = {
-                Logger.i("Promo", "Closed ${banner.id}")
-                promoBanner = null
-                sharedViewModel.markPromoShown(banner.id)
-            },
-            // No picture, no banner: closed without counting, so a later launch tries again.
-            onFailed = {
-                Logger.w("Promo", "Picture failed to load for ${banner.id}; closed without counting it")
-                promoBanner = null
-            },
-        )
-    }
 
     if (shouldShowLogInAlert) {
         var doNotShowAgain by rememberSaveable {
@@ -1074,13 +816,13 @@ fun HomeScreen(
                 // strip, so at rest Create sits at the right edge, and a Mood that opens wide pushes it
                 // along instead of sliding under it. On Desktop and in landscape Create stays put at the
                 // right edge, like the avatar.
-                // Desktop has neither the avatar nor Create here: Settings, Notifications and Create live in
-                // the sidebar, and signing in is in Settings.
+                // No avatar anywhere: signing in is in Settings. On Desktop Settings, Notifications and
+                // Create live in the sidebar; on a phone Settings sits in the Create pill.
                 val isDesktop = getPlatform() == Platform.Desktop
                 val createPinned = isDesktop || getScreenSizeInfo().let { it.wDP >= it.hDP }
                 val chipHeadFade by animateFloatAsState(if (chipRowState.canScrollBackward) 1f else 0f)
                 val chipTailFade by animateFloatAsState(if (chipRowState.canScrollForward) 1f else 0f)
-                // Notifications moved into the avatar menu, Listen Together into the Create sheet.
+                // Listen Together lives in the Create sheet.
                 val createActions: @Composable () -> Unit = {
                     CreateActions(
                         backdrop = chipBackdrop,
@@ -1095,17 +837,7 @@ fun HomeScreen(
                             .height(56.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    if (isDesktop) {
-                        Spacer(Modifier.width(16.dp))
-                    } else {
-                        Box(Modifier.padding(start = 16.dp, end = 8.dp)) {
-                            HomeAccountButton(
-                                accountName = accountInfo?.first,
-                                thumbnailUrl = accountInfo?.second,
-                                navController = navController,
-                            )
-                        }
-                    }
+                    Spacer(Modifier.width(16.dp))
                     BoxWithConstraints(
                         Modifier
                             .weight(1f)
@@ -1212,138 +944,6 @@ private fun chipFadeStops(
     }
 
 private const val CHIP_FADE_STEPS = 24
-
-/**
- * The avatar at the start of Home's header. It opens a menu showing who is signed in and the
- * greeting the old app bar used to show. Signed out, the avatar is a person glyph and the menu
- * offers the log-in.
- */
-@Composable
-private fun HomeAccountButton(
-    accountName: String?,
-    thumbnailUrl: String?,
-    navController: NavController,
-) {
-    var menuOpen by remember { mutableStateOf(false) }
-    // Sign-out blanks the stored account name, so a blank name is the signed-out state.
-    val signedIn = !accountName.isNullOrBlank()
-    val displayName = if (signedIn) accountName.orEmpty() else stringResource(Res.string.guest)
-    val hour = remember { now().time.hour }
-    val greeting =
-        stringResource(
-            when (hour) {
-                in 6..12 -> Res.string.good_morning
-                in 13..17 -> Res.string.good_afternoon
-                in 18..23 -> Res.string.good_evening
-                else -> Res.string.good_night
-            },
-        )
-    Box {
-        AccountAvatar(
-            signedIn = signedIn,
-            thumbnailUrl = thumbnailUrl,
-            // The Create pill's height, as Apple sizes an avatar like the glass buttons beside it.
-            size = 44.dp,
-            contentDescription = displayName,
-            modifier = Modifier.clickable { menuOpen = true },
-        )
-        DropdownMenu(
-            expanded = menuOpen,
-            onDismissRequest = { menuOpen = false },
-            // The draft's 280dp (also Material's widest menu item) instead of wrapping its content,
-            // which left the menu as narrow as its longest row. Capped, not fixed: a window narrower
-            // than that gets a menu as wide as the window instead of one that runs off it.
-            modifier =
-                Modifier
-                    .widthIn(max = 280.dp)
-                    .fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                AccountAvatar(
-                    signedIn = signedIn,
-                    thumbnailUrl = thumbnailUrl,
-                    size = 40.dp,
-                    contentDescription = null,
-                )
-                Column {
-                    Text(text = displayName, style = typo().titleSmall, maxLines = 1)
-                    Text(text = greeting, style = typo().bodySmall)
-                }
-            }
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.notification), style = typo().bodyMedium) },
-                leadingIcon = { Icon(SimpIcons.Notifications, contentDescription = null) },
-                onClick = {
-                    menuOpen = false
-                    navController.navigate(NotificationDestination)
-                },
-            )
-            if (!signedIn) {
-                Button(
-                    onClick = {
-                        menuOpen = false
-                        navController.navigate(LoginDestination)
-                    },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 4.dp),
-                ) {
-                    Text(stringResource(Res.string.log_in_to_YouTube), color = LocalContentColor.current)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun AccountAvatar(
-    signedIn: Boolean,
-    thumbnailUrl: String?,
-    size: Dp,
-    contentDescription: String?,
-    modifier: Modifier = Modifier,
-) {
-    val avatarModifier =
-        Modifier
-            .size(size)
-            .clip(CircleShape)
-            .then(modifier)
-    if (signedIn && !thumbnailUrl.isNullOrBlank()) {
-        AsyncImage(
-            model =
-                ImageRequest
-                    .Builder(LocalPlatformContext.current)
-                    .data(thumbnailUrl)
-                    .diskCachePolicy(CachePolicy.ENABLED)
-                    .diskCacheKey(thumbnailUrl)
-                    .crossfade(true)
-                    .build(),
-            placeholder = rememberHolderPainter(),
-            error = rememberHolderPainter(),
-            contentDescription = contentDescription,
-            contentScale = ContentScale.Crop,
-            modifier = avatarModifier,
-        )
-    } else {
-        Box(
-            modifier = avatarModifier.background(MaterialTheme.colorScheme.surfaceContainerHighest),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                imageVector = SimpIcons.Person,
-                contentDescription = contentDescription,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(size * 0.6f),
-            )
-        }
-    }
-}
 
 // Portrait fills the width with one column (the next one peeking in). On a landscape window that one
 // column stretched across the whole screen, so every row there is capped instead.

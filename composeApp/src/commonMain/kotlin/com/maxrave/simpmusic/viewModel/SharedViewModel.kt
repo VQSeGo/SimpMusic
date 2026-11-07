@@ -134,7 +134,6 @@ import kotlin.time.Duration.Companion.days
 
 // DataStore key for the kotlin-footguns star prompt. Cleared on every version bump,
 // so the ask comes back after an update - same policy as OPEN_APP_TIME.
-const val FOOTGUNS_STAR_KEY = "footguns_starred"
 private const val SHOW_NOTIFICATIONS_ENTRY_KEY = "show_notifications_entry"
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -283,21 +282,14 @@ class SharedViewModel(
         _lastPlayerViewTab.value = tabName
     }
 
-    val openAppTime: StateFlow<Int> = dataStoreManager.openAppTime.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), 0)
-    private val _shareSavedLyrics: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val shareSavedLyrics: StateFlow<Boolean> get() = _shareSavedLyrics
-
     init {
         viewModelScope.launch {
             log("SharedViewModel init")
             if (dataStoreManager.appVersion.first() != VersionManager.getVersionName()) {
-                dataStoreManager.resetOpenAppTime()
-                dataStoreManager.putString(FOOTGUNS_STAR_KEY, "false")
                 dataStoreManager.setAppVersion(
                     VersionManager.getVersionName(),
                 )
             }
-            dataStoreManager.openApp()
             val timeLineJob =
                 launch {
                     nowPlayingState
@@ -347,12 +339,6 @@ class SharedViewModel(
                         setLyricsProvider()
                     }
                 }
-            val shareSavedLyricsJob =
-                launch {
-                    dataStoreManager.helpBuildLyricsDatabase.distinctUntilChanged().collectLatest {
-                        _shareSavedLyrics.value = it == TRUE
-                    }
-                }
 //            val controllerStateJob =
 //                launch {
 //                    controllerState.map { it.isLiked }.distinctUntilChanged().collectLatest {
@@ -366,7 +352,6 @@ class SharedViewModel(
             timeLineJob.join()
             checkGetVideoJob.join()
             lyricsProviderJob.join()
-            shareSavedLyricsJob.join()
 //            controllerStateJob.join()
         }
 
@@ -2176,25 +2161,6 @@ class SharedViewModel(
 
     fun downloadFileDone() {
         _downloadFileProgress.value = DownloadProgress.INIT
-    }
-
-    fun onDoneReview(isDismissOnly: Boolean = true) {
-        viewModelScope.launch {
-            if (!isDismissOnly) {
-                dataStoreManager.doneOpenAppTime()
-            } else {
-                dataStoreManager.openApp()
-            }
-        }
-    }
-
-    fun onDoneRequestingShareLyrics(contributor: Pair<String, String>? = null) {
-        viewModelScope.launch {
-            dataStoreManager.setHelpBuildLyricsDatabase(true)
-            dataStoreManager.setContributorLyricsDatabase(
-                contributor,
-            )
-        }
     }
 
     fun setBitmap(bitmap: ImageBitmap?) {

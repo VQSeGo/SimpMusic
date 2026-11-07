@@ -77,9 +77,6 @@ import com.maxrave.simpmusic.ui.component.AppBottomNavigationBar
 import com.maxrave.simpmusic.ui.component.AppNavigationRail
 import com.maxrave.simpmusic.ui.component.DesktopSidebar
 import com.maxrave.simpmusic.ui.component.LiquidGlassAppBottomNavigationBar
-import com.maxrave.simpmusic.ui.component.LocalAppDialogOpen
-import com.maxrave.simpmusic.ui.component.LocalNowPlayingOpen
-import com.maxrave.simpmusic.ui.component.LocalUserStarted
 import com.maxrave.simpmusic.ui.icon.ArrowForwardIos
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.AnalyticsDestination
@@ -206,21 +203,6 @@ fun App(
 
     var shouldShowUpdateDialog by rememberSaveable {
         mutableStateOf(false)
-    }
-
-    // Every dialog this file raises on its own. Home's launch banner waits until none is up; see
-    // LocalAppDialogOpen. (The banner waits for a running update check by itself.)
-    val appDialogOpen =
-        shouldShowUpdateDialog || showNotificationPermissionDialog ||
-            showDesktopNotificationPermissionDialog || sleepTimerState.isDone
-
-    // Set by the first press or wheel scroll anywhere in the app this launch, or by opening Now
-    // Playing. A launch banner that has not had its turn yet then waits for a later launch.
-    var userStarted by remember {
-        mutableStateOf(false)
-    }
-    LaunchedEffect(isShowNowPlaylistScreen) {
-        if (isShowNowPlaylistScreen) userStarted = true
     }
 
     val hazeState =
@@ -530,19 +512,6 @@ fun App(
         // colorScheme.background carries the seed's hue, which the glass's saturation boost brings out.
         val backdrop = rememberBackdrop(if (isDesktopShell) desktopPanel else MaterialTheme.colorScheme.background)
         Scaffold(
-            // Watches for userStarted without consuming anything. Dialogs and sheets are windows or
-            // layers of their own, so a press inside one (closing the update dialog, say) does not count.
-            modifier =
-                Modifier.pointerInput(Unit) {
-                    awaitPointerEventScope {
-                        while (!userStarted) {
-                            val type = awaitPointerEvent(PointerEventPass.Initial).type
-                            if (type == PointerEventType.Press || type == PointerEventType.Scroll) {
-                                userStarted = true
-                            }
-                        }
-                    }
-                },
             containerColor =
                 if (isDesktopShell) desktopWindow else MaterialTheme.colorScheme.background,
             bottomBar = {
@@ -741,28 +710,22 @@ fun App(
                                                 },
                                             ).hazeSource(hazeState),
                                     ) {
-                                        CompositionLocalProvider(
-                                            LocalAppDialogOpen provides appDialogOpen,
-                                            LocalNowPlayingOpen provides isShowNowPlaylistScreen,
-                                            LocalUserStarted provides userStarted,
-                                        ) {
-                                            AppNavigationGraph(
-                                                innerPadding = innerPadding,
-                                                navController = navController,
-                                                hideNavBar = {
-                                                    isNavBarVisible = false
-                                                },
-                                                showNavBar = {
-                                                    isNavBarVisible = true
-                                                },
-                                                showNowPlayingSheet = {
-                                                    isShowNowPlaylistScreen = true
-                                                },
-                                                onScrolling = {
-                                                    isScrolledToTop = it
-                                                },
-                                            )
-                                        }
+                                        AppNavigationGraph(
+                                            innerPadding = innerPadding,
+                                            navController = navController,
+                                            hideNavBar = {
+                                                isNavBarVisible = false
+                                            },
+                                            showNavBar = {
+                                                isNavBarVisible = true
+                                            },
+                                            showNowPlayingSheet = {
+                                                isShowNowPlaylistScreen = true
+                                            },
+                                            onScrolling = {
+                                                isScrolledToTop = it
+                                            },
+                                        )
                                     }
                                     if (!isDesktopShell) {
                                         tabletMiniPlayer(Modifier.padding(innerPadding).align(Alignment.BottomCenter))
