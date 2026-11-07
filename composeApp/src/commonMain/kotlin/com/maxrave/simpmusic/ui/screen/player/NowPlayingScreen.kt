@@ -719,11 +719,13 @@ fun NowPlayingScreenContent(
                 }
             },
             onNavigateToAlbum = {
-                state.albumId?.let { albumId ->
+                val openAlbum: (String) -> Unit = { albumId ->
                     showFullscreenLyrics = false
                     onDismiss()
                     navController.navigate(AlbumDestination(browseId = albumId))
                 }
+                val albumId = state.albumId
+                if (albumId != null) openAlbum(albumId) else sharedViewModel.findAlbumOfNowPlaying(openAlbum)
             },
             onOpenListenTogether = {
                 onDismiss()

@@ -1075,5 +1075,8 @@
     <string name="show_notifications_entry_description">Adds the notification list to the left panel on Desktop</string>
     <string name="track_info">Track info</string>
     <string name="log_in_to_like">Log in to YouTube to like songs</string>
+    <string name="album_not_found">Couldn\'t find this track\'s album</string>
+    <string name="show_analytics_tab">Show the Analytics tab</string>
+    <string name="show_analytics_tab_description">In the navigation bar, while local tracking is on</string>
     <string name="liked_music">Liked Music</string>
 </resources>

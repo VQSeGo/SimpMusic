@@ -59,6 +59,7 @@ import com.maxrave.domain.repository.DiscordRepository
 import com.maxrave.domain.repository.LocalPlaylistRepository
 import com.maxrave.domain.repository.LyricsCanvasRepository
 import com.maxrave.domain.repository.PlaylistRepository
+import com.maxrave.domain.repository.SearchRepository
 import com.maxrave.domain.repository.SongRepository
 import com.maxrave.domain.repository.StreamRepository
 import com.maxrave.domain.repository.UpdateRepository
@@ -80,6 +81,7 @@ import com.maxrave.simpmusic.expect.getDownloadFolderPath
 import com.maxrave.simpmusic.expect.isOnUnmeteredNetwork
 import com.maxrave.simpmusic.expect.ui.toByteArray
 import com.maxrave.simpmusic.getPlatform
+import com.maxrave.simpmusic.ui.screen.player.albumIdOf
 import com.maxrave.simpmusic.utils.LyricsPromo
 import com.maxrave.simpmusic.utils.VersionManager
 import com.maxrave.simpmusic.utils.decodeLyricsPromos
@@ -116,6 +118,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.getString
 import org.koin.core.component.inject
 import org.simpmusic.lastfm.completeLogin
+import simpmusic.composeapp.generated.resources.album_not_found
 import simpmusic.composeapp.generated.resources.log_in_to_like
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.added_local_playlist
@@ -152,6 +155,7 @@ class SharedViewModel(
     private val cacheRepository: CacheRepository,
     private val discordRepository: DiscordRepository,
     private val artistRepository: ArtistRepository,
+    private val searchRepository: SearchRepository,
 ) : BaseViewModel() {
     var isFirstLiked: Boolean = false
     var isFirstMiniplayer: Boolean = false
@@ -1654,6 +1658,24 @@ class SharedViewModel(
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Looks up the album of the track playing, for when neither its row nor the queue has one. A radio
+     * hands a music video no album at all; the song it is the video of has one, and a search finds it.
+     */
+    fun findAlbumOfNowPlaying(onFound: (String) -> Unit) {
+        val song = nowPlayingState.value?.songEntity ?: return
+        viewModelScope.launch {
+            val query = (listOf(song.title) + song.artistName.orEmpty()).joinToString(" ")
+            val albumId =
+                searchRepository
+                    .getSearchDataSong(query)
+                    .firstOrNull()
+                    ?.data
+                    ?.albumIdOf(song)
+            if (albumId != null) onFound(albumId) else makeToast(getString(Res.string.album_not_found))
         }
     }
 

@@ -732,9 +732,7 @@ internal fun ExpressiveTrackInfoRow(
                             iterations = Int.MAX_VALUE,
                             animationMode = MarqueeAnimationMode.Immediately,
                         ).focusable()
-                        .clickable(enabled = state.albumId != null) {
-                            actions.onNavigateToAlbum()
-                        },
+                        .clickable { actions.onNavigateToAlbum() },
             )
             Spacer(modifier = Modifier.height(3.dp))
             Row(

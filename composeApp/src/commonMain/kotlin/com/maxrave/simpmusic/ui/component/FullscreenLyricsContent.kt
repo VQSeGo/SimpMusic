@@ -368,12 +368,7 @@ fun FullscreenLyricsContent(
                                             iterations = Int.MAX_VALUE,
                                             animationMode = MarqueeAnimationMode.Immediately,
                                         ).focusable()
-                                        .clickable(enabled = state.albumId != null) {
-                                            state.albumId?.let { albumId ->
-                                                onDismiss()
-                                                navController.navigate(AlbumDestination(browseId = albumId))
-                                            }
-                                        },
+                                        .clickable { actions.onNavigateToAlbum() },
                             )
 
                             Spacer(modifier = Modifier.height(2.dp))

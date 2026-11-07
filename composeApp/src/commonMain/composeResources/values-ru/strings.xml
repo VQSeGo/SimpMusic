@@ -1002,5 +1002,8 @@
     <string name="show_notifications_entry_description">Показывает список уведомлений в левой панели на десктопе</string>
     <string name="track_info">О треке</string>
     <string name="log_in_to_like">Войдите в YouTube, чтобы ставить лайки</string>
+    <string name="album_not_found">Не удалось найти альбом этого трека</string>
+    <string name="show_analytics_tab">Показывать вкладку «Статистика»</string>
+    <string name="show_analytics_tab_description">В панели навигации, пока включена локальная история</string>
     <string name="liked_music">Понравившаяся музыка</string>
 </resources>
