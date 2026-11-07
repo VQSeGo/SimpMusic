@@ -2099,7 +2099,13 @@ class SharedViewModel(
                         metadataDurationMs.takeIf { it > 0L }
                             ?: mediaPlayerHandler.getPlayerDuration().takeIf { it > 0L }
                             ?: -1L
-                    _timeline.update { it.copy(total = seededTotal) }
+                    // The position too: paused, the poll is stopped and nothing reports that a new
+                    // track starts at its beginning, so the seek bar, clock and lyrics stayed where
+                    // the previous one left them until play. Read from the player, not assumed to
+                    // be 0: a restored queue starts halfway through.
+                    _timeline.update {
+                        it.copy(total = seededTotal, current = mediaPlayerHandler.getProgress().coerceAtLeast(0L))
+                    }
                     state.songEntity?.let { track ->
                         _nowPlayingScreenData.value =
                             NowPlayingScreenData(
