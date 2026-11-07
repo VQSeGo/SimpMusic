@@ -1,13 +1,18 @@
 name: Release
 
-# A tag like v2.5.0-1 builds the phone APKs, the Linux AppImage and the Windows installer and publishes
-# them as a GitHub release. Run by hand it only leaves them as run artifacts; the button shows up only
-# while this file is on the repository's default branch.
+# Builds the phone APKs, the Linux AppImage and the Windows installer and publishes them as a GitHub
+# release. Run it with the button on the Actions tab and type the version (the tag is made for you), or
+# push a tag like v2.5.0-1. The button needs this file on the repository's default branch.
 #
 # Secrets: SIGNING_KEY (keystore in base64), ALIAS, KEY_STORE_PASSWORD, KEY_PASSWORD and
 # CONVEYOR_SIGNING_KEY. The Windows certificate derives from the last one, so keep it the same.
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version, for example 2.5.0-1'
+        required: true
+        type: string
   push:
     tags:
       - 'v*'
@@ -141,7 +146,6 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: startsWith(github.ref, 'refs/tags/')
     needs: [android, desktop]
     runs-on: ubuntu-latest
     steps:
@@ -153,8 +157,12 @@ jobs:
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/* \
+          tag="${VERSION:+v$VERSION}"
+          tag="${tag:-$GITHUB_REF_NAME}"
+          gh release create "$tag" dist/* \
             --repo "$GITHUB_REPOSITORY" \
-            --title "SimpMusic $GITHUB_REF_NAME" \
+            --target "$GITHUB_SHA" \
+            --title "SimpMusic $tag" \
             --notes "Android: SimpMusic-arm64.apk (universal, if that one does not install). Windows: unzip SimpMusic-Windows-installer.zip and run install.bat. Linux: SimpMusic-x86_64.AppImage."
