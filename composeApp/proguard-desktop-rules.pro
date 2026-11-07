@@ -12,6 +12,11 @@
 # Shrinking, obfuscation, class-merging and every other optimization stay on.
 -optimizations !method/specialization/*,!code/allocation/variable,!method/inlining/*
 
+# The Desktop handler has no use for downloadTrack's thumbnail, so ProGuard drops the parameter from
+# the interface, then trips over the suspend callers: "NegativeStackSizeException ... invokeinterface
+# DownloadHandler.downloadTrack" fails the release build. Android needs it, so the signature stays.
+-keep interface com.maxrave.domain.mediaservice.handler.DownloadHandler { *; }
+
 -keepclasseswithmembers class * {
     native <methods>;
 }
