@@ -50,7 +50,6 @@ import com.maxrave.domain.repository.ListenTogetherRepository
 import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
 import com.maxrave.simpmusic.ui.icon.Groups
 import com.maxrave.simpmusic.ui.icon.PlaylistAdd
-import com.maxrave.simpmusic.ui.icon.Settings
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.ListenTogetherDestination
 import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
@@ -69,20 +68,21 @@ import simpmusic.composeapp.generated.resources.listen_together
 import simpmusic.composeapp.generated.resources.local_playlist
 import simpmusic.composeapp.generated.resources.playlist_name
 import simpmusic.composeapp.generated.resources.playlist_name_cannot_be_empty
-import simpmusic.composeapp.generated.resources.settings
 
 /**
- * Settings in the Home top bar on a phone. With liquid glass on it is a glass circle; [backdrop]
- * must be a sibling of this, never an ancestor.
+ * The button in the Home top bar: Settings on a phone, Reload on Desktop. With liquid glass on it is
+ * a glass circle; [backdrop] must be a sibling of this, never an ancestor.
  */
 @Composable
-fun HomeSettingsButton(
+fun HomeBarButton(
+    icon: ImageVector,
+    description: String,
     backdrop: PlatformBackdrop,
     onClick: () -> Unit,
 ) {
     val button: @Composable () -> Unit = {
         IconButton(onClick = onClick, modifier = Modifier.size(44.dp)) {
-            Icon(SimpIcons.Settings, contentDescription = stringResource(Res.string.settings), tint = MaterialTheme.colorScheme.onBackground)
+            Icon(icon, contentDescription = description, tint = MaterialTheme.colorScheme.onBackground)
         }
     }
     if (LocalLiquidGlassEnabled.current) {

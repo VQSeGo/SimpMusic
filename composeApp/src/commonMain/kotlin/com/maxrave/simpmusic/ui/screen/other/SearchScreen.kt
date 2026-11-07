@@ -50,7 +50,6 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.ripple
@@ -113,6 +112,7 @@ import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.AddToPlaylistModalBottomSheet
 import com.maxrave.simpmusic.ui.component.CenterLoadingBox
 import com.maxrave.simpmusic.ui.component.MoodCategoryCard
+import com.maxrave.simpmusic.ui.component.TouchPullToRefreshBox
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
 import com.maxrave.simpmusic.extension.getStringBlocking
 import com.maxrave.simpmusic.extension.toAppDeepLinkOrNull
@@ -733,7 +733,7 @@ fun SearchScreen(
                 SearchUIType.SEARCH_RESULTS -> {
                     // Content area — chips now live in the blurred bar block above.
                     Column(modifier = Modifier.fillMaxSize()) {
-                        PullToRefreshBox(
+                        TouchPullToRefreshBox(
                             modifier = Modifier.fillMaxSize(),
                             state = pullToRefreshState,
                             onRefresh = {

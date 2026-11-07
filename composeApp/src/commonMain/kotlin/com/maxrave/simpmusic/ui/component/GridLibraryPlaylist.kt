@@ -27,7 +27,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -131,7 +130,7 @@ internal inline fun <reified T> GridLibraryPlaylist(
             }
     }
     val pullToRefreshState = rememberPullToRefreshState()
-    PullToRefreshBox(
+    TouchPullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         state = pullToRefreshState,
         onRefresh = onReload,

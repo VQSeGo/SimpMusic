@@ -58,7 +58,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -139,7 +138,7 @@ import com.maxrave.simpmusic.ui.component.ExpandableChip
 import com.maxrave.simpmusic.ui.component.HomeDiscoverSection
 import com.maxrave.simpmusic.ui.component.HomeItem
 import com.maxrave.simpmusic.ui.component.HomeItemContentPlaylist
-import com.maxrave.simpmusic.ui.component.HomeSettingsButton
+import com.maxrave.simpmusic.ui.component.HomeBarButton
 import com.maxrave.simpmusic.ui.component.HomeShimmer
 import com.maxrave.simpmusic.ui.component.ItemArtistChart
 import com.maxrave.simpmusic.ui.component.MoodMomentAndGenreHomeItem
@@ -147,10 +146,13 @@ import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.OfflineErrorState
 import com.maxrave.simpmusic.ui.component.QuickPicksItem
 import com.maxrave.simpmusic.ui.component.SectionHeaderButton
+import com.maxrave.simpmusic.ui.component.TouchPullToRefreshBox
 import com.maxrave.simpmusic.ui.component.homeCardAspectRatio
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
 import com.maxrave.simpmusic.ui.icon.Notifications
 import com.maxrave.simpmusic.ui.icon.Person
+import com.maxrave.simpmusic.ui.icon.Refresh
+import com.maxrave.simpmusic.ui.icon.Settings
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.HomeDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.MoodDestination
@@ -220,8 +222,10 @@ import simpmusic.composeapp.generated.resources.party
 import simpmusic.composeapp.generated.resources.play_all
 import simpmusic.composeapp.generated.resources.quick_picks
 import simpmusic.composeapp.generated.resources.relax
+import simpmusic.composeapp.generated.resources.reload
 import simpmusic.composeapp.generated.resources.romance
 import simpmusic.composeapp.generated.resources.sad
+import simpmusic.composeapp.generated.resources.settings
 import simpmusic.composeapp.generated.resources.sleep
 import simpmusic.composeapp.generated.resources.top_artists
 import simpmusic.composeapp.generated.resources.warning
@@ -478,7 +482,7 @@ fun HomeScreen(
     }
 
     Box {
-        PullToRefreshBox(
+        TouchPullToRefreshBox(
             modifier =
                 Modifier
                     .then(if (LocalLiquidGlassEnabled.current) Modifier.layerBackdrop(chipBackdrop) else Modifier)
@@ -812,18 +816,25 @@ fun HomeScreen(
                 )
                 // The avatar stays put and the chips scroll only to its right, clipped there instead of
                 // passing over it, each end faded while chips wait past that edge. On a phone held
-                // upright Create rides at the end of the chip row: the row is at least as wide as its
-                // strip, so at rest Create sits at the right edge, and a Mood that opens wide pushes it
-                // along instead of sliding under it. On Desktop and in landscape Create stays put at the
+                // upright the button rides at the end of the chip row: the row is at least as wide as its
+                // strip, so at rest the button sits at the right edge, and a Mood that opens wide pushes it
+                // along instead of sliding under it. On Desktop and in landscape it stays put at the
                 // right edge, like the avatar.
                 // No avatar anywhere: signing in is in Settings. On Desktop Settings and Notifications
-                // live in the sidebar. Creating is in the Library on both.
+                // live in the sidebar, and the button reloads the page, there being no pull to refresh.
+                // Creating is in the Library on both.
                 val isDesktop = getPlatform() == Platform.Desktop
-                val settingsPinned = isDesktop || getScreenSizeInfo().let { it.wDP >= it.hDP }
+                val barButtonPinned = isDesktop || getScreenSizeInfo().let { it.wDP >= it.hDP }
                 val chipHeadFade by animateFloatAsState(if (chipRowState.canScrollBackward) 1f else 0f)
                 val chipTailFade by animateFloatAsState(if (chipRowState.canScrollForward) 1f else 0f)
-                val settingsButton: @Composable () -> Unit = {
-                    HomeSettingsButton(backdrop = chipBackdrop) { navController.navigate(SettingsDestination) }
+                val barButton: @Composable () -> Unit = {
+                    if (isDesktop) {
+                        HomeBarButton(SimpIcons.Refresh, stringResource(Res.string.reload), chipBackdrop, onRefresh)
+                    } else {
+                        HomeBarButton(SimpIcons.Settings, stringResource(Res.string.settings), chipBackdrop) {
+                            navController.navigate(SettingsDestination)
+                        }
+                    }
                 }
                 Row(
                     modifier =
@@ -846,7 +857,7 @@ fun HomeScreen(
                                     .mouseDragScroll(chipRowState)
                                     .horizontalScroll(chipRowState)
                                     .widthIn(min = maxWidth)
-                                    .padding(end = if (settingsPinned && !isDesktop) 0.dp else 16.dp),
+                                    .padding(end = if (barButtonPinned) 0.dp else 16.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -877,13 +888,13 @@ fun HomeScreen(
                                     backdrop = chipBackdrop,
                                 )
                             }
-                            if (!settingsPinned) {
-                                Box(Modifier.padding(start = 8.dp)) { settingsButton() }
+                            if (!barButtonPinned) {
+                                Box(Modifier.padding(start = 8.dp)) { barButton() }
                             }
                         }
                     }
-                    if (settingsPinned && !isDesktop) {
-                        Box(Modifier.padding(start = 8.dp, end = 16.dp)) { settingsButton() }
+                    if (barButtonPinned) {
+                        Box(Modifier.padding(start = 8.dp, end = 16.dp)) { barButton() }
                     }
                 }
             }
