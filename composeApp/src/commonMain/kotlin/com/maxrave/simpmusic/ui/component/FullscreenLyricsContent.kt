@@ -219,10 +219,6 @@ fun FullscreenLyricsContent(
         mutableStateOf(false)
     }
 
-    var showShareLyricsSheet by rememberSaveable {
-        mutableStateOf(false)
-    }
-
     // This sheet renders lyrics through LyricsView, which computes the sung line internally and
     // keeps it to itself. The share sheet needs the same number to open on that line, so it is
     // recomputed here from the same two inputs, using the same helper.
@@ -432,20 +428,6 @@ fun FullscreenLyricsContent(
                         }
 
                         Spacer(modifier = Modifier.width(8.dp))
-
-                        // Share lyrics — only when there are lyrics to share, and not on Desktop,
-                        // where nobody shares an image from the player.
-                        if (screenDataState.lyricsData != null && !isDesktop) {
-                            IconButton(
-                                onClick = { showShareLyricsSheet = true },
-                            ) {
-                                Icon(
-                                    imageVector = SimpIcons.Share,
-                                    contentDescription = stringResource(Res.string.share_lyrics),
-                                    tint = Color.White,
-                                )
-                            }
-                        }
 
                         // Three Dot Menu
                         IconButton(
@@ -773,20 +755,6 @@ fun FullscreenLyricsContent(
             setSleepTimerEnable = true,
             changeMainLyricsProviderEnable = true,
         )
-    }
-
-    screenDataState.lyricsData?.let { lyricsData ->
-        if (showShareLyricsSheet) {
-            ShareLyricsSheet(
-                lines = lyricsData.toShareLyricsLines(),
-                songTitle = screenDataState.nowPlayingTitle,
-                artistName = screenDataState.artistName,
-                artwork = screenDataState.bitmap,
-                seedColor = color,
-                initialLineIndex = shareTimedLineIndexes.activeIndexAt(timelineState.current - fullscreenLyricsOffsetMs),
-                onDismiss = { showShareLyricsSheet = false },
-            )
-        }
     }
 }
 

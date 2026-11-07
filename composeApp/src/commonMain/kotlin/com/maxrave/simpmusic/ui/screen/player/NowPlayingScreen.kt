@@ -818,8 +818,8 @@ fun NowPlayingScreenContent(
                 onDismiss()
             },
             song = null, // Auto set now playing
-            // Desktop keeps Info out of the player's button row, so the menu carries it.
-            onShowInfo = if (getPlatform() == Platform.Desktop) ({ showInfoBottomSheet = true }) else null,
+            // Info is out of the player's button row, so the menu carries it.
+            onShowInfo = { showInfoBottomSheet = true },
             setSleepTimerEnable = true,
             changeMainLyricsProviderEnable = true,
             // Offered only once every provider and the offline cache came back empty for this song.

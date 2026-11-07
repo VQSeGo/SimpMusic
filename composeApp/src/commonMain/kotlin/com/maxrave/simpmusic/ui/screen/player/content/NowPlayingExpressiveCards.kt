@@ -567,9 +567,7 @@ internal fun ExpressiveBelowTheFold(
     val colorScheme = MaterialTheme.colorScheme
     val localDensity = LocalDensity.current
     val uriHandler = LocalUriHandler.current
-    // Rating and sharing lyrics are phone features; the Desktop card keeps only timing and fullscreen.
-    val isDesktop = getPlatform() == Platform.Desktop
-    var showShareLyricsSheet by rememberSaveable { mutableStateOf(false) }
+    // The card keeps only timing and fullscreen: no rating, no sharing.
     var showLyricsOffsetBar by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.padding(horizontal = 20.dp)) {
         // Lyrics card
@@ -594,26 +592,6 @@ internal fun ExpressiveBelowTheFold(
                             AIBadge()
                         }
                         Spacer(modifier = Modifier.weight(1f))
-                        // Vote button — only when the lyrics or the translation come from SimpMusic
-                        // Lyrics. The rule itself lives on the shared contract (canVote), so a style
-                        // cannot ship without it the way the Apple Music tab did.
-                        if (!isDesktop && state.screenData.lyricsData.canVote()) {
-                            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-                                IconButton(
-                                    onClick = {
-                                        actions.onShowVoteDialog()
-                                    },
-                                ) {
-                                    Icon(
-                                        imageVector = SimpIcons.ThumbsUpDown,
-                                        contentDescription = stringResource(Res.string.rate_lyrics),
-                                        tint = colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.size(16.dp),
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                        }
                         if (state.screenData.lyricsData.hasTiming()) {
                             CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
                                 IconButton(
@@ -622,21 +600,6 @@ internal fun ExpressiveBelowTheFold(
                                     Icon(
                                         imageVector = SimpIcons.AvTimer,
                                         contentDescription = stringResource(Res.string.lyrics_offset),
-                                        tint = colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.size(16.dp),
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                        }
-                        if (!isDesktop) {
-                            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-                                IconButton(
-                                    onClick = { showShareLyricsSheet = true },
-                                ) {
-                                    Icon(
-                                        imageVector = SimpIcons.Share,
-                                        contentDescription = stringResource(Res.string.share_lyrics),
                                         tint = colorScheme.onSurfaceVariant,
                                         modifier = Modifier.size(16.dp),
                                     )
@@ -902,20 +865,6 @@ internal fun ExpressiveBelowTheFold(
                     with(localDensity) { WindowInsets.systemBars.getBottom(localDensity).toDp() },
                 ),
         )
-    }
-
-    state.screenData.lyricsData?.let { lyricsData ->
-        if (showShareLyricsSheet) {
-            ShareLyricsSheet(
-                lines = lyricsData.toShareLyricsLines(),
-                songTitle = state.screenData.nowPlayingTitle,
-                artistName = state.screenData.artistName,
-                artwork = state.screenData.bitmap,
-                seedColor = state.startColor.value,
-                initialLineIndex = state.currentLyricLineIndex,
-                onDismiss = { showShareLyricsSheet = false },
-            )
-        }
     }
 }
 
