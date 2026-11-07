@@ -13,6 +13,7 @@ import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.manager.DataStoreManager.Values.BETTER_LYRICS
 import com.maxrave.domain.manager.DataStoreManager.Values.LRCLIB
 import com.maxrave.domain.manager.DataStoreManager.Values.SIMPMUSIC
+import com.maxrave.domain.manager.DataStoreManager.Values.SPOTIFY
 import com.maxrave.domain.manager.DataStoreManager.Values.YOUTUBE
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.mediaservice.handler.PlaylistType
@@ -104,6 +105,12 @@ class NowPlayingBottomSheetViewModel(
                         }
                     }
                 }
+            val spotifyLogInJob =
+                launch {
+                    dataStoreManager.spdc.collectLatest { spdc ->
+                        _uiState.update { it.copy(spotifyLoggedIn = spdc.isNotEmpty()) }
+                    }
+                }
             val mainLyricsProviderJob =
                 launch {
                     dataStoreManager.lyricsProvider.collectLatest { lyricsProvider ->
@@ -124,6 +131,10 @@ class NowPlayingBottomSheetViewModel(
                                 _uiState.update { it.copy(mainLyricsProvider = BETTER_LYRICS) }
                             }
 
+                            SPOTIFY -> {
+                                _uiState.update { it.copy(mainLyricsProvider = SPOTIFY) }
+                            }
+
                             else -> {
                                 log("Unknown lyrics provider", LogLevel.ERROR)
                             }
@@ -133,6 +144,7 @@ class NowPlayingBottomSheetViewModel(
             sleepTimerJob.join()
             listLocalPlaylistJob.join()
             listYouTubePlaylistJob.join()
+            spotifyLogInJob.join()
             mainLyricsProviderJob.join()
         }
     }
@@ -342,7 +354,7 @@ class NowPlayingBottomSheetViewModel(
                 }
 
                 is NowPlayingBottomSheetUIEvent.ChangeLyricsProvider -> {
-                    if (listOf(SIMPMUSIC, YOUTUBE, LRCLIB, BETTER_LYRICS).contains(ev.lyricsProvider)) {
+                    if (listOf(SIMPMUSIC, YOUTUBE, LRCLIB, BETTER_LYRICS, SPOTIFY).contains(ev.lyricsProvider)) {
                         dataStoreManager.setLyricsProvider(ev.lyricsProvider)
                     } else {
                         return@launch
@@ -415,6 +427,7 @@ data class NowPlayingBottomSheetUIState(
     val listLocalPlaylist: List<LocalPlaylistEntity>,
     val listYouTubePlaylist: List<PlaylistsResult>,
     val mainLyricsProvider: String,
+    val spotifyLoggedIn: Boolean = false,
     val sleepTimer: SleepTimerState,
 ) {
     data class SongUIState(

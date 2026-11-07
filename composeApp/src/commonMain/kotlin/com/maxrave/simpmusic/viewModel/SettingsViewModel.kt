@@ -1697,6 +1697,9 @@ class SettingsViewModel(
                 // when logged out) and stale tokens linger — issue #2064, same family as Discord #2157.
                 dataStoreManager.setSpotifyLyrics(false)
                 dataStoreManager.setSpotifyCanvas(false)
+                if (dataStoreManager.lyricsProvider.first() == DataStoreManager.SPOTIFY) {
+                    dataStoreManager.setLyricsProvider(DataStoreManager.SIMPMUSIC)
+                }
                 dataStoreManager.setSpotifyClientToken("")
                 dataStoreManager.setSpotifyClientTokenExpires(0)
                 dataStoreManager.setSpotifyPersonalToken("")

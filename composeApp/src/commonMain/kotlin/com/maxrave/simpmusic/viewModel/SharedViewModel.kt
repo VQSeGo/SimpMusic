@@ -1313,6 +1313,14 @@ class SharedViewModel(
                         duration,
                     )
                 }
+
+                DataStoreManager.SPOTIFY -> {
+                    getSpotifyLyrics(
+                        song.toTrack().copy(durationSeconds = duration),
+                        "${song.title} $artist",
+                        duration,
+                    )
+                }
             }
         }
     }

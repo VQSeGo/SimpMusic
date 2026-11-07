@@ -1584,6 +1584,7 @@ fun SettingScreen(
                             DataStoreManager.YOUTUBE -> stringResource(Res.string.youtube_transcript)
                             DataStoreManager.LRCLIB -> stringResource(Res.string.lrclib)
                             DataStoreManager.BETTER_LYRICS -> stringResource(Res.string.better_lyrics)
+                            DataStoreManager.SPOTIFY -> stringResource(Res.string.spotify)
                             else -> stringResource(Res.string.unknown)
                         },
                     onClick = {
@@ -1601,7 +1602,15 @@ fun SettingScreen(
                                                 (mainLyricsProvider == DataStoreManager.LRCLIB) to runBlocking { getString(Res.string.lrclib) },
                                                 (mainLyricsProvider == DataStoreManager.BETTER_LYRICS) to
                                                     runBlocking { getString(Res.string.better_lyrics) },
-                                            ),
+                                            ) +
+                                                if (spotifyLoggedIn) {
+                                                    listOf(
+                                                        (mainLyricsProvider == DataStoreManager.SPOTIFY) to
+                                                            runBlocking { getString(Res.string.spotify) },
+                                                    )
+                                                } else {
+                                                    emptyList()
+                                                },
                                     ),
                                 confirm =
                                     runBlocking { getString(Res.string.change) } to { state ->
@@ -1611,6 +1620,7 @@ fun SettingScreen(
                                                 runBlocking { getString(Res.string.youtube_transcript) } -> DataStoreManager.YOUTUBE
                                                 runBlocking { getString(Res.string.lrclib) } -> DataStoreManager.LRCLIB
                                                 runBlocking { getString(Res.string.better_lyrics) } -> DataStoreManager.BETTER_LYRICS
+                                                runBlocking { getString(Res.string.spotify) } -> DataStoreManager.SPOTIFY
                                                 else -> DataStoreManager.SIMPMUSIC
                                             },
                                         )
