@@ -181,6 +181,8 @@ import simpmusic.composeapp.generated.resources.custom_base_url_message
 import simpmusic.composeapp.generated.resources.custom_headers
 import simpmusic.composeapp.generated.resources.custom_headers_json
 import simpmusic.composeapp.generated.resources.custom_headers_message
+import simpmusic.composeapp.generated.resources.download_notifications
+import simpmusic.composeapp.generated.resources.download_notifications_description
 import simpmusic.composeapp.generated.resources.headers_json
 import simpmusic.composeapp.generated.resources.invalid_json_format
 import simpmusic.composeapp.generated.resources.invalid_url_format
@@ -509,6 +511,7 @@ fun SettingScreen(
     val quality by viewModel.quality.collectAsStateWithLifecycle()
     val downloadQuality by viewModel.downloadQuality.collectAsStateWithLifecycle()
     val autoDownloadLikedSongs by viewModel.autoDownloadLikedSongs.collectAsStateWithLifecycle()
+    val downloadNotificationsEnabled by viewModel.downloadNotificationsEnabled.collectAsStateWithLifecycle(initialValue = true)
     val smartDownloadsEnabled by viewModel.smartDownloadsEnabled.collectAsStateWithLifecycle()
     val smartDownloadsCount by viewModel.smartDownloadsCount.collectAsStateWithLifecycle()
     val videoDownloadQuality by viewModel.videoDownloadQuality.collectAsStateWithLifecycle()
@@ -1066,6 +1069,12 @@ fun SettingScreen(
                     subtitle = stringResource(Res.string.auto_download_liked_songs_description),
                     smallSubtitle = true,
                     switch = (autoDownloadLikedSongs to { viewModel.setAutoDownloadLikedSongs(it) }),
+                )
+                SettingItem(
+                    title = stringResource(Res.string.download_notifications),
+                    subtitle = stringResource(Res.string.download_notifications_description),
+                    smallSubtitle = true,
+                    switch = (downloadNotificationsEnabled to { viewModel.setDownloadNotificationsEnabled(it) }),
                 )
                 // Smart downloads are Android only.
                 if (getPlatform() == Platform.Android) {

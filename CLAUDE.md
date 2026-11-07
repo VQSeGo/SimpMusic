@@ -86,6 +86,9 @@
   кнопки (`YouTube.subscriptionChannelId`), `artist.channelId` — это id страницы.
 - Пейджер обложек следует за страницей по ключу и может уйти с играющего трека, хотя индекс не менялся. Плеер главнее:
   `stayOnPlayerTrack` возвращает пейджер на место.
+- Загрузки на десктопе живут в очереди `DownloadUtils`, а не в экране: `downloadTrack` только ставит трек в очередь, как на
+  Android. Строки в состоянии «качается» возобновляются при запуске. Обрывы googlevideo лечит докачка кусками
+  (`downloadInRanges`).
 - Иконки — сгенерированные `ImageVector` в `ui/icon/` (`SimpIcons.X` + отдельный импорт на каждую).
   Как добавить новую: скилл `simpmusic-icons`.
 - Строки только в `composeApp/src/commonMain/composeResources/values*/strings.xml`. Остальные языки

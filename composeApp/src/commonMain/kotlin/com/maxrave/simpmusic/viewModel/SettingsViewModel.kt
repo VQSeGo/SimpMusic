@@ -17,6 +17,8 @@ import com.maxrave.domain.data.player.ReverbPreset
 import com.maxrave.domain.extension.toNetScapeString
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
+import com.maxrave.domain.mediaservice.handler.downloadNotificationsEnabled
+import com.maxrave.domain.mediaservice.handler.setDownloadNotificationsEnabled
 import com.maxrave.domain.repository.AccountRepository
 import com.maxrave.domain.repository.CacheRepository
 import com.maxrave.domain.repository.DiscordRepository
@@ -33,6 +35,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -166,6 +169,12 @@ class SettingsViewModel(
     val crossfadeDjMode: StateFlow<Boolean> = _crossfadeDjMode
     private val _crossfadeSkipAlbum = MutableStateFlow<Boolean>(false)
     val crossfadeSkipAlbum: StateFlow<Boolean> = _crossfadeSkipAlbum
+    val downloadNotificationsEnabled: Flow<Boolean> = dataStoreManager.downloadNotificationsEnabled
+
+    fun setDownloadNotificationsEnabled(enabled: Boolean) {
+        viewModelScope.launch { dataStoreManager.setDownloadNotificationsEnabled(enabled) }
+    }
+
     private val _autoDownloadLikedSongs = MutableStateFlow<Boolean>(false)
     val autoDownloadLikedSongs: StateFlow<Boolean> = _autoDownloadLikedSongs
     private val _smartDownloadsEnabled = MutableStateFlow<Boolean>(false)
