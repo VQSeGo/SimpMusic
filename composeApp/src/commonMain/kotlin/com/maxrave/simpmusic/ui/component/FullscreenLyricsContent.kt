@@ -665,6 +665,7 @@ fun FullscreenLyricsContent(
                                         ) {
                                             Box(Modifier.align(Alignment.CenterStart)) {
                                                 HeartCheckBox(
+                                                    size = 30,
                                                     checked = controllerState.isLiked,
                                                     tint = Color.White,
                                                 ) {

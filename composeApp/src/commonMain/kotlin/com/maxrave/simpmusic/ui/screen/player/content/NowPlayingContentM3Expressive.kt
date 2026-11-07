@@ -127,7 +127,6 @@ import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.audio_output
 import simpmusic.composeapp.generated.resources.comments
 import simpmusic.composeapp.generated.resources.crossfading
-import simpmusic.composeapp.generated.resources.now_playing_upper
 import simpmusic.composeapp.generated.resources.radio_mix_upper
 
 /**
@@ -380,14 +379,13 @@ private fun NowPlayingM3ExpressiveLayout(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
-                        Text(
-                            text =
-                                stringResource(
-                                    if (state.screenData.isRadioQueue) Res.string.radio_mix_upper else Res.string.now_playing_upper,
-                                ),
-                            style = typo().bodyMedium,
-                            color = Color.White,
-                        )
+                        if (state.screenData.isRadioQueue) {
+                            Text(
+                                text = stringResource(Res.string.radio_mix_upper),
+                                style = typo().bodyMedium,
+                                color = Color.White,
+                            )
+                        }
                         Text(
                             text = state.screenData.playlistName,
                             style = typo().labelMedium,
