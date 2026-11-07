@@ -3,10 +3,6 @@ package com.maxrave.simpmusic.ui.component
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,8 +50,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -64,6 +58,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
@@ -210,7 +205,6 @@ fun DesktopSidebar(
 
     var filter by remember { mutableStateOf<LibrarySidebarKind?>(null) }
     var alphabetical by remember { mutableStateOf(false) }
-    var searching by remember { mutableStateOf(false) }
     var showCreate by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     // The search field is hidden while folded, so its text must not keep filtering the strip.
@@ -366,29 +360,28 @@ fun DesktopSidebar(
                     backdrop = backdrop,
                     selected = selectedIndex == BottomNavScreen.Library.ordinal,
                     collapsed = collapsed,
-                    searching = searching,
-                    query = query,
                     onOpenLibrary = { selectTab(BottomNavScreen.Library) },
                     onToggle = {
-                        searching = false
                         query = ""
                         viewModel.setCollapsed(!collapsed)
                     },
-                    onStartSearch = { searching = true },
                     onCreate = { showCreate = true },
-                    onQueryChange = { query = it },
-                    onCloseSearch = {
-                        searching = false
-                        query = ""
-                    },
                 )
                 if (!collapsed) {
-                    LibraryFilterRow(
+                    // Chips only when there is a choice: an empty row would leave a gap for nothing.
+                    if (kinds.isNotEmpty()) {
+                        LibraryFilterRow(
+                            backdrop = backdrop,
+                            kinds = kinds,
+                            filter = filter,
+                            onFilterChange = { filter = it },
+                        )
+                    }
+                    LibraryToolsRow(
                         backdrop = backdrop,
-                        kinds = kinds,
-                        filter = filter,
+                        query = query,
+                        onQueryChange = { query = it },
                         alphabetical = alphabetical,
-                        onFilterChange = { filter = it },
                         onSortChange = { alphabetical = it },
                     )
                 }
@@ -464,14 +457,9 @@ private fun LibraryHeader(
     backdrop: PlatformBackdrop,
     selected: Boolean,
     collapsed: Boolean,
-    searching: Boolean,
-    query: String,
     onOpenLibrary: () -> Unit,
     onToggle: () -> Unit,
-    onStartSearch: () -> Unit,
     onCreate: () -> Unit,
-    onQueryChange: (String) -> Unit,
-    onCloseSearch: () -> Unit,
 ) {
     if (collapsed) {
         Box(Modifier.fillMaxWidth().height(48.dp), contentAlignment = Alignment.Center) {
@@ -480,60 +468,32 @@ private fun LibraryHeader(
         return
     }
     val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-    // The field grows out of the search button (its width) over the title, and folds back into it.
-    val searchButtonPx = with(LocalDensity.current) { 36.dp.roundToPx() }
     Row(
         Modifier
             .padding(horizontal = 8.dp)
             .fillMaxWidth()
             .height(48.dp)
-            .then(
-                if (selected && !searching) {
-                    Modifier.liquidGlass(backdrop, RoundedCornerShape(24.dp), highlight = SidebarGlassRim)
-                } else {
-                    Modifier
-                },
-            ).clip(RoundedCornerShape(24.dp))
-            .clickable(enabled = !searching, onClick = onOpenLibrary)
-            .padding(start = 4.dp, end = 6.dp),
+            .then(if (selected) Modifier.liquidGlass(backdrop, RoundedCornerShape(24.dp), highlight = SidebarGlassRim) else Modifier)
+            .clip(RoundedCornerShape(24.dp))
+            .clickable(onClick = onOpenLibrary)
+            .padding(start = 12.dp, end = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
-            androidx.compose.animation.AnimatedVisibility(
-                visible = !searching,
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                Row(
-                    Modifier.fillMaxWidth().padding(start = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Icon(
-                        SimpIcons.LibraryMusic,
-                        contentDescription = null,
-                        tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        stringResource(Res.string.your_library),
-                        style = typo().labelSmall,
-                        color = color,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f),
-                    )
-                    SidebarGlassButton(backdrop, SimpIcons.Search, stringResource(Res.string.search_in_your_library), onStartSearch)
-                }
-            }
-            androidx.compose.animation.AnimatedVisibility(
-                visible = searching,
-                enter = expandHorizontally(expandFrom = Alignment.End, initialWidth = { searchButtonPx }) + fadeIn(),
-                exit = shrinkHorizontally(shrinkTowards = Alignment.End, targetWidth = { searchButtonPx }) + fadeOut(),
-            ) {
-                LibrarySearchField(backdrop, query, onQueryChange, onCloseSearch, Modifier.fillMaxWidth())
-            }
-        }
+        Icon(
+            SimpIcons.LibraryMusic,
+            contentDescription = null,
+            tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        // 8dp more than the row's spacing, so the title lines up with the labels of the rows above.
+        Text(
+            stringResource(Res.string.your_library),
+            style = typo().labelSmall,
+            color = color,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f).padding(start = 8.dp),
+        )
         SidebarGlassButton(backdrop, SimpIcons.Add, stringResource(Res.string.create), onCreate)
         SidebarGlassButton(backdrop, SimpIcons.LeftPanelClose, stringResource(Res.string.collapse_your_library), onToggle)
     }
@@ -582,11 +542,9 @@ private fun LibrarySearchField(
     backdrop: PlatformBackdrop,
     query: String,
     onQueryChange: (String) -> Unit,
-    onCloseSearch: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(Unit) { focusRequester.requestFocus() }
+    val focusManager = LocalFocusManager.current
     Row(
         modifier
             .height(36.dp)
@@ -602,6 +560,7 @@ private fun LibrarySearchField(
                     style = typo().bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             BasicTextField(
@@ -610,51 +569,69 @@ private fun LibrarySearchField(
                 singleLine = true,
                 textStyle = typo().bodySmall.copy(color = MaterialTheme.colorScheme.onSurface),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                modifier = Modifier.fillMaxWidth(),
             )
         }
-        SidebarIconButton(SimpIcons.Close, stringResource(Res.string.search_in_your_library), onCloseSearch)
+        if (query.isNotEmpty()) {
+            SidebarIconButton(SimpIcons.Close, stringResource(Res.string.search_in_your_library)) {
+                onQueryChange("")
+                focusManager.clearFocus()
+            }
+        }
     }
 }
 
-/** The kind chips, scrolling between faded ends, with the sort button anchored at the row's end. */
+/** The kind chips, scrolling between faded ends. */
 @Composable
 private fun LibraryFilterRow(
     backdrop: PlatformBackdrop,
     kinds: List<LibrarySidebarKind>,
     filter: LibrarySidebarKind?,
-    alphabetical: Boolean,
     onFilterChange: (LibrarySidebarKind?) -> Unit,
-    onSortChange: (Boolean) -> Unit,
 ) {
     val chipScroll = rememberScrollState()
     val headFade by animateFloatAsState(if (chipScroll.canScrollBackward) 1f else 0f, label = "sidebarChipHeadFade")
     val tailFade by animateFloatAsState(if (chipScroll.canScrollForward) 1f else 0f, label = "sidebarChipTailFade")
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp, bottom = 8.dp)
+            .chipStripEdgeFades(24.dp, start = { headFade }, end = { tailFade })
+            .mouseDragScroll(chipScroll)
+            .horizontalScroll(chipScroll)
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        kinds.forEach { kind ->
+            Chip(
+                isSelected = filter == kind,
+                text = stringResource(kind.chipLabel()),
+                backdrop = backdrop,
+                compact = true,
+                onClick = { onFilterChange(if (filter == kind) null else kind) },
+            )
+        }
+    }
+}
+
+/** Search across the row, with the sort button under the collapse button. */
+@Composable
+private fun LibraryToolsRow(
+    backdrop: PlatformBackdrop,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    alphabetical: Boolean,
+    onSortChange: (Boolean) -> Unit,
+) {
     var sortMenu by remember { mutableStateOf(false) }
     Row(
-        // 14dp at the end lines the sort button up with the collapse button above it.
-        Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 8.dp, end = 14.dp),
+        // 16dp at the start is where the covers below begin; 14dp at the end lines the sort button
+        // up with the collapse button above it.
+        Modifier.fillMaxWidth().padding(start = 16.dp, top = 4.dp, end = 14.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Row(
-            Modifier
-                .weight(1f)
-                .chipStripEdgeFades(24.dp, start = { headFade }, end = { tailFade })
-                .mouseDragScroll(chipScroll)
-                .horizontalScroll(chipScroll)
-                .padding(start = 16.dp, end = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            kinds.forEach { kind ->
-                Chip(
-                    isSelected = filter == kind,
-                    text = stringResource(kind.chipLabel()),
-                    backdrop = backdrop,
-                    compact = true,
-                    onClick = { onFilterChange(if (filter == kind) null else kind) },
-                )
-            }
-        }
+        LibrarySearchField(backdrop, query, onQueryChange, Modifier.weight(1f))
         Box {
             SidebarGlassButton(
                 backdrop,
