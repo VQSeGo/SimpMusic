@@ -48,6 +48,7 @@ val viewModelModule =
                 get(),
                 get(),
                 get(),
+                get(),
             )
         }
         single {
@@ -133,6 +134,7 @@ val viewModelModule =
         }
         viewModel {
             ArtistViewModel(
+                get(),
                 get(),
                 get(),
                 get(),

@@ -8,6 +8,8 @@ import com.maxrave.domain.data.model.browse.artist.Albums
 import com.maxrave.domain.data.model.browse.artist.ArtistBrowse
 import com.maxrave.domain.data.model.browse.artist.ArtistLogo
 import com.maxrave.domain.data.model.browse.artist.ArtistMotion
+import com.maxrave.domain.data.model.browse.artist.ResultAlbum
+import com.maxrave.domain.data.model.browse.artist.ResultSingle
 import com.maxrave.domain.data.model.browse.artist.isFresh
 import com.maxrave.domain.data.model.browse.artist.toArtistMotion
 import com.maxrave.domain.data.model.browse.artist.toEntity
@@ -18,6 +20,7 @@ import com.maxrave.domain.data.model.streams.YouTubeWatchEndpoint
 import com.maxrave.domain.extension.now
 import com.maxrave.domain.mediaservice.handler.PlaylistType
 import com.maxrave.domain.mediaservice.handler.QueueData
+import com.maxrave.domain.repository.AlbumRepository
 import com.maxrave.domain.repository.ArtistRepository
 import com.maxrave.domain.repository.LyricsCanvasRepository
 import com.maxrave.domain.repository.SongRepository
@@ -32,6 +35,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.radio
@@ -45,6 +50,7 @@ class ArtistViewModel(
     private val artistRepository: ArtistRepository,
     private val songRepository: SongRepository,
     private val lyricsCanvasRepository: LyricsCanvasRepository,
+    private val albumRepository: AlbumRepository,
 ) : BaseViewModel() {
     // Artist name-logo image + accent color from the hidden catalog (immersive header).
     private val _artistLogo: MutableStateFlow<ArtistLogo?> = MutableStateFlow(null)
@@ -95,8 +101,9 @@ class ArtistViewModel(
                                 ),
                             )
                         }
-                        _artistScreenState.value =
-                            Success(data.toArtistScreenData())
+                        val screenData = data.toArtistScreenData()
+                        _artistScreenState.value = Success(screenData)
+                        loadAllReleases(screenData)
                     }
 
                     is Resource.Error ->
@@ -107,6 +114,39 @@ class ArtistViewModel(
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * The artist page lists ten albums and ten singles at most; the rest are on the pages behind
+     * "More". Those replace the shelves once they arrive, and a page that fails leaves the ten.
+     */
+    private fun loadAllReleases(artist: ArtistScreenData) {
+        val moreId = "MPAD${artist.channelId ?: return}"
+        if (!artist.albums?.results.isNullOrEmpty()) {
+            viewModelScope.launch {
+                val albums = albumRepository.getAlbumMore(moreId, MoreAlbumsViewModel.ALBUM_PARAM).firstOrNull()?.second.orEmpty()
+                if (albums.size <= artist.albums.results.size) return@launch
+                val results = albums.map { ResultAlbum(it.browseId, it.isExplicit, it.thumbnails, it.title, it.year) }
+                updateScreenData(artist.channelId) { it.copy(albums = it.albums?.copy(results = results)) }
+            }
+        }
+        if (!artist.singles?.results.isNullOrEmpty()) {
+            viewModelScope.launch {
+                val singles = albumRepository.getAlbumMore(moreId, MoreAlbumsViewModel.SINGLE_PARAM).firstOrNull()?.second.orEmpty()
+                if (singles.size <= artist.singles.results.size) return@launch
+                val results = singles.map { ResultSingle(it.browseId, it.thumbnails, it.title, it.year) }
+                updateScreenData(artist.channelId) { it.copy(singles = it.singles?.copy(results = results)) }
+            }
+        }
+    }
+
+    private fun updateScreenData(
+        channelId: String?,
+        change: (ArtistScreenData) -> ArtistScreenData,
+    ) {
+        _artistScreenState.update { state ->
+            if (state is Success && state.data.channelId == channelId) Success(change(state.data)) else state
         }
     }
 
