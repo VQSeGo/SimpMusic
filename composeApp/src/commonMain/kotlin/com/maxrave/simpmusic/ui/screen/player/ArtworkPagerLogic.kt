@@ -1,6 +1,14 @@
 package com.maxrave.simpmusic.ui.screen.player
 
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.snapshotFlow
 import com.maxrave.domain.data.model.browse.album.Track
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.first
+import kotlin.math.abs
 
 /**
  * Pure helpers for the Spotify-style artwork pager on [NowPlayingScreen].
@@ -69,6 +77,44 @@ internal fun artworkPageKeys(videoIds: List<String>): List<String> {
         "artwork_${videoId}_$copy"
     }
 }
+
+/**
+ * Brings the pager back to the track the player is on whenever it rests anywhere else.
+ *
+ * The pager follows its page by key, so a queue replaced under it takes it along with the old
+ * track. When the new track lands on the old one's index and the old one right after it, the index
+ * does not change, nothing tells the pager to move, and it rests on the next track's cover. A scroll
+ * cut short leaves it out of step just the same, between two pages.
+ *
+ * The wait gives a finished swipe time to reach the player: until the track changes, the pager is
+ * ahead of it on purpose.
+ */
+internal suspend fun PagerState.stayOnPlayerTrack(
+    orderIndex: () -> Int,
+    queueSize: () -> Int,
+    moveTo: suspend (Int) -> Unit,
+) {
+    fun outOfStep(): Boolean {
+        val index = orderIndex()
+        return !isScrollInProgress &&
+            index in 0 until queueSize() &&
+            (currentPage != index || abs(currentPageOffsetFraction) > PAGE_REST_TOLERANCE)
+    }
+    while (true) {
+        snapshotFlow { outOfStep() }.first { it }
+        delay(ARTWORK_RESYNC_DELAY_MS)
+        if (!outOfStep()) continue
+        try {
+            moveTo(orderIndex())
+        } catch (e: CancellationException) {
+            // A drag taking over the pager cancels the scroll, not this loop.
+            currentCoroutineContext().ensureActive()
+        }
+    }
+}
+
+private const val ARTWORK_RESYNC_DELAY_MS = 800L
+private const val PAGE_REST_TOLERANCE = 0.01f
 
 /**
  * What the player should do when the pager settles on a new page.

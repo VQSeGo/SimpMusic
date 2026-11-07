@@ -372,6 +372,22 @@ fun NowPlayingScreenContent(
         }
     }
 
+    // ④ Pager out of step with no track change for ① to react to.
+    LaunchedEffect(artworkPagerState) {
+        artworkPagerState.stayOnPlayerTrack(
+            orderIndex = { latestOrderIndex },
+            queueSize = { latestQueueSize },
+            moveTo = { page ->
+                isAnimatingFromPlayer = true
+                try {
+                    artworkPagerState.scrollToPage(page)
+                } finally {
+                    isAnimatingFromPlayer = false
+                }
+            },
+        )
+    }
+
     // State
     val isInPipMode = rememberIsInPipMode()
 
