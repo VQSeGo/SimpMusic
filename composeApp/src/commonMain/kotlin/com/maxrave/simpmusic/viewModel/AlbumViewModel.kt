@@ -59,11 +59,7 @@ class AlbumViewModel(
                                     audioPlaylistId = data.audioPlaylistId,
                                     title = data.title,
                                     thumbnail = data.thumbnails?.lastOrNull()?.url,
-                                    artist =
-                                        data.artists.firstOrNull() ?: Artist(
-                                            id = null,
-                                            name = "",
-                                        ),
+                                    artists = data.artists,
                                     year = data.year ?: now().year.toString(),
                                     trackCount = data.trackCount,
                                     description = data.description,
@@ -118,11 +114,10 @@ class AlbumViewModel(
                                         audioPlaylistId = albumEntity.audioPlaylistId,
                                         title = albumEntity.title,
                                         thumbnail = albumEntity.thumbnails,
-                                        artist =
-                                            Artist(
-                                                id = albumEntity.artistId?.firstOrNull(),
-                                                name = albumEntity.artistName?.firstOrNull() ?: "",
-                                            ),
+                                        artists =
+                                            albumEntity.artistName.orEmpty().mapIndexed { index, name ->
+                                                Artist(id = albumEntity.artistId?.getOrNull(index), name = name)
+                                            },
                                         year = albumEntity.year ?: now().year.toString(),
                                         trackCount = albumEntity.trackCount,
                                         description = albumEntity.description,
@@ -287,11 +282,7 @@ data class AlbumUIState(
     val title: String = "",
     val thumbnail: String? = null,
     val colors: List<Color> = listOf(Color.Black, Color.Black),
-    val artist: Artist =
-        Artist(
-            id = null,
-            name = "",
-        ),
+    val artists: List<Artist> = emptyList(),
     val year: String = now().year.toString(),
     val downloadState: Int = DownloadState.STATE_NOT_DOWNLOADED,
     val liked: Boolean = false,

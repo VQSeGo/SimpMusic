@@ -68,7 +68,9 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.kmpalette.rememberPaletteState
 import com.kyant.backdrop.highlight.Highlight
+import com.maxrave.domain.data.model.searchResult.songs.Artist
 import com.maxrave.simpmusic.extension.barBlurStyle
+import com.maxrave.simpmusic.ui.component.ArtistModalBottomSheet
 import com.maxrave.simpmusic.ui.component.DownloadingIndicator
 import com.maxrave.domain.data.entities.DownloadState
 import com.maxrave.domain.data.model.browse.album.Track
@@ -164,7 +166,26 @@ fun AlbumScreen(
     val selectionViewModel: SongSelectionViewModel = koinViewModel()
     var showSelectionSheet by rememberSaveable { mutableStateOf(false) }
     var showSelectionAddToPlaylist by rememberSaveable { mutableStateOf(false) }
+    // Who to pick from when an album credits several artists; empty while nobody is being asked.
+    var artistChoice by remember { mutableStateOf(emptyList<Artist>()) }
+    val openArtists: () -> Unit = {
+        val artists = uiState.artists.filter { !it.id.isNullOrEmpty() }
+        if (artists.size > 1) {
+            artistChoice = artists
+        } else {
+            artists.firstOrNull()?.id?.let { navController.navigate(ArtistDestination(channelId = it)) }
+        }
+    }
 
+    if (artistChoice.isNotEmpty()) {
+        ArtistModalBottomSheet(
+            isBottomSheetVisible = true,
+            artists = artistChoice,
+            navController = navController,
+            onNavigateToOtherScreen = { artistChoice = emptyList() },
+            onDismiss = { artistChoice = emptyList() },
+        )
+    }
 
     LaunchedEffect(browseId) {
         viewModel.updateBrowseId(browseId)
@@ -313,20 +334,11 @@ fun AlbumScreen(
                                                     )
                                                     Spacer(modifier = Modifier.height(4.dp))
                                                     Text(
-                                                        text = uiState.artist.name,
+                                                        text = uiState.artists.joinToString(", ") { it.name },
                                                         style = typo().titleSmall,
                                                         color = Color.White,
                                                         textAlign = TextAlign.Center,
-                                                        modifier =
-                                                            Modifier.clickable {
-                                                                uiState.artist.id?.let { channelId ->
-                                                                    navController.navigate(
-                                                                        ArtistDestination(
-                                                                            channelId = channelId,
-                                                                        ),
-                                                                    )
-                                                                }
-                                                            },
+                                                        modifier = Modifier.clickable(onClick = openArtists),
                                                     )
                                                     Spacer(modifier = Modifier.height(2.dp))
                                                     Text(
@@ -450,21 +462,12 @@ fun AlbumScreen(
                                                         )
                                                         Spacer(modifier = Modifier.height(4.dp))
                                                         Text(
-                                                            text = uiState.artist.name,
+                                                            text = uiState.artists.joinToString(", ") { it.name },
                                                             style = typo().titleMedium,
                                                             // The app accent, standing in for the brand red
                                                             // Apple uses on this line.
                                                             color = seed,
-                                                            modifier =
-                                                                Modifier.clickable {
-                                                                    uiState.artist.id?.let { channelId ->
-                                                                        navController.navigate(
-                                                                            ArtistDestination(
-                                                                                channelId = channelId,
-                                                                            ),
-                                                                        )
-                                                                    }
-                                                                },
+                                                            modifier = Modifier.clickable(onClick = openArtists),
                                                         )
                                                         Spacer(modifier = Modifier.height(6.dp))
                                                         Text(
