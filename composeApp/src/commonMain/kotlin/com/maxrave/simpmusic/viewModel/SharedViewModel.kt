@@ -282,312 +282,6 @@ class SharedViewModel(
         _lastPlayerViewTab.value = tabName
     }
 
-    init {
-        viewModelScope.launch {
-            log("SharedViewModel init")
-            if (dataStoreManager.appVersion.first() != VersionManager.getVersionName()) {
-                dataStoreManager.setAppVersion(
-                    VersionManager.getVersionName(),
-                )
-            }
-            val timeLineJob =
-                launch {
-                    nowPlayingState
-                        .filterNotNull()
-                        .flatMapLatest { nowPlayingState ->
-                            timeline.map { timeLine ->
-                                Pair(timeLine, nowPlayingState)
-                            }
-                        }.distinctUntilChanged { old, new ->
-                            // A live stream's "total" is the seek window mpv reports, and it grows with
-                            // every new segment — not a new length, so it must not re-run what a new
-                            // length triggers (this fired every few seconds for as long as one played).
-                            val sameLiveStream = old.first.isLive && new.first.isLive
-                            (old.first.total.toString() + old.second.songEntity?.videoId).hashCode() ==
-                                (new.first.total.toString() + new.second.songEntity?.videoId).hashCode() ||
-                                (sameLiveStream && old.second.songEntity?.videoId == new.second.songEntity?.videoId)
-                        }.collectLatest {
-                            val nowPlaying = it.second
-                            val timeline = it.first
-                            // Lyrics and canvas both key off the track's length, which a live stream has none of.
-                            if (timeline.isLive) return@collectLatest
-                            log("Timeline job ${(it.first.total.toString() + it.second.songEntity?.videoId).hashCode()}")
-                            if (timeline.total > 0 && nowPlaying.songEntity != null) {
-                                if (nowPlaying.mediaItem.isSong() && nowPlayingScreenData.value.canvasData == null) {
-                                    Logger.w(tag, "Duration is ${timeline.total}")
-                                    Logger.w(tag, "MediaId is ${nowPlaying.mediaItem.mediaId}")
-                                    getCanvas(nowPlaying.mediaItem.mediaId, (timeline.total / 1000).toInt())
-                                }
-                                nowPlaying.songEntity?.let { song ->
-                                    if (nowPlayingScreenData.value.lyricsData == null) {
-                                        Logger.w(tag, "Get lyrics from format")
-                                        getLyricsFromFormat(nowPlaying.mediaItem.isVideo(), song, (timeline.total / 1000).toInt())
-                                    }
-                                }
-                            }
-                        }
-                }
-            val checkGetVideoJob =
-                launch {
-                    dataStoreManager.watchVideoInsteadOfPlayingAudio.collectLatest {
-                        _getVideo.value = it == TRUE
-                    }
-                }
-            val lyricsProviderJob =
-                launch {
-                    dataStoreManager.lyricsProvider.distinctUntilChanged().collectLatest {
-                        setLyricsProvider()
-                    }
-                }
-//            val controllerStateJob =
-//                launch {
-//                    controllerState.map { it.isLiked }.distinctUntilChanged().collectLatest {
-//                        if (dataStoreManager.combineLocalAndYouTubeLiked.first() == TRUE) {
-//                            nowPlayingState.value?.mediaItem?.mediaId?.let {
-//                                getLikeStatus(it)
-//                            }
-//                        }
-//                    }
-//                }
-            timeLineJob.join()
-            checkGetVideoJob.join()
-            lyricsProviderJob.join()
-//            controllerStateJob.join()
-        }
-
-        runBlocking {
-            dataStoreManager.getString("miniplayer_guide").first().let {
-                isFirstMiniplayer = it != STATUS_DONE
-            }
-            dataStoreManager.getString("suggest_guide").first().let {
-                isFirstSuggestions = it != STATUS_DONE
-            }
-            dataStoreManager.getString("liked_guide").first().let {
-                isFirstLiked = it != STATUS_DONE
-            }
-        }
-        viewModelScope.launch {
-            mediaPlayerHandler.nowPlayingState
-                .distinctUntilChangedBy {
-                    it.songEntity?.videoId
-                }.collectLatest { state ->
-                    canvasJob?.cancel()
-                    _nowPlayingState.value = state
-
-                    // Seed the timeline from METADATA as soon as the track is known, instead of
-                    // waiting for the player. SimpleMediaState.Ready carries a duration and only
-                    // fires once the container is parsed; after a queue restore nothing plays, the
-                    // position poll never starts (it runs only while isPlaying), and so nothing
-                    // ever reports a length — which is why a restored queue showed no times at all.
-                    // SongEntity has known the length since the song was first seen.
-                    //
-                    // Written on EVERY track change, not just when missing: leaving the old value
-                    // in place would show the previous track's length over the new one.
-                    // Order matters: metadata first because it is available immediately, then the
-                    // player's own duration, and only -1 ("not known yet") when neither has one.
-                    //
-                    // Writing -1 whenever metadata is missing — which this did at first — makes
-                    // every radio track and every first-time track flash NA:NA on the clock until
-                    // the container is parsed, because those rows have no durationSeconds stored.
-                    // Asking the player before giving up covers exactly that case: on a normal
-                    // track change it usually already knows.
-                    val metadataDurationMs = (state.songEntity?.durationSeconds ?: 0).toLong() * 1000L
-                    val seededTotal =
-                        metadataDurationMs.takeIf { it > 0L }
-                            ?: mediaPlayerHandler.getPlayerDuration().takeIf { it > 0L }
-                            ?: -1L
-                    _timeline.update { it.copy(total = seededTotal) }
-                    state.songEntity?.let { track ->
-                        _nowPlayingScreenData.value =
-                            NowPlayingScreenData(
-                                nowPlayingTitle = track.title,
-                                artistName =
-                                    track
-                                        .artistName
-                                        ?.joinToString(", ") ?: "",
-                                isVideo = false,
-                                thumbnailURL = null,
-                                canvasData = null,
-                                lyricsData = null,
-                                songInfoData = null,
-                                playlistName =
-                                    mediaPlayerHandler.queueData.value
-                                        ?.data
-                                        ?.playlistName ?: "",
-                                isRadioQueue =
-                                    mediaPlayerHandler.queueData.value
-                                        ?.data
-                                        ?.playlistId
-                                        ?.isEndlessQueueId() == true,
-                            )
-                    }
-                    state.mediaItem.let { now ->
-                        _canvas.value = null
-                        getLikeStatus(now.mediaId)
-                        getSongInfo(now.mediaId)
-                        getFormat(now.mediaId)
-                        _nowPlayingScreenData.update {
-                            it.copy(
-                                thumbnailURL = now.metadata.artworkUri,
-                                isVideo = now.isVideo(),
-                            )
-                        }
-                    }
-                    state.songEntity?.let { song ->
-                        _liked.value = song.liked == true
-                        _nowPlayingScreenData.update {
-                            it.copy(
-                                isExplicit = song.isExplicit,
-                            )
-                        }
-                    }
-                }
-        }
-        viewModelScope.launch {
-            val job1 =
-                launch {
-                    mediaPlayerHandler.simpleMediaState.collect { mediaState ->
-                        when (mediaState) {
-                            is SimpleMediaState.Buffering -> {
-                                _timeline.update {
-                                    it.copy(
-                                        loading = true,
-                                    )
-                                }
-                            }
-
-                            SimpleMediaState.Initial -> {
-                                _timeline.update { it.copy(loading = true) }
-                            }
-
-                            SimpleMediaState.Ended -> {
-                                // Park at the end of the track rather than at -1. The only formatter
-                                // for these fields renders any negative as "NA:NA", and nothing here
-                                // is guaranteed to follow: at the end of the queue the player simply
-                                // stays ended, so a -1 written here stays on screen. Worse, the
-                                // Progress branch below ignores negative values and the Loading
-                                // branch restores `total` without touching `current`, which is how
-                                // the player ends up showing a correct duration next to "NA:NA".
-                                _timeline.update {
-                                    it.copy(
-                                        current = it.total.coerceAtLeast(0L),
-                                        bufferedPercent = 0,
-                                        loading = false,
-                                    )
-                                }
-                            }
-
-                            is SimpleMediaState.Progress -> {
-                                if (mediaState.progress >= 0L && mediaState.progress != _timeline.value.current) {
-                                    // A live stream never reports a length (ExoPlayer: C.TIME_UNSET), so
-                                    // a missing one means "loading" for everything except a live stream.
-                                    if (_timeline.value.total > 0L || _timeline.value.isLive) {
-                                        _timeline.update {
-                                            it.copy(
-                                                total = mediaPlayerHandler.getPlayerDuration().takeIf { d -> d > 0L } ?: it.total,
-                                                current = mediaState.progress,
-                                                loading = false,
-                                            )
-                                        }
-                                    } else {
-                                        _timeline.update {
-                                            it.copy(
-                                                current = mediaState.progress,
-                                                loading = true,
-                                                total = mediaPlayerHandler.getPlayerDuration().takeIf { d -> d > 0L } ?: it.total,
-                                            )
-                                        }
-                                    }
-                                }
-                                // When progress hasn't changed (same value polled again) or is negative,
-                                // don't modify loading state. The loading flag is already managed by
-                                // Buffering/Ready/Loading state events. Setting loading=true here would
-                                // cause rapid flickering whenever the same value arrives twice,
-                                // which it can: the handler's ticker and the adapter's position
-                                // poll both run at 50ms and are not in step, so a poll is sometimes
-                                // read twice. A repeat is not evidence of a stall, and the loading
-                                // flag belongs to the Buffering/Ready events rather than to a
-                                // guess made here.
-                            }
-
-                            is SimpleMediaState.Loading -> {
-                                _timeline.update {
-                                    it.copy(
-                                        bufferedPercent = mediaState.bufferedPercentage,
-                                        total = mediaState.duration,
-                                        loading = true,
-                                    )
-                                }
-                            }
-
-                            is SimpleMediaState.Ready -> {
-                                _timeline.update {
-                                    it.copy(
-                                        current = mediaPlayerHandler.getProgress(),
-                                        loading = false,
-                                        // The player's own duration wins, but ONLY when it has one.
-                                        // ExoPlayer answers C.TIME_UNSET (a large negative, not
-                                        // null) until it has parsed the container, and Ready is
-                                        // also published from onIsLoadingChanged — which fires
-                                        // before STATE_READY. Writing that would throw away the
-                                        // metadata duration seeded on the track change above.
-                                        total = mediaState.duration.takeIf { d -> d > 0L } ?: it.total,
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            val controllerJob =
-                launch {
-                    Logger.w(tag, "ControllerJob is running")
-                    mediaPlayerHandler.controlState.collectLatest {
-                        Logger.w(tag, "ControlState is $it")
-                        _controllerState.value = it
-                        // Propagate crossfade state to timeline so UI can react
-                        _timeline.update { timeline ->
-                            timeline.copy(isCrossfading = it.isCrossfading)
-                        }
-                    }
-                }
-            val sleepTimerJob =
-                launch {
-                    mediaPlayerHandler.sleepTimerState.collectLatest {
-                        _sleepTimerState.value = it
-                    }
-                }
-            val playlistNameJob =
-                launch {
-                    mediaPlayerHandler.queueData.collectLatest { queue ->
-                        _nowPlayingScreenData.update {
-                            it.copy(
-                                playlistName = queue?.data?.playlistName ?: "",
-                                isRadioQueue = queue?.data?.playlistId?.isEndlessQueueId() == true,
-                            )
-                        }
-                    }
-                }
-            val liveStreamJob =
-                launch {
-                    // A track is only known to be live once its stream has been resolved, so this
-                    // follows the registry as well as the track itself.
-                    combine(mediaPlayerHandler.nowPlayingState, LiveStreamRegistry.liveVideoIds) { state, liveVideoIds ->
-                        state.mediaItem.mediaId in liveVideoIds
-                    }.distinctUntilChanged()
-                        .collect { isLive -> _timeline.update { it.copy(isLive = isLive) } }
-                }
-            job1.join()
-            controllerJob.join()
-            sleepTimerJob.join()
-            playlistNameJob.join()
-            liveStreamJob.join()
-        }
-        // Reset downloading songs & playlists to not downloaded
-        checkAllDownloadingSongs()
-        checkAllDownloadingPlaylists()
-        checkAllDownloadingLocalPlaylists()
-    }
-
     fun setIntent(intent: GenericIntent?) {
         _intent.value = intent
     }
@@ -2291,6 +1985,316 @@ class SharedViewModel(
     fun isUserLoggedInFlow(): Flow<Boolean> = dataStoreManager.cookie.map { it.isNotEmpty() }
 
     fun isCombineFavoriteAndYTLiked(): Boolean = runBlocking { dataStoreManager.combineLocalAndYouTubeLiked.first() == TRUE }
+
+    // Last in the class on purpose. Properties start in the order they are written, and this block runs
+    // on Main.immediate: when a track is already playing (the activity was recreated, a rotation) the
+    // first collector fires inside the constructor and used to reach fields declared further down,
+    // still null (resetLyricsVoteState -> NullPointerException, and the app crashed on every rotation).
+    init {
+        viewModelScope.launch {
+            log("SharedViewModel init")
+            if (dataStoreManager.appVersion.first() != VersionManager.getVersionName()) {
+                dataStoreManager.setAppVersion(
+                    VersionManager.getVersionName(),
+                )
+            }
+            val timeLineJob =
+                launch {
+                    nowPlayingState
+                        .filterNotNull()
+                        .flatMapLatest { nowPlayingState ->
+                            timeline.map { timeLine ->
+                                Pair(timeLine, nowPlayingState)
+                            }
+                        }.distinctUntilChanged { old, new ->
+                            // A live stream's "total" is the seek window mpv reports, and it grows with
+                            // every new segment — not a new length, so it must not re-run what a new
+                            // length triggers (this fired every few seconds for as long as one played).
+                            val sameLiveStream = old.first.isLive && new.first.isLive
+                            (old.first.total.toString() + old.second.songEntity?.videoId).hashCode() ==
+                                (new.first.total.toString() + new.second.songEntity?.videoId).hashCode() ||
+                                (sameLiveStream && old.second.songEntity?.videoId == new.second.songEntity?.videoId)
+                        }.collectLatest {
+                            val nowPlaying = it.second
+                            val timeline = it.first
+                            // Lyrics and canvas both key off the track's length, which a live stream has none of.
+                            if (timeline.isLive) return@collectLatest
+                            log("Timeline job ${(it.first.total.toString() + it.second.songEntity?.videoId).hashCode()}")
+                            if (timeline.total > 0 && nowPlaying.songEntity != null) {
+                                if (nowPlaying.mediaItem.isSong() && nowPlayingScreenData.value.canvasData == null) {
+                                    Logger.w(tag, "Duration is ${timeline.total}")
+                                    Logger.w(tag, "MediaId is ${nowPlaying.mediaItem.mediaId}")
+                                    getCanvas(nowPlaying.mediaItem.mediaId, (timeline.total / 1000).toInt())
+                                }
+                                nowPlaying.songEntity?.let { song ->
+                                    if (nowPlayingScreenData.value.lyricsData == null) {
+                                        Logger.w(tag, "Get lyrics from format")
+                                        getLyricsFromFormat(nowPlaying.mediaItem.isVideo(), song, (timeline.total / 1000).toInt())
+                                    }
+                                }
+                            }
+                        }
+                }
+            val checkGetVideoJob =
+                launch {
+                    dataStoreManager.watchVideoInsteadOfPlayingAudio.collectLatest {
+                        _getVideo.value = it == TRUE
+                    }
+                }
+            val lyricsProviderJob =
+                launch {
+                    dataStoreManager.lyricsProvider.distinctUntilChanged().collectLatest {
+                        setLyricsProvider()
+                    }
+                }
+//            val controllerStateJob =
+//                launch {
+//                    controllerState.map { it.isLiked }.distinctUntilChanged().collectLatest {
+//                        if (dataStoreManager.combineLocalAndYouTubeLiked.first() == TRUE) {
+//                            nowPlayingState.value?.mediaItem?.mediaId?.let {
+//                                getLikeStatus(it)
+//                            }
+//                        }
+//                    }
+//                }
+            timeLineJob.join()
+            checkGetVideoJob.join()
+            lyricsProviderJob.join()
+//            controllerStateJob.join()
+        }
+
+        runBlocking {
+            dataStoreManager.getString("miniplayer_guide").first().let {
+                isFirstMiniplayer = it != STATUS_DONE
+            }
+            dataStoreManager.getString("suggest_guide").first().let {
+                isFirstSuggestions = it != STATUS_DONE
+            }
+            dataStoreManager.getString("liked_guide").first().let {
+                isFirstLiked = it != STATUS_DONE
+            }
+        }
+        viewModelScope.launch {
+            mediaPlayerHandler.nowPlayingState
+                .distinctUntilChangedBy {
+                    it.songEntity?.videoId
+                }.collectLatest { state ->
+                    canvasJob?.cancel()
+                    _nowPlayingState.value = state
+
+                    // Seed the timeline from METADATA as soon as the track is known, instead of
+                    // waiting for the player. SimpleMediaState.Ready carries a duration and only
+                    // fires once the container is parsed; after a queue restore nothing plays, the
+                    // position poll never starts (it runs only while isPlaying), and so nothing
+                    // ever reports a length — which is why a restored queue showed no times at all.
+                    // SongEntity has known the length since the song was first seen.
+                    //
+                    // Written on EVERY track change, not just when missing: leaving the old value
+                    // in place would show the previous track's length over the new one.
+                    // Order matters: metadata first because it is available immediately, then the
+                    // player's own duration, and only -1 ("not known yet") when neither has one.
+                    //
+                    // Writing -1 whenever metadata is missing — which this did at first — makes
+                    // every radio track and every first-time track flash NA:NA on the clock until
+                    // the container is parsed, because those rows have no durationSeconds stored.
+                    // Asking the player before giving up covers exactly that case: on a normal
+                    // track change it usually already knows.
+                    val metadataDurationMs = (state.songEntity?.durationSeconds ?: 0).toLong() * 1000L
+                    val seededTotal =
+                        metadataDurationMs.takeIf { it > 0L }
+                            ?: mediaPlayerHandler.getPlayerDuration().takeIf { it > 0L }
+                            ?: -1L
+                    _timeline.update { it.copy(total = seededTotal) }
+                    state.songEntity?.let { track ->
+                        _nowPlayingScreenData.value =
+                            NowPlayingScreenData(
+                                nowPlayingTitle = track.title,
+                                artistName =
+                                    track
+                                        .artistName
+                                        ?.joinToString(", ") ?: "",
+                                isVideo = false,
+                                thumbnailURL = null,
+                                canvasData = null,
+                                lyricsData = null,
+                                songInfoData = null,
+                                playlistName =
+                                    mediaPlayerHandler.queueData.value
+                                        ?.data
+                                        ?.playlistName ?: "",
+                                isRadioQueue =
+                                    mediaPlayerHandler.queueData.value
+                                        ?.data
+                                        ?.playlistId
+                                        ?.isEndlessQueueId() == true,
+                            )
+                    }
+                    state.mediaItem.let { now ->
+                        _canvas.value = null
+                        getLikeStatus(now.mediaId)
+                        getSongInfo(now.mediaId)
+                        getFormat(now.mediaId)
+                        _nowPlayingScreenData.update {
+                            it.copy(
+                                thumbnailURL = now.metadata.artworkUri,
+                                isVideo = now.isVideo(),
+                            )
+                        }
+                    }
+                    state.songEntity?.let { song ->
+                        _liked.value = song.liked == true
+                        _nowPlayingScreenData.update {
+                            it.copy(
+                                isExplicit = song.isExplicit,
+                            )
+                        }
+                    }
+                }
+        }
+        viewModelScope.launch {
+            val job1 =
+                launch {
+                    mediaPlayerHandler.simpleMediaState.collect { mediaState ->
+                        when (mediaState) {
+                            is SimpleMediaState.Buffering -> {
+                                _timeline.update {
+                                    it.copy(
+                                        loading = true,
+                                    )
+                                }
+                            }
+
+                            SimpleMediaState.Initial -> {
+                                _timeline.update { it.copy(loading = true) }
+                            }
+
+                            SimpleMediaState.Ended -> {
+                                // Park at the end of the track rather than at -1. The only formatter
+                                // for these fields renders any negative as "NA:NA", and nothing here
+                                // is guaranteed to follow: at the end of the queue the player simply
+                                // stays ended, so a -1 written here stays on screen. Worse, the
+                                // Progress branch below ignores negative values and the Loading
+                                // branch restores `total` without touching `current`, which is how
+                                // the player ends up showing a correct duration next to "NA:NA".
+                                _timeline.update {
+                                    it.copy(
+                                        current = it.total.coerceAtLeast(0L),
+                                        bufferedPercent = 0,
+                                        loading = false,
+                                    )
+                                }
+                            }
+
+                            is SimpleMediaState.Progress -> {
+                                if (mediaState.progress >= 0L && mediaState.progress != _timeline.value.current) {
+                                    // A live stream never reports a length (ExoPlayer: C.TIME_UNSET), so
+                                    // a missing one means "loading" for everything except a live stream.
+                                    if (_timeline.value.total > 0L || _timeline.value.isLive) {
+                                        _timeline.update {
+                                            it.copy(
+                                                total = mediaPlayerHandler.getPlayerDuration().takeIf { d -> d > 0L } ?: it.total,
+                                                current = mediaState.progress,
+                                                loading = false,
+                                            )
+                                        }
+                                    } else {
+                                        _timeline.update {
+                                            it.copy(
+                                                current = mediaState.progress,
+                                                loading = true,
+                                                total = mediaPlayerHandler.getPlayerDuration().takeIf { d -> d > 0L } ?: it.total,
+                                            )
+                                        }
+                                    }
+                                }
+                                // When progress hasn't changed (same value polled again) or is negative,
+                                // don't modify loading state. The loading flag is already managed by
+                                // Buffering/Ready/Loading state events. Setting loading=true here would
+                                // cause rapid flickering whenever the same value arrives twice,
+                                // which it can: the handler's ticker and the adapter's position
+                                // poll both run at 50ms and are not in step, so a poll is sometimes
+                                // read twice. A repeat is not evidence of a stall, and the loading
+                                // flag belongs to the Buffering/Ready events rather than to a
+                                // guess made here.
+                            }
+
+                            is SimpleMediaState.Loading -> {
+                                _timeline.update {
+                                    it.copy(
+                                        bufferedPercent = mediaState.bufferedPercentage,
+                                        total = mediaState.duration,
+                                        loading = true,
+                                    )
+                                }
+                            }
+
+                            is SimpleMediaState.Ready -> {
+                                _timeline.update {
+                                    it.copy(
+                                        current = mediaPlayerHandler.getProgress(),
+                                        loading = false,
+                                        // The player's own duration wins, but ONLY when it has one.
+                                        // ExoPlayer answers C.TIME_UNSET (a large negative, not
+                                        // null) until it has parsed the container, and Ready is
+                                        // also published from onIsLoadingChanged — which fires
+                                        // before STATE_READY. Writing that would throw away the
+                                        // metadata duration seeded on the track change above.
+                                        total = mediaState.duration.takeIf { d -> d > 0L } ?: it.total,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            val controllerJob =
+                launch {
+                    Logger.w(tag, "ControllerJob is running")
+                    mediaPlayerHandler.controlState.collectLatest {
+                        Logger.w(tag, "ControlState is $it")
+                        _controllerState.value = it
+                        // Propagate crossfade state to timeline so UI can react
+                        _timeline.update { timeline ->
+                            timeline.copy(isCrossfading = it.isCrossfading)
+                        }
+                    }
+                }
+            val sleepTimerJob =
+                launch {
+                    mediaPlayerHandler.sleepTimerState.collectLatest {
+                        _sleepTimerState.value = it
+                    }
+                }
+            val playlistNameJob =
+                launch {
+                    mediaPlayerHandler.queueData.collectLatest { queue ->
+                        _nowPlayingScreenData.update {
+                            it.copy(
+                                playlistName = queue?.data?.playlistName ?: "",
+                                isRadioQueue = queue?.data?.playlistId?.isEndlessQueueId() == true,
+                            )
+                        }
+                    }
+                }
+            val liveStreamJob =
+                launch {
+                    // A track is only known to be live once its stream has been resolved, so this
+                    // follows the registry as well as the track itself.
+                    combine(mediaPlayerHandler.nowPlayingState, LiveStreamRegistry.liveVideoIds) { state, liveVideoIds ->
+                        state.mediaItem.mediaId in liveVideoIds
+                    }.distinctUntilChanged()
+                        .collect { isLive -> _timeline.update { it.copy(isLive = isLive) } }
+                }
+            job1.join()
+            controllerJob.join()
+            sleepTimerJob.join()
+            playlistNameJob.join()
+            liveStreamJob.join()
+        }
+        // Reset downloading songs & playlists to not downloaded
+        checkAllDownloadingSongs()
+        checkAllDownloadingPlaylists()
+        checkAllDownloadingLocalPlaylists()
+    }
 }
 
 sealed class UIEvent {
