@@ -178,6 +178,7 @@
     <string name="log_in_to_get_personally_data">Войдите, чтобы получить личные данные</string>
     <string name="login_success">Вход успешно выполнен</string>
     <string name="login_failed">Ошибка авторизации</string>
+    <string name="login_cookie_incomplete">Вход выполнен, но кука неполная (нет SAPISID), поэтому ваши рекомендации могут не загрузиться. Войдите в YouTube в браузере ещё раз и скопируйте свежую куку.</string>
     <string name="log_out">Выйти из YouTube</string>
     <string name="logged_in">Вход выполнен</string>
     <string name="logged_out">Выход выполнен</string>

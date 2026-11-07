@@ -53,6 +53,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.log_in
+import simpmusic.composeapp.generated.resources.login_cookie_incomplete
 import simpmusic.composeapp.generated.resources.login_failed
 import simpmusic.composeapp.generated.resources.login_success
 
@@ -122,7 +123,15 @@ fun LoginScreen(
                                 coroutineScope.launch {
                                     val success = settingsViewModel.addAccount(cookie)
                                     if (success) {
-                                        viewModel.makeToast(getString(Res.string.login_success))
+                                        viewModel.makeToast(
+                                            getString(
+                                                if (cookie.isMissingApiCookie()) {
+                                                    Res.string.login_cookie_incomplete
+                                                } else {
+                                                    Res.string.login_success
+                                                },
+                                            ),
+                                        )
                                         navController.navigateUp()
                                     } else {
                                         viewModel.makeToast(getString(Res.string.login_failed))
@@ -203,3 +212,11 @@ fun LoginScreen(
         )
     }
 }
+
+/**
+ * Whether a cookie string lacks SAPISID. A browser that finished Google's sign-in has it; one whose
+ * sign-in was cut short (a blocked network) keeps only the 3P cookies, which YouTube reads as signed in
+ * but does not give the account's own Home.
+ */
+private fun String.isMissingApiCookie(): Boolean =
+    split(";").map { it.substringBefore("=").trim() }.let { "SAPISID" !in it && "__Secure-1PAPISID" !in it }

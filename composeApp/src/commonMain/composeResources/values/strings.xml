@@ -176,6 +176,7 @@
     <string name="log_in_to_get_personally_data">Log in to get personally data</string>
     <string name="login_success">Login success</string>
     <string name="login_failed">Login failed</string>
+    <string name="login_cookie_incomplete">Signed in, but this cookie is incomplete (no SAPISID), so your own recommendations may not load. Sign in to YouTube again in the browser, then copy a fresh cookie.</string>
     <string name="log_out">Log out from YouTube</string>
     <string name="logged_in">Logged in</string>
     <string name="logged_out">Logged out</string>
