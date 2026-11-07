@@ -51,6 +51,26 @@ internal fun deriveOrderIndex(
 }
 
 /**
+ * One stable key per queue entry, for the artwork pager.
+ *
+ * A key must not contain the page index. A pager follows its current page by key, so with stable
+ * keys a reorder (shuffle on or off, a radio trimming its history) moves the page along in the same
+ * measure pass and the cover stays put. With the index in the key every moved entry is a page the
+ * pager has never seen: it shows whichever track now holds that index for a frame, then jumps to a
+ * freshly composed page, and the cover blinks.
+ *
+ * Keys have to be unique, and a queue can hold one song twice, hence the count of earlier copies.
+ */
+internal fun artworkPageKeys(videoIds: List<String>): List<String> {
+    val seen = HashMap<String, Int>(videoIds.size)
+    return videoIds.map { videoId ->
+        val copy = seen[videoId] ?: 0
+        seen[videoId] = copy + 1
+        "artwork_${videoId}_$copy"
+    }
+}
+
+/**
  * What the player should do when the pager settles on a new page.
  *
  * - [Next] / [Previous] keep the existing crossfade flow on Android intact

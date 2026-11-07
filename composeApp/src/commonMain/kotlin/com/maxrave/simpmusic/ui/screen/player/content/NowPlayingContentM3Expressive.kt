@@ -114,6 +114,7 @@ import com.maxrave.simpmusic.ui.icon.Repeat
 import com.maxrave.simpmusic.ui.icon.RepeatOne
 import com.maxrave.simpmusic.ui.icon.Shuffle
 import com.maxrave.simpmusic.ui.icon.SimpIcons
+import com.maxrave.simpmusic.ui.screen.player.artworkPageKeys
 import com.maxrave.simpmusic.ui.screen.player.content.applemusic.AudioOutputSheetHost
 import com.maxrave.simpmusic.ui.screen.player.content.expressive.ExpressiveTransportRow
 import com.maxrave.simpmusic.ui.screen.player.content.expressive.WavySeekBar
@@ -307,6 +308,7 @@ private fun NowPlayingM3ExpressiveLayout(
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 // === 4. Artwork pager — same state/sync as Classic, card presentation ===
+                val artworkKeys = remember(state.artworkQueue) { artworkPageKeys(state.artworkQueue.map { it.videoId }) }
                 LeftToRight {
                     HorizontalPager(
                         state = state.artworkPagerState,
@@ -316,10 +318,7 @@ private fun NowPlayingM3ExpressiveLayout(
                                 .fillMaxWidth(),
                         beyondViewportPageCount = 1,
                         userScrollEnabled = !isRepeatOne && state.artworkQueue.isNotEmpty(),
-                        key = { idx ->
-                            val vid = state.artworkQueue.getOrNull(idx)?.videoId.orEmpty()
-                            "artwork_${vid}_$idx"
-                        },
+                        key = { idx -> artworkKeys.getOrNull(idx) ?: "artwork_empty_$idx" },
                     ) { page ->
                         ExpressiveArtworkCardPage(
                             state = state,
