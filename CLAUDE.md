@@ -56,6 +56,11 @@
   `:desktopApp:packageConveyorAppImage --no-configuration-cache`.
   Сырой результат: `desktopApp/build/appimage/conveyor/SimpMusic-x86_64.AppImage`.
 
+## Релизы
+
+`.github/workflows/release.yml`: тег `v*` (например `v2.5.0-1`) собирает APK, AppImage и установщик для Windows и выкладывает их
+в GitHub Releases форка. APK подписан тем же ключом, что и локальная сборка, поэтому встаёт поверх. Сборки оригинала удалены.
+
 ## Решения по дизайну (состояние форка)
 
 - Now Playing: остался один стиль, M3 Expressive. Classic и Apple Music удалены. Лирика — всегда стиль
