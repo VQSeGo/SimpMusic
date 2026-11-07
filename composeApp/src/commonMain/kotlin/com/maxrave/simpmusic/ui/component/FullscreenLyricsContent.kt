@@ -106,12 +106,14 @@ import com.maxrave.simpmusic.ui.icon.AvTimer
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.icon.VolumeOff
 import com.maxrave.simpmusic.ui.icon.VolumeUp
+import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.screen.player.content.ExpressivePlaybackControls
 import com.maxrave.simpmusic.ui.screen.player.content.ExpressiveTrackInfoRow
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentActions
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentState
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingExpressiveTheme
+import com.maxrave.simpmusic.ui.screen.player.linkedArtists
 import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
@@ -365,7 +367,13 @@ fun FullscreenLyricsContent(
                                         .basicMarquee(
                                             iterations = Int.MAX_VALUE,
                                             animationMode = MarqueeAnimationMode.Immediately,
-                                        ).focusable(),
+                                        ).focusable()
+                                        .clickable(enabled = state.albumId != null) {
+                                            state.albumId?.let { albumId ->
+                                                onDismiss()
+                                                navController.navigate(AlbumDestination(browseId = albumId))
+                                            }
+                                        },
                             )
 
                             Spacer(modifier = Modifier.height(2.dp))
@@ -377,6 +385,10 @@ fun FullscreenLyricsContent(
                                     Modifier.clickable {
                                         coroutineScope.launch {
                                             val song = sharedViewModel.nowPlayingState.value?.songEntity
+                                            if (song != null && song.linkedArtists().size > 1) {
+                                                actions.onNavigateToArtist()
+                                                return@launch
+                                            }
                                             (
                                                 song?.artistId?.firstOrNull()?.takeIf { it.isNotEmpty() }
                                                     ?: screenDataState.songInfoData?.authorId

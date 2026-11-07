@@ -84,16 +84,19 @@ import com.maxrave.simpmusic.ui.component.FullscreenLyricsSheet
 import com.maxrave.simpmusic.ui.component.CommentsBottomSheet
 import com.maxrave.simpmusic.ui.component.InfoPlayerBottomSheet
 import com.maxrave.domain.data.model.browse.album.Track
+import com.maxrave.domain.data.model.searchResult.songs.Artist
 import com.maxrave.domain.utils.YouTubeLikeStatus
 import com.maxrave.domain.utils.toSongEntity
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.QueueBottomSheet
 import com.maxrave.simpmusic.ui.component.QueuePosition
 import com.maxrave.simpmusic.ui.component.VoteLyricsDialog
+import com.maxrave.simpmusic.ui.component.ArtistModalBottomSheet
 import com.maxrave.simpmusic.ui.component.YouTubeDislikeState
 import com.maxrave.simpmusic.ui.icon.KeyboardArrowDown
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.ListenTogetherDestination
+import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.LoginDestination
 import com.maxrave.simpmusic.ui.navigation.destination.player.FullscreenDestination
@@ -393,6 +396,8 @@ fun NowPlayingScreenContent(
         }
     }
 
+    // Who to pick from when a track credits several artists; empty while nobody is being asked.
+    var artistChoice by remember { mutableStateOf(emptyList<Artist>()) }
     var showQueueBottomSheet by rememberSaveable {
         mutableStateOf(false)
     }
@@ -632,6 +637,8 @@ fun NowPlayingScreenContent(
             castState = castState,
             shouldShowVideo = shouldShowVideo,
             isUserLoggedIn = isUserLoggedIn,
+            // The queue's copy as well: a song row written before its album was known keeps none.
+            albumId = (nowPlayingState?.songEntity?.albumId ?: nowPlayingState?.track?.album?.id)?.takeIf { it.isNotEmpty() },
             artworkQueue = artworkQueue,
             currentOrderIndex = currentOrderIndex,
             artworkPagerState = artworkPagerState,
@@ -677,16 +684,29 @@ fun NowPlayingScreenContent(
             },
             onNavigateToArtist = {
                 val song = sharedViewModel.nowPlayingState.value?.songEntity
-                (
-                    song?.artistId?.firstOrNull()?.takeIf { it.isNotEmpty() }
-                        ?: screenDataState.songInfoData?.authorId
-                )?.let { channelId ->
+                val artists = song?.linkedArtists().orEmpty()
+                if (artists.size > 1) {
+                    artistChoice = artists
+                } else {
+                    (
+                        song?.artistId?.firstOrNull()?.takeIf { it.isNotEmpty() }
+                            ?: screenDataState.songInfoData?.authorId
+                    )?.let { channelId ->
+                        showFullscreenLyrics = false
+                        onDismiss()
+                        navController.navigate(
+                            ArtistDestination(
+                                channelId = channelId,
+                            ),
+                        )
+                    }
+                }
+            },
+            onNavigateToAlbum = {
+                state.albumId?.let { albumId ->
+                    showFullscreenLyrics = false
                     onDismiss()
-                    navController.navigate(
-                        ArtistDestination(
-                            channelId = channelId,
-                        ),
-                    )
+                    navController.navigate(AlbumDestination(browseId = albumId))
                 }
             },
             onOpenListenTogether = {
@@ -839,6 +859,19 @@ fun NowPlayingScreenContent(
         )
     }
 
+    if (artistChoice.isNotEmpty()) {
+        ArtistModalBottomSheet(
+            isBottomSheetVisible = true,
+            artists = artistChoice,
+            navController = navController,
+            onNavigateToOtherScreen = {
+                artistChoice = emptyList()
+                showFullscreenLyrics = false
+                onDismiss()
+            },
+            onDismiss = { artistChoice = emptyList() },
+        )
+    }
     if (showQueueBottomSheet) {
         QueueBottomSheet(
             onDismiss = {

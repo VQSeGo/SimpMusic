@@ -115,6 +115,8 @@ class NowPlayingContentState(
     val castState: GenericCastState,
     val shouldShowVideo: Boolean,
     val isUserLoggedIn: Boolean,
+    /** The album of the track playing, or null when it has none to open. */
+    val albumId: String? = null,
     val artworkQueue: List<Track>,
     val currentOrderIndex: Int,
     val artworkPagerState: PagerState,
@@ -159,7 +161,9 @@ class NowPlayingContentActions(
     val onSliderChange: (Float) -> Unit,
     val onSliderChangeFinished: () -> Unit,
     val onToggleControls: () -> Unit,
+    /** Opens the track's artist, or asks which one when several are credited. */
     val onNavigateToArtist: () -> Unit,
+    val onNavigateToAlbum: () -> Unit,
     val onOpenListenTogether: () -> Unit,
     val onShowMoreSheet: () -> Unit,
     val onShowQueue: () -> Unit,
