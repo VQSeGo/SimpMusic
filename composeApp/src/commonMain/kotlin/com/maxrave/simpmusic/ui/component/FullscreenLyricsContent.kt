@@ -98,7 +98,6 @@ import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.lyrics.ShareLyricsSheet
 import com.maxrave.simpmusic.ui.component.lyrics.toShareLyricsLines
 import com.maxrave.simpmusic.ui.icon.Close
-import com.maxrave.simpmusic.ui.icon.Info
 import com.maxrave.simpmusic.ui.icon.MoreVert
 import com.maxrave.simpmusic.ui.icon.PictureInPictureAlt
 import com.maxrave.simpmusic.ui.icon.QueueMusic
@@ -419,16 +418,6 @@ fun FullscreenLyricsContent(
 
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        // Like Button (Heart)
-                        HeartCheckBox(
-                            checked = controllerState.isLiked,
-                            size = 28,
-                        ) {
-                            sharedViewModel.onUIEvent(UIEvent.ToggleLike)
-                        }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
                         // Three Dot Menu
                         IconButton(
                             onClick = { showNowPlayingSheet = true },
@@ -667,21 +656,14 @@ fun FullscreenLyricsContent(
                                                     .fillMaxWidth()
                                                     .padding(horizontal = 40.dp),
                                         ) {
-                                            IconButton(
-                                                modifier =
-                                                    Modifier
-                                                        .size(24.dp)
-                                                        .aspectRatio(1f)
-                                                        .align(Alignment.CenterStart)
-                                                        .clip(
-                                                            CircleShape,
-                                                        ),
-                                                onClick = {
-                                                    showInfoBottomSheet = true
+                                            Box(Modifier.align(Alignment.CenterStart)) {
+                                                HeartCheckBox(
+                                                    checked = controllerState.isLiked,
+                                                    tint = Color.White,
+                                                ) {
+                                                    sharedViewModel.onUIEvent(UIEvent.ToggleLike)
                                                     showControlButtons = true
-                                                },
-                                            ) {
-                                                Icon(imageVector = SimpIcons.Info, tint = Color.White, contentDescription = "")
+                                                }
                                             }
                                             Row(
                                                 Modifier.align(Alignment.CenterEnd),
@@ -754,6 +736,7 @@ fun FullscreenLyricsContent(
             song = null,
             setSleepTimerEnable = true,
             changeMainLyricsProviderEnable = true,
+            onShowInfo = { showInfoBottomSheet = true },
         )
     }
 }
