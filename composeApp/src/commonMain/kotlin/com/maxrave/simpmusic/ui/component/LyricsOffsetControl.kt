@@ -35,7 +35,7 @@ import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.lyrics_offset_value
 
 // One tap moves the lyrics by this much: fine enough for Bluetooth latency, which is what the
-// offset exists for. A sheet that is seconds off is still quicker to type in Settings.
+// offset exists for.
 private const val LYRICS_OFFSET_STEP_MS = 100
 
 /** Only timed lyrics can run early or late, so only they get the timing control. */
@@ -43,8 +43,9 @@ internal fun NowPlayingScreenData.LyricsData?.hasTiming(): Boolean =
     this?.lyrics?.syncType == "LINE_SYNCED" || this?.lyrics?.syncType == "RICH_SYNCED"
 
 /**
- * `[−] +200 ms [+] [↺]` for the lyrics timing offset — the very value Settings › Lyrics edits.
- * Every lyrics display subtracts it when it reads the position, so the lines move as the user taps.
+ * `[↺] [−] +200 ms [+]` for the track's lyrics timing offset. Every lyrics display subtracts it when
+ * it reads the position, so the lines move as the user taps. The bar is anchored at its right end, so
+ * the reset button sits on the left: appearing anywhere else would pull − and + from under the finger.
  */
 @Composable
 fun LyricsOffsetBar(
@@ -57,13 +58,15 @@ fun LyricsOffsetBar(
     // ponytail: each step adds to the value last composed, so two taps inside one DataStore round
     // trip count once. Fine for fingers; give DataStoreManager an atomic adjust if the buttons
     // ever repeat on hold.
-    // Signed the way the Settings row prints it.
     val signedMs = if (offsetMs > 0) "+$offsetMs" else offsetMs.toString()
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
         Row(
             modifier = modifier.clip(CircleShape).background(containerColor),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            AnimatedVisibility(visible = offsetMs != 0) {
+                RippleIconButton(imageVector = SimpIcons.RestartAlt, tint = contentColor) { onOffsetChange(0) }
+            }
             RippleIconButton(imageVector = SimpIcons.Remove, tint = contentColor) {
                 onOffsetChange(offsetMs - LYRICS_OFFSET_STEP_MS)
             }
@@ -77,9 +80,6 @@ fun LyricsOffsetBar(
             )
             RippleIconButton(imageVector = SimpIcons.Add, tint = contentColor) {
                 onOffsetChange(offsetMs + LYRICS_OFFSET_STEP_MS)
-            }
-            AnimatedVisibility(visible = offsetMs != 0) {
-                RippleIconButton(imageVector = SimpIcons.RestartAlt, tint = contentColor) { onOffsetChange(0) }
             }
         }
     }
