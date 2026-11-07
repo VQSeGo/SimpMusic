@@ -98,7 +98,7 @@ import simpmusic.composeapp.generated.resources.album_length
 import simpmusic.composeapp.generated.resources.artists
 import simpmusic.composeapp.generated.resources.cached
 import simpmusic.composeapp.generated.resources.downloaded
-import simpmusic.composeapp.generated.resources.favorite
+import simpmusic.composeapp.generated.resources.liked_music
 import simpmusic.composeapp.generated.resources.followed
 import simpmusic.composeapp.generated.resources.liked_songs
 import simpmusic.composeapp.generated.resources.liked_songs_count
@@ -858,7 +858,7 @@ sealed class LibraryDynamicPlaylistType {
      */
     fun name(): StringResource =
         when (this) {
-            Favorite -> Res.string.favorite
+            Favorite -> Res.string.liked_music
             Followed -> Res.string.followed
             MostPlayed -> Res.string.most_played
             Downloaded -> Res.string.downloaded

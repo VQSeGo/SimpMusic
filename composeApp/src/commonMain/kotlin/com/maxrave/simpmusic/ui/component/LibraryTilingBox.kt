@@ -49,7 +49,7 @@ import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.cached
 import simpmusic.composeapp.generated.resources.downloaded
-import simpmusic.composeapp.generated.resources.favorite
+import simpmusic.composeapp.generated.resources.liked_music
 import simpmusic.composeapp.generated.resources.followed
 import simpmusic.composeapp.generated.resources.library_artist_count
 import simpmusic.composeapp.generated.resources.library_favorite_empty_hint
@@ -153,7 +153,7 @@ private fun FavoriteCard(
         ) {
             Column(Modifier.weight(1f).padding(end = 14.dp)) {
                 Text(
-                    text = stringResource(Res.string.favorite),
+                    text = stringResource(Res.string.liked_music),
                     style = typo().titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,

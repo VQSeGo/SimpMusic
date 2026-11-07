@@ -220,8 +220,6 @@ class SettingsViewModel(
     private val _keepYouTubePlaylistOffline = MutableStateFlow<Boolean>(false)
     val keepYouTubePlaylistOffline: StateFlow<Boolean> = _keepYouTubePlaylistOffline
 
-    private val _combineLocalAndYouTubeLiked = MutableStateFlow<Boolean>(false)
-    val combineLocalAndYouTubeLiked: StateFlow<Boolean> = _combineLocalAndYouTubeLiked
 
     private val _downloadQuality = MutableStateFlow<String?>(null)
     val downloadQuality: StateFlow<String?> = _downloadQuality
@@ -329,7 +327,6 @@ class SettingsViewModel(
         getLastfmSession()
         getLastfmScrobbleEnabled()
         getKeepYouTubePlaylistOffline()
-        getCombineLocalAndYouTubeLiked()
         getDownloadQuality()
         getVideoDownloadQuality()
         getLocalTrackingEnabled()
@@ -425,21 +422,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             dataStoreManager.setKeepYouTubePlaylistOffline(keep)
             getKeepYouTubePlaylistOffline()
-        }
-    }
-
-    private fun getCombineLocalAndYouTubeLiked() {
-        viewModelScope.launch {
-            dataStoreManager.combineLocalAndYouTubeLiked.collect { combine ->
-                _combineLocalAndYouTubeLiked.value = combine == DataStoreManager.TRUE
-            }
-        }
-    }
-
-    fun setCombineLocalAndYouTubeLiked(combine: Boolean) {
-        viewModelScope.launch {
-            dataStoreManager.setCombineLocalAndYouTubeLiked(combine)
-            getCombineLocalAndYouTubeLiked()
         }
     }
 

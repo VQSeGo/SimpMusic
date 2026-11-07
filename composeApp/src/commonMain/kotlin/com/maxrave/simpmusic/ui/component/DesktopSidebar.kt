@@ -129,7 +129,7 @@ import simpmusic.composeapp.generated.resources.collapse_your_library
 import simpmusic.composeapp.generated.resources.create
 import simpmusic.composeapp.generated.resources.downloaded
 import simpmusic.composeapp.generated.resources.expand_your_library
-import simpmusic.composeapp.generated.resources.favorite
+import simpmusic.composeapp.generated.resources.liked_music
 import simpmusic.composeapp.generated.resources.liked_songs_count
 import simpmusic.composeapp.generated.resources.most_played
 import simpmusic.composeapp.generated.resources.notification
@@ -227,7 +227,7 @@ fun DesktopSidebar(
         }
     val pinned =
         listOf(
-            PinnedCollection(Res.string.favorite, LibraryDynamicPlaylistType.Favorite, overview?.favorite) {
+            PinnedCollection(Res.string.liked_music, LibraryDynamicPlaylistType.Favorite, overview?.favorite) {
                 Image(painterResource(Res.drawable.baseline_favorite_24), contentDescription = null, modifier = Modifier.size(24.dp))
             },
             PinnedCollection(Res.string.downloaded, LibraryDynamicPlaylistType.Downloaded, overview?.downloaded) {

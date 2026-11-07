@@ -1074,4 +1074,6 @@
     <string name="show_notifications_entry">Show notifications in the sidebar</string>
     <string name="show_notifications_entry_description">Adds the notification list to the left panel on Desktop</string>
     <string name="track_info">Track info</string>
+    <string name="log_in_to_like">Log in to YouTube to like songs</string>
+    <string name="liked_music">Liked Music</string>
 </resources>

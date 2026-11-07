@@ -629,7 +629,6 @@ fun NowPlayingScreenContent(
             controllerState = controllerState,
             timelineState = timelineState,
             timelineFlow = sharedViewModel.timeline,
-            likeStatus = likeStatus == YouTubeLikeStatus.LIKE,
             castState = castState,
             shouldShowVideo = shouldShowVideo,
             isUserLoggedIn = isUserLoggedIn,
@@ -694,7 +693,6 @@ fun NowPlayingScreenContent(
                 onDismiss()
                 navController.navigate(ListenTogetherDestination)
             },
-            onAddToYouTubeLiked = { sharedViewModel.addToYouTubeLiked() },
             onShowMoreSheet = { showSheet = true },
             onShowQueue = { showQueueBottomSheet = true },
             onShowInfo = { showInfoBottomSheet = true },

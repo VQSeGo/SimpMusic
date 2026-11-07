@@ -12,6 +12,7 @@ import com.maxrave.common.Config.SHARE
 import com.maxrave.common.Config.SONG_CLICK
 import com.maxrave.common.Config.VIDEO_CLICK
 import com.maxrave.common.LibraryChipType
+import com.maxrave.common.MERGING_DATA_TYPE
 import com.maxrave.common.SELECTED_LANGUAGE
 import com.maxrave.common.STATUS_DONE
 import com.maxrave.domain.data.entities.AlbumEntity
@@ -60,6 +61,7 @@ import com.maxrave.domain.repository.PlaylistRepository
 import com.maxrave.domain.repository.SongRepository
 import com.maxrave.domain.repository.StreamRepository
 import com.maxrave.domain.repository.UpdateRepository
+import com.maxrave.domain.utils.LikeFailure
 import com.maxrave.domain.utils.Resource
 import com.maxrave.domain.utils.YouTubeLikeStatus
 import com.maxrave.domain.utils.isEndlessQueueId
@@ -112,17 +114,16 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.getString
 import org.koin.core.component.inject
 import org.simpmusic.lastfm.completeLogin
+import simpmusic.composeapp.generated.resources.log_in_to_like
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.added_local_playlist
 import simpmusic.composeapp.generated.resources.added_to_queue
-import simpmusic.composeapp.generated.resources.added_to_youtube_liked
 import simpmusic.composeapp.generated.resources.disliked
 import simpmusic.composeapp.generated.resources.error
 import simpmusic.composeapp.generated.resources.discord_login_failed
 import simpmusic.composeapp.generated.resources.lastfm_login_failed
 import simpmusic.composeapp.generated.resources.login_success
 import simpmusic.composeapp.generated.resources.play_next
-import simpmusic.composeapp.generated.resources.removed_from_youtube_liked
 import simpmusic.composeapp.generated.resources.shared
 import simpmusic.composeapp.generated.resources.updated
 import simpmusic.composeapp.generated.resources.vote_submitted
@@ -345,7 +346,7 @@ class SharedViewModel(
             viewModelScope.launch {
                 if (videoId != null) {
                     _likeStatus.value = YouTubeLikeStatus.INDIFFERENT
-                    songRepository.getLikeStatus(videoId).collectLatest { status ->
+                    songRepository.getLikeStatus(videoId.removePrefix(MERGING_DATA_TYPE.VIDEO)).collectLatest { status ->
                         _likeStatus.value = status
                     }
                 }
@@ -1687,40 +1688,6 @@ class SharedViewModel(
         }
     }
 
-    fun addToYouTubeLiked() {
-        viewModelScope.launch {
-            val videoId = mediaPlayerHandler.nowPlaying.first()?.mediaId
-            if (videoId != null) {
-                val like = likeStatus.value == YouTubeLikeStatus.LIKE
-                if (!like) {
-                    songRepository
-                        .addToYouTubeLiked(
-                            mediaPlayerHandler.nowPlaying.first()?.mediaId,
-                        ).collect { response ->
-                            if (response == 200) {
-                                makeToast(getString(Res.string.added_to_youtube_liked))
-                                getLikeStatus(videoId)
-                            } else {
-                                makeToast(getString(Res.string.error))
-                            }
-                        }
-                } else {
-                    songRepository
-                        .removeFromYouTubeLiked(
-                            mediaPlayerHandler.nowPlaying.first()?.mediaId,
-                        ).collect {
-                            if (it == 200) {
-                                makeToast(getString(Res.string.removed_from_youtube_liked))
-                                getLikeStatus(videoId)
-                            } else {
-                                makeToast(getString(Res.string.error))
-                            }
-                        }
-                }
-            }
-        }
-    }
-
     /**
      * Dislikes [videoId], the track the sheet was opened for. While the request is out the action
      * reads "Disliking…" and cannot be pressed again; a failure puts it back as it was.
@@ -1984,8 +1951,6 @@ class SharedViewModel(
     // instead of calling runBlocking inside composition (used by NowPlayingScreenContent).
     fun isUserLoggedInFlow(): Flow<Boolean> = dataStoreManager.cookie.map { it.isNotEmpty() }
 
-    fun isCombineFavoriteAndYTLiked(): Boolean = runBlocking { dataStoreManager.combineLocalAndYouTubeLiked.first() == TRUE }
-
     // Last in the class on purpose. Properties start in the order they are written, and this block runs
     // on Main.immediate: when a track is already playing (the activity was recreated, a rotation) the
     // first collector fires inside the constructor and used to reach fields declared further down,
@@ -2047,16 +2012,32 @@ class SharedViewModel(
                         setLyricsProvider()
                     }
                 }
-//            val controllerStateJob =
-//                launch {
-//                    controllerState.map { it.isLiked }.distinctUntilChanged().collectLatest {
-//                        if (dataStoreManager.combineLocalAndYouTubeLiked.first() == TRUE) {
-//                            nowPlayingState.value?.mediaItem?.mediaId?.let {
-//                                getLikeStatus(it)
-//                            }
-//                        }
-//                    }
-//                }
+            // Not joined below: these run for as long as the app does.
+            launch {
+                controllerState.map { it.isLiked }.distinctUntilChanged().collect { liked ->
+                    // A like replaces a dislike on YouTube, and the ⋯ menu's Dislike reads this.
+                    if (liked && _likeStatus.value == YouTubeLikeStatus.DISLIKE) {
+                        _likeStatus.value = YouTubeLikeStatus.LIKE
+                    }
+                }
+            }
+            launch {
+                songRepository.likeFailures.collect { failure ->
+                    makeToast(
+                        getString(
+                            when (failure) {
+                                LikeFailure.NOT_SIGNED_IN -> Res.string.log_in_to_like
+                                LikeFailure.REQUEST_FAILED -> Res.string.error
+                            },
+                        ),
+                    )
+                }
+            }
+            launch {
+                dataStoreManager.loggedIn.distinctUntilChanged().collect { loggedIn ->
+                    if (loggedIn == TRUE) songRepository.syncLikedSongs()
+                }
+            }
             timeLineJob.join()
             checkGetVideoJob.join()
             lyricsProviderJob.join()

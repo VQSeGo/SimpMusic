@@ -165,7 +165,6 @@ class NowPlayingBottomSheetViewModel(
                     state.copy(
                         songUIState =
                             state.songUIState.copy(
-                                isAddedToYouTubeLiked = false,
                             ),
                     )
                 }
@@ -424,7 +423,6 @@ data class NowPlayingBottomSheetUIState(
         val listArtists: List<Artist> = emptyList(),
         val thumbnails: String? = null,
         val liked: Boolean = false,
-        val isAddedToYouTubeLiked: Boolean = false,
         val downloadState: Int = DownloadState.STATE_NOT_DOWNLOADED,
         val album: Album? = null,
         val isLive: Boolean = false,

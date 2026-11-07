@@ -111,12 +111,18 @@ class LibraryDynamicPlaylistViewModel(
 
     private fun getFavoriteSong() {
         viewModelScope.launch {
-            songRepository.getLikedSongs().collectLatest { likedSong ->
-                _listFavoriteSong.value =
-                    likedSong.sortedByDescending {
-                        it.favoriteAt ?: REMOVED_SONG_DATE_TIME
-                    }
+            suspend fun loadLikedSongs() {
+                songRepository.getLikedSongs().collectLatest { likedSong ->
+                    _listFavoriteSong.value =
+                        likedSong.sortedByDescending {
+                            it.favoriteAt ?: REMOVED_SONG_DATE_TIME
+                        }
+                }
             }
+            // The local copy first, so the list opens at once and works offline.
+            loadLikedSongs()
+            songRepository.syncLikedSongs()
+            loadLikedSongs()
         }
     }
 

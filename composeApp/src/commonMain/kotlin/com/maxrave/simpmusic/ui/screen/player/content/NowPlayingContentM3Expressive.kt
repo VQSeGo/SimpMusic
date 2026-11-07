@@ -100,8 +100,6 @@ import com.maxrave.simpmusic.ui.component.LyricText
 import com.maxrave.simpmusic.ui.component.heartBurst
 import com.maxrave.simpmusic.ui.component.rememberHeartBurstState
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
-import com.maxrave.simpmusic.ui.icon.AddCircleOutline
-import com.maxrave.simpmusic.ui.icon.CheckCircle
 import com.maxrave.simpmusic.ui.icon.CommentOutline
 import com.maxrave.simpmusic.ui.icon.Favorite
 import com.maxrave.simpmusic.ui.icon.FavoriteBorder
@@ -675,7 +673,7 @@ private fun NowPlayingM3ExpressiveLayout(
 }
 
 /**
- * Title + artist + the two 48dp tonal circles (YouTube liked, favourite heart).
+ * Title + artist + the 48dp tonal heart.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -767,27 +765,7 @@ internal fun ExpressiveTrackInfoRow(
                 )
             }
         }
-        if (state.isUserLoggedIn) {
-            Spacer(modifier = Modifier.size(12.dp))
-            IconButton(
-                onClick = { actions.onAddToYouTubeLiked() },
-                shape = CircleShape,
-                colors =
-                    IconButtonDefaults.iconButtonColors(
-                        containerColor = colorScheme.surfaceContainerHigh,
-                        contentColor = colorScheme.onSurface,
-                    ),
-                modifier = Modifier.size(48.dp),
-            ) {
-                Crossfade(targetState = state.likeStatus) { liked ->
-                    Icon(
-                        imageVector = if (liked) SimpIcons.CheckCircle else SimpIcons.AddCircleOutline,
-                        contentDescription = "",
-                    )
-                }
-            }
-        }
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(12.dp))
         val likeBurst = rememberHeartBurstState()
         FilledIconToggleButton(
             checked = state.controllerState.isLiked,

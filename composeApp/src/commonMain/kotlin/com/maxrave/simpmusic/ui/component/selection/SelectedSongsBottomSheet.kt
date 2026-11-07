@@ -40,7 +40,7 @@ import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.add_to_a_playlist
 import simpmusic.composeapp.generated.resources.download
-import simpmusic.composeapp.generated.resources.favorite
+import simpmusic.composeapp.generated.resources.like
 import simpmusic.composeapp.generated.resources.n_songs_selected
 import simpmusic.composeapp.generated.resources.play_next
 
@@ -149,7 +149,7 @@ fun SelectedSongsBottomSheet(
                     if (onAddToFavorite != null) {
                         ActionButton(
                             icon = SimpIcons.Favorite,
-                            text = Res.string.favorite,
+                            text = Res.string.like,
                         ) { hideThen(onAddToFavorite) }
                     }
                     extraActions.forEach { action ->

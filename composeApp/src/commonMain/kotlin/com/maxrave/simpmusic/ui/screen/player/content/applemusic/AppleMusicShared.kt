@@ -87,8 +87,6 @@ import com.maxrave.simpmusic.ui.component.ExplicitBadge
 import com.maxrave.simpmusic.ui.component.heartBurst
 import com.maxrave.simpmusic.ui.component.rememberHeartBurstState
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
-import com.maxrave.simpmusic.ui.icon.AddCircleOutline
-import com.maxrave.simpmusic.ui.icon.CheckCircle
 import com.maxrave.simpmusic.ui.icon.CommentOutline
 import com.maxrave.simpmusic.ui.icon.FastForward
 import com.maxrave.simpmusic.ui.icon.FastRewind
@@ -349,27 +347,6 @@ internal fun AppleMusicHeaderActions(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        if (state.isUserLoggedIn) {
-            // 40dp target around a 22dp glyph: a bare 22dp clickable is under half the Material
-            // minimum, on the row that gets tapped most.
-            Box(
-                modifier =
-                    Modifier
-                        .appleMusicPressInflate()
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .clickable { actions.onAddToYouTubeLiked() },
-                contentAlignment = Alignment.Center,
-            ) {
-                Crossfade(targetState = state.likeStatus, label = "appleMusicYtLiked") { liked ->
-                    Icon(
-                        imageVector = if (liked) SimpIcons.CheckCircle else SimpIcons.AddCircleOutline,
-                        contentDescription = "",
-                        tint = Color.White,
-                    )
-                }
-            }
-        }
         val likeBurst = rememberHeartBurstState()
         Box(
             modifier =
