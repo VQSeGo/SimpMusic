@@ -173,7 +173,7 @@ class NowPlayingContentActions(
     val onShowComments: () -> Unit,
     val onShowFullscreenLyrics: () -> Unit,
     val onShowVoteDialog: () -> Unit,
-    /** Writes the lyrics timing offset — the same value Settings › Lyrics edits. */
+    /** Writes the lyrics timing offset of the track playing. */
     val onLyricsOffsetChange: (Int) -> Unit,
     val onEnterFullscreenVideo: () -> Unit,
     val onDismiss: () -> Unit,

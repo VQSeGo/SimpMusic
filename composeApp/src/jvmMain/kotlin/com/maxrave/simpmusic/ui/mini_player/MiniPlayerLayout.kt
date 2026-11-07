@@ -60,8 +60,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.maxrave.domain.data.model.streams.TimeLine
-import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.mediaservice.handler.ControlState
+import com.maxrave.domain.mediaservice.handler.MediaPlayerHandler
+import com.maxrave.domain.mediaservice.handler.currentLyricsOffsetMs
+import com.maxrave.domain.repository.SongRepository
 import com.maxrave.simpmusic.extension.LeftToRight
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
 import com.maxrave.simpmusic.extension.parseRichSyncWords
@@ -1000,6 +1002,8 @@ private fun rememberPreviousVolume(volume: Float): Float {
  */
 @Composable
 private fun rememberLyricsNowMs(timeline: TimeLine): Long {
-    val offsetMs by koinInject<DataStoreManager>().lyricsOffsetMs.collectAsState(0)
+    val songRepository = koinInject<SongRepository>()
+    val mediaPlayerHandler = koinInject<MediaPlayerHandler>()
+    val offsetMs by remember { songRepository.currentLyricsOffsetMs(mediaPlayerHandler) }.collectAsState(0)
     return timeline.current - offsetMs
 }

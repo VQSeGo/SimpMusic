@@ -69,7 +69,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.data.model.lyrics.RomanizationDictionaryState
 import com.maxrave.domain.data.model.lyrics.RomanizationLanguage
+import com.maxrave.domain.mediaservice.handler.MediaPlayerHandler
+import com.maxrave.domain.mediaservice.handler.currentLyricsOffsetMs
 import com.maxrave.domain.repository.LyricsRomanizerRepository
+import com.maxrave.domain.repository.SongRepository
 import com.maxrave.simpmusic.expect.ui.isLyricsBlurSupported
 import com.maxrave.domain.data.model.metadata.Line
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentActions
@@ -453,7 +456,9 @@ fun LyricsView(
     // earlier moment is the one the sheet must light up for. Early in a track this can go negative,
     // which the `now <= 0L` guard below already reads as "no line yet" — correct, since in heard
     // time the song has not reached its first line.
-    val lyricsOffsetMs by dataStoreManager.lyricsOffsetMs.collectAsStateWithLifecycle(0)
+    val songRepository = koinInject<SongRepository>()
+    val mediaPlayerHandler = koinInject<MediaPlayerHandler>()
+    val lyricsOffsetMs by remember { songRepository.currentLyricsOffsetMs(mediaPlayerHandler) }.collectAsStateWithLifecycle(0)
 
     // Apple Music is the lyrics style wherever the blur can be drawn; Classic stays only as the
     // fallback below Android 12, where Modifier.blur is a documented no-op.

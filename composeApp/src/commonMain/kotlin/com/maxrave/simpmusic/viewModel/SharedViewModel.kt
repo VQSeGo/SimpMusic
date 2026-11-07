@@ -61,6 +61,7 @@ import com.maxrave.domain.repository.PlaylistRepository
 import com.maxrave.domain.repository.SongRepository
 import com.maxrave.domain.repository.StreamRepository
 import com.maxrave.domain.repository.UpdateRepository
+import com.maxrave.domain.mediaservice.handler.currentLyricsOffsetMs
 import com.maxrave.domain.utils.LikeFailure
 import com.maxrave.domain.utils.Resource
 import com.maxrave.domain.utils.YouTubeLikeStatus
@@ -1730,11 +1731,19 @@ class SharedViewModel(
 
     fun getLyricsStyle() = dataStoreManager.lyricsStyle
 
-    fun getLyricsOffsetMs() = dataStoreManager.lyricsOffsetMs
+    // One flow for the view model's life: callers collect it from composition.
+    private val currentLyricsOffset by lazy { songRepository.currentLyricsOffsetMs(mediaPlayerHandler) }
 
+    fun getLyricsOffsetMs() = currentLyricsOffset
+
+    /** Sets the offset of the track playing; every other track keeps its own. */
     fun setLyricsOffsetMs(offsetMs: Int) {
+        val videoId =
+            mediaPlayerHandler.nowPlayingState.value.mediaItem.mediaId
+                .removePrefix(MERGING_DATA_TYPE.VIDEO)
+        if (videoId.isEmpty()) return
         viewModelScope.launch {
-            dataStoreManager.setLyricsOffsetMs(offsetMs)
+            songRepository.setLyricsOffsetMs(videoId, offsetMs)
         }
     }
 

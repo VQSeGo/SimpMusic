@@ -176,8 +176,6 @@ class SettingsViewModel(
     val smartDownloadsCount: StateFlow<Int> = _smartDownloadsCount
     private val _youtubeSubtitleLanguage = MutableStateFlow<String>("")
     val youtubeSubtitleLanguage: StateFlow<String> = _youtubeSubtitleLanguage
-    private val _lyricsOffsetMs = MutableStateFlow<Int>(0)
-    val lyricsOffsetMs: StateFlow<Int> = _lyricsOffsetMs
     private val _preferredAudioLanguage = MutableStateFlow("")
     val preferredAudioLanguage: StateFlow<String> = _preferredAudioLanguage
 
@@ -289,7 +287,6 @@ class SettingsViewModel(
         getTranslationLanguage()
         getYoutubeSubtitleLanguage()
         getLyricsProvider()
-        getLyricsOffsetMs()
         getUseTranslation()
         getPlayVideoInsteadOfAudio()
         getRadioAudioOnly()
@@ -1033,23 +1030,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             dataStoreManager.setTranslationLanguage(language)
             getTranslationLanguage()
-        }
-    }
-
-    private fun getLyricsOffsetMs() {
-        viewModelScope.launch {
-            dataStoreManager.lyricsOffsetMs.collect { offsetMs ->
-                _lyricsOffsetMs.emit(offsetMs)
-            }
-        }
-    }
-
-    // Deliberately does NOT re-call its getter the way the settings around it do: that getter
-    // collects forever, so calling it again on every write leaves another collector running for the
-    // life of the ViewModel. The one started in init already publishes this value.
-    fun setLyricsOffsetMs(offsetMs: Int) {
-        viewModelScope.launch {
-            dataStoreManager.setLyricsOffsetMs(offsetMs)
         }
     }
 
@@ -2081,8 +2061,8 @@ class SettingsViewModel(
         }
     }
 
-    // Does not re-call the getter, for the same reason as setLyricsOffsetMs: the collector started
-    // in init already publishes every write.
+    // Does not re-call the getter the way the settings around it do: it collects forever, so calling
+    // it on every write would leave another collector running. The one started in init publishes this.
     fun setPreferredAudioLanguage(language: String) {
         viewModelScope.launch {
             dataStoreManager.setPreferredAudioLanguage(language)
