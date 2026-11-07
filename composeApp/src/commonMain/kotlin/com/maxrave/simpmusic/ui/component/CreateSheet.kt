@@ -1,7 +1,6 @@
 package com.maxrave.simpmusic.ui.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +48,6 @@ import androidx.navigation.NavController
 import com.kyant.backdrop.highlight.Highlight
 import com.maxrave.domain.repository.ListenTogetherRepository
 import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
-import com.maxrave.simpmusic.ui.icon.Add
 import com.maxrave.simpmusic.ui.icon.Groups
 import com.maxrave.simpmusic.ui.icon.PlaylistAdd
 import com.maxrave.simpmusic.ui.icon.Settings
@@ -74,85 +72,39 @@ import simpmusic.composeapp.generated.resources.playlist_name_cannot_be_empty
 import simpmusic.composeapp.generated.resources.settings
 
 /**
- * The top-bar "+" (Spotify's Create): a local playlist or a Listen Together room.
- *
- * With liquid glass on it is a glass pill, shared with Settings when [onSettings] is given, like the
- * like/search/more pill on the playlist screens; [backdrop] must be a sibling of this, never an
- * ancestor. With glass off the "+" gets a grey fill and a border so it reads as the special one, and
- * Settings stays a plain icon.
+ * Settings in the Home top bar on a phone. With liquid glass on it is a glass circle; [backdrop]
+ * must be a sibling of this, never an ancestor.
  */
 @Composable
-fun CreateActions(
+fun HomeSettingsButton(
     backdrop: PlatformBackdrop,
-    navController: NavController,
-    onSettings: (() -> Unit)? = null,
+    onClick: () -> Unit,
 ) {
-    val room by koinInject<ListenTogetherRepository>().room.collectAsStateWithLifecycle()
-    var showCreate by remember { mutableStateOf(false) }
-    val tint = MaterialTheme.colorScheme.onBackground
-
-    val createButton: @Composable () -> Unit = {
-        Box(Modifier.size(44.dp), contentAlignment = Alignment.Center) {
-            if (LocalLiquidGlassEnabled.current) {
-                IconButton(onClick = { showCreate = true }) {
-                    Icon(SimpIcons.Add, contentDescription = stringResource(Res.string.create), tint = tint)
-                }
-            } else {
-                Box(
-                    modifier =
-                        Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
-                            .clickable { showCreate = true },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(SimpIcons.Add, contentDescription = stringResource(Res.string.create), tint = tint)
-                }
-            }
-            // Listen Together moved into the sheet, so its live-room dot moved onto this button.
-            if (room.inRoom) LiveRoomDot()
+    val button: @Composable () -> Unit = {
+        IconButton(onClick = onClick, modifier = Modifier.size(44.dp)) {
+            Icon(SimpIcons.Settings, contentDescription = stringResource(Res.string.settings), tint = MaterialTheme.colorScheme.onBackground)
         }
     }
-    val settingsButton: @Composable () -> Unit = {
-        if (onSettings != null) {
-            IconButton(onClick = onSettings, modifier = Modifier.size(44.dp)) {
-                Icon(SimpIcons.Settings, contentDescription = stringResource(Res.string.settings), tint = tint)
-            }
-        }
-    }
-
     if (LocalLiquidGlassEnabled.current) {
         Row(
             modifier =
                 Modifier
                     // 44dp, the Home avatar's size: Apple sizes a bar's avatar and glass buttons alike.
                     .height(44.dp)
-                    .liquidGlass(
-                        backdrop,
-                        RoundedCornerShape(24.dp),
-                        // Alone, the "+" is a small circle, which the directional default rim misses.
-                        highlight = if (onSettings == null) Highlight(width = 1.dp) else Highlight.Default,
-                    ),
+                    // Alone it is a small circle, which the directional default rim misses.
+                    .liquidGlass(backdrop, RoundedCornerShape(24.dp), highlight = Highlight(width = 1.dp)),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            createButton()
-            settingsButton()
+            button()
         }
     } else {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            createButton()
-            settingsButton()
-        }
+        button()
     }
-
-    CreateDialogs(visible = showCreate, onDismiss = { showCreate = false }, navController = navController)
 }
 
 /**
  * The Create sheet (local playlist or Listen Together room) and the playlist-name sheet it leads to,
- * for any button that wants to open them: the Home top bar's "+" and the Desktop sidebar's.
+ * for any button that wants to open them: the Library's Create tile and the Desktop sidebar's "+".
  */
 @Composable
 fun CreateDialogs(

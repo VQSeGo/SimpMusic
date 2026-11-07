@@ -133,13 +133,13 @@ import com.maxrave.simpmusic.extension.ultraThinBarStyle
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.CenterLoadingBox
 import com.maxrave.simpmusic.ui.component.Chip
-import com.maxrave.simpmusic.ui.component.CreateActions
 import com.maxrave.simpmusic.ui.component.DropdownButton
 import com.maxrave.simpmusic.ui.component.EndOfPage
 import com.maxrave.simpmusic.ui.component.ExpandableChip
 import com.maxrave.simpmusic.ui.component.HomeDiscoverSection
 import com.maxrave.simpmusic.ui.component.HomeItem
 import com.maxrave.simpmusic.ui.component.HomeItemContentPlaylist
+import com.maxrave.simpmusic.ui.component.HomeSettingsButton
 import com.maxrave.simpmusic.ui.component.HomeShimmer
 import com.maxrave.simpmusic.ui.component.ItemArtistChart
 import com.maxrave.simpmusic.ui.component.MoodMomentAndGenreHomeItem
@@ -816,19 +816,14 @@ fun HomeScreen(
                 // strip, so at rest Create sits at the right edge, and a Mood that opens wide pushes it
                 // along instead of sliding under it. On Desktop and in landscape Create stays put at the
                 // right edge, like the avatar.
-                // No avatar anywhere: signing in is in Settings. On Desktop Settings, Notifications and
-                // Create live in the sidebar; on a phone Settings sits in the Create pill.
+                // No avatar anywhere: signing in is in Settings. On Desktop Settings and Notifications
+                // live in the sidebar. Creating is in the Library on both.
                 val isDesktop = getPlatform() == Platform.Desktop
-                val createPinned = isDesktop || getScreenSizeInfo().let { it.wDP >= it.hDP }
+                val settingsPinned = isDesktop || getScreenSizeInfo().let { it.wDP >= it.hDP }
                 val chipHeadFade by animateFloatAsState(if (chipRowState.canScrollBackward) 1f else 0f)
                 val chipTailFade by animateFloatAsState(if (chipRowState.canScrollForward) 1f else 0f)
-                // Listen Together lives in the Create sheet.
-                val createActions: @Composable () -> Unit = {
-                    CreateActions(
-                        backdrop = chipBackdrop,
-                        navController = navController,
-                        onSettings = { navController.navigate(SettingsDestination) },
-                    )
+                val settingsButton: @Composable () -> Unit = {
+                    HomeSettingsButton(backdrop = chipBackdrop) { navController.navigate(SettingsDestination) }
                 }
                 Row(
                     modifier =
@@ -851,7 +846,7 @@ fun HomeScreen(
                                     .mouseDragScroll(chipRowState)
                                     .horizontalScroll(chipRowState)
                                     .widthIn(min = maxWidth)
-                                    .padding(end = if (createPinned && !isDesktop) 0.dp else 16.dp),
+                                    .padding(end = if (settingsPinned && !isDesktop) 0.dp else 16.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -882,13 +877,13 @@ fun HomeScreen(
                                     backdrop = chipBackdrop,
                                 )
                             }
-                            if (!createPinned) {
-                                Box(Modifier.padding(start = 8.dp)) { createActions() }
+                            if (!settingsPinned) {
+                                Box(Modifier.padding(start = 8.dp)) { settingsButton() }
                             }
                         }
                     }
-                    if (createPinned && !isDesktop) {
-                        Box(Modifier.padding(start = 8.dp, end = 16.dp)) { createActions() }
+                    if (settingsPinned && !isDesktop) {
+                        Box(Modifier.padding(start = 8.dp, end = 16.dp)) { settingsButton() }
                     }
                 }
             }
