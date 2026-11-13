@@ -114,7 +114,8 @@
   `stayOnPlayerTrack` возвращает пейджер на место.
 - Загрузки на десктопе живут в очереди `DownloadUtils`, а не в экране: `downloadTrack` только ставит трек в очередь, как на
   Android. Строки в состоянии «качается» возобновляются при запуске. Обрывы googlevideo лечит докачка кусками
-  (`downloadInRanges`).
+  (`downloadInRanges`). Незаконченный файл лежит в `downloads/.partial` и переносится в `downloads/<id>.webm` целиком: плеер
+  берёт файл по точному имени, любой файл с таким именем считается готовым.
 - Иконки — сгенерированные `ImageVector` в `ui/icon/` (`SimpIcons.X` + отдельный импорт на каждую).
   Как добавить новую: скилл `simpmusic-icons`.
 - Строки только в `composeApp/src/commonMain/composeResources/values*/strings.xml`. Остальные языки
