@@ -422,13 +422,10 @@
     <string name="delete">Delete</string>
     <string name="top_videos">Top videos</string>
     <string name="trending">Trending</string>
-    <string name="new_singles">New singles</string>
-    <string name="new_albums">New albums</string>
     <string name="notification">Notification</string>
     <string name="month_s_ago">%1$d month(s) ago</string>
     <string name="day_s_ago">%1$d day(s) ago</string>
     <string name="hour_s_ago">%1$d hour(s) ago</string>
-    <string name="no_notification">No notification</string>
     <string name="created_at">Created at %1$s</string>
     <string name="unknown">Unknown</string>
     <string name="repeat_one">Repeat One</string>
@@ -746,8 +743,6 @@
     <string name="quit_app">Quit app</string>
     <string name="local_tracking_title">Local tracking listening history</string>
     <string name="local_tracking_description">Log your listening history to local database</string>
-    <string name="blog_notification_title">Blog post notifications</string>
-    <string name="blog_notification_description">Get notified when a new blog post is published</string>
     <string name="simpmusic_charts">SimpMusic Charts</string>
     <string name="crossfading">Crossfading</string>
     <string name="your_320kbps_url">Your 320kbps URL</string>
@@ -1071,8 +1066,6 @@
     <string name="recognize_mic_needed">Microphone access needed</string>
     <string name="recognize_mic_hint">SimpMusic listens for a few seconds to find the song playing near you</string>
     <string name="recognize_allow_mic">Allow microphone</string>
-    <string name="show_notifications_entry">Show notifications in the sidebar</string>
-    <string name="show_notifications_entry_description">Adds the notification list to the left panel on Desktop</string>
     <string name="track_info">Track info</string>
     <string name="log_in_to_like">Log in to YouTube to like songs</string>
     <string name="download_notifications">Download notifications</string>

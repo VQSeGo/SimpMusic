@@ -331,13 +331,10 @@
     <string name="delete">删除</string>
     <string name="top_videos">热门视频</string>
     <string name="trending">热门趋势</string>
-    <string name="new_singles">新单曲</string>
-    <string name="new_albums">新专辑</string>
     <string name="notification">通知</string>
     <string name="month_s_ago">%1$d 个月前</string>
     <string name="day_s_ago">%1$d 天前</string>
     <string name="hour_s_ago">%1$d 小时前</string>
-    <string name="no_notification">无通知</string>
     <string name="created_at">创建于 %1$s</string>
     <string name="unknown">未知</string>
     <string name="repeat_one">单曲循环</string>
@@ -552,8 +549,6 @@
     <string name="quit_app">退出应用</string>
     <string name="local_tracking_title">在本地保存播放历史记录</string>
     <string name="local_tracking_description">将您的收听历史记录到本地数据库</string>
-    <string name="blog_notification_title">博客文章通知</string>
-    <string name="blog_notification_description">在开发者发布新博文时接收通知</string>
     <string name="simpmusic_charts">SimpMusic 排行榜</string>
     <string name="crossfading">交叉淡入淡出</string>
     <string name="your_320kbps_url">您的 320kbps URL</string>

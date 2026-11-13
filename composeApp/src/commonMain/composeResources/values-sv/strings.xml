@@ -414,13 +414,10 @@
     <string name="delete">Ta bort</string>
     <string name="top_videos">Populära videor</string>
     <string name="trending">Populärt just nu</string>
-    <string name="new_singles">Nya singlar</string>
-    <string name="new_albums">Nya album</string>
     <string name="notification">Avisering</string>
     <string name="month_s_ago">%1$d månad(er) sedan</string>
     <string name="day_s_ago">%1$d dag(ar) sedan</string>
     <string name="hour_s_ago">%1$d timme/timmar sedan</string>
-    <string name="no_notification">Inga aviseringar</string>
     <string name="created_at">Skapad %1$s</string>
     <string name="unknown">Okänd</string>
     <string name="repeat_one">Upprepa en låt</string>
@@ -714,8 +711,6 @@
     <string name="quit_app">Avsluta appen</string>
     <string name="local_tracking_title">Spara lyssningshistorik lokalt</string>
     <string name="local_tracking_description">Spara din lyssningshistorik i den lokala databasen</string>
-    <string name="blog_notification_title">Aviseringar om blogginlägg</string>
-    <string name="blog_notification_description">Få en avisering när ett nytt blogginlägg publiceras</string>
     <string name="simpmusic_charts">SimpMusic-topplistor</string>
     <string name="crossfading">Övertoning</string>
     <string name="your_320kbps_url">Din webbadress för 320 kbit/s</string>

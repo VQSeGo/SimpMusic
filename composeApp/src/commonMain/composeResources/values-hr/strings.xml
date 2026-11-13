@@ -387,13 +387,10 @@
     <string name="delete">Izbriši</string>
     <string name="top_videos">Top videos</string>
     <string name="trending">Trending</string>
-    <string name="new_singles">Nevo singles</string>
-    <string name="new_albums">Nevo albums</string>
     <string name="notification">Obavijest</string>
     <string name="month_s_ago">%1$d month(s) ago</string>
     <string name="day_s_ago">%1$d day(s) ago</string>
     <string name="hour_s_ago">%1$d hour(s) ago</string>
-    <string name="no_notification">Ne notification</string>
     <string name="created_at">Stvorid at %1$s</string>
     <string name="unknown">Nepoznato</string>
     <string name="repeat_one">Repeat One</string>
@@ -677,8 +674,6 @@
     <string name="quit_app">Quit app</string>
     <string name="local_tracking_title">Local tracking listening history</string>
     <string name="local_tracking_description">Log your listening history to local database</string>
-    <string name="blog_notification_title">Blog post notifications</string>
-    <string name="blog_notification_description">Get notified when a new blog post is published</string>
     <string name="simpmusic_charts">SimpMusic Ljestvicas</string>
     <string name="crossfading">Crossfading</string>
     <string name="your_320kbps_url">Your 320kbps URL</string>

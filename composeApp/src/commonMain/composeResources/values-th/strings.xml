@@ -349,13 +349,10 @@
     <string name="delete">ลบ</string>
     <string name="top_videos">วิดีโอยอดนิยม</string>
     <string name="trending">กำลังเป็นที่นิยม</string>
-    <string name="new_singles">ซิงเกิลใหม่</string>
-    <string name="new_albums">อัลบั้มใหม่</string>
     <string name="notification">การแจ้งเตือน</string>
     <string name="month_s_ago">%1$d เดือนที่แล้ว</string>
     <string name="day_s_ago">%1$d วันที่แล้ว</string>
     <string name="hour_s_ago">%1$d ชั่วโมงที่แล้ว</string>
-    <string name="no_notification">ยังไม่มีการแจ้งเตือน</string>
     <string name="created_at">สร้างขึ้นเมื่อ %1$s</string>
     <string name="unknown">ไม่รู้จัก</string>
     <string name="repeat_one">ทำซ้ำอีกครั้งหนึ่ง</string>
@@ -567,8 +564,6 @@
     <string name="quit_app">ออกจากแอป</string>
     <string name="local_tracking_title">ติดตามประวัติการฟังในเครื่อง</string>
     <string name="local_tracking_description">บันทึกประวัติการฟังไว้ในฐานข้อมูลภายในเครื่อง</string>
-    <string name="blog_notification_title">รับการแจ้งเตือนจากบล็อก</string>
-    <string name="blog_notification_description">รับการแจ้งเตือนจากบล็อกเมื่อมีบทความใหม่</string>
     <string name="simpmusic_charts">ชาร์ต SimpMusic</string>
     <string name="crossfading">Crossfading</string>
     <string name="your_320kbps_url">ลิงก์สตรีม 320 kbps ของคุณ</string>

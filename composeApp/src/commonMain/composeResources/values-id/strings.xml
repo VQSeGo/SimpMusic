@@ -335,13 +335,10 @@
     <string name="delete">Hapus</string>
     <string name="top_videos">Video teratas</string>
     <string name="trending">Sedang tren</string>
-    <string name="new_singles">Single terbaru</string>
-    <string name="new_albums">Album baru</string>
     <string name="notification">Pemberitahuan</string>
     <string name="month_s_ago">%1$d bulan yang lalu</string>
     <string name="day_s_ago">%1$d hari yang lalu</string>
     <string name="hour_s_ago">%1$d jam yang lalu</string>
-    <string name="no_notification">Tidak ada pemberitahuan</string>
     <string name="created_at">Dibuat pada %1$s</string>
     <string name="unknown">Tak diketahui</string>
     <string name="repeat_one">Ulangi Sekali</string>
@@ -542,8 +539,6 @@
     <string name="quit_app">Keluar aplikasi</string>
     <string name="local_tracking_title">Riwayat mendengarkan pelacakan lokal</string>
     <string name="local_tracking_description">Catat riwayat mendengarkan Anda ke basis data lokal</string>
-    <string name="blog_notification_title">Pemberitahuan postingan blog</string>
-    <string name="blog_notification_description">Dapatkan pemberitahuan saat ada postingan blog baru yang diterbitkan</string>
     <string name="simpmusic_charts">Tangga lagu SimpMusic</string>
     <string name="crossfading">Memudar</string>
     <string name="your_320kbps_url">URL 320kbps Anda</string>

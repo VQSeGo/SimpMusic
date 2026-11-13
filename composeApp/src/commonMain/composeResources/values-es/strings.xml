@@ -395,13 +395,10 @@
     <string name="delete">Eliminar</string>
     <string name="top_videos">Mejores videos</string>
     <string name="trending">Tendencias</string>
-    <string name="new_singles">Nuevos sencillos</string>
-    <string name="new_albums">Nuevos álbumes</string>
     <string name="notification">Notificación</string>
     <string name="month_s_ago">Hace %1$d mese(s)</string>
     <string name="day_s_ago">Hace %1$d día(s)</string>
     <string name="hour_s_ago">Hace %1$d hora(s)</string>
-    <string name="no_notification">No hay notificaciones</string>
     <string name="created_at">Creado en %1$s</string>
     <string name="unknown">Desconocido</string>
     <string name="repeat_one">Repetir una vez</string>
@@ -665,8 +662,6 @@
     <string name="quit_app">Salir</string>
     <string name="local_tracking_title">Historial de escuchas local de seguimiento</string>
     <string name="local_tracking_description">Registra tu historial de escucha en la base de datos local</string>
-    <string name="blog_notification_title">Notificaciones de publicaciones del blog</string>
-    <string name="blog_notification_description">Recibe una notificación cuando se publique una nueva entrada del blog</string>
     <string name="simpmusic_charts">Gráficos SimpMusic</string>
     <string name="crossfading">Crossfade</string>
     <string name="your_320kbps_url">Su URL de 320kbps</string>

@@ -405,13 +405,10 @@
     <string name="delete">Видалити</string>
     <string name="top_videos">Топ відео</string>
     <string name="trending">Популярне</string>
-    <string name="new_singles">Нові сингли</string>
-    <string name="new_albums">Нові альбоми</string>
     <string name="notification">Сповіщення</string>
     <string name="month_s_ago">%1$d міс. тому</string>
     <string name="day_s_ago">%1$d дн. тому</string>
     <string name="hour_s_ago">%1$d год. тому</string>
-    <string name="no_notification">Немає сповіщень</string>
     <string name="created_at">Створено: %1$s</string>
     <string name="unknown">Невідомо</string>
     <string name="repeat_one">Повтор композиції</string>
@@ -698,8 +695,6 @@
     <string name="quit_app">Вийти</string>
     <string name="local_tracking_title">Локальне відстеження історії прослуховування</string>
     <string name="local_tracking_description">Запис історії прослуховування в локальну базу даних</string>
-    <string name="blog_notification_title">Сповіщення про публікації в блозі</string>
-    <string name="blog_notification_description">Отримуйте сповіщення про публікацію нової публікації в блозі</string>
     <string name="simpmusic_charts">Чарти SimpMusic</string>
     <string name="crossfading">Кроссфейдинг</string>
     <string name="your_320kbps_url">Ваша URL-адреса 320 Кбіт/с</string>
