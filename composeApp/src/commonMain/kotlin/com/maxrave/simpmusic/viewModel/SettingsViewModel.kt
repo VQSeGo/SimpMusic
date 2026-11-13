@@ -53,7 +53,6 @@ import simpmusic.composeapp.generated.resources.backup_create_failed
 import simpmusic.composeapp.generated.resources.backup_create_success
 import simpmusic.composeapp.generated.resources.backup_in_progress
 import simpmusic.composeapp.generated.resources.cancel
-import simpmusic.composeapp.generated.resources.clear_canvas_cache
 import simpmusic.composeapp.generated.resources.clear_listening_history
 import simpmusic.composeapp.generated.resources.clear_downloaded_cache
 import simpmusic.composeapp.generated.resources.clear_listening_history_done
@@ -124,8 +123,6 @@ class SettingsViewModel(
     val videoQuality: StateFlow<String?> = _videoQuality
     private var _thumbCacheSize = MutableStateFlow<Long?>(null)
     val thumbCacheSize: StateFlow<Long?> = _thumbCacheSize
-    private var _canvasCacheSize: MutableStateFlow<Long?> = MutableStateFlow(null)
-    val canvasCacheSize: StateFlow<Long?> = _canvasCacheSize
     private var _usingProxy = MutableStateFlow(false)
     val usingProxy: StateFlow<Boolean> = _usingProxy
     private var _proxyType = MutableStateFlow(DataStoreManager.ProxyType.PROXY_TYPE_HTTP)
@@ -256,10 +253,7 @@ class SettingsViewModel(
         getSpotifyLyrics()
         getEqualizer()
         getAudioEffects()
-        getSpotifyCanvas()
-        getAMAnimatedArtwork()
         getUsingProxy()
-        getCanvasCache()
         getAutoCheckUpdate()
         getKillServiceOnExit()
         getCrossfadeEnabled()
@@ -649,12 +643,6 @@ class SettingsViewModel(
         }
     }
 
-    private fun getCanvasCache() {
-        viewModelScope.launch {
-            _canvasCacheSize.value = cacheRepository.getCacheSize(Config.CANVAS_CACHE)
-        }
-    }
-
     fun setAlertData(alertData: SettingAlertState?) {
         _alertData.value = alertData
     }
@@ -1003,14 +991,6 @@ class SettingsViewModel(
             makeToast(getString(Res.string.clear_downloaded_cache))
             getDownloadedCacheSize()
             downloadUtils.removeAllDownloads()
-        }
-    }
-
-    fun clearCanvasCache() {
-        viewModelScope.launch {
-            cacheRepository.clearCache(Config.CANVAS_CACHE)
-            makeToast(getString(Res.string.clear_canvas_cache))
-            getCanvasCache()
         }
     }
 
@@ -1433,10 +1413,9 @@ class SettingsViewModel(
             if (!loggedIn) {
                 dataStoreManager.setSpdc("")
                 // Logging out of Spotify must also tear down everything gated behind it. Otherwise the
-                // lyrics/canvas flags stay stuck ON with no way to switch them off (the toggles grey out
+                // lyrics flag stays stuck ON with no way to switch them off (the toggles grey out
                 // when logged out) and stale tokens linger — issue #2064, same family as Discord #2157.
                 dataStoreManager.setSpotifyLyrics(false)
-                dataStoreManager.setSpotifyCanvas(false)
                 if (dataStoreManager.lyricsProvider.first() == DataStoreManager.SPOTIFY) {
                     dataStoreManager.setLyricsProvider(DataStoreManager.SIMPMUSIC)
                 }
@@ -1670,12 +1649,6 @@ class SettingsViewModel(
     private var _spotifyLyrics: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val spotifyLyrics: StateFlow<Boolean> = _spotifyLyrics
 
-    private var _spotifyCanvas: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val spotifyCanvas: StateFlow<Boolean> = _spotifyCanvas
-
-    private var _amAnimatedArtwork: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val amAnimatedArtwork: StateFlow<Boolean> = _amAnimatedArtwork
-
     fun getSpotifyLyrics() {
         viewModelScope.launch {
             dataStoreManager.spotifyLyrics.collect {
@@ -1692,40 +1665,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             dataStoreManager.setSpotifyLyrics(loggedIn)
             getSpotifyLyrics()
-        }
-    }
-
-    fun getSpotifyCanvas() {
-        viewModelScope.launch {
-            dataStoreManager.spotifyCanvas.collect {
-                if (it == DataStoreManager.TRUE) {
-                    _spotifyCanvas.emit(true)
-                } else {
-                    _spotifyCanvas.emit(false)
-                }
-            }
-        }
-    }
-
-    fun setSpotifyCanvas(loggedIn: Boolean) {
-        viewModelScope.launch {
-            dataStoreManager.setSpotifyCanvas(loggedIn)
-            getSpotifyCanvas()
-        }
-    }
-
-    fun getAMAnimatedArtwork() {
-        viewModelScope.launch {
-            dataStoreManager.amAnimatedArtwork.collect {
-                _amAnimatedArtwork.emit(it == DataStoreManager.TRUE)
-            }
-        }
-    }
-
-    fun setAMAnimatedArtwork(enabled: Boolean) {
-        viewModelScope.launch {
-            dataStoreManager.setAMAnimatedArtwork(enabled)
-            getAMAnimatedArtwork()
         }
     }
 
@@ -1782,12 +1721,11 @@ data class SettingsStorageSectionFraction(
     val otherApp: Float = 0f,
     val downloadCache: Float = 0f,
     val playerCache: Float = 0f,
-    val canvasCache: Float = 0f,
     val thumbCache: Float = 0f,
     val appDatabase: Float = 0f,
     val freeSpace: Float = 0f,
 ) {
-    fun combine(): Float = otherApp + downloadCache + playerCache + canvasCache + thumbCache + appDatabase + freeSpace
+    fun combine(): Float = otherApp + downloadCache + playerCache + thumbCache + appDatabase + freeSpace
 }
 
 data class SettingAlertState(

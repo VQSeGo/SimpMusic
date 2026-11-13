@@ -198,14 +198,11 @@ import simpmusic.composeapp.generated.resources.balance_media_loudness
 import simpmusic.composeapp.generated.resources.better_lyrics
 import simpmusic.composeapp.generated.resources.buy_me_a_coffee
 import simpmusic.composeapp.generated.resources.cancel
-import simpmusic.composeapp.generated.resources.animated_artwork_info
-import simpmusic.composeapp.generated.resources.canvas_info
 import simpmusic.composeapp.generated.resources.change
 import simpmusic.composeapp.generated.resources.change_language_warning
 import simpmusic.composeapp.generated.resources.check_for_update
 import simpmusic.composeapp.generated.resources.checking
 import simpmusic.composeapp.generated.resources.clear
-import simpmusic.composeapp.generated.resources.clear_canvas_cache
 import simpmusic.composeapp.generated.resources.clear_downloaded_cache
 import simpmusic.composeapp.generated.resources.clear_listening_history
 import simpmusic.composeapp.generated.resources.clear_listening_history_confirm
@@ -232,8 +229,6 @@ import simpmusic.composeapp.generated.resources.discord_integration
 import simpmusic.composeapp.generated.resources.donation
 import simpmusic.composeapp.generated.resources.download_quality
 import simpmusic.composeapp.generated.resources.downloaded_cache
-import simpmusic.composeapp.generated.resources.enable_animated_artwork
-import simpmusic.composeapp.generated.resources.enable_canvas
 import simpmusic.composeapp.generated.resources.enable_liquid_glass_effect
 import simpmusic.composeapp.generated.resources.enable_liquid_glass_effect_description
 import simpmusic.composeapp.generated.resources.enable_rich_presence
@@ -360,7 +355,6 @@ import simpmusic.composeapp.generated.resources.smart_downloads_size
 import simpmusic.composeapp.generated.resources.smart_downloads_size_value
 import simpmusic.composeapp.generated.resources.socks
 import simpmusic.composeapp.generated.resources.spotify
-import simpmusic.composeapp.generated.resources.spotify_canvas_cache
 import simpmusic.composeapp.generated.resources.spotify_lyrícs_info
 import simpmusic.composeapp.generated.resources.storage
 import simpmusic.composeapp.generated.resources.such_as_music_video_lyrics_video_podcasts_and_more
@@ -482,12 +476,9 @@ fun SettingScreen(
     val preferredAudioLanguage by viewModel.preferredAudioLanguage.collectAsStateWithLifecycle()
     val spotifyLoggedIn by viewModel.spotifyLogIn.collectAsStateWithLifecycle()
     val spotifyLyrics by viewModel.spotifyLyrics.collectAsStateWithLifecycle()
-    val spotifyCanvas by viewModel.spotifyCanvas.collectAsStateWithLifecycle()
-    val amAnimatedArtwork by viewModel.amAnimatedArtwork.collectAsStateWithLifecycle()
     val playerCache by viewModel.cacheSize.collectAsStateWithLifecycle()
     val downloadedCache by viewModel.downloadedCacheSize.collectAsStateWithLifecycle()
     val thumbnailCache by viewModel.thumbCacheSize.collectAsStateWithLifecycle()
-    val canvasCache by viewModel.canvasCacheSize.collectAsStateWithLifecycle()
     val limitPlayerCache by viewModel.playerCacheLimit.collectAsStateWithLifecycle()
     val fraction by viewModel.fraction.collectAsStateWithLifecycle()
     val lastCheckUpdate by viewModel.lastCheckForUpdate.collectAsStateWithLifecycle()
@@ -1663,20 +1654,6 @@ fun SettingScreen(
                     switch = (spotifyLyrics to { viewModel.setSpotifyLyrics(it) }),
                     isEnable = spotifyLoggedIn,
                 )
-                SettingItem(
-                    title = stringResource(Res.string.enable_canvas),
-                    subtitle = stringResource(Res.string.canvas_info),
-                    switch = (spotifyCanvas to { viewModel.setSpotifyCanvas(it) }),
-                    isEnable = spotifyLoggedIn,
-                )
-                // Sits with the canvas because it replaces it, but carries no isEnable: the two
-                // rows above need a Spotify session and this one needs no account at all, so
-                // gating it on spotifyLoggedIn would lock it away from the users it works for.
-                SettingItem(
-                    title = stringResource(Res.string.enable_animated_artwork),
-                    subtitle = stringResource(Res.string.animated_artwork_info),
-                    switch = (amAnimatedArtwork to { viewModel.setAMAnimatedArtwork(it) }),
-                )
             }
         }
         item(key = "discord") {
@@ -1760,23 +1737,6 @@ fun SettingScreen(
                                     confirm =
                                         runBlocking { getString(Res.string.clear) } to {
                                             viewModel.clearThumbnailCache(platformContext)
-                                        },
-                                    dismiss = runBlocking { getString(Res.string.cancel) },
-                                ),
-                            )
-                        },
-                    )
-                    SettingItem(
-                        title = stringResource(Res.string.spotify_canvas_cache),
-                        subtitle = "${canvasCache.bytesToMB()} MB",
-                        onClick = {
-                            viewModel.setBasicAlertData(
-                                SettingBasicAlertState(
-                                    title = runBlocking { getString(Res.string.clear_canvas_cache) },
-                                    message = null,
-                                    confirm =
-                                        runBlocking { getString(Res.string.clear) } to {
-                                            viewModel.clearCanvasCache()
                                         },
                                     dismiss = runBlocking { getString(Res.string.cancel) },
                                 ),
@@ -1869,17 +1829,6 @@ fun SettingScreen(
                                     modifier =
                                         Modifier
                                             .width(
-                                                (fraction.canvasCache * width).dp,
-                                            ).background(
-                                                Color.Cyan,
-                                            ).fillMaxHeight(),
-                                )
-                            }
-                            item {
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .width(
                                                 (fraction.thumbCache * width).dp,
                                             ).background(
                                                 Color.Magenta,
@@ -1954,21 +1903,6 @@ fun SettingScreen(
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(text = stringResource(Res.string.player_cache), style = typo().bodySmall)
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    ) {
-                        Box(
-                            Modifier
-                                .size(12.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    Color.Cyan,
-                                ),
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(text = stringResource(Res.string.spotify_canvas_cache), style = typo().bodySmall)
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
