@@ -21,12 +21,6 @@ object WindowsProtocolRegistrar {
     private const val TAG = "WindowsProtocolRegistrar"
     private const val SCHEME = "simpmusic"
 
-    /**
-     * The Last.fm auth callback. Its scheme is fixed by the callback URL registered on the Last.fm
-     * API account, so it cannot be folded into "simpmusic".
-     */
-    private const val LASTFM_SCHEME = "wordbyword"
-
     private fun regKeyOf(scheme: String) = "HKCU\\Software\\Classes\\$scheme"
 
     fun register() {
@@ -38,7 +32,6 @@ object WindowsProtocolRegistrar {
         }
 
         register(SCHEME, "URL:SimpMusic Protocol", exePath)
-        register(LASTFM_SCHEME, "URL:SimpMusic Last.fm Callback", exePath)
     }
 
     private fun register(

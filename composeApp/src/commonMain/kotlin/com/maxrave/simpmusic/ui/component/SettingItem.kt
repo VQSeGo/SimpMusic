@@ -54,7 +54,7 @@ fun SettingItem(
     // its "not loaded yet" value and read it as "signed out" — sync_follow_to_youtube was erased on
     // every visit to Settings. And it only ever ran if the user opened Settings and scrolled to the
     // row at all, so it could not do the job it existed for. Clearing a child flag now belongs to the
-    // logout that invalidates it (SettingsViewModel: setSpotifyLogIn, logOutDiscord, logOutLastfm,
+    // logout that invalidates it (SettingsViewModel: setSpotifyLogIn, logOutDiscord,
     // setUsedAccount, logOutAllYouTube), which is a real event and cannot misfire.
     val dividerColor = MaterialTheme.colorScheme.outlineVariant
     // The disabled colour the sheets use (SurfaceDarkColors.disabled). TextStyle.greyScale() alone

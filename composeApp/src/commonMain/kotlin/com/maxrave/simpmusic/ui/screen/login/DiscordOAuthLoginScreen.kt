@@ -52,9 +52,9 @@ import simpmusic.composeapp.generated.resources.discord_login_failed
 import simpmusic.composeapp.generated.resources.discord_login_step_1
 import simpmusic.composeapp.generated.resources.discord_login_step_2
 import simpmusic.composeapp.generated.resources.discord_open_authorize_page
-import simpmusic.composeapp.generated.resources.lastfm_paste_callback_confirm
-import simpmusic.composeapp.generated.resources.lastfm_paste_callback_hint
-import simpmusic.composeapp.generated.resources.lastfm_paste_callback_title
+import simpmusic.composeapp.generated.resources.discord_paste_callback_confirm
+import simpmusic.composeapp.generated.resources.discord_paste_callback_hint
+import simpmusic.composeapp.generated.resources.discord_paste_callback_title
 import simpmusic.composeapp.generated.resources.log_in_to_discord
 import simpmusic.composeapp.generated.resources.login_success
 import simpmusic.composeapp.generated.resources.rich_presence_info
@@ -63,7 +63,7 @@ import simpmusic.composeapp.generated.resources.rich_presence_info
 private val CONTENT_MAX_WIDTH = 420.dp
 
 /**
- * Discord login for Full builds, laid out like [LastfmLoginScreen]: no WebView and no token, the
+ * Discord login for Full builds, laid out as a browser hand-off: no WebView and no token, the
  * user approves SimpMusic on Discord's own page in their browser, and the redirect brings them back
  * through `simpmusic://discord-auth`, which SharedViewModel completes.
  */
@@ -172,7 +172,7 @@ fun DiscordOAuthLoginScreen(
                         // Last resort when the redirect never reaches the app: no handler for the
                         // scheme (common on Linux), or a browser that will not hand off to an app.
                         Text(
-                            text = stringResource(Res.string.lastfm_paste_callback_title),
+                            text = stringResource(Res.string.discord_paste_callback_title),
                             style = typo().labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -184,7 +184,7 @@ fun DiscordOAuthLoginScreen(
                             textStyle = typo().bodySmall,
                             placeholder = {
                                 Text(
-                                    text = stringResource(Res.string.lastfm_paste_callback_hint),
+                                    text = stringResource(Res.string.discord_paste_callback_hint),
                                     style = typo().bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
@@ -199,7 +199,7 @@ fun DiscordOAuthLoginScreen(
                             shape = CircleShape,
                         ) {
                             Text(
-                                text = stringResource(Res.string.lastfm_paste_callback_confirm),
+                                text = stringResource(Res.string.discord_paste_callback_confirm),
                                 style = typo().labelSmall,
                                 color =
                                     if (callbackInput.isNotBlank()) {

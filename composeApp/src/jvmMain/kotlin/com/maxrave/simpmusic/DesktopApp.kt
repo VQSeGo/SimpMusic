@@ -70,7 +70,6 @@ import org.koin.core.context.startKoin
 import org.koin.java.KoinJavaComponent.inject
 import org.koin.mp.KoinPlatform.getKoin
 import org.simpmusic.discord.configDiscord
-import org.simpmusic.lastfm.configLastfm
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.app_name
 import simpmusic.composeapp.generated.resources.circle_app_icon
@@ -162,10 +161,9 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
     // Note: macOS does NOT pass URI as args — it uses Apple Events via setOpenURIHandler
     //
     // Matched by shape rather than against a fixed list of schemes. The list used to be
-    // simpmusic:// + http:// + https://, which silently dropped the Last.fm callback
-    // (wordbyword://lastfm-auth?token=…): the OS launched us with the token, this filter
-    // discarded it, and the app merely came to the foreground while the login sat there
-    // waiting forever. Any scheme we register with the OS must survive this line.
+    // simpmusic:// + http:// + https://, which would silently drop any other scheme
+    // registered with the OS: the OS launches us with the link, this filter discards it, and the app
+    // merely comes to the foreground. Any scheme we register with the OS must survive this line.
     val deepLinkArg = args.firstOrNull()?.takeIf { DEEP_LINK_ARG.matches(it) }
     // Single-instance guard — MUST run before startKoin. The DataStore Koin
     // singleton is `createdAtStart`, so a second Windows instance would touch
@@ -219,7 +217,6 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
     changeLanguageNative(language)
 
     VersionManager.initialize()
-    configLastfm(BuildKonfig.lastfmApiKey, BuildKonfig.lastfmSecret)
     if (BuildKonfig.sentryDsn.isNotEmpty()) {
         val installationId = machineId()
         Sentry.init { options ->

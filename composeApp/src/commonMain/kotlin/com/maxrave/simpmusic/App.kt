@@ -213,21 +213,9 @@ fun App(
         val data = intent.data
         Logger.d("MainActivity", "onCreate: $data")
         if (data != null) {
-            if (data.scheme == "wordbyword" && data.host == "lastfm-auth") {
-                // Last.fm sends the user back here after they approve access, carrying the request
-                // token: wordbyword://lastfm-auth?token=xxx. The callback is fixed on the API
-                // account, which is why the scheme is not "simpmusic".
-                val token = data.getQueryParameter("token")
-                Logger.d("MainActivity", "Last.fm callback, token present: ${!token.isNullOrEmpty()}")
-                viewModel.setIntent(null)
-                // Deliberately no navigation: the login screen is almost certainly already open —
-                // the browser was opened from it — and navigating would stack a second copy on top
-                // of it. The token is handed straight to the shared view model, and the screen
-                // closes itself when it sees a session key appear.
-                token?.let { viewModel.completeLastfmLogin(it) }
-            } else if (data.scheme == "simpmusic" && data.host == "discord-auth") {
+            if (data.scheme == "simpmusic" && data.host == "discord-auth") {
                 // Discord sends the user back here after they approve SimpMusic (Full builds):
-                // simpmusic://discord-auth?code=…&state=…. No navigation, as with Last.fm: the login
+                // simpmusic://discord-auth?code=…&state=…. No navigation: the login
                 // screen is already open and closes itself once the login is stored.
                 Logger.d("MainActivity", "Discord callback, code present: ${!data.getQueryParameter("code").isNullOrEmpty()}")
                 viewModel.setIntent(null)

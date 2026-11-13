@@ -136,7 +136,6 @@ import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.AppLogDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.CreditDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.DiscordLoginDestination
-import com.maxrave.simpmusic.ui.navigation.destination.login.LastfmLoginDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.LoginDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.SpotifyLoginDestination
 import com.maxrave.simpmusic.ui.theme.md_theme_dark_primary
@@ -238,7 +237,6 @@ import simpmusic.composeapp.generated.resources.enable_canvas
 import simpmusic.composeapp.generated.resources.enable_liquid_glass_effect
 import simpmusic.composeapp.generated.resources.enable_liquid_glass_effect_description
 import simpmusic.composeapp.generated.resources.enable_rich_presence
-import simpmusic.composeapp.generated.resources.enable_scrobbling
 import simpmusic.composeapp.generated.resources.enable_spotify_lyrics
 import simpmusic.composeapp.generated.resources.equalizer
 import simpmusic.composeapp.generated.resources.equalizer_description
@@ -258,7 +256,6 @@ import simpmusic.composeapp.generated.resources.import_reading_file
 import simpmusic.composeapp.generated.resources.import_result
 import simpmusic.composeapp.generated.resources.import_result_skipped
 import simpmusic.composeapp.generated.resources.intro_login_to_discord
-import simpmusic.composeapp.generated.resources.intro_login_to_lastfm
 import simpmusic.composeapp.generated.resources.intro_login_to_spotify
 import simpmusic.composeapp.generated.resources.invalid_host
 import simpmusic.composeapp.generated.resources.invalid_language_code
@@ -272,17 +269,14 @@ import simpmusic.composeapp.generated.resources.kill_service_on_exit_description
 import simpmusic.composeapp.generated.resources.language
 import simpmusic.composeapp.generated.resources.last_backup
 import simpmusic.composeapp.generated.resources.last_checked_at
-import simpmusic.composeapp.generated.resources.lastfm_integration
 import simpmusic.composeapp.generated.resources.limit_player_cache
 import simpmusic.composeapp.generated.resources.listening_history
 import simpmusic.composeapp.generated.resources.local_tracking_description
 import simpmusic.composeapp.generated.resources.local_tracking_title
 import simpmusic.composeapp.generated.resources.log_in_to_discord
-import simpmusic.composeapp.generated.resources.log_in_to_lastfm
 import simpmusic.composeapp.generated.resources.log_in_to_spotify
 import simpmusic.composeapp.generated.resources.log_out
 import simpmusic.composeapp.generated.resources.log_out_from_discord
-import simpmusic.composeapp.generated.resources.log_out_from_lastfm
 import simpmusic.composeapp.generated.resources.log_out_from_spotify
 import simpmusic.composeapp.generated.resources.log_out_warning
 import simpmusic.composeapp.generated.resources.logged_in
@@ -350,7 +344,6 @@ import simpmusic.composeapp.generated.resources.save
 import simpmusic.composeapp.generated.resources.save_all_your_playlist_data
 import simpmusic.composeapp.generated.resources.save_playback_state
 import simpmusic.composeapp.generated.resources.save_shuffle_and_repeat_mode
-import simpmusic.composeapp.generated.resources.scrobbling_info
 import simpmusic.composeapp.generated.resources.send_back_listening_data_to_google
 import simpmusic.composeapp.generated.resources.set
 import simpmusic.composeapp.generated.resources.settings
@@ -526,9 +519,6 @@ fun SettingScreen(
     val equalizerType by viewModel.equalizerType.collectAsStateWithLifecycle()
     val delayEnabled by viewModel.delayEnabled.collectAsStateWithLifecycle()
     val reverbEnabled by viewModel.reverbEnabled.collectAsStateWithLifecycle()
-    val lastfmLoggedIn by viewModel.lastfmLoggedIn.collectAsStateWithLifecycle()
-    val lastfmUsername by viewModel.lastfmUsername.collectAsStateWithLifecycle()
-    val lastfmScrobbleEnabled by viewModel.lastfmScrobbleEnabled.collectAsStateWithLifecycle()
     val richPresenceEnabled by viewModel.richPresenceEnabled.collectAsStateWithLifecycle()
 
     val crossfadeEnabled by viewModel.crossfadeEnabled.collectAsStateWithLifecycle()
@@ -1720,43 +1710,6 @@ fun SettingScreen(
                     switch = (richPresenceEnabled to { viewModel.setDiscordRichPresenceEnabled(it) }),
                     isEnable = discordLoggedIn,
                 )
-            }
-        }
-        // Hidden entirely when the build carries no Last.fm credentials — a FOSS build, or a full
-        // build whose local.properties has no key.
-        if (viewModel.lastfmAvailable) {
-            item(key = "lastfm") {
-                SettingGroup(title = stringResource(Res.string.lastfm_integration)) {
-                    SettingItem(
-                        title =
-                            if (lastfmLoggedIn) {
-                                stringResource(Res.string.log_out_from_lastfm)
-                            } else {
-                                stringResource(Res.string.log_in_to_lastfm)
-                            },
-                        subtitle =
-                            if (lastfmLoggedIn) {
-                                stringResource(Res.string.logged_in_as, lastfmUsername)
-                            } else {
-                                stringResource(Res.string.intro_login_to_lastfm)
-                            },
-                        onClick = {
-                            if (lastfmLoggedIn) {
-                                viewModel.confirmLogOut(
-                                    confirmLabel = runBlocking { getString(Res.string.log_out_from_lastfm) },
-                                ) { viewModel.logOutLastfm() }
-                            } else {
-                                navController.navigate(LastfmLoginDestination)
-                            }
-                        },
-                    )
-                    SettingItem(
-                        title = stringResource(Res.string.enable_scrobbling),
-                        subtitle = stringResource(Res.string.scrobbling_info),
-                        switch = (lastfmScrobbleEnabled to { viewModel.setLastfmScrobbleEnabled(it) }),
-                        isEnable = lastfmLoggedIn,
-                    )
-                }
             }
         }
         if (getPlatform() == Platform.Android) {

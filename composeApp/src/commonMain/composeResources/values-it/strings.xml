@@ -564,8 +564,8 @@
     <string name="enable_rich_presence">Abilita Rich Presence</string>
     <string name="rich_presence_info">Mostra le info della tua sessione nel tuo profilo di Discord</string>
     <string name="log_out_from_discord">Disconnetti da Discord</string>
-    <string name="lastfm_paste_callback_hint">Incolla il collegamento al quale il tuo browser è stato reindirizzato</string>
-    <string name="lastfm_paste_callback_confirm">Continua con questo collegamento</string>
+    <string name="discord_paste_callback_hint">Incolla il collegamento al quale il tuo browser è stato reindirizzato</string>
+    <string name="discord_paste_callback_confirm">Continua con questo collegamento</string>
     <string name="logged_in_as">Accesso effettuato come %1$s</string>
     <string name="youtube_liked_music">Musica apprezzata su YouTube</string>
     <string name="keep_your_youtube_playlist_offline">Mostra la tua playlist di YouTube quando offline</string>
