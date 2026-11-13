@@ -14,7 +14,7 @@ WINDOW_CLASS="${WINDOW_CLASS:-SimpMusic}"
 WINDOW_TIMEOUT_S="${WINDOW_TIMEOUT_S:-60}"
 EXIT_TIMEOUT_S="${EXIT_TIMEOUT_S:-15}"
 SETTLE_S="${SETTLE_S:-12}"
-LOG="$HOME/.simpmusic/logs/app.log"
+LOG_DIR="$HOME/.simpmusic/logs"
 
 for tool in hyprctl jq; do
   command -v "$tool" >/dev/null || { echo "Нужен $tool" >&2; exit 1; }
@@ -60,9 +60,8 @@ fi
 
 windows=()
 for run in $(seq 1 "$RUNS"); do
-  # Отметка в app.log: берём только строки после неё.
-  before_lines=0
-  [ -f "$LOG" ] && before_lines="$(wc -l < "$LOG")"
+  # Метки читаем по времени (UTC, как в app.log), а не по номерам строк: файл может перекатиться посреди прогона.
+  start_iso="$(date -u +%Y-%m-%dT%H:%M:%S)"
 
   start_ms="$(now_ms)"
   setsid "$APPIMAGE" >/dev/null 2>&1 &
@@ -85,14 +84,8 @@ for run in $(seq 1 "$RUNS"); do
 
   sleep "$SETTLE_S"
   echo "== Прогон $run: окно через $(awk -v m="$window_ms" 'BEGIN{printf "%.2f", m/1000}') с (от запуска AppImage)"
-  if [ -f "$LOG" ]; then
-    # Строки лога могли начаться заново, если файл перекатился: тогда берём весь файл.
-    total_lines="$(wc -l < "$LOG")"
-    if [ "$total_lines" -lt "$before_lines" ]; then before_lines=0; fi
-    tail -n +"$((before_lines + 1))" "$LOG" | grep -E 'Startup' | sed 's/^/   /' || echo "   меток Startup нет"
-  else
-    echo "   нет файла $LOG"
-  fi
+  marks="$(cat "$LOG_DIR"/app*.log 2>/dev/null | grep -E 'I/Startup:' | awk -v t="$start_iso" '$1 >= t' | sort || true)"
+  if [ -n "$marks" ]; then printf '%s\n' "$marks" | sed 's/^/   /'; else echo "   меток Startup нет"; fi
 
   stop_app || { echo "Дальше не идём: приложение не вышло" >&2; exit 1; }
 done
