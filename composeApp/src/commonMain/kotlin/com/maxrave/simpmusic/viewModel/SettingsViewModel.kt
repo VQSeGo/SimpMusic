@@ -105,11 +105,6 @@ class SettingsViewModel(
     val savedPlaybackState: StateFlow<String?> = _savedPlaybackState
     private var _lastCheckForUpdate: MutableStateFlow<String?> = MutableStateFlow(null)
     val lastCheckForUpdate: StateFlow<String?> = _lastCheckForUpdate
-    private var _sponsorBlockEnabled: MutableStateFlow<String?> = MutableStateFlow(null)
-    val sponsorBlockEnabled: StateFlow<String?> = _sponsorBlockEnabled
-    private var _sponsorBlockCategories: MutableStateFlow<ArrayList<String>?> =
-        MutableStateFlow(null)
-    val sponsorBlockCategories: StateFlow<ArrayList<String>?> = _sponsorBlockCategories
     private var _sendBackToGoogle: MutableStateFlow<String?> = MutableStateFlow(null)
     val sendBackToGoogle: StateFlow<String?> = _sendBackToGoogle
     private var _mainLyricsProvider: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -267,8 +262,6 @@ class SettingsViewModel(
         getSavedPlaybackState()
         getSendBackToGoogle()
         getLastCheckForUpdate()
-        getSponsorBlockEnabled()
-        getSponsorBlockCategories()
         getTranslationLanguage()
         getYoutubeSubtitleLanguage()
         getLyricsProvider()
@@ -968,21 +961,6 @@ class SettingsViewModel(
         }
     }
 
-    fun getSponsorBlockEnabled() {
-        viewModelScope.launch {
-            dataStoreManager.sponsorBlockEnabled.first().let { enabled ->
-                _sponsorBlockEnabled.emit(enabled)
-            }
-        }
-    }
-
-    fun setSponsorBlockEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            dataStoreManager.setSponsorBlockEnabled(enabled)
-            getSponsorBlockEnabled()
-        }
-    }
-
     fun getPlayVideoInsteadOfAudio() {
         viewModelScope.launch {
             dataStoreManager.watchVideoInsteadOfPlayingAudio.collect { playVideoInsteadOfAudio ->
@@ -1014,25 +992,6 @@ class SettingsViewModel(
     fun setRadioAudioOnly(audioOnly: Boolean) {
         viewModelScope.launch {
             dataStoreManager.setRadioAudioOnly(audioOnly)
-        }
-    }
-
-    fun getSponsorBlockCategories() {
-        viewModelScope.launch {
-            dataStoreManager.getSponsorBlockCategories().let {
-                log("getSponsorBlockCategories: $it", LogLevel.WARN)
-                _sponsorBlockCategories.emit(it)
-            }
-        }
-    }
-
-    fun setSponsorBlockCategories(list: ArrayList<String>) {
-        log("setSponsorBlockCategories: $list", LogLevel.WARN)
-        viewModelScope.launch {
-            runBlocking(Dispatchers.IO) {
-                dataStoreManager.setSponsorBlockCategories(list)
-            }
-            getSponsorBlockCategories()
         }
     }
 
