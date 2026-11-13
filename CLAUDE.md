@@ -103,6 +103,10 @@
   ссылка `simpmusic://taste`, ключи DataStore `ai_provider`, `ai_gemini_api_key`, `use_ai_translation`, `custom_model_id`,
   `custom_openai_base_url`, `custom_openai_headers`, `ai_taste_profile`. Перевод текста берётся только у провайдеров
   текстов (язык перевода остаётся).
+  Также: SponsorBlock (запрос к `sponsor.ajay.app` на каждый трек, перемотка по сегментам в обоих обработчиках плеера,
+  группа в настройках, выбор категорий, тост «пропущен сегмент»; `StreamRepository.getSkipSegments`, `YouTube.getSkipSegments`,
+  `SponsorBlockType`, `SponsorSkipSegments`, ключи DataStore `sponsor_block_enabled` и девять ключей категорий `sponsor`,
+  `selfpromo`, `interaction`, `intro`, `outro`, `preview`, `music_offtopic`, `poi_highlight`, `filler`).
 - Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
   (на десктопе исправлено).
 
