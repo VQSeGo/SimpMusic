@@ -383,8 +383,9 @@ APK уменьшится; правило ProGuard для cast, если есть
    перенести в `lifecycleScope.launch`. На desktop вызов стоит до создания окна — перенести в корутину
    `SharedViewModel` так же.
 
-**Не трогать.** Запрос `remote-config.json` из `maxrave-dev/simpmusic-files` (`Ytmusic.kt:1325`): в нём учётные данные
-TIDAL для получения метаданных, без него часть функций перестанет работать.
+**Загрузка `remote-config.json`** из `maxrave-dev/simpmusic-files` удалена в ЧИСТ H вместе с TIDAL и промо: оговорка
+«не трогать» снята, трогать больше нечего. Запросы к `maxrave-dev/simpmusic-files/registry/player_configs.json` (шифр
+YouTube, `FaradayCipherEngine`) — другое дело, они остаются.
 
 **Как проверить.** В отладочной сборке в логе запрос уходит на `VQSeGo/SimpMusic`. Временно занизив `versionName`,
 убедиться, что диалог появляется и ссылка ведёт на релиз форка. При равной версии диалога нет.

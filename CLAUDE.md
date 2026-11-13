@@ -127,8 +127,11 @@
   «Авто», подгонка темпа и тональности уходящего трека, пакет `domain/mediaservice/automix`, анализ структуры трека и файлы
   `.mix` рядом с рисунком волны). Простой кроссфейд оставлен: фиксированная длительность из `crossfade_duration`
   (сохранённое «Авто», 0, читается как 5 с), «не делать переход внутри альбома», рисунок волны (`.wf`) не тронут.
-  Запрос метаданных TIDAL (`searchTidalMetadata` в `getStream`, `remote-config.json`) пока остаётся: тот же файл несёт блок
-  `promos` для строки под текстами (`LyricsPromoLine`), решение за пользователем.
+  Также: запрос метаданных TIDAL (темп и тональность, `searchTidalMetadata` в `getStream`, клиент и ключи DataStore;
+  столбцы `bpm`, `music_key`, `keyScale` в `NewFormatEntity` остаются в базе, пишется `null`, в окне информации о треке
+  их больше нет), загрузка `remote-config.json` из репозитория оригинала при запуске и промо из него (`Promo`,
+  `LyricsPromoLine` под текстами, ключи DataStore `remote_promos`, `promo_shown`). «Итоги» и ссылка
+  `simpmusic://library?tab=wrapped` остались. Запрос `registry/player_configs.json` (шифр YouTube) не тронут.
 - Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
   (на десктопе исправлено).
 
