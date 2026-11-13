@@ -94,6 +94,10 @@
   «Artist Worker» и «Blog RSS Worker» больше не ставятся, `MainActivity` при запуске отменяет их у сборок, установленных
   поверх старой. Таблицы `notification` и `followed_artist_single_and_album` остаются в базе без кода, который в них пишет.
   Канал и разрешение на уведомления плеера и загрузок не тронуты.
+  Также: «помочь собрать базу текстов» (отправка текстов и переводов на сервер SimpMusic, голосование за тексты,
+  настройка и поля имени и почты участника, ключи DataStore `help_build_lyrics_database`, `contributor_name`,
+  `contributor_email`). Чтение текстов с сервера SimpMusic как источника остаётся (`SimpMusicLyricsClient.getLyrics` /
+  `getTranslatedLyrics`).
 - Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
   (на десктопе исправлено).
 
