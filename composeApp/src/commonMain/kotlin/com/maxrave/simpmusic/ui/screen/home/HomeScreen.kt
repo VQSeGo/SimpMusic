@@ -151,14 +151,12 @@ import com.maxrave.simpmusic.ui.component.SectionHeaderButton
 import com.maxrave.simpmusic.ui.component.TouchPullToRefreshBox
 import com.maxrave.simpmusic.ui.component.homeCardAspectRatio
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
-import com.maxrave.simpmusic.ui.icon.Notifications
 import com.maxrave.simpmusic.ui.icon.Person
 import com.maxrave.simpmusic.ui.icon.Refresh
 import com.maxrave.simpmusic.ui.icon.Settings
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.HomeDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.MoodDestination
-import com.maxrave.simpmusic.ui.navigation.destination.home.NotificationDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.SettingsDestination
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
@@ -219,7 +217,6 @@ import simpmusic.composeapp.generated.resources.let_s_start_with_a_radio
 import simpmusic.composeapp.generated.resources.log_in_to_YouTube
 import simpmusic.composeapp.generated.resources.log_in_warning
 import simpmusic.composeapp.generated.resources.mood
-import simpmusic.composeapp.generated.resources.notification
 import simpmusic.composeapp.generated.resources.party
 import simpmusic.composeapp.generated.resources.play_all
 import simpmusic.composeapp.generated.resources.quick_picks
@@ -830,8 +827,8 @@ fun HomeScreen(
                 // strip, so at rest the button sits at the right edge, and a Mood that opens wide pushes it
                 // along instead of sliding under it. On Desktop and in landscape it stays put at the
                 // right edge, like the avatar.
-                // No avatar anywhere: signing in is in Settings. On Desktop Settings and Notifications
-                // live in the sidebar, and the button reloads the page, there being no pull to refresh.
+                // No avatar anywhere: signing in is in Settings. On Desktop Settings
+                // lives in the sidebar, and the button reloads the page, there being no pull to refresh.
                 // Creating is in the Library on both.
                 val isDesktop = getPlatform() == Platform.Desktop
                 val barButtonPinned = isDesktop || getScreenSizeInfo().let { it.wDP >= it.hDP }

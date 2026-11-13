@@ -19,7 +19,6 @@ import com.maxrave.simpmusic.viewModel.LoginSyncHostViewModel
 import com.maxrave.simpmusic.viewModel.LoginSyncSenderViewModel
 import com.maxrave.simpmusic.viewModel.MoodViewModel
 import com.maxrave.simpmusic.viewModel.MoreAlbumsViewModel
-import com.maxrave.simpmusic.viewModel.NotificationViewModel
 import com.maxrave.simpmusic.viewModel.NowPlayingBottomSheetViewModel
 import com.maxrave.simpmusic.viewModel.PlaylistViewModel
 import com.maxrave.simpmusic.viewModel.PodcastViewModel
@@ -183,11 +182,6 @@ val viewModelModule =
             LocalPlaylistViewModel(
                 get(),
                 get(),
-                get(),
-            )
-        }
-        viewModel {
-            NotificationViewModel(
                 get(),
             )
         }
