@@ -116,9 +116,12 @@
   canvas в библиотеке, кэш `CANVAS_CACHE` на Android; `getCanvas` в `SharedViewModel`,
   `LyricsCanvasRepository.getCanvas` / `getAMAnimatedArtwork`, `SongRepository.getCanvasSong`, ключи DataStore
   `spotify_canvas` и `am_animated_artwork`, запрос `canvaz` в `core/service/spotify`, поиск альбомов и треков в клиенте
-  Apple Music). Spotify остаётся источником текстов. Анимированная обложка исполнителя на странице исполнителя (AM,
-  `getArtistEditorial`, `ArtistMotion`) и логотип-имя остаются: их пользователь не смотрел. Столбцы `song.canvasUrl` и
-  `song.canvasThumbUrl` остаются в базе без кода, который в них пишет.
+  Apple Music). Spotify остаётся источником текстов. Туда же анимированный фон исполнителя и логотип-имя из Apple Music на
+  странице исполнителя (`getArtistEditorial`, `ArtistMotion`, переключатель видео и картинки, цвет кнопок по логотипу,
+  весь клиент Apple Music в `core/service/lyricsService` с токеном, моделями и выбором HLS-варианта, `MediaPlayerView` по
+  ссылке на обеих платформах, `MpvPlayer.setPanscan` / `setLooping`). Страница исполнителя показывает статичную обложку и
+  имя текстом. Столбцы `song.canvasUrl` и `song.canvasThumbUrl`, таблица `artist_motion` (`ArtistMotionEntity`) и столбцы
+  `artist.nameLogoUrl` / `nameLogoColor` остаются в базе без кода, который в них пишет и читает.
 - Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
   (на десктопе исправлено).
 
