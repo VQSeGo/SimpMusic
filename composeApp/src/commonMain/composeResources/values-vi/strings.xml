@@ -140,8 +140,6 @@
     <string name="buy_me_a_coffee">Hỗ trợ tôi</string>
     <string name="developer_blog">Blog của nhà phát triển</string>
     <string name="developer_blog_tagline">Đọc các ghi chép của nhà phát triển, hướng dẫn &amp; đằng sau các tính năng</string>
-    <string name="blog_promo_title">Một vài điều mới đến từ nhà phát triển</string>
-    <string name="blog_promo_message">Tôi vừa ra mắt blog cá nhân của mình tại simpmusic.org — nơi chia sẻ câu chuyện đằng sau SimpMusic, những phân tích chuyên sâu về công nghệ âm nhạc và những ghi chú kỹ thuật. Hãy ghé thăm nếu bạn tò mò nhé ✨</string>
     <string name="visit_blog">Ghé thăm blog</string>
     <string name="paypal">PayPal</string>
     <string name="title">Tiêu đề</string>
@@ -487,8 +485,6 @@
     <string name="if_you_enjoy_using_simpmusic_star_simpmusic_on_github_or_leave_a_review_on">Nếu bạn yêu thích SimpMusic, sao SimpMusic trên GitHub hoặc để lại một đánh giá trên</string>
     <string name="if_you_love_my_work_consider">"Nếu bạn cảm thấy yêu thích những gì tôi làm, có thể "</string>
     <string name="buying_me_a_coffee">mua cho tôi một ly cà phê.</string>
-    <string name="footguns_promo_title">Mỗi cái bẫy tôi rơi vào</string>
-    <string name="footguns_promo_message">SimpMusic đã khiến tôi mất rất nhiều đêm sử dụng bẫy Kotlin và Compose mà chưa có tài liệu nào cảnh báo tôi. Tôi đã viết từng điều trong số đó bằng kotlin-footguns, để bạn không bị thua trong những đêm tương tự. Nếu nó cứu được dù chỉ một người trong số các bạn, một ngôi sao sẽ có ý nghĩa rất lớn đối với tôi.</string>
     <string name="fade_audio_effect">Hiệu ứng làm mờ âm thanh</string>
     <string name="disabled">Tắt</string>
     <string name="fade_audio_effect_duration">Thời gian làm mờ âm thanh (ms) (Đưa về 0 để tắt)</string>
@@ -654,9 +650,6 @@
     <string name="your_320kbps_url_description">Để trống để tự động chọn một URL hoạt động từ hệ thống kiểm tra.</string>
     <string name="search_for">Tìm kiếm cho</string>
     <string name="synced_playlist_cannot_change_order">Danh sách phát đã đồng bộ không thể thay đổi thứ tự</string>
-    <string name="bpm">Nhịp mỗi phút</string>
-    <string name="key">Khóa</string>
-    <string name="scale">Thang</string>
     <string name="home_offline_title">Không thể kết nối</string>
     <string name="home_offline_subtitle">Kiểm tra kết nối internet của bạn và thử lại, hoặc nghe những bài hát đã được tải xuống.</string>
     <string name="listen_to_downloaded">Nghe những bài hát đã được tải xuống</string>

@@ -146,8 +146,6 @@
     <string name="buy_me_a_coffee">Купите мне кофе</string>
     <string name="developer_blog">Блог разработчика</string>
     <string name="developer_blog_tagline">Читайте заметки разработчика, руководства и информацию о процессе разработки</string>
-    <string name="blog_promo_title">Что-то новое из разработки</string>
-    <string name="blog_promo_message">Я только что запустил свой персональный блог на simpmusic.org — поделитесь историей за SimpMusic, музыкальными погружениями и инженерными заметками. Читайте, если интересно ✨</string>
     <string name="visit_blog">Посетить блог</string>
     <string name="paypal">PayPal</string>
     <string name="title">Название</string>
@@ -497,8 +495,6 @@
     <string name="if_you_enjoy_using_simpmusic_star_simpmusic_on_github_or_leave_a_review_on">Если вам нравится пользоваться SimpMusic, оцените SimpMusic на GitHub или оставьте свой отзыв на</string>
     <string name="if_you_love_my_work_consider">"Если вам нравится моя работа, рассмотрите "</string>
     <string name="buying_me_a_coffee">купить мне кофе.</string>
-    <string name="footguns_promo_title">Все ловушки, в которые я попал</string>
-    <string name="footguns_promo_message">Я потратил много ночей, борясь с проблемами Kotlin и Compose, о которых не было написано нигде в документации, ради SimpMusic. Я задокументировал каждую из них в kotlin-footguns, чтобы вам не пришлось тратить на эти проблемы столько же. Если это помогло сохранить хотя бы одну из ваших ночей, поставьте, пожалуйста, звезду. Я буду очень признателен.</string>
     <string name="fade_audio_effect">Эффект затухания звука</string>
     <string name="disabled">Отключить</string>
     <string name="fade_audio_effect_duration">Продолжительность эффекта затухания звука (мс) (Установите 0 для отключения)</string>
@@ -665,9 +661,6 @@
     <string name="your_320kbps_url_description">Оставьте пустым для автоматического выбора рабочего URL-адреса из контроллера обновления.</string>
     <string name="search_for">Поиск</string>
     <string name="synced_playlist_cannot_change_order">Порядок синхронизированного плейлиста невозможно изменить</string>
-    <string name="bpm">BPM</string>
-    <string name="key">Ключ</string>
-    <string name="scale">Шкала</string>
     <string name="home_offline_title">Ошибка подключения</string>
     <string name="home_offline_subtitle">Проверьте подключение к Интернету и повторите попытку, или прослушивайте скачанную музыку.</string>
     <string name="listen_to_downloaded">Слушать скачанную музыку</string>

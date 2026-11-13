@@ -142,7 +142,6 @@
     <string name="buy_me_a_coffee">Offrimi un caffè</string>
     <string name="developer_blog">Blog degli sviluppatori</string>
     <string name="developer_blog_tagline">Leggi le note degli sviluppatori, i tutorial e i dietro le quinte</string>
-    <string name="blog_promo_title">Novità dagli sviluppatori</string>
     <string name="visit_blog">Visita il blog</string>
     <string name="paypal">PayPal</string>
     <string name="title">Titolo</string>
@@ -616,9 +615,6 @@
     <string name="your_320kbps_url_description">Lascia vuoto per scegliere automaticamente un URL di lavoro dal checker uptime.</string>
     <string name="search_for">Cerca per</string>
     <string name="synced_playlist_cannot_change_order">La playlist sincronizzata non può cambiare ordine</string>
-    <string name="bpm">BPM</string>
-    <string name="key">Chiave</string>
-    <string name="scale">Ridimensiona</string>
     <string name="home_offline_title">Impossibile connettersi</string>
     <string name="home_offline_subtitle">Controlla la tua connessione internet e riprova o ascolta la tua musica già scaricata.</string>
     <string name="listen_to_downloaded">Ascolta la musica scaricata</string>

@@ -125,7 +125,6 @@
     <string name="buy_me_a_coffee">Compre-me um café</string>
     <string name="developer_blog">Blog do Desenvolvedor</string>
     <string name="developer_blog_tagline">Leia notas de desenvolvimento, tutoriais &amp; nos bastidores</string>
-    <string name="blog_promo_title">Algo novo do desenvolvimento</string>
     <string name="visit_blog">Visite o Blog</string>
     <string name="paypal">PayPal</string>
     <string name="title">Título</string>
@@ -495,9 +494,6 @@
     <string name="your_320kbps_url_description">Deixe vazio para escolher automaticamente uma URL de trabalho do verificador.</string>
     <string name="search_for">Pesquisar por</string>
     <string name="synced_playlist_cannot_change_order">Playlist sincronizada não pode mudar a ordem</string>
-    <string name="bpm">BPM</string>
-    <string name="key">Tom</string>
-    <string name="scale">Escala</string>
     <string name="home_offline_title">Falha na conexão</string>
     <string name="home_offline_subtitle">Verifique sua conexão com a internet e tente novamente mais tarde ou ouça suas músicas baixadas.</string>
     <string name="listen_to_downloaded">Ouvir músicas baixadas</string>

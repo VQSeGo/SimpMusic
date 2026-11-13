@@ -145,8 +145,6 @@
     <string name="buy_me_a_coffee">קנה לי קפה</string>
     <string name="developer_blog">בלוג המפתח</string>
     <string name="developer_blog_tagline">קרא הערות מפתח, מדריכים &amp; ומאחורי-הקלעים</string>
-    <string name="blog_promo_title">משהו חדש מהמפתח</string>
-    <string name="blog_promo_message">השקתי את הבלוג של SimpMusic ב-simpmusic.org - אני משתף את הסיפור מאחורי SimpMusic, צלילות מעמיקות בטכנולוגיית מוזיקה והערות הנדסיות. קראו אותו אם אתם סקרנים ✨</string>
     <string name="visit_blog">בקרו בבלוג</string>
     <string name="paypal">PayPal</string>
     <string name="title">כותרת</string>
@@ -495,8 +493,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nנבנה ב-❤️ מ�
     <string name="if_you_enjoy_using_simpmusic_star_simpmusic_on_github_or_leave_a_review_on">אם אתם נהנים מהשימוש ב-SimpMusic, סמנו את SimpMusic בכוכב ב-GitHub או השאירו חוות דעת ב</string>
     <string name="if_you_love_my_work_consider">"אם אתם אוהבים את העבודה שלי, תשקלו "</string>
     <string name="buying_me_a_coffee">לקנות לי קפה.</string>
-    <string name="footguns_promo_title">כל מלכודת שנפלתי בה</string>
-    <string name="footguns_promo_message">הפרויקט עלה לי הרבה לילות של מלכודות Kotlin ו-Compose שאף רופא לא הזהיר אותי לגביהן. כתבתי כל אחת מהן, שלא תאבדו את אותם הלילות כמוני. אם זה חסך לכם אפילו לילה אחד, סימון בכוכב יראה לי הערכה רבה.</string>
     <string name="fade_audio_effect">אפקט פייד לאודיו</string>
     <string name="disabled">השבת</string>
     <string name="fade_audio_effect_duration">אורך אפקט פייד לאודיו (מילישניות) (הגדר ל-0 כדי להשבית)</string>
@@ -662,9 +658,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nנבנה ב-❤️ מ�
     <string name="your_320kbps_url_description">השאר ריק כדי לבחור אוטומטית את הקישור העובד מבודק זמן הפעילות.</string>
     <string name="search_for">חפש עבור</string>
     <string name="synced_playlist_cannot_change_order">לא ניתן לשנות את סדר הפלייליסט המסונכרן</string>
-    <string name="bpm">פעימות לדקה</string>
-    <string name="key">מפתח</string>
-    <string name="scale">סולם</string>
     <string name="home_offline_title">לא ניתן להתחבר</string>
     <string name="home_offline_subtitle">בדוק את חיבור האינטרנט שלך ונסה שוב, או האזן למוזיקה שהורדת.</string>
     <string name="listen_to_downloaded">האזן למוזיקה שהורדת</string>

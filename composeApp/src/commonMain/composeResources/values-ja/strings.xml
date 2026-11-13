@@ -140,8 +140,6 @@
     <string name="buy_me_a_coffee">コーヒーを奢る</string>
     <string name="developer_blog">開発者ブログ</string>
     <string name="developer_blog_tagline">開発ノートやチュートリアル &amp; 開発秘話を読む</string>
-    <string name="blog_promo_title">開発者からの新着情報</string>
-    <string name="blog_promo_message">SimpMusicのブログを simpmusic.org で公開しました！SimpMusicの開発の裏話や、音楽テクノロジーの掘り下げた解説、エンジニアリングに関する記事などを発信しています。興味があれば、ぜひ読んでみてください ✨</string>
     <string name="visit_blog">ブログを見る</string>
     <string name="paypal">PayPal</string>
     <string name="title">題名</string>
@@ -487,8 +485,6 @@
     <string name="if_you_enjoy_using_simpmusic_star_simpmusic_on_github_or_leave_a_review_on">SimpMusicで楽しんでいたら、GitHubで星マークを押すか、ここにレビューを投稿してください:</string>
     <string name="if_you_love_my_work_consider">"私のアプリを気に入ったら、 "</string>
     <string name="buying_me_a_coffee">コーヒーを一杯ご馳走してください。</string>
-    <string name="footguns_promo_title">私が陥ったすべての罠</string>
-    <string name="footguns_promo_message">SimpMusicでは、どのドキュメントにも書かれていないKotlinやComposeの落とし穴に悩まされ、何晩も費やしました。そのすべてをkotlin-footgunsに書き残したので、同じように時間を無駄にせずに済むはずです。もしあなたの時間を一晩でも救えたなら、星を付けてもらえるととても嬉しいです。</string>
     <string name="fade_audio_effect">フェードの音声エフェクト</string>
     <string name="disabled">無効</string>
     <string name="fade_audio_effect_duration">フェードの音声効果の長さ (ミリ秒) (0で無効)</string>
@@ -654,9 +650,6 @@
     <string name="your_320kbps_url_description">アップタイムチェッカーから作業中の URL を自動的に選択するには、空白のままにします。</string>
     <string name="search_for">検索</string>
     <string name="synced_playlist_cannot_change_order">同期されたプレイリストは順序を変更できません</string>
-    <string name="bpm">BPM</string>
-    <string name="key">キー</string>
-    <string name="scale">音階</string>
     <string name="home_offline_title">接続できません</string>
     <string name="home_offline_subtitle">インターネット接続を確認して、もう一度試すか、ダウンロードした音楽を聴いてください。</string>
     <string name="listen_to_downloaded">ダウンロードした音楽を再生</string>

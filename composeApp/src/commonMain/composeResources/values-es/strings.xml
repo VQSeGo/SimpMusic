@@ -132,7 +132,6 @@
     <string name="buy_me_a_coffee">Cómprame un café</string>
     <string name="developer_blog"></string>
     <string name="developer_blog_tagline">Leer notas de desarrollo, tutoriales &amp; detrás de la escena</string>
-    <string name="blog_promo_title">Algo nuevo del desarrollador</string>
     <string name="visit_blog">Visita el blog</string>
     <string name="paypal">PayPal</string>
     <string name="title">Título</string>
@@ -470,7 +469,6 @@
     <string name="if_you_enjoy_using_simpmusic_star_simpmusic_on_github_or_leave_a_review_on">Si te gusta usar SimpMusic, da una estrella a SimpMusic en gituhb o deja una reseña</string>
     <string name="if_you_love_my_work_consider">"Si amas mi trabajo, considera "</string>
     <string name="buying_me_a_coffee">comprame un café.</string>
-    <string name="footguns_promo_title">Every trap I fell into</string>
     <string name="fade_audio_effect">Efecto de desvanecimiento de audio</string>
     <string name="disabled">Desactivar</string>
     <string name="fade_audio_effect_duration">Duración del efecto de fundido (ms) (Establecer a 0 para desactivar)</string>
@@ -608,9 +606,6 @@
     <string name="your_320kbps_url_description">Dejar en blanco para elegir automáticamente una URL funcional desde la comprobación de tiempo de activación.</string>
     <string name="search_for">Buscar por</string>
     <string name="synced_playlist_cannot_change_order">No se puede cambiar el orden de la lista sincronizada</string>
-    <string name="bpm">BPM</string>
-    <string name="key">Clave</string>
-    <string name="scale">Escala</string>
     <string name="home_offline_title">No se puede conectar</string>
     <string name="home_offline_subtitle">Compruebe su conexión a Internet e inténtelo de nuevo, o escuche su música descargada.</string>
     <string name="listen_to_downloaded">Escucha la música descargada</string>

@@ -487,8 +487,6 @@
     <string name="local_tracking_title">Yerel izleme dinleme geçmişi</string>
     <string name="local_tracking_description">Dinleme geçmişinizi yerel veritabanına kaydedin</string>
     <string name="synced_playlist_cannot_change_order">Senkronize edilen çalma listelerindeki sıra değiştirilemez</string>
-    <string name="key">Anahtar</string>
-    <string name="scale">Boyut</string>
     <string name="home_offline_title">Çevrimdışı</string>
     <string name="home_offline_subtitle">İnternet bağlantınızı kontrol edin ve yeniden deneyin yada indirdiğiniz müzikleri dinleyin.</string>
     <string name="listen_to_downloaded">İndirilen müzikleri dinle</string>

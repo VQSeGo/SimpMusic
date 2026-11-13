@@ -125,7 +125,6 @@
     <string name="buy_me_a_coffee">Compra'm un cafè</string>
     <string name="developer_blog">Blog del desenvolupador</string>
     <string name="developer_blog_tagline">Llegir notes de desenvolupament, tutorials &amp; continguts entre bastidors</string>
-    <string name="blog_promo_title">Novetats del desenvolupador</string>
     <string name="visit_blog">Visita el blog</string>
     <string name="paypal">PayPal</string>
     <string name="title">Títol</string>
@@ -485,9 +484,6 @@
     <string name="your_320kbps_url_description">Deixa-ho en blanc per seleccionar automàticament un URL operatiu des del verificador d'estat.</string>
     <string name="search_for">Cerca</string>
     <string name="synced_playlist_cannot_change_order">No es pot canviar l'ordre d'una llista de reproducció sincronitzada</string>
-    <string name="bpm">BPM</string>
-    <string name="key">Tonalitat</string>
-    <string name="scale">Escala</string>
     <string name="home_offline_title">No s'ha pogut connectar</string>
     <string name="home_offline_subtitle">Comprova la connexió a internet i torna-ho a provar, o escolta la música que tens baixada.</string>
     <string name="listen_to_downloaded">Escolta la música descarregada</string>

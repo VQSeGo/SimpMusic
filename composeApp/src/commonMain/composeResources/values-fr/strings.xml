@@ -142,8 +142,6 @@
     <string name="buy_me_a_coffee">Offrez-moi un café ! ☕</string>
     <string name="developer_blog">Blog des développeurs</string>
     <string name="developer_blog_tagline">Lisez les notes des développeurs, les tutoriels &amp; les coulisses du projet</string>
-    <string name="blog_promo_title">Une nouveauté du développeur</string>
-    <string name="blog_promo_message">Je viens de lancer le blog SimpMusic sur simpmusic.org — j'y partage l'histoire de SimpMusic, des analyses approfondies sur les technologies musicales et des notes d'ingénierie. N'hésitez pas à y jeter un œil si ça vous intéresse. ✨</string>
     <string name="visit_blog">Consultez le blog</string>
     <string name="paypal">PayPal</string>
     <string name="title">Titre</string>
@@ -490,8 +488,6 @@
     <string name="if_you_enjoy_using_simpmusic_star_simpmusic_on_github_or_leave_a_review_on">Si vous appréciez SimpMusic, ajoutez-le à vos favoris sur GitHub ou laissez un avis sur</string>
     <string name="if_you_love_my_work_consider">"Si vous appréciez mon travail, pensez à "</string>
     <string name="buying_me_a_coffee">m'offrir un café.</string>
-    <string name="footguns_promo_title">Tous les pièges dans lesquels je suis tombé</string>
-    <string name="footguns_promo_message">SimpMusic m'a coûté de nombreuses nuits passées à me débattre avec les pièges de Kotlin et de Compose dont aucune documentation ne m'avait jamais prévenu. Je les ai tous répertoriés dans « kotlin-footguns », pour que vous n'ayez pas à passer les mêmes nuits blanches. Si cela vous en épargne ne serait-ce qu'une seule, une étoile signifierait beaucoup pour moi.</string>
     <string name="fade_audio_effect">Effet audio de fondu</string>
     <string name="disabled">Désactiver</string>
     <string name="fade_audio_effect_duration">Durée de l'effet de fondu audio (ms) (Régler sur 0 pour le désactiver)</string>
@@ -657,9 +653,6 @@
     <string name="your_320kbps_url_description">Laissez ce champ vide pour que le système sélectionne automatiquement une URL valide à partir de l'outil de vérification de disponibilité.</string>
     <string name="search_for">Rechercher</string>
     <string name="synced_playlist_cannot_change_order">L'ordre des titres d'une playlist synchronisée ne peut pas être modifié</string>
-    <string name="bpm">BPM</string>
-    <string name="key">Clé</string>
-    <string name="scale">Échelle</string>
     <string name="home_offline_title">Impossible de se connecter</string>
     <string name="home_offline_subtitle">Vérifiez votre connexion Internet et réessayez, ou écoutez la musique que vous avez téléchargée.</string>
     <string name="listen_to_downloaded">Écouter de la musique téléchargée</string>

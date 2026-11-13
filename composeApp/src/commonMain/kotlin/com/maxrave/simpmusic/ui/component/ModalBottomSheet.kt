@@ -210,7 +210,6 @@ import simpmusic.composeapp.generated.resources.artists
 import simpmusic.composeapp.generated.resources.baseline_favorite_24
 import simpmusic.composeapp.generated.resources.better_lyrics
 import simpmusic.composeapp.generated.resources.bitrate
-import simpmusic.composeapp.generated.resources.bpm
 import simpmusic.composeapp.generated.resources.can_not_be_empty
 import simpmusic.composeapp.generated.resources.cancel
 import simpmusic.composeapp.generated.resources.cancel_download
@@ -240,7 +239,6 @@ import simpmusic.composeapp.generated.resources.endless_queue
 import simpmusic.composeapp.generated.resources.error_occurred
 import simpmusic.composeapp.generated.resources.extract_source
 import simpmusic.composeapp.generated.resources.itag
-import simpmusic.composeapp.generated.resources.key
 import simpmusic.composeapp.generated.resources.like
 import simpmusic.composeapp.generated.resources.like_and_dislike
 import simpmusic.composeapp.generated.resources.liked
@@ -274,7 +272,6 @@ import simpmusic.composeapp.generated.resources.remove_from_cache
 import simpmusic.composeapp.generated.resources.save
 import simpmusic.composeapp.generated.resources.save_to_local_playlist
 import simpmusic.composeapp.generated.resources.saved_to_local_playlist
-import simpmusic.composeapp.generated.resources.scale
 import simpmusic.composeapp.generated.resources.search
 import simpmusic.composeapp.generated.resources.set
 import simpmusic.composeapp.generated.resources.share
@@ -712,81 +709,6 @@ fun InfoPlayerBottomSheet(
                 )
                 Text(
                     text = format?.bitrate?.toString() ?: stringResource(Res.string.unknown),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(align = Alignment.CenterVertically)
-                            .basicMarquee(
-                                iterations = Int.MAX_VALUE,
-                                animationMode = MarqueeAnimationMode.Immediately,
-                            ).focusable()
-                            .padding(horizontal = 10.dp),
-                    style = typo().bodyMedium,
-                    maxLines = 1,
-                    textAlign = TextAlign.Center,
-                )
-                Text(
-                    text = stringResource(Res.string.bpm),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                    textAlign = TextAlign.Center,
-                    style = typo().labelMedium,
-                    color = rememberSurfaceDarkColors().content,
-                )
-                Text(
-                    text = format?.bpm?.toString() ?: stringResource(Res.string.unknown),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(align = Alignment.CenterVertically)
-                            .basicMarquee(
-                                iterations = Int.MAX_VALUE,
-                                animationMode = MarqueeAnimationMode.Immediately,
-                            ).focusable()
-                            .padding(horizontal = 10.dp),
-                    style = typo().bodyMedium,
-                    maxLines = 1,
-                    textAlign = TextAlign.Center,
-                )
-                Text(
-                    text = stringResource(Res.string.key),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                    textAlign = TextAlign.Center,
-                    style = typo().labelMedium,
-                    color = rememberSurfaceDarkColors().content,
-                )
-                Text(
-                    text = format?.musicKey ?: stringResource(Res.string.unknown),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(align = Alignment.CenterVertically)
-                            .basicMarquee(
-                                iterations = Int.MAX_VALUE,
-                                animationMode = MarqueeAnimationMode.Immediately,
-                            ).focusable()
-                            .padding(horizontal = 10.dp),
-                    style = typo().bodyMedium,
-                    maxLines = 1,
-                    textAlign = TextAlign.Center,
-                )
-                Text(
-                    text = stringResource(Res.string.scale),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                    textAlign = TextAlign.Center,
-                    style = typo().labelMedium,
-                    color = rememberSurfaceDarkColors().content,
-                )
-                Text(
-                    text = format?.keyScale ?: stringResource(Res.string.unknown),
                     modifier =
                         Modifier
                             .fillMaxWidth()

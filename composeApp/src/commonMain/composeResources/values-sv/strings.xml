@@ -142,8 +142,6 @@
     <string name="buy_me_a_coffee">Bjud mig på en kaffe</string>
     <string name="developer_blog">Utvecklarblogg</string>
     <string name="developer_blog_tagline">Läs utvecklaranteckningar, guider &amp; material bakom kulisserna</string>
-    <string name="blog_promo_title">Nytt från utvecklaren</string>
-    <string name="blog_promo_message">Jag har precis startat SimpMusic-bloggen på simpmusic.org. Där berättar jag om hur SimpMusic kom till, fördjupar mig i musikteknik och delar anteckningar från utvecklingen. Ta en titt om du är nyfiken ✨</string>
     <string name="visit_blog">Besök bloggen</string>
     <string name="paypal">PayPal</string>
     <string name="title">Titel</string>
@@ -490,8 +488,6 @@
     <string name="if_you_enjoy_using_simpmusic_star_simpmusic_on_github_or_leave_a_review_on">Om du gillar SimpMusic kan du ge projektet en stjärna på GitHub eller lämna en recension på</string>
     <string name="if_you_love_my_work_consider">"Om du uppskattar mitt arbete kan du överväga att "</string>
     <string name="buying_me_a_coffee">bjuda mig på en kaffe.</string>
-    <string name="footguns_promo_title">Alla fallgropar jag hamnade i</string>
-    <string name="footguns_promo_message">SimpMusic kostade mig många nätter på grund av fallgropar i Kotlin och Compose som ingen dokumentation varnade för. Jag skrev ned dem alla i kotlin-footguns, så att du slipper förlora lika många nätter. Om det sparar dig ens en enda natt skulle en stjärna betyda mycket för mig.</string>
     <string name="fade_audio_effect">Toningseffekt för ljud</string>
     <string name="disabled">Inaktivera</string>
     <string name="fade_audio_effect_duration">Toningseffektens längd (ms) (ange 0 för att inaktivera)</string>
@@ -657,9 +653,6 @@
     <string name="your_320kbps_url_description">Lämna tomt för att automatiskt välja en fungerande webbadress med hjälp av drifttidskontrollen.</string>
     <string name="search_for">Sök efter</string>
     <string name="synced_playlist_cannot_change_order">Ordningen kan inte ändras i en synkroniserad spellista</string>
-    <string name="bpm">BPM</string>
-    <string name="key">Tonart</string>
-    <string name="scale">Skala</string>
     <string name="home_offline_title">Det går inte att ansluta</string>
     <string name="home_offline_subtitle">Kontrollera internetanslutningen och försök igen, eller lyssna på musik du har hämtat.</string>
     <string name="listen_to_downloaded">Lyssna på hämtad musik</string>

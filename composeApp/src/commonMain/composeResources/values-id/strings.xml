@@ -125,7 +125,6 @@
     <string name="buy_me_a_coffee">Belikan Aku secangkir kopi</string>
     <string name="developer_blog">Blog Pengembang</string>
     <string name="developer_blog_tagline">Baca catatan pengembang, tutorial &amp; cerita di balik layar</string>
-    <string name="blog_promo_title">Sesuatu yang baru dari pengembang</string>
     <string name="visit_blog">Kunjungi blog</string>
     <string name="paypal">PayPal</string>
     <string name="title">Judul</string>
@@ -498,9 +497,6 @@
     <string name="your_320kbps_url_description">Biarkan kosong agar sistem secara otomatis memilih URL yang aktif dari alat pemeriksa status aktif.</string>
     <string name="search_for">Pencarian</string>
     <string name="synced_playlist_cannot_change_order">Daftar putar yang disinkronkan tidak dapat mengubah urutan</string>
-    <string name="bpm">BPM</string>
-    <string name="key">Kunci</string>
-    <string name="scale">Skala</string>
     <string name="home_offline_title">Tidak dapat tersambung</string>
     <string name="home_offline_subtitle">Periksa sambungan internet Anda dan coba lagi, atau dengarkan musik yang sudah Anda unduh.</string>
     <string name="listen_to_downloaded">Dengarkan musik yang sudah diunduh</string>
