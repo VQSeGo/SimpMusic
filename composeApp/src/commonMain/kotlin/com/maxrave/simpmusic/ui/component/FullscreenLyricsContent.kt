@@ -835,7 +835,6 @@ private fun FullscreenLyricsLandscape(
                                 ExpressiveTrackInfoRow(
                                     state = state,
                                     actions = actions,
-                                    showCanvasThumbnail = false,
                                 )
                                 // Shuffle and repeat live in the connected group on Now
                                 // Playing, which this page leaves out — so the transport

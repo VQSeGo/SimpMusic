@@ -19,25 +19,6 @@ import com.maxrave.simpmusic.viewModel.UIEvent
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.roundToInt
 
-// Apple Music's animated covers arrive as HLS (.m3u8) from Apple's video CDN; Spotify's canvases
-// are MP4. Only the former is album art, shaped like album art (3:4 or 1:1), so every style plays it
-// at the top of the page in a frame of its own shape, under controls that never hide.
-internal fun NowPlayingScreenData.CanvasData.isAnimatedArtwork(): Boolean = url.contains(".m3u8")
-
-/**
- * The canvas that takes the whole page and hides the controls — a Spotify canvas (9:16, made to fill
- * a phone) — or null when there is none or it is Apple Music's animated artwork.
- */
-internal fun NowPlayingScreenData.fullscreenCanvas(): NowPlayingScreenData.CanvasData? = canvasData?.takeUnless { it.isAnimatedArtwork() }
-
-/**
- * Colour of the secondary text in the track and time rows. Over animated artwork the page is a mesh
- * of the sleeve's own colours and can be bright, which turns the body grey into a smudge, so the text
- * becomes a veil of white instead. Unspecified elsewhere: the style's own text style decides.
- */
-internal fun NowPlayingContentState.secondaryTextColor(): Color =
-    if (screenData.canvasData?.isAnimatedArtwork() == true) Color.White.copy(alpha = 0.7f) else Color.Unspecified
-
 // Backdrop behind the player. A dark surface rather than pure black: #000000 reads as a hole
 // next to the artwork-tinted gradient and cards, which is why Spotify sits its player on a
 // near-black surface instead. Used for the gradient's end colour, the fade-to target and the
@@ -103,9 +84,6 @@ class NowPlayingContentState(
     val sliderTrackColor: Color,
     val sliderValue: Float,
     val currentLyricLineIndex: Int,
-    val showControlLayout: Boolean,
-    val controlLayoutAlpha: Float,
-    val showHideMiddleLayout: Boolean,
     val shouldShowToolbar: Boolean,
     val isInPipMode: Boolean,
     val mainScrollState: ScrollState,
@@ -136,7 +114,6 @@ class NowPlayingContentActions(
     val onArtworkBitmap: (ImageBitmap) -> Unit,
     val onSliderChange: (Float) -> Unit,
     val onSliderChangeFinished: () -> Unit,
-    val onToggleControls: () -> Unit,
     /** Opens the track's artist, or asks which one when several are credited. */
     val onNavigateToArtist: () -> Unit,
     val onNavigateToAlbum: () -> Unit,

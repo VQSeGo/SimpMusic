@@ -227,29 +227,6 @@ internal fun Modifier.appleMusicVerticalFadeEdges(
             )
         }
 
-/**
- * Transparent at [transparentAt] and beyond it, opaque at [opaqueAt] and beyond it, on the same
- * smoothstep curve as [appleMusicVerticalFadeEdges] — a fade placed anywhere in the element rather
- * than at its edge, in either direction.
- */
-internal fun Modifier.appleMusicFadeBetween(
-    transparentAt: Dp,
-    opaqueAt: Dp,
-): Modifier =
-    graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-        .drawWithContent {
-            drawContent()
-            drawRect(
-                brush =
-                    Brush.verticalGradient(
-                        colorStops = fadeEdgeStops(1f, 1f),
-                        startY = transparentAt.toPx(),
-                        endY = opaqueAt.toPx(),
-                    ),
-                blendMode = BlendMode.DstIn,
-            )
-        }
-
 private const val FADE_EDGE_STEPS = 24
 
 private fun smoothstep(t: Float): Float = t * t * (3f - 2f * t)

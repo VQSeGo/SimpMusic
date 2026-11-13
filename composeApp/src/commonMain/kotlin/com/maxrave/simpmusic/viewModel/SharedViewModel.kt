@@ -24,7 +24,6 @@ import com.maxrave.domain.data.entities.PlaylistEntity
 import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.data.entities.SongInfoEntity
 import com.maxrave.domain.data.model.browse.album.Track
-import com.maxrave.domain.data.model.canvas.CanvasResult
 import com.maxrave.domain.data.model.download.DownloadProgress
 import com.maxrave.domain.data.model.intent.GenericIntent
 import com.maxrave.domain.data.model.metadata.Lyrics
@@ -34,7 +33,6 @@ import com.maxrave.domain.data.model.update.UpdateData
 import com.maxrave.domain.data.player.GenericCastState
 import com.maxrave.domain.data.player.LiveStreamRegistry
 import com.maxrave.domain.extension.decodeHtmlEntities
-import com.maxrave.domain.extension.isSong
 import com.maxrave.domain.extension.isVideo
 import com.maxrave.domain.extension.toGenericMediaItem
 import com.maxrave.domain.manager.DataStoreManager
@@ -184,11 +182,6 @@ class SharedViewModel(
     private val _extractSource: MutableStateFlow<String?> = MutableStateFlow(null)
     val extractSource: StateFlow<String?> = _extractSource.asStateFlow()
 
-    private var _canvas: MutableStateFlow<CanvasResult?> = MutableStateFlow(null)
-    val canvas: StateFlow<CanvasResult?> = _canvas
-
-    private var canvasJob: Job? = null
-
     private val _intent: MutableStateFlow<GenericIntent?> = MutableStateFlow(null)
     val intent: StateFlow<GenericIntent?> = _intent
 
@@ -326,73 +319,6 @@ class SharedViewModel(
                     }
                 }
             }
-    }
-
-    private fun getCanvas(
-        videoId: String,
-        duration: Int,
-    ) {
-        Logger.w(tag, "Start getCanvas: $videoId $duration")
-//        canvasJob?.cancel()
-        viewModelScope.launch {
-            // Both sources fill the same slot, so they are tried in order rather than raced:
-            // animated artwork first, and a Spotify canvas only if that found nothing AND the user
-            // has that switch on too. Neither switch touches the other — a track with no animated
-            // artwork still gets its canvas, and turning Spotify off still means no canvas at all.
-            val sources =
-                buildList {
-                    if (dataStoreManager.amAnimatedArtwork.first() == TRUE) {
-                        add(lyricsCanvasRepository.getAMAnimatedArtwork(videoId))
-                    }
-                    if (dataStoreManager.spotifyCanvas.first() == TRUE) {
-                        add(lyricsCanvasRepository.getCanvas(dataStoreManager, videoId, duration))
-                    }
-                }
-            if (sources.isEmpty()) return@launch
-
-            var resolved = false
-            for (source in sources) {
-                if (resolved) break
-                source.cancellable().collect { response ->
-                    val data = response.data
-                    if (response is Resource.Success && data != null && nowPlayingState.value?.mediaItem?.mediaId == videoId) {
-                        resolved = true
-                        _canvas.value = data
-                        _nowPlayingScreenData.update {
-                            it.copy(
-                                canvasData =
-                                    NowPlayingScreenData.CanvasData(
-                                        isVideo = data.isVideo,
-                                        url = data.canvasUrl,
-                                        thumbUrl = data.canvasThumbUrl,
-                                    ),
-                            )
-                        }
-                        // Save canvas video url
-                        if (data.isVideo) lyricsCanvasRepository.updateCanvasUrl(videoId, data.canvasUrl)
-                        // Save canvas thumb url
-                        data.canvasThumbUrl?.let { lyricsCanvasRepository.updateCanvasThumbUrl(videoId, it) }
-                    } else {
-                        log("Get canvas miss from a source: ${response.message}")
-                    }
-                }
-            }
-
-            if (!resolved) {
-                nowPlayingState.value?.songEntity?.canvasUrl?.let { url ->
-                    _nowPlayingScreenData.update {
-                        it.copy(
-                            canvasData =
-                                NowPlayingScreenData.CanvasData(
-                                    isVideo = url.isCanvasVideoUrl(),
-                                    url = url,
-                                    thumbUrl = nowPlayingState.value?.songEntity?.canvasThumbUrl,
-                                ),
-                        )
-                    }
-                }
-            }
-        }
     }
 
     fun getString(key: String): String? = runBlocking { dataStoreManager.getString(key).first() }
@@ -1668,15 +1594,10 @@ class SharedViewModel(
                         }.collectLatest {
                             val nowPlaying = it.second
                             val timeline = it.first
-                            // Lyrics and canvas both key off the track's length, which a live stream has none of.
+                            // Lyrics key off the track's length, which a live stream has none of.
                             if (timeline.isLive) return@collectLatest
                             log("Timeline job ${(it.first.total.toString() + it.second.songEntity?.videoId).hashCode()}")
                             if (timeline.total > 0 && nowPlaying.songEntity != null) {
-                                if (nowPlaying.mediaItem.isSong() && nowPlayingScreenData.value.canvasData == null) {
-                                    Logger.w(tag, "Duration is ${timeline.total}")
-                                    Logger.w(tag, "MediaId is ${nowPlaying.mediaItem.mediaId}")
-                                    getCanvas(nowPlaying.mediaItem.mediaId, (timeline.total / 1000).toInt())
-                                }
                                 nowPlaying.songEntity?.let { song ->
                                     if (nowPlayingScreenData.value.lyricsData == null) {
                                         Logger.w(tag, "Get lyrics from format")
@@ -1749,7 +1670,6 @@ class SharedViewModel(
                 .distinctUntilChangedBy {
                     it.songEntity?.videoId
                 }.collectLatest { state ->
-                    canvasJob?.cancel()
                     _nowPlayingState.value = state
 
                     // Seed the timeline from METADATA as soon as the track is known, instead of
@@ -1791,7 +1711,6 @@ class SharedViewModel(
                                         ?.joinToString(", ") ?: "",
                                 isVideo = false,
                                 thumbnailURL = null,
-                                canvasData = null,
                                 lyricsData = null,
                                 songInfoData = null,
                                 playlistName =
@@ -1806,7 +1725,6 @@ class SharedViewModel(
                             )
                     }
                     state.mediaItem.let { now ->
-                        _canvas.value = null
                         getLikeStatus(now.mediaId)
                         getSongInfo(now.mediaId)
                         getFormat(now.mediaId)
@@ -2026,22 +1944,12 @@ data class NowPlayingScreenData(
     val isVideo: Boolean,
     val isExplicit: Boolean = false,
     val thumbnailURL: String?,
-    val canvasData: CanvasData? = null,
     val lyricsData: LyricsData? = null,
     /** Every provider and the offline cache came back empty for this song; offers Add lyrics. */
     val lyricsNotFound: Boolean = false,
     val songInfoData: SongInfoEntity? = null,
     val bitmap: ImageBitmap? = null,
 ) {
-    data class CanvasData(
-        val isVideo: Boolean,
-        val url: String,
-        // A still of the clip at the clip's own size — Apple Music's animated artwork sends one.
-        // The Apple Music player shows it under the clip while that loads, and reads the clip's
-        // proportions off it, so the frame is the right shape before the first video frame arrives.
-        val thumbUrl: String? = null,
-    )
-
     data class LyricsData(
         val lyrics: Lyrics,
         val translatedLyrics: Pair<Lyrics, LyricsProvider>? = null,
@@ -2055,21 +1963,9 @@ data class NowPlayingScreenData(
                 artistName = "",
                 isVideo = false,
                 thumbnailURL = null,
-                canvasData = null,
                 lyricsData = null,
                 songInfoData = null,
                 playlistName = "",
             )
     }
 }
-
-/**
- * Whether a stored canvas url points at something a player should open rather than an image.
- *
- * The column holds whatever the active source wrote: a Spotify canvas is an `.mp4`, while AM
- * animated artwork is an HLS `.m3u8` master playlist. Testing only for `.mp4` — as this did before
- * AM existed — sends every AM artwork down the still-image branch, and because the branch that
- * reads this is the one that restores a *cached* url, the failure only appears from the second play
- * of a track onwards.
- */
-private fun String.isCanvasVideoUrl(): Boolean = contains(".mp4") || contains(".m3u8")

@@ -10,7 +10,6 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -103,7 +102,6 @@ import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentActions
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentM3Expressive
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentState
 import com.maxrave.simpmusic.ui.screen.player.content.PlayerBackdropColor
-import com.maxrave.simpmusic.ui.screen.player.content.fullscreenCanvas
 import com.maxrave.simpmusic.ui.screen.player.content.toAudioQualityLabel
 import com.maxrave.simpmusic.viewModel.NowPlayingBottomSheetUIEvent
 import com.maxrave.simpmusic.viewModel.NowPlayingBottomSheetViewModel
@@ -112,7 +110,6 @@ import com.maxrave.simpmusic.viewModel.UIEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -205,7 +202,7 @@ fun NowPlayingScreenContent(
         .collectAsStateWithLifecycle(initialValue = false)
 
     // Artwork Pager state — Spotify-style horizontal swipe between queue tracks.
-    // The pager wraps the Canvas + Thumbnail layers. Controller layout below stays fixed.
+    // Controller layout below the pager stays fixed.
     val nowPlayingState by sharedViewModel.nowPlayingState.collectAsStateWithLifecycle()
     val queueDataState by sharedViewModel.getQueueDataState().collectAsStateWithLifecycle()
     val artworkQueue by remember {
@@ -235,9 +232,8 @@ fun NowPlayingScreenContent(
             )
         }
     }
-    // Single PagerState — the unified ArtworkPager renders BOTH the fullscreen canvas
-    // background and the centered square thumbnail in each page, so we don't need two
-    // pagers + state mirroring.
+    // Single PagerState — the unified ArtworkPager renders the centered square thumbnail in
+    // each page, so we don't need two pagers + state mirroring.
     val artworkPagerState =
         rememberPagerState(
             initialPage = currentOrderIndex.coerceAtLeast(0),
@@ -389,10 +385,6 @@ fun NowPlayingScreenContent(
 
     val mainScrollState = rememberScrollState()
 
-    var showHideMiddleLayout by rememberSaveable {
-        mutableStateOf(true)
-    }
-
     var showSheet by rememberSaveable {
         mutableStateOf(false)
     }
@@ -459,16 +451,12 @@ fun NowPlayingScreenContent(
 
     LaunchedEffect(screenDataState) {
         Logger.d(TAG, "ScreenDataState: $screenDataState")
-        // Only a canvas that fills the page replaces it; animated artwork sits at its top.
-        showHideMiddleLayout = screenDataState.fullscreenCanvas() == null
     }
 
     // Palette generation lives in its own NEVER-restarting effect. Keyed on screenDataState it
-    // was cancelled mid-generate every time ANOTHER field of the data class arrived (canvasData,
-    // lyrics, songInfo), and kmpalette parks on Loading when generate() is cancelled — palette
-    // stays null, startColor stays black, and the M3E style falls back to the app seed (the
-    // "canvas songs are always cyan" bug). Canvas songs hit this deterministically because the
-    // canvas fetch always lands after the artwork bitmap.
+    // was cancelled mid-generate every time ANOTHER field of the data class arrived (lyrics,
+    // songInfo), and kmpalette parks on Loading when generate() is cancelled — palette
+    // stays null, startColor stays black, and the M3E style falls back to the app seed.
     LaunchedEffect(Unit) {
         snapshotFlow { screenDataState.bitmap }
             .filterNotNull()
@@ -530,71 +518,11 @@ fun NowPlayingScreenContent(
         label = "sliderCrossfadeColor",
     )
 
-    // Show ControlLayout Or Show Artist Badge
-    var showHideControlLayout by rememberSaveable {
-        mutableStateOf(true)
-    }
-    val controlLayoutAlpha: Float by animateFloatAsState(
-        targetValue = if (showHideControlLayout) 1f else 0f,
-        animationSpec =
-            tween(
-                durationMillis = 500,
-                easing = LinearEasing,
-            ),
-        label = "ControlLayoutAlpha",
-    )
-
-    var showHideJob by remember {
-        mutableStateOf(true)
-    }
-
-    LaunchedEffect(key1 = showHideJob) {
-        if (!showHideJob) {
-            delay(5000)
-            if (mainScrollState.value == 0) showHideControlLayout = false
-            showHideJob = true
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        snapshotFlow {
-            screenDataState
-        }.distinctUntilChangedBy {
-            it.canvasData?.url
-        }.collectLatest {
-            if (it.fullscreenCanvas() != null && mainScrollState.value == 0) {
-                showHideJob = false
-            } else {
-                showHideJob = true
-                showHideControlLayout = true
-            }
-        }
-    }
-
-    LaunchedEffect(key1 = showHideControlLayout) {
-        if (showHideControlLayout && screenDataState.fullscreenCanvas() != null && mainScrollState.value == 0) {
-            showHideJob = false
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        snapshotFlow { mainScrollState.value }
-            .distinctUntilChanged()
-            .collect {
-                if (it > 0 && !showHideControlLayout && screenDataState.fullscreenCanvas() != null) {
-                    showHideJob = true
-                    showHideControlLayout = true
-                } else if (showHideControlLayout && it == 0 && screenDataState.fullscreenCanvas() != null) {
-                    showHideJob = false
-                }
-            }
-    }
-
     var currentLyricLineIndex by rememberSaveable {
         mutableIntStateOf(-1)
     }
 
-    // Canvas subtitle sync
+    // Current lyric line, for the inline line under the artwork
     LaunchedEffect(timelineState, screenDataState.lyricsData?.lyrics, lyricsOffsetMs) {
         val lyrics = screenDataState.lyricsData?.lyrics
         if (lyrics == null || lyrics.syncType == "UNSYNCED" || lyrics.syncType == null) {
@@ -657,9 +585,6 @@ fun NowPlayingScreenContent(
             sliderTrackColor = sliderTrackColor,
             sliderValue = sliderValue,
             currentLyricLineIndex = currentLyricLineIndex,
-            showControlLayout = showHideControlLayout,
-            controlLayoutAlpha = controlLayoutAlpha,
-            showHideMiddleLayout = showHideMiddleLayout,
             shouldShowToolbar = shouldShowToolbar,
             isInPipMode = isInPipMode,
             mainScrollState = mainScrollState,
@@ -685,10 +610,6 @@ fun NowPlayingScreenContent(
                 sharedViewModel.onUIEvent(
                     UIEvent.UpdateProgress(sliderValue),
                 )
-            },
-            onToggleControls = {
-                showHideJob = true
-                showHideControlLayout = !showHideControlLayout
             },
             onNavigateToArtist = {
                 val song = sharedViewModel.nowPlayingState.value?.songEntity

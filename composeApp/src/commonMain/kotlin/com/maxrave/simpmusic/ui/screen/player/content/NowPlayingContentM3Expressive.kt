@@ -7,21 +7,17 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,12 +31,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.shape.CircleShape
@@ -71,15 +65,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
-import coil3.request.CachePolicy
-import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.materialkolor.PaletteStyle
 import com.materialkolor.ktx.themeColorOrNull
@@ -93,13 +82,11 @@ import com.maxrave.simpmusic.extension.formatDuration
 import com.maxrave.simpmusic.extension.getScreenSizeInfo
 import com.maxrave.simpmusic.extension.isElementVisible
 import com.maxrave.simpmusic.extension.lengthLabel
-import com.maxrave.simpmusic.extension.smoothScrimBrush
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.ExplicitBadge
 import com.maxrave.simpmusic.ui.component.LyricText
 import com.maxrave.simpmusic.ui.component.heartBurst
 import com.maxrave.simpmusic.ui.component.rememberHeartBurstState
-import com.maxrave.simpmusic.ui.component.rememberHolderPainter
 import com.maxrave.simpmusic.ui.icon.CommentOutline
 import com.maxrave.simpmusic.ui.icon.Favorite
 import com.maxrave.simpmusic.ui.icon.FavoriteBorder
@@ -137,17 +124,6 @@ import simpmusic.composeapp.generated.resources.radio_mix_upper
  * on semantic surfaces. Layout skeleton (scroll, artwork pager sync, vertical rhythm,
  * below-the-fold cards, sticky toolbar) mirrors [NowPlayingContentSpotify] one-to-one so
  * both styles behave identically; only the presentation differs.
- *
- * Apple Music's animated artwork plays the Apple Music style's way instead (see
- * [AppleMusicAnimatedArtworkPage]), under controls that never hide.
- *
- * Canvas mode behaves exactly like Classic: when a Spotify canvas exists the page goes flat
- * black, the canvas plays fullscreen as the bottom layer of the current pager page and the
- * artwork card hides while keeping its layout slot. The info block fades with
- * [NowPlayingContentState.controlLayoutAlpha], a tap on the page toggles it via
- * [NowPlayingContentActions.onToggleControls], and while hidden
- * ([NowPlayingContentState.showControlLayout] false) the Classic "unfocused" metadata
- * overlay renders over the info area. The shell owns the auto-hide state machine.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -224,21 +200,6 @@ private fun NowPlayingM3ExpressiveLayout(
 
     val isRepeatOne = state.controllerState.repeatState is RepeatState.One
 
-    // Canvas mode fades the info block in and out. The shell's shared 500ms linear alpha exposes
-    // a long half-blended phase in which container-backed buttons pick up the bright canvas
-    // behind them and read lighter than the header's (which never fades, like Classic) — the
-    // "top bar buttons are darker" report. Fading IN fast makes that frame effectively
-    // invisible; fading OUT keeps Classic's relaxed 500ms feel. Steady states are untouched.
-    val m3eControlsAlpha by animateFloatAsState(
-        targetValue = if (state.showControlLayout) 1f else 0f,
-        animationSpec =
-            tween(
-                durationMillis = if (state.showControlLayout) 180 else 500,
-                easing = LinearEasing,
-            ),
-        label = "m3eControlsAlpha",
-    )
-
     // === 2. Vertical rhythm — identical mechanism to NowPlayingContentSpotify ===
     // The pre-fold section fills exactly one screen: measured header/artwork/info heights,
     // and the artwork sits between two equal gaps of `middleLayoutPaddingDp`.
@@ -299,9 +260,8 @@ private fun NowPlayingM3ExpressiveLayout(
                     enabled = state.isExpanded,
                 )
                 // Tonal design: the page is a plain surface — the artwork card carries the
-                // color. While a canvas is active (showHideMiddleLayout is false exactly
-                // then) the page goes flat black instead, exactly like Classic.
-                .background(if (state.showHideMiddleLayout) colorScheme.surface else Color.Black),
+                // color.
+                .background(colorScheme.surface),
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 // === 4. Artwork pager — same state/sync as Classic, card presentation ===
@@ -478,10 +438,7 @@ private fun NowPlayingM3ExpressiveLayout(
                                     inlineLyrics.syncType != "UNSYNCED" &&
                                     inlineLyrics.lines != null
                             val currentLyricLineText =
-                                if (!hasSyncedLyrics ||
-                                    state.screenData.fullscreenCanvas() != null ||
-                                    state.currentLyricLineIndex < 0
-                                ) {
+                                if (!hasSyncedLyrics || state.currentLyricLineIndex < 0) {
                                     ""
                                 } else {
                                     inlineLyrics
@@ -517,7 +474,6 @@ private fun NowPlayingM3ExpressiveLayout(
                         Box {
                             Column(
                                 Modifier
-                                    .alpha(m3eControlsAlpha)
                                     .onGloballyPositioned {
                                         infoLayoutHeightDp =
                                             with(localDensity) {
@@ -543,121 +499,6 @@ private fun NowPlayingM3ExpressiveLayout(
                                     actions = actions,
                                 )
                             }
-                            // Canvas-unfocused overlay — Classic verbatim: covers the info
-                            // area, a tap re-shows the controls, and the metadata row (plus
-                            // the current lyric line) sits over a black-fading scrim.
-                            this@Column.AnimatedVisibility(
-                                visible = !state.showControlLayout,
-                                enter = fadeIn(),
-                                exit = fadeOut(),
-                            ) {
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .height(
-                                                infoLayoutHeightDp.dp,
-                                            ).fillMaxWidth()
-                                            .clickable(
-                                                onClick = {
-                                                    if (state.mainScrollState.value == 0) {
-                                                        actions.onToggleControls()
-                                                    }
-                                                },
-                                                indication = null,
-                                                interactionSource =
-                                                    remember {
-                                                        MutableInteractionSource()
-                                                    },
-                                            ),
-                                    contentAlignment = Alignment.BottomStart,
-                                ) {
-                                    // Gradient backdrop — transparent at top so the canvas
-                                    // shows through, fading to dark under the metadata row.
-                                    Box(
-                                        modifier =
-                                            Modifier
-                                                .fillMaxSize()
-                                                .background(
-                                                    smoothScrimBrush(
-                                                        from = Color.Black.copy(alpha = 0f),
-                                                        to = Color.Black.copy(alpha = 0.85f),
-                                                    ),
-                                                ),
-                                    )
-
-                                    Column(
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .animateContentSize(),
-                                    ) {
-                                        this@Column.AnimatedVisibility(
-                                            visible = state.currentLyricLineIndex > -1,
-                                            enter = fadeIn() + expandVertically(),
-                                            exit = fadeOut() + shrinkVertically(),
-                                        ) {
-                                            // Canvas subtitle — lyric line above the metadata
-                                            // row. White/yellow kept from Classic: the backdrop
-                                            // is black in both styles.
-                                            val lineText =
-                                                state.screenData.lyricsData
-                                                    ?.lyrics
-                                                    ?.lines
-                                                    ?.getOrNull(state.currentLyricLineIndex)
-                                                    ?.words
-                                                    ?.stripRichSyncTimestamps()
-                                            if (!lineText.isNullOrBlank()) {
-                                                Column(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                ) {
-                                                    LyricText(
-                                                        modifier =
-                                                            Modifier
-                                                                .fillMaxWidth()
-                                                                .padding(horizontal = 20.dp)
-                                                                .padding(bottom = 4.dp)
-                                                                .basicMarquee(
-                                                                    iterations = Int.MAX_VALUE,
-                                                                    animationMode = MarqueeAnimationMode.Immediately,
-                                                                ).focusable(),
-                                                        text = lineText,
-                                                        style = typo().bodyMedium,
-                                                        color = Color.White,
-                                                        maxLines = 1,
-                                                    )
-                                                    val translatedLineText =
-                                                        state.screenData.lyricsData
-                                                            ?.translatedLyrics
-                                                            ?.first
-                                                            ?.lines
-                                                            ?.getOrNull(state.currentLyricLineIndex)
-                                                            ?.words
-                                                            ?.stripRichSyncTimestamps()
-                                                    if (!translatedLineText.isNullOrBlank()) {
-                                                        LyricText(
-                                                            modifier =
-                                                                Modifier
-                                                                    .fillMaxWidth()
-                                                                    .padding(horizontal = 20.dp)
-                                                                    .padding(bottom = 8.dp)
-                                                                    .basicMarquee(
-                                                                        iterations = Int.MAX_VALUE,
-                                                                        animationMode = MarqueeAnimationMode.Immediately,
-                                                                    ).focusable(),
-                                                            text = translatedLineText,
-                                                            alignmentText = lineText,
-                                                            style = typo().bodyMedium,
-                                                            color = Color.Yellow,
-                                                            maxLines = 1,
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        ExpressiveTrackInfoRow(state = state, actions = actions)
-                                    }
-                                }
-                            }
                         }
                     }
                     // === 7. Below the fold ===
@@ -678,7 +519,6 @@ private fun NowPlayingM3ExpressiveLayout(
 internal fun ExpressiveTrackInfoRow(
     state: NowPlayingContentState,
     actions: NowPlayingContentActions,
-    showCanvasThumbnail: Boolean = true,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Row(
@@ -688,34 +528,6 @@ internal fun ExpressiveTrackInfoRow(
                 .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // While a canvas hides the big artwork, a small thumbnail joins the row — Classic
-        // verbatim (its shared NowPlayingTrackInfoRow does exactly this). Switched off by the
-        // fullscreen lyrics landscape layout, which shows the full artwork right above the row.
-        AnimatedVisibility(showCanvasThumbnail && state.screenData.fullscreenCanvas() != null) {
-            AsyncImage(
-                model =
-                    ImageRequest
-                        .Builder(LocalPlatformContext.current)
-                        .data(state.screenData.thumbnailURL)
-                        .diskCachePolicy(CachePolicy.ENABLED)
-                        .diskCacheKey(state.screenData.thumbnailURL + "BIGGER")
-                        .crossfade(true)
-                        .build(),
-                placeholder = rememberHolderPainter(square = true),
-                error = rememberHolderPainter(square = true),
-                contentDescription = null,
-                contentScale = ContentScale.FillWidth,
-                modifier =
-                    Modifier
-                        .heightIn(0.dp, 55.dp)
-                        .width(55.dp)
-                        .padding(end = 10.dp)
-                        .clip(
-                            RoundedCornerShape(4.dp),
-                        ).align(Alignment.CenterVertically),
-            )
-        }
-
         Column(Modifier.weight(1f)) {
             Text(
                 text = state.screenData.nowPlayingTitle,
@@ -748,8 +560,7 @@ internal fun ExpressiveTrackInfoRow(
                 Text(
                     text = state.screenData.artistName,
                     style = typo().bodyMedium,
-                    color = state.secondaryTextColor(),
-                    maxLines = 1,
+                            maxLines = 1,
                     modifier =
                         Modifier
                             .weight(1f)
@@ -850,7 +661,6 @@ internal fun ColumnScope.ExpressivePlaybackControls(
         Text(
             text = state.timelineState.elapsedLabel(state.sliderValue / 100f),
             style = typo().bodyMedium,
-            color = state.secondaryTextColor(),
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Left,
         )
@@ -902,7 +712,6 @@ internal fun ColumnScope.ExpressivePlaybackControls(
         Text(
             text = state.timelineState.lengthLabel(),
             style = typo().bodyMedium,
-            color = state.secondaryTextColor(),
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Right,
         )

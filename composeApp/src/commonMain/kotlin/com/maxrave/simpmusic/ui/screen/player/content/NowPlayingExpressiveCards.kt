@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -78,15 +77,12 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.maxrave.common.Config.MAIN_PLAYER
-import com.maxrave.simpmusic.Platform
-import com.maxrave.simpmusic.expect.ui.MediaPlayerView
 import com.maxrave.simpmusic.expect.ui.MediaPlayerViewWithSubtitle
 import com.maxrave.simpmusic.expect.ui.toImageBitmap
 import com.maxrave.simpmusic.extension.LeftToRight
 import com.maxrave.simpmusic.extension.parseTimestampToMilliseconds
 import com.maxrave.simpmusic.extension.mouseDragScroll
 import com.maxrave.simpmusic.extension.smoothScrimBrush
-import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.DescriptionView
 import com.maxrave.simpmusic.ui.component.ExplicitBadge
 import com.maxrave.simpmusic.ui.component.HeartCheckBox
@@ -152,11 +148,7 @@ internal fun NowPlayingContentState.expressiveCardSlotRatio(): Float =
  *
  * Current page: live artwork (feeds the palette via [NowPlayingContentActions.onArtworkBitmap])
  * and the inline video player with the Classic overlay controls when watch-video mode is
- * active. When Spotify canvas data is present the canvas plays FULLSCREEN as the bottom
- * layer of the page and the card hides (alpha 0, layout slot kept) — Classic's canvas mode
- * verbatim; a tap on the page then toggles the controls via
- * [NowPlayingContentActions.onToggleControls]. Adjacent pages: the track's static thumbnail
- * as a card.
+ * active. Adjacent pages: the track's static thumbnail as a card.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -172,9 +164,6 @@ internal fun ExpressiveArtworkCardPage(
     val colorScheme = MaterialTheme.colorScheme
     val pageTrack = state.artworkQueue.getOrNull(page)
     val isCurrentArtworkPage = page == state.currentOrderIndex
-    // A canvas that fills the page; Apple Music's animated artwork is drawn separately, last.
-    val pageHasCanvas = isCurrentArtworkPage && state.screenData.fullscreenCanvas() != null
-    val pageAnimatedArtwork = state.screenData.canvasData?.takeIf { isCurrentArtworkPage && it.isAnimatedArtwork() }
     // While a video plays, the card itself takes the video's shape — no letterbox bands inside a
     // square card — fitted into a slot no taller than the square card a song gets, so a tall video
     // narrows the card instead of pushing the page past the fold. Every page shares the slot so the
@@ -186,105 +175,9 @@ internal fun ExpressiveArtworkCardPage(
         modifier =
             Modifier
                 .fillMaxSize()
-                // Prevent the canvas video (9:16 aspect, can be wider than the
-                // page) and any other content from bleeding into adjacent pages.
-                .clipToBounds()
-                // Tap toggles controls only when the canvas is covering this page;
-                // otherwise no-op — Classic verbatim.
-                .clickable(
-                    enabled = pageHasCanvas,
-                    onClick = {
-                        if (state.mainScrollState.value == 0) {
-                            actions.onToggleControls()
-                        }
-                    },
-                    indication = null,
-                    interactionSource =
-                        remember {
-                            MutableInteractionSource()
-                        },
-                ),
+                // Keep the page's content from bleeding into adjacent pages.
+                .clipToBounds(),
     ) {
-        // ── Fullscreen canvas backdrop (current track + canvas data) — Classic verbatim ──
-        // The canvas is the bottom layer of the page: a 9:16 video keeps its full height and
-        // is center-cropped by the page clip on mobile; Desktop keeps the plain modifier.
-        if (pageHasCanvas) {
-            Crossfade(targetState = state.screenData.canvasData?.isVideo) { isVideo ->
-                if (isVideo == true) {
-                    state.screenData.canvasData?.url?.let { url ->
-                        MediaPlayerView(
-                            url = url,
-                            modifier =
-                                Modifier
-                                    .fillMaxHeight()
-                                    .then(
-                                        if (getPlatform() == Platform.Desktop) {
-                                            Modifier
-                                        } else {
-                                            Modifier
-                                                .wrapContentWidth(unbounded = true, align = Alignment.CenterHorizontally)
-                                                .align(Alignment.Center)
-                                        },
-                                    ),
-                        )
-                    }
-                } else if (isVideo == false) {
-                    AsyncImage(
-                        model =
-                            ImageRequest
-                                .Builder(LocalPlatformContext.current)
-                                .data(state.screenData.canvasData?.url)
-                                .diskCachePolicy(CachePolicy.ENABLED)
-                                .diskCacheKey(state.screenData.canvasData?.url)
-                                .crossfade(550)
-                                .build(),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
-            }
-            // Bottom gradient overlay — different intensity per state (Classic verbatim):
-            // - Focus: full-height heavy gradient (controls readability)
-            // - Unfocus: compact dark coverage at the very bottom only, just enough for
-            //   the metadata overlay, letting more canvas show through.
-            Crossfade(
-                targetState = state.showControlLayout,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .align(Alignment.BottomCenter),
-            ) { focused ->
-                if (focused) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .background(
-                                    smoothScrimBrush(
-                                        from = overlay,
-                                        to = Color.Black,
-                                        startFraction = 0.2f,
-                                    ),
-                                ),
-                    )
-                } else {
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .background(
-                                    smoothScrimBrush(
-                                        from = Color.Black.copy(alpha = 0f),
-                                        to = Color.Black,
-                                        startFraction = 0.92f,
-                                        endFraction = 0.97f,
-                                    ),
-                                ),
-                    )
-                }
-            }
-        }
-
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(topAppBarHeightDp.dp))
             Spacer(
@@ -294,14 +187,11 @@ internal fun ExpressiveArtworkCardPage(
                         .height(middleLayoutPaddingDp.dp)
                         .fillMaxWidth(),
             )
-            // While the canvas covers the page the card hides (alpha 0) but keeps its
-            // layout slot occupied — Classic's exact approach, so nothing below moves.
             Box(
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp)
-                        .alpha(if (pageHasCanvas) 0f else 1f)
                         .aspectRatio(state.expressiveCardSlotRatio())
                         .wrapContentSize()
                         .aspectRatio(cardAspectRatio)
@@ -309,7 +199,7 @@ internal fun ExpressiveArtworkCardPage(
                         .background(colorScheme.surfaceContainer),
             ) {
                 if (isCurrentArtworkPage) {
-                    // Live artwork — kept composed even under canvas/video (alpha 0) so
+                    // Live artwork — kept composed even under video (alpha 0) so
                     // onSuccess keeps feeding the palette that drives the whole scheme.
                     // The artwork URL that is actually loading. `maxresdefault.jpg` — the fallback
                     // artworkUri many video tracks carry — only EXISTS for videos with an HD
@@ -355,7 +245,7 @@ internal fun ExpressiveArtworkCardPage(
                                         Modifier.fillMaxSize()
                                     },
                                 ).alpha(
-                                    if (pageHasCanvas || (state.screenData.isVideo && state.shouldShowVideo)) 0f else 1f,
+                                    if (state.screenData.isVideo && state.shouldShowVideo) 0f else 1f,
                                 ),
                     )
 
@@ -538,17 +428,6 @@ internal fun ExpressiveArtworkCardPage(
                     )
                 }
             }
-        }
-
-        // Apple Music's animated artwork (current track) — Classic's Layer 3: edge to edge at the
-        // top of the page under controls that never hide, covering the card once its still is up.
-        if (pageAnimatedArtwork != null) {
-            AppleMusicAnimatedArtworkPage(
-                canvas = pageAnimatedArtwork,
-                cover = state.screenData.bitmap,
-                topChrome = topAppBarHeightDp.dp,
-                pageColor = colorScheme.surface,
-            )
         }
     }
 }
