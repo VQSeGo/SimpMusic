@@ -215,8 +215,6 @@ import simpmusic.composeapp.generated.resources.backup_downloaded_description
 import simpmusic.composeapp.generated.resources.backup_frequency
 import simpmusic.composeapp.generated.resources.balance_media_loudness
 import simpmusic.composeapp.generated.resources.better_lyrics
-import simpmusic.composeapp.generated.resources.blog_notification_description
-import simpmusic.composeapp.generated.resources.blog_notification_title
 import simpmusic.composeapp.generated.resources.buy_me_a_coffee
 import simpmusic.composeapp.generated.resources.cancel
 import simpmusic.composeapp.generated.resources.animated_artwork_info
@@ -390,8 +388,6 @@ import simpmusic.composeapp.generated.resources.set
 import simpmusic.composeapp.generated.resources.settings
 import simpmusic.composeapp.generated.resources.show_analytics_tab
 import simpmusic.composeapp.generated.resources.show_analytics_tab_description
-import simpmusic.composeapp.generated.resources.show_notifications_entry
-import simpmusic.composeapp.generated.resources.show_notifications_entry_description
 import simpmusic.composeapp.generated.resources.signed_in
 import simpmusic.composeapp.generated.resources.simpmusic_lyrics
 import simpmusic.composeapp.generated.resources.skip_no_music_part
@@ -518,8 +514,6 @@ fun SettingScreen(
     val keepYoutubePlaylistOffline by viewModel.keepYouTubePlaylistOffline.collectAsStateWithLifecycle()
     val localTrackingEnabled by viewModel.localTrackingEnabled.collectAsStateWithLifecycle(initialValue = false)
     val analyticsTabEnabled by sharedViewModel.analyticsTabEnabled.collectAsStateWithLifecycle(initialValue = true)
-    val blogNotificationEnabled by viewModel.blogNotificationEnabled.collectAsStateWithLifecycle()
-    val showNotificationsEntry by sharedViewModel.showNotificationsEntry.collectAsStateWithLifecycle(true)
     val playVideo by remember { viewModel.playVideoInsteadOfAudio.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
     val radioAudioOnly by remember { viewModel.radioAudioOnly.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
     val videoQuality by viewModel.videoQuality.collectAsStateWithLifecycle()
@@ -2678,20 +2672,6 @@ fun SettingScreen(
                         uriHandler.openUri("https://www.simpmusic.org/blogs")
                     },
                 )
-                if (getPlatform() == Platform.Desktop) {
-                    SettingItem(
-                        title = stringResource(Res.string.show_notifications_entry),
-                        subtitle = stringResource(Res.string.show_notifications_entry_description),
-                        switch = (showNotificationsEntry to { sharedViewModel.setShowNotificationsEntry(it) }),
-                    )
-                }
-                if (getPlatform() == Platform.Android) {
-                    SettingItem(
-                        title = stringResource(Res.string.blog_notification_title),
-                        subtitle = stringResource(Res.string.blog_notification_description),
-                        switch = (blogNotificationEnabled to { viewModel.setBlogNotificationEnabled(it) }),
-                    )
-                }
                 SettingItem(
                     title = stringResource(Res.string.buy_me_a_coffee),
                     subtitle = stringResource(Res.string.donation),

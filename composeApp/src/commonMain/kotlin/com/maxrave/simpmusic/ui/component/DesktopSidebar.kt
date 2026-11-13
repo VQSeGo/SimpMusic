@@ -85,14 +85,12 @@ import com.maxrave.simpmusic.ui.icon.FormatListBulleted
 import com.maxrave.simpmusic.ui.icon.LeftPanelClose
 import com.maxrave.simpmusic.ui.icon.LeftPanelOpen
 import com.maxrave.simpmusic.ui.icon.LibraryMusic
-import com.maxrave.simpmusic.ui.icon.Notifications
 import com.maxrave.simpmusic.ui.icon.PushPin
 import com.maxrave.simpmusic.ui.icon.Search
 import com.maxrave.simpmusic.ui.icon.Settings
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.icon.TrendingUp
 import com.maxrave.simpmusic.ui.icon.VolumeUp
-import com.maxrave.simpmusic.ui.navigation.destination.home.NotificationDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.SettingsDestination
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
 import com.maxrave.simpmusic.ui.screen.home.chipStripEdgeFades
@@ -127,7 +125,6 @@ import simpmusic.composeapp.generated.resources.expand_your_library
 import simpmusic.composeapp.generated.resources.liked_music
 import simpmusic.composeapp.generated.resources.liked_songs_count
 import simpmusic.composeapp.generated.resources.most_played
-import simpmusic.composeapp.generated.resources.notification
 import simpmusic.composeapp.generated.resources.playlist
 import simpmusic.composeapp.generated.resources.playlists
 import simpmusic.composeapp.generated.resources.podcast
@@ -152,7 +149,6 @@ fun DesktopSidebar(
     containerColor: Color,
     showAnalyticsTab: Boolean,
     showMixForYouTab: Boolean,
-    showNotifications: Boolean,
     modifier: Modifier = Modifier,
     viewModel: LibrarySidebarViewModel = koinViewModel(),
     reloadDestinationIfNeeded: (KClass<*>) -> Unit = { _ -> },
@@ -342,16 +338,6 @@ fun DesktopSidebar(
                     onClick = { navController.navigate(SettingsDestination) },
                     icon = { Icon(SimpIcons.Settings, contentDescription = null) },
                 )
-                if (showNotifications) {
-                    SidebarNavRow(
-                        backdrop = backdrop,
-                        label = stringResource(Res.string.notification),
-                        selected = currentBackStackEntry?.destination?.hierarchy?.any { it.hasRoute(NotificationDestination::class) } == true,
-                        collapsed = collapsed,
-                        onClick = { navController.navigate(NotificationDestination) },
-                        icon = { Icon(SimpIcons.Notifications, contentDescription = null) },
-                    )
-                }
                 HorizontalDivider(
                     Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
