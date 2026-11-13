@@ -122,6 +122,13 @@
   ссылке на обеих платформах, `MpvPlayer.setPanscan` / `setLooping`). Страница исполнителя показывает статичную обложку и
   имя текстом. Столбцы `song.canvasUrl` и `song.canvasThumbUrl`, таблица `artist_motion` (`ArtistMotionEntity`) и столбцы
   `artist.nameLogoUrl` / `nameLogoColor` остаются в базе без кода, который в них пишет и читает.
+  Также: режим диджея в кроссфейде (переключатель и ключ DataStore `crossfade_dj_mode`, свип НЧ/ВЧ-фильтров
+  `CrossfadeFilterAudioProcessor` / `BiquadFilter` на Android и `MpvCrossfadeFilter` на десктопе) и AutoMix (длительность
+  «Авто», подгонка темпа и тональности уходящего трека, пакет `domain/mediaservice/automix`, анализ структуры трека и файлы
+  `.mix` рядом с рисунком волны). Простой кроссфейд оставлен: фиксированная длительность из `crossfade_duration`
+  (сохранённое «Авто», 0, читается как 5 с), «не делать переход внутри альбома», рисунок волны (`.wf`) не тронут.
+  Запрос метаданных TIDAL (`searchTidalMetadata` в `getStream`, `remote-config.json`) пока остаётся: тот же файл несёт блок
+  `promos` для строки под текстами (`LyricsPromoLine`), решение за пользователем.
 - Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
   (на десктопе исправлено).
 
