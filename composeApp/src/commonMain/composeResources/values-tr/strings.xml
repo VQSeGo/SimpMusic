@@ -247,8 +247,6 @@
     <string name="backup_create_success">Yedekleme başarıyla oluşturuldu</string>
     <string name="backup_create_failed">Yedekleme oluşturma başarısız</string>
     <string name="main_lyrics_provider">Ana Şarkı Sözü Sağlayıcısı</string>
-    <string name="use_ai_translation">Al Şarkı Sözü Çevirisini Kullan</string>
-    <string name="use_ai_translation_description">Al kullanarak şarkı sözü çevirisini etkinleştirin</string>
     <string name="translation_language">Çeviri dili</string>
     <string name="follow_app_language">Uygulama dilini kullan</string>
     <string name="email">E-Posta</string>
@@ -356,7 +354,6 @@
     <string name="user_interface">Arayüz</string>
     <string name="now_playing_style">Şimdi Oynatılıyor stili</string>
     <string name="now_playing_style_spotify">Klasik</string>
-    <string name="ai_translated">AI ile Çevrildi</string>
     <string name="lyrics_style">Şarkı Sözü Şekli</string>
     <string name="lyrics_style_classic">Klasik</string>
     <string name="theme_color">Tema Rengi</string>
@@ -441,16 +438,6 @@
     <string name="data_sync_id_retrieved">DataSyncId alındı</string>
     <string name="retrieve_youtube_data">YouTube Verilerini Alma</string>
     <string name="no_results_found">Hiçbir sonuç bulunamadı</string>
-    <string name="ai">AI</string>
-    <string name="ai_provider">Al sağlayıcı</string>
-    <string name="openai">OpenAI</string>
-    <string name="gemini">Gemini</string>
-    <string name="ai_api_key">Al API Anahtarınız</string>
-    <string name="invalid_api_key">Geçersiz API anahtarı</string>
-    <string name="custom_ai_model_id">Özel Al model kimliği</string>
-    <string name="default_models">Varsayılan modeller "gemini-2.0-flash" ve "gpt-4o"</string>
-    <string name="invalid">Geçersiz</string>
-    <string name="custom_model_id_messages">.</string>
     <string name="favorite_podcasts">Favori Podcast'ler</string>
     <string name="no_favorite_podcasts">Favori podcast yok</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Spotify çerezinizin sp_dc parametresi</string>

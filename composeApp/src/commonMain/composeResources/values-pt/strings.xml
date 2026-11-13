@@ -249,8 +249,6 @@
     <string name="backup_create_success">Backup criado com sucesso</string>
     <string name="backup_create_failed">Falha ao criar backup</string>
     <string name="main_lyrics_provider">Provedor principal de letras</string>
-    <string name="use_ai_translation">Usar Tradução de Letras com IA</string>
-    <string name="use_ai_translation_description">Enable lyrics translation using AI</string>
     <string name="translation_language">Translation Language</string>
     <string name="follow_app_language">Siga o idioma do aplicativo</string>
     <string name="email">Email</string>
@@ -424,17 +422,6 @@
     <string name="data_sync_id_retrieved">DataSyncId recuperado</string>
     <string name="retrieve_youtube_data">Obter Dados do YouTube</string>
     <string name="no_results_found">Resultado não encontrado</string>
-    <string name="ai">IA</string>
-    <string name="ai_provider">Provedor de IA</string>
-    <string name="openai">OpenAI</string>
-    <string name="gemini">Gemini</string>
-    <string name="openai_api_compatible">OpenAI compatível (personalizado)</string>
-    <string name="ai_api_key">Sua Chave de API de IA</string>
-    <string name="invalid_api_key">Chave de API inválida</string>
-    <string name="custom_ai_model_id">ID de modelo de IA personalizado</string>
-    <string name="default_models">Os modelos padrão são "gemini-2.0-flash" e "gpt-4o"</string>
-    <string name="invalid">Inválido</string>
-    <string name="custom_model_id_messages">Insira o exato ID do seu provedor de IA, por favor.</string>
     <string name="favorite_podcasts">"Podcasts" Favoritos</string>
     <string name="no_favorite_podcasts">Nenhum "podcast" favorito</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Seu parâmetro sp_dc do cookie do Spotify</string>

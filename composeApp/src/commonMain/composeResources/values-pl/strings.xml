@@ -266,8 +266,6 @@
     <string name="backup_create_success">Kopia zapasowa utworzona pomyślnie</string>
     <string name="backup_create_failed">Tworzenie kopii zapasowej nie powiodło się</string>
     <string name="main_lyrics_provider">Główny dostawca tekstów</string>
-    <string name="use_ai_translation">Użyj tłumaczenia tekstu AI</string>
-    <string name="use_ai_translation_description">Włącz tłumaczenie tekstów za pomocą AI</string>
     <string name="translation_language">Język tłumaczenia</string>
     <string name="follow_app_language">Śledź język aplikacji</string>
     <string name="email">E-mail</string>
@@ -470,16 +468,6 @@
     <string name="data_sync_id_retrieved">DataSyncId pobrane</string>
     <string name="retrieve_youtube_data">Pobierz dane z YouTube</string>
     <string name="no_results_found">Nie znaleziono wyników</string>
-    <string name="ai">Sztuczna Inteligencja</string>
-    <string name="ai_provider">Dostawca AI</string>
-    <string name="openai">OpenAI</string>
-    <string name="gemini">Google</string>
-    <string name="ai_api_key">Twój klucz API AI</string>
-    <string name="invalid_api_key">Nieprawidłowy klucz</string>
-    <string name="custom_ai_model_id">ID niestandardowego modelu AI</string>
-    <string name="default_models">Domyślne modele to "gemini-2.0-flash" i "gpt-4o"</string>
-    <string name="invalid">Niepoprawne</string>
-    <string name="custom_model_id_messages">Wprowadź dokładny identyfikator modelu od dostawcy AI.</string>
     <string name="favorite_podcasts">Ulubione podcasty</string>
     <string name="no_favorite_podcasts">Brak ulubionych podcastów</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Twój parametr sp_dc plików cookie Spotify</string>

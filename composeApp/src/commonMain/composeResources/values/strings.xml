@@ -279,8 +279,6 @@
     <string name="backup_create_success">Backup create success</string>
     <string name="backup_create_failed">Backup create failed</string>
     <string name="main_lyrics_provider">Main Lyrics Provider</string>
-    <string name="use_ai_translation">Use AI Lyric Translation</string>
-    <string name="use_ai_translation_description">Enable lyrics translation using AI</string>
     <string name="translation_language">Translation Language</string>
     <string name="follow_app_language">Follow app language</string>
     <string name="email">Email</string>
@@ -439,7 +437,6 @@
     <string name="now_playing_style_spotify">Classic</string>
     <string name="now_playing_style_m3_expressive" translatable="false">Material 3 Expressive</string>
     <string name="now_playing_style_apple_music" translatable="false">Apple Music</string>
-    <string name="ai_translated">AI translated</string>
     <string name="lyrics_style">Lyrics style</string>
     <string name="lyrics_style_classic">Classic</string>
     <string name="lyrics_style_apple_music" translatable="false">Apple Music</string>
@@ -555,17 +552,6 @@
     <string name="data_sync_id_retrieved">DataSyncId retrieved</string>
     <string name="retrieve_youtube_data">Retrieve YouTube Data</string>
     <string name="no_results_found">No results found</string>
-    <string name="ai">AI</string>
-    <string name="ai_provider">AI provider</string>
-    <string name="openai">OpenAI</string>
-    <string name="gemini">Gemini</string>
-    <string name="openai_api_compatible">Custom OpenAI Compatible</string>
-    <string name="ai_api_key">Your AI API Key</string>
-    <string name="invalid_api_key">Invalid API key</string>
-    <string name="custom_ai_model_id">Custom AI model ID</string>
-    <string name="default_models">Default models are "gemini-2.0-flash" and "gpt-4o"</string>
-    <string name="invalid">Invalid</string>
-    <string name="custom_model_id_messages">Please enter the exactly model ID from your AI provider.</string>
     <string name="favorite_podcasts">Favorite Podcasts</string>
     <string name="no_favorite_podcasts">No favorite podcasts</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Your sp_dc param of Spotify cookie</string>
@@ -936,22 +922,6 @@
     <string name="login_sync_unreachable">Couldn't reach the computer. Make sure your phone is on the same network or tailnet, then try again.</string>
     <string name="login_sync_code_expired">The code on your computer has expired. Show a new one and scan again.</string>
     <string name="login_sync_failed">Something went wrong. Please try again.</string>
-    <string name="taste_title">What's your music taste?</string>
-    <string name="taste_invite">Let AI read the last 12 months of your listening and tell you.</string>
-    <string name="taste_loading_title">Reading your music taste…</string>
-    <string name="taste_loading">AI is going over what you listened to in the last 12 months.</string>
-    <string name="taste_not_enough_data">Needs %1$s days of listening in the last 12 months, you have %2$s so far.</string>
-    <string name="taste_not_configured_title">AI is not set up</string>
-    <string name="taste_not_configured">Add an API key in Settings › AI so AI can read your music taste.</string>
-    <string name="taste_error_title">AI reported an error</string>
-    <string name="taste_error_generic">AI did not give a usable answer. Try again in a moment.</string>
-    <string name="taste_error_with_code">%1$s (error %2$s)</string>
-    <string name="taste_eyebrow">Your music taste · last 12 months</string>
-    <string name="taste_created_on">Created %1$s</string>
-    <string name="taste_regenerate">Regenerate</string>
-    <string name="taste_share_title">Share your music taste</string>
-    <string name="taste_card_title">My music taste</string>
-    <string name="taste_card_subtitle">12 months on SimpMusic</string>
     <string name="receipt_open">Listening receipt</string>
     <string name="receipt_share_title">Share your receipt</string>
     <string name="receipt_order">Order #%1$s for %2$s</string>
@@ -969,17 +939,6 @@
     <string name="receipt_entry_title">Your listening receipt</string>
     <string name="receipt_entry_subtitle">%1$s, printed and ready to share.</string>
     <string name="move_to_play_next">Move to play next</string>
-    <string name="custom_base_url">Custom Base URL</string>
-    <string name="base_url">Base URL</string>
-    <string name="invalid_url_format">Invalid URL format</string>
-    <string name="custom_base_url_message">Enter OpenAI-compatible API base URL (e.g., %1$s)</string>
-    <string name="custom_headers">Custom Headers</string>
-    <string name="configured">Configured</string>
-    <string name="not_set">Not set</string>
-    <string name="custom_headers_json">Custom Headers (JSON)</string>
-    <string name="headers_json">Headers JSON</string>
-    <string name="invalid_json_format">Invalid JSON format</string>
-    <string name="custom_headers_message">Enter custom headers in JSON format:</string>
     <string name="weekday_monday">Monday</string>
     <string name="weekday_tuesday">Tuesday</string>
     <string name="weekday_wednesday">Wednesday</string>

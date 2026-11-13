@@ -8829,52 +8829,6 @@
             ]
         },
         {
-            "uniqueId": "org.simpmusic.gemini-kotlin:openai-client",
-            "artifactVersion": "4.0.2",
-            "name": "OpenAI API Kotlin Client",
-            "description": "Fork for Gemini",
-            "website": "https://github.com/maxrave-dev/gemini-kotlin",
-            "developers": [
-                {
-                    "name": "Nguyen Duc Tuan Minh"
-                }
-            ],
-            "scm": {
-                "connection": "scm:git:git://github.com/maxrave-dev/gemini-kotlin.git",
-                "developerConnection": "scm:git:ssh://github.com/maxrave-dev/gemini-kotlin.git",
-                "url": "https://github.com/maxrave-dev/gemini-kotlin"
-            },
-            "licenses": [
-                "MIT"
-            ],
-            "funding": [
-                
-            ]
-        },
-        {
-            "uniqueId": "org.simpmusic.gemini-kotlin:openai-core",
-            "artifactVersion": "4.0.2",
-            "name": "OpenAI API Kotlin Client Core",
-            "description": "Fork for Gemini",
-            "website": "https://github.com/maxrave-dev/gemini-kotlin",
-            "developers": [
-                {
-                    "name": "Nguyen Duc Tuan Minh"
-                }
-            ],
-            "scm": {
-                "connection": "scm:git:git://github.com/maxrave-dev/gemini-kotlin.git",
-                "developerConnection": "scm:git:ssh://github.com/maxrave-dev/gemini-kotlin.git",
-                "url": "https://github.com/maxrave-dev/gemini-kotlin"
-            },
-            "licenses": [
-                "MIT"
-            ],
-            "funding": [
-                
-            ]
-        },
-        {
             "uniqueId": "org.simpmusic:jmtc",
             "artifactVersion": "0.0.3",
             "name": "JMTC",

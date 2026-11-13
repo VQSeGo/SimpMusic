@@ -249,8 +249,6 @@
     <string name="backup_create_success">备份创建成功</string>
     <string name="backup_create_failed">备份创建失败</string>
     <string name="main_lyrics_provider">主歌词提供商</string>
-    <string name="use_ai_translation">使用 AI 歌词翻译</string>
-    <string name="use_ai_translation_description">启用AI歌词翻译</string>
     <string name="translation_language">翻译语言</string>
     <string name="follow_app_language">跟随应用语言</string>
     <string name="email">邮箱</string>
@@ -422,17 +420,6 @@
     <string name="data_sync_id_retrieved">检索到数据同步</string>
     <string name="retrieve_youtube_data">获取 YouTube 数据</string>
     <string name="no_results_found">未找到结果</string>
-    <string name="ai">AI</string>
-    <string name="ai_provider">AI 提供商</string>
-    <string name="openai">OpenAI</string>
-    <string name="gemini">Gemini</string>
-    <string name="openai_api_compatible">自定义 OpenAI 兼容</string>
-    <string name="ai_api_key">你的AI api密钥</string>
-    <string name="invalid_api_key">API 密钥无效</string>
-    <string name="custom_ai_model_id">自定义 AI 模型 ID</string>
-    <string name="default_models">默认模型是“gemini-2.0-flash”和“gpt-4o”</string>
-    <string name="invalid">无效的</string>
-    <string name="custom_model_id_messages">请输入 AI 提供商提供的准确模型ID。</string>
     <string name="favorite_podcasts">最喜爱的播客</string>
     <string name="no_favorite_podcasts">没有最喜爱的播客</string>
     <string name="your_sp_dc_param_of_spotify_cookie">您的 Spotify Cookie 中的 sp_dc 参数</string>

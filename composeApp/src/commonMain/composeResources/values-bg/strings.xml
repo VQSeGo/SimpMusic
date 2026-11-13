@@ -244,8 +244,6 @@
     <string name="backup_create_success">Създаването на резервно копие е успешно</string>
     <string name="backup_create_failed">Създаването на резервно копие е неуспешно</string>
     <string name="main_lyrics_provider">Основен доставчик на текстове</string>
-    <string name="use_ai_translation">Използвай AI (изкуствен интелект) лирически преводач</string>
-    <string name="use_ai_translation_description">Включи превеждане на лирики с AI (изкуствен интелект)</string>
     <string name="translation_language">Език на превода</string>
     <string name="follow_app_language">Следвай езика на приложението</string>
     <string name="email">Имейл</string>
@@ -403,12 +401,5 @@
     <string name="data_sync_id_retrieved">Получен DataSyncId</string>
     <string name="retrieve_youtube_data">Получаване на данни от YouTube</string>
     <string name="no_results_found">Не са намерени никакви резултати</string>
-    <string name="ai">Изкуствен интелект</string>
-    <string name="ai_provider">Придоставчик на изкуствен интелект</string>
-    <string name="openai">OpenAI</string>
-    <string name="gemini">Gemini</string>
-    <string name="openai_api_compatible">Персонализирана съвместимост с OpenAI</string>
-    <string name="ai_api_key">Вашият AI (изкуствен интелект) API ключ</string>
-    <string name="invalid_api_key">Невалиден API ключ</string>
     <!-- Listen Together -->
 </resources>

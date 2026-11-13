@@ -261,8 +261,6 @@
     <string name="backup_create_success">Copia de seguridad creada con éxito</string>
     <string name="backup_create_failed">Error al crear copia de seguridad</string>
     <string name="main_lyrics_provider">Proveedor principal de letras</string>
-    <string name="use_ai_translation">Usar traducción de letras con IA</string>
-    <string name="use_ai_translation_description">Activar traducción de letras usando IA</string>
     <string name="translation_language">Idioma de la traducción</string>
     <string name="follow_app_language">Usar el idioma de la aplicación</string>
     <string name="email">Correo electrónico</string>
@@ -410,7 +408,6 @@
     <string name="theme_mode_light">Claro</string>
     <string name="now_playing_style">Estilo de Sonando Ahora</string>
     <string name="now_playing_style_spotify">Clásico</string>
-    <string name="ai_translated">Traducido con IA</string>
     <string name="lyrics_style">Estilo de letras de canciones</string>
     <string name="lyrics_style_classic">Clásico</string>
     <string name="lyrics_offset">Retraso en las letras</string>
@@ -507,17 +504,6 @@
     <string name="data_sync_id_retrieved">DataSyncId recuperado</string>
     <string name="retrieve_youtube_data">Recuperar datos de YouTube</string>
     <string name="no_results_found">No hay resultados</string>
-    <string name="ai">IA</string>
-    <string name="ai_provider">Provedor de IA</string>
-    <string name="openai">OpenAI</string>
-    <string name="gemini">Gemini</string>
-    <string name="openai_api_compatible">Compatible con OpenAI</string>
-    <string name="ai_api_key">Tu clave API de IA</string>
-    <string name="invalid_api_key">Clave de API inválida</string>
-    <string name="custom_ai_model_id">ID de modelo de IA personalizado</string>
-    <string name="default_models">Los modelos por defecto son "gemini-2.0-flash" y "gpt-4o"</string>
-    <string name="invalid">Inválido</string>
-    <string name="custom_model_id_messages">Por favor, introduce el ID del modelo exacto de tu proveedor de IA.</string>
     <string name="favorite_podcasts">Podcasts favoritos</string>
     <string name="no_favorite_podcasts">No hay podcasts favoritos</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Tu parámetro sp_dc de la cookie de Spotify</string>

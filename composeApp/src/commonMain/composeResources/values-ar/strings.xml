@@ -238,8 +238,6 @@
     <string name="backup_create_success">تم إنشاء النسخة الاحتياطية بنجاح</string>
     <string name="backup_create_failed">فشل إنشاء النسخ الاحتياطي</string>
     <string name="main_lyrics_provider">مورد كلمات الأغاني الرئيسي</string>
-    <string name="use_ai_translation">استخدم الذكاء الاصطناعي لترجمة كلمات الأغنية</string>
-    <string name="use_ai_translation_description">فعل خاصية تَرْجَمَة كلمات الأغاني باستخدام الذكاء الاصطناعي</string>
     <string name="translation_language">لغة التّرجمة</string>
     <string name="follow_app_language">تتبع لغة التطبيق</string>
     <string name="email">البريد الإلكتروني</string>

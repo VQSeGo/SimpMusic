@@ -253,8 +253,6 @@
     <string name="backup_create_success">ایجاد پشتیبان با موفقیت انجام شد</string>
     <string name="backup_create_failed">ایجاد پشتیبان ناموفق بود</string>
     <string name="main_lyrics_provider">تأمین‌کننده اصلی متن ترانه</string>
-    <string name="use_ai_translation">استفاده از ترجمه متن ترانه با هوش مصنوعی</string>
-    <string name="use_ai_translation_description">فعال کردن ترجمه متن ترانه با استفاده از هوش مصنوعی</string>
     <string name="translation_language">زبان ترجمه</string>
     <string name="follow_app_language">پیروی از زبان برنامه</string>
     <string name="email">رایانامه</string>
@@ -415,16 +413,6 @@
     <string name="data_sync_id_retrieved">DataSyncId بازیابی شد</string>
     <string name="retrieve_youtube_data">بازیابی اطلاعات یوتیوب</string>
     <string name="no_results_found">نتیجه ای پیدا نشد</string>
-    <string name="ai">هوش مصنوعی</string>
-    <string name="ai_provider">ارائه دهنده هوش مصنوعی</string>
-    <string name="openai">OpenAI</string>
-    <string name="gemini">Gemini</string>
-    <string name="ai_api_key">کلید API هوش مصنوعی شما</string>
-    <string name="invalid_api_key">کلید API نامعتبر</string>
-    <string name="custom_ai_model_id">شناسه مدل هوش مصنوعی سفارشی</string>
-    <string name="default_models">مدل‌های پیش‌فرض «gemini-2.0-flash» و «gpt-4o» هستند</string>
-    <string name="invalid">نا معتبر</string>
-    <string name="custom_model_id_messages">لطفاً دقیقاً شناسه مدل ارائه دهنده هوش مصنوعی خود را وارد کنید.</string>
     <string name="favorite_podcasts">پادکست‌های مورد علاقه</string>
     <string name="no_favorite_podcasts">پادکست مورد علاقه‌ای وجود ندارد</string>
     <string name="your_sp_dc_param_of_spotify_cookie">پارامتر sp_dc شما از کوکی Spotify</string>

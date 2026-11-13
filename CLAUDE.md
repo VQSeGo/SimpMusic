@@ -98,6 +98,11 @@
   настройка и поля имени и почты участника, ключи DataStore `help_build_lyrics_database`, `contributor_name`,
   `contributor_email`). Чтение текстов с сервера SimpMusic как источника остаётся (`SimpMusicLyricsClient.getLyrics` /
   `getTranslatedLyrics`).
+  Также: ИИ (перевод текстов через свой ключ Gemini / OpenAI / свой адрес) и карточка «вкуса» в библиотеке, которая
+  писалась через него: модуль `core/service/aiService`, раздел «ИИ» в настройках, `TasteViewModel`, `TasteRepository`,
+  ссылка `simpmusic://taste`, ключи DataStore `ai_provider`, `ai_gemini_api_key`, `use_ai_translation`, `custom_model_id`,
+  `custom_openai_base_url`, `custom_openai_headers`, `ai_taste_profile`. Перевод текста берётся только у провайдеров
+  текстов (язык перевода остаётся).
 - Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
   (на десктопе исправлено).
 

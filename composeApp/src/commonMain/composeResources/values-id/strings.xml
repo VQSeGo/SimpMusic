@@ -251,8 +251,6 @@
     <string name="backup_create_success">Cadangan berhasil dibuat</string>
     <string name="backup_create_failed">Cadangan gagal dibuat</string>
     <string name="main_lyrics_provider">Penyedia Lirik Utama</string>
-    <string name="use_ai_translation">Gunakan Terjemahan Lirik AI</string>
-    <string name="use_ai_translation_description">Aktifkan terjemahan lirik menggunakan AI</string>
     <string name="translation_language">Bahasa Terjemahan</string>
     <string name="follow_app_language">Mengikuti bahasa aplikasi</string>
     <string name="email">Email</string>
@@ -427,17 +425,6 @@
     <string name="data_sync_id_retrieved">DatanSyncId di peroleh kembali</string>
     <string name="retrieve_youtube_data">Peroleh kembali data YouTube</string>
     <string name="no_results_found">Hasil tidak ditemukan</string>
-    <string name="ai">AI</string>
-    <string name="ai_provider">Penyedia AI</string>
-    <string name="openai">OpenAI</string>
-    <string name="gemini">Gemini</string>
-    <string name="openai_api_compatible">OpenAI Khusus yang Kompatibel</string>
-    <string name="ai_api_key">Kunci API AI Anda</string>
-    <string name="invalid_api_key">Kunci API tidak valid</string>
-    <string name="custom_ai_model_id">AI Model Khsusus</string>
-    <string name="default_models">Model bawaan adalah "gemini-2.0-flash" dan "gpt-4o"</string>
-    <string name="invalid">Tidak valid</string>
-    <string name="custom_model_id_messages">Harap masukkan Model ID yang sesuai dari penyedia AI Anda.</string>
     <string name="favorite_podcasts">Podcast favorit</string>
     <string name="no_favorite_podcasts">Tidak ada podcast favorit</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Parameter sp_dc cookie Spotify Anda</string>
