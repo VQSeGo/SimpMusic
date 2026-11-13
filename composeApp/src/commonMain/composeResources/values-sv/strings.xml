@@ -882,13 +882,4 @@
     <string name="log_stack_trace_lines">Stackspårning · rader: %1$s</string>
     <string name="log_hide_stack_trace">Dölj stackspårning</string>
     <string name="log_export_failed">Det gick inte att exportera loggen</string>
-    <string name="comments">Kommentarer</string>
-    <string name="reply">Svara</string>
-    <string name="replying_to">Svar till %1$s</string>
-    <string name="comments_log_in_hint">Logga in för att kommentera, svara och gilla</string>
-    <string name="comments_log_in_message">Logga in på YouTube för att kommentera, svara på kommentarer och gilla dem.</string>
-    <string name="comments_turned_off">Kommentarsfunktionen är avstängd</string>
-    <string name="comments_load_error">Det gick inte att läsa in kommentarerna</string>
-    <string name="comment_post_error">Det gick inte att publicera din kommentar</string>
-    <string name="comments_need_channel">Skapa en YouTube-kanal för att kommentera</string>
 </resources>

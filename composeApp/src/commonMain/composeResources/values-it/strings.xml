@@ -753,12 +753,4 @@
     <string name="log_errors">Errori</string>
     <string name="log_level_warn">Avvisi</string>
     <string name="log_live">In diretta · %1$s linee</string>
-    <string name="comments">Commenti</string>
-    <string name="reply">Rispondi</string>
-    <string name="replying_to">Rispondendo a %1$s</string>
-    <string name="comments_log_in_hint">Accedi per commentare, rispondere e mettere mi piace</string>
-    <string name="comments_turned_off">I commenti sono disattivati</string>
-    <string name="comments_load_error">Impossibile caricare i commenti</string>
-    <string name="comment_post_error">Non puoi pubblicare il tuo commento</string>
-    <string name="comments_need_channel">Crea un canale YouTube per commentare</string>
 </resources>

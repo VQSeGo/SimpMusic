@@ -879,13 +879,4 @@ In SimpMusic können nur Playlist-Dateien in unserem eigenen Format importiert w
     <string name="log_paused">Pausiert · %1$s Zeilen</string>
     <string name="log_empty">Noch nichts protokolliert</string>
     <string name="log_export_failed">Protokoll konnte nicht exportiert werden</string>
-    <string name="comments">Kommentare</string>
-    <string name="reply">Antworten</string>
-    <string name="replying_to">Antworten auf %1$s</string>
-    <string name="comments_log_in_hint">Melde die an, um Kommentare abzugeben, zu antworten und Beiträge zu liken. </string>
-    <string name="comments_log_in_message">Melde dich bei YouTube an, um Kommentare zu schreiben, darauf zu antworten und Kommentare zu liken.</string>
-    <string name="comments_turned_off">Kommentare sind deaktiviert.</string>
-    <string name="comments_load_error">Konnte Kommentare nicht laden</string>
-    <string name="comment_post_error">Konnte Ihren Kommentar nicht veröffentlichen</string>
-    <string name="comments_need_channel">Erstelle einen YouTube-Kanal zum kommentieren</string>
 </resources>

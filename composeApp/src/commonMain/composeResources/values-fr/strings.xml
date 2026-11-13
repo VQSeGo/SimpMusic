@@ -882,13 +882,4 @@
     <string name="log_stack_trace_lines">Trace de la pile · %1$s lignes</string>
     <string name="log_hide_stack_trace">Masquer la trace de la pile</string>
     <string name="log_export_failed">Impossible d'exporter le journal</string>
-    <string name="comments">Commentaires</string>
-    <string name="reply">Répondre</string>
-    <string name="replying_to">En réponse à %1$s</string>
-    <string name="comments_log_in_hint">Connectez-vous pour commenter, répondre et aimer</string>
-    <string name="comments_log_in_message">Connectez-vous à YouTube pour poster des commentaires, y répondre et les aimer.</string>
-    <string name="comments_turned_off">Les commentaires sont désactivés</string>
-    <string name="comments_load_error">Impossible de charger les commentaires</string>
-    <string name="comment_post_error">Impossible de publier votre commentaire</string>
-    <string name="comments_need_channel">Créez une chaîne YouTube pour laisser un commentaire</string>
 </resources>

@@ -879,13 +879,4 @@
     <string name="log_stack_trace_lines">スタックトレース · %1$s行</string>
     <string name="log_hide_stack_trace">スタックトレースを隠す</string>
     <string name="log_export_failed">ログをエクスポートできませんでした</string>
-    <string name="comments">コメント</string>
-    <string name="reply">返信</string>
-    <string name="replying_to">%1$sに返信</string>
-    <string name="comments_log_in_hint">コメント、返信、高評価を行うには、ログイン</string>
-    <string name="comments_log_in_message">コメント、返信、高評価を行うには、YouTube にログインしてください。</string>
-    <string name="comments_turned_off">コメントはオフになっています</string>
-    <string name="comments_load_error">コメントを読み込めませんでした</string>
-    <string name="comment_post_error">コメントを投稿できませんでした</string>
-    <string name="comments_need_channel">コメントするためにはYoutubeチャンネルを作成する必要があります</string>
 </resources>

@@ -890,15 +890,6 @@
     <string name="log_stack_trace_lines">Стек трейс · %1$s строк</string>
     <string name="log_hide_stack_trace">Спрятать стек трейс</string>
     <string name="log_export_failed">Не удалось экспортировать логи</string>
-    <string name="comments">Комментарии</string>
-    <string name="reply">Ответить</string>
-    <string name="replying_to">Ответить %1$s</string>
-    <string name="comments_log_in_hint">Войдите в систему, чтобы писать, отвечать и лайкать комментарии</string>
-    <string name="comments_log_in_message">Войдите в YouTube, чтобы писать, отвечать и лайкать комментарии.</string>
-    <string name="comments_turned_off">Комментарии отключены</string>
-    <string name="comments_load_error">Не удалось загрузить комментарии</string>
-    <string name="comment_post_error">Не удалось опубликовать ваш комментарий</string>
-    <string name="comments_need_channel">Создайте YouTube канал, чтобы прокомментировать</string>
     <string name="track_info">О треке</string>
     <string name="log_in_to_like">Войдите в YouTube, чтобы ставить лайки</string>
     <string name="download_notifications">Уведомления о загрузке</string>

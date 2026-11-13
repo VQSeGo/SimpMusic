@@ -879,13 +879,4 @@
     <string name="log_stack_trace_lines">Dấu vết ngăn xếp · %1$s dòng</string>
     <string name="log_hide_stack_trace">Ẩn dấu vết ngăn xếp</string>
     <string name="log_export_failed">Không thể xuất log ra được</string>
-    <string name="comments">Bình luận</string>
-    <string name="reply">Trả lời</string>
-    <string name="replying_to">Đang trả lời tới %1$s</string>
-    <string name="comments_log_in_hint">Đăng nhập để bình luận, trả lời và thích</string>
-    <string name="comments_log_in_message">Đăng nhập vào YouTube để bình luận, trả lời và thích.</string>
-    <string name="comments_turned_off">Tính năng bình luận đã bị tắt</string>
-    <string name="comments_load_error">Không thể tải bình luận</string>
-    <string name="comment_post_error">Không thể đăng bình luận</string>
-    <string name="comments_need_channel">Tạo một kênh YouTube để bình luận</string>
 </resources>

@@ -132,6 +132,9 @@
   их больше нет), загрузка `remote-config.json` из репозитория оригинала при запуске и промо из него (`Promo`,
   `LyricsPromoLine` под текстами, ключи DataStore `remote_promos`, `promo_shown`). «Итоги» и ссылка
   `simpmusic://library?tab=wrapped` остались. Запрос `registry/player_configs.json` (шифр YouTube) не тронут.
+  Также: комментарии YouTube (код удалён полностью: `CommentsViewModel`, `CommentsBottomSheet`, иконка `CommentOutline`,
+  `SongRepository.getComments` / `postComment` / `performCommentAction`, `YouTube.comments` / `createComment`, `CommentsPage`,
+  модели и строки). Кнопки комментариев в плеере уже не было.
 - Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
   (на десктопе исправлено).
 

@@ -887,13 +887,4 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nנבנה ב-❤️ מ�
     <string name="log_stack_trace_lines">עקבות מחסנית • %1$s שורות</string>
     <string name="log_hide_stack_trace">הסתר עקבות מחסנית</string>
     <string name="log_export_failed">לא ניתן היה לייצא את הרשומות</string>
-    <string name="comments">תגובות</string>
-    <string name="reply">השב</string>
-    <string name="replying_to">משיב ל-%1$s</string>
-    <string name="comments_log_in_hint">התחבר כדי להגיב, להשיב ולשים לייק</string>
-    <string name="comments_log_in_message">התחבר ל-YouTube כדי להגיב, להשיב ולשים לייקים לתגובות.</string>
-    <string name="comments_turned_off">התגובות כבויות</string>
-    <string name="comments_load_error">לא ניתן היה לטעון תגובות</string>
-    <string name="comment_post_error">לא ניתן היה לפרסם את התגובה שלך</string>
-    <string name="comments_need_channel">צור ערוץ YouTube כדי להגיב</string>
 </resources>
