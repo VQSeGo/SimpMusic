@@ -373,10 +373,6 @@
     <string name="intro_login_to_spotify">Logga in för att få Spotifys låttexter, Canvas med mera</string>
     <string name="enable_spotify_lyrics">Aktivera Spotifys låttexter</string>
     <string name="spotify_lyrícs_info">Fler låttexter utan översättning</string>
-    <string name="enable_canvas">Aktivera Canvas</string>
-    <string name="canvas_info">Visa Spotify Canvas i SimpMusic</string>
-    <string name="enable_animated_artwork">Animerat omslag</string>
-    <string name="animated_artwork_info">Spela upp albumets animerade omslag i stället för en Canvas. Inget konto behövs. Album utan animerat omslag behåller den stilla omslagsbilden.</string>
     <string name="spotify_lyrics_provider">Låttexter tillhandahålls av Spotify</string>
     <string name="offline_mode">Offlineläge</string>
     <string name="added_to_youtube_liked">Har lagts till bland gillade låtar på YouTube</string>
@@ -446,8 +442,6 @@
     <string name="updating">Uppdaterar</string>
     <string name="go_to_log_in_page">Gå till inloggningssidan</string>
     <string name="log_in_warning">YouTube Music kräver nu att du loggar in för att strömma musik. Piped-instanser fungerar ibland inte heller. Du bör logga in på YouTube för att få en bättre upplevelse med SimpMusic.</string>
-    <string name="spotify_canvas_cache">Cache för Spotify Canvas</string>
-    <string name="clear_canvas_cache">Rensa cachen för Canvas</string>
     <string name="listening_history">Lyssningshistorik</string>
     <string name="clear_listening_history">Rensa lyssningshistoriken</string>
     <string name="clear_listening_history_description">Radera din lokala lyssningsstatistik och ta bort låtar som inte används någon annanstans i appen</string>

@@ -370,10 +370,6 @@
     <string name="intro_login_to_spotify">Đăng nhập để dùng lời bài hát từ Spotify, Spotify Canvas và hơn nữa</string>
     <string name="enable_spotify_lyrics">Bật lời bài hát từ Spotify</string>
     <string name="spotify_lyrícs_info">Nhiều lời bài hát hơn nhưng không có dịch</string>
-    <string name="enable_canvas">Bật Canvas</string>
-    <string name="canvas_info">Hiện thỉ Spotify Canvas trong SimpMusic</string>
-    <string name="enable_animated_artwork">Ảnh cover động cho bài hát</string>
-    <string name="animated_artwork_info">Phát ảnh bìa động của album thay vì Canvas. Không cần tài khoản. Album không có bìa giữ nguyên bìa.</string>
     <string name="spotify_lyrics_provider">Lời bài hát được cung cấp bởi Spotify</string>
     <string name="offline_mode">Chế độ ngoại tuyến</string>
     <string name="added_to_youtube_liked">Thêm vào danh sách phát YouTube Yêu Thích</string>
@@ -443,8 +439,6 @@
     <string name="updating">Đang cập nhật</string>
     <string name="go_to_log_in_page">Đi tới trang đăng nhập</string>
     <string name="log_in_warning">YouTube Music hiện tại đang yêu cầu đăng nhập để nghe nhạc trực tuyến, cũng như các thực thể Piped đôi khi không hoạt động. Bạn nên đăng nhập vào YouTube để có trải nghiệm nghe nhạc tốt nhất với SimpMusic.</string>
-    <string name="spotify_canvas_cache">Cache của Spotify Canvas</string>
-    <string name="clear_canvas_cache">Xoá bộ nhớ cache của Spotify Canvas</string>
     <string name="listening_history">Lịch sử nghe</string>
     <string name="clear_listening_history">Xóa lịch sử nghe</string>
     <string name="clear_listening_history_description">Xóa dữ liệu thống kê nghe nhạc cục bộ và loại bỏ các bài hát không còn được tham chiếu bởi bất kỳ thành phần nào khác trong ứng dụng</string>

@@ -370,10 +370,6 @@
     <string name="intro_login_to_spotify">Spotifyにログインして、歌詞やCanvasなどを取得する</string>
     <string name="enable_spotify_lyrics">Spotifyの歌詞を有効化</string>
     <string name="spotify_lyrícs_info">翻訳機能なしで歌詞を表示</string>
-    <string name="enable_canvas">Canvasを有効にする</string>
-    <string name="canvas_info">SpotifyのCanvasをSimpMusicで表示</string>
-    <string name="enable_animated_artwork">アニメーションアートワーク</string>
-    <string name="animated_artwork_info">Canvasの代わりにアルバムのアニメーションカバーを再生します。アカウントは必要ありません。アルバムを持たない状態でもアルバムを保持できます。</string>
     <string name="spotify_lyrics_provider">歌詞の提供元 Spotify</string>
     <string name="offline_mode">オフラインモード</string>
     <string name="added_to_youtube_liked">YouTubeの高評価に追加しました</string>
@@ -443,8 +439,6 @@
     <string name="updating">更新中</string>
     <string name="go_to_log_in_page">ログインページに移動</string>
     <string name="log_in_warning">YouTube Music は現在、音楽をストリーミングするためにログインが必要です。また、Pipedインスタンスは頻繁に動作しないことがあります。SimpMusicをより良い体験にするために、YouTubeにログインすることをお勧めします。</string>
-    <string name="spotify_canvas_cache">Spotify Canvas キャッシュ</string>
-    <string name="clear_canvas_cache">Canvas のキャッシュを消去</string>
     <string name="listening_history">再生履歴</string>
     <string name="clear_listening_history">再生履歴を消去</string>
     <string name="clear_listening_history_description">ローカルの再生統計を消去し、アプリ内の他の場所から参照されていない曲を削除します</string>

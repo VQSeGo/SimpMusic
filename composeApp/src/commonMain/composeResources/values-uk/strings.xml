@@ -367,10 +367,6 @@
     <string name="intro_login_to_spotify">Увійдіть для Spotify Lyrics, Canvas та інше</string>
     <string name="enable_spotify_lyrics">Увімкнути Spotify Lyrics</string>
     <string name="spotify_lyrícs_info">Більше текстів пісень без перекладу</string>
-    <string name="enable_canvas">Увімкнути Canvas</string>
-    <string name="canvas_info">Показувати Spotify Canvas у SimpMusic</string>
-    <string name="enable_animated_artwork">Анімовані ілюстрації</string>
-    <string name="animated_artwork_info">Відтворюйте анімовану обкладинку альбому замість Canvas. Реєстрація не потрібна. Альбоми без анімованої обкладинки відображаються зі статичною обкладинкою.</string>
     <string name="spotify_lyrics_provider">Тексти пісень надані Spotify</string>
     <string name="offline_mode">Автономний режим</string>
     <string name="added_to_youtube_liked">Додано у вподобані на YouTube</string>
@@ -437,8 +433,6 @@
     <string name="updating">Оновлення</string>
     <string name="go_to_log_in_page">Перейти на сторінку входу</string>
     <string name="log_in_warning">YouTube Music тепер вимагає входу для потокової передачі музики, Piped Instance іноді теж не працює. Вам слід увійти на YouTube, щоб отримати кращий досвід роботи з SimpMusic.</string>
-    <string name="spotify_canvas_cache">Кеш Spotify Canvas</string>
-    <string name="clear_canvas_cache">Очистити кеш Canvas</string>
     <string name="listening_history">Історія прослуховування</string>
     <string name="clear_listening_history">Очистити історію прослуховування</string>
     <string name="clear_listening_history_description">Стерти локальну статистику прослуховування і видалити пісні, які більше не належать додаткові</string>

@@ -169,7 +169,7 @@ internal data class AppleMusicTypography(
  * element — no custom sizes, no custom scaling (owner's rule: this style types like the rest of
  * the app). Precedents: M3E's track title/artist row (titleMedium/bodyMedium), LyricsView's
  * in-player line (headlineMedium), SongFullWidthItems rows (titleSmall/bodySmall), the queue
- * sheet's section headers (titleMedium) and M3E's canvas overlay lines (bodyMedium white/yellow).
+ * sheet's section headers (titleMedium) and M3E's lyric line (bodyMedium).
  *
  * Secondary text is a translucent white rather than typo()'s body grey: an opaque
  * #A8A8A8 is darker than a bright sleeve's page and read as a dark grey smudge on it, where a
@@ -181,7 +181,7 @@ internal fun rememberAppleMusicTypography(): AppleMusicTypography {
     return AppleMusicTypography(
         mainTitle = t.titleMedium,
         mainArtist = t.bodyMedium.copy(color = AppleMusicSecondaryText),
-        // The compact header — Lyrics, Queue, and the row under a running canvas — carries the
+        // The compact header — Lyrics and Queue — carries the
         // SIZES FullscreenLyricsSheet uses for the same job (LyricsView.kt: labelSmall over
         // bodySmall), while mainTitle/mainArtist stay 18/13 because they head the controller
         // layout. Borrow the size from labelSmall but keep the titleMedium ROLE: typo() bakes a

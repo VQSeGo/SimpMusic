@@ -378,10 +378,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nנבנה ב-❤️ מ�
     <string name="intro_login_to_spotify">התחבר ל-Spotify מילים, קנבס ועוד</string>
     <string name="enable_spotify_lyrics">הפעל מילים מ-Spotify</string>
     <string name="spotify_lyrícs_info">עוד מילים ללא תרגום</string>
-    <string name="enable_canvas">הפעל קנבסים</string>
-    <string name="canvas_info">הצג קנבסים מ-Spotify ב-SimpMusic</string>
-    <string name="enable_animated_artwork">גרפיקה מונפשת</string>
-    <string name="animated_artwork_info">הפעל את קאבר האלבום המונפש במקום קנבסים. אין צורך בחשבון. אלבומים ללא חשבון ישמרו על הקאבר הדומם.</string>
     <string name="spotify_lyrics_provider">מילים מסופקות על ידי Spotify</string>
     <string name="offline_mode">מצב לא מקוון</string>
     <string name="added_to_youtube_liked">נוסף לרשימת התכנים שאהבת ב-YouTube</string>
@@ -451,8 +447,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nנבנה ב-❤️ מ�
     <string name="updating">מעדכן</string>
     <string name="go_to_log_in_page">עבור לדף ההתחברות</string>
     <string name="log_in_warning">YouTube Music מחייב אותך כעת להתחבר כדי להזרים מוזיקה, לפעמים Piped Instance לא יעבוד גם כן. עליך להתחבר ל-YouTube כדי לקבל חווית SimpMusic טובה יותר.</string>
-    <string name="spotify_canvas_cache">מטמון הקנבסים של Spotify</string>
-    <string name="clear_canvas_cache">נקה את מטמון הקנבסים</string>
     <string name="listening_history">היסטוריית ההשמעה</string>
     <string name="clear_listening_history">נקה את היסטוריית ההשמעה</string>
     <string name="clear_listening_history_description">מחק את סטטיסטיקות ההשמעה המקומיות שלך והסר שירים ששום דבר אחר באפליקציה לא מתייחס אליהם</string>

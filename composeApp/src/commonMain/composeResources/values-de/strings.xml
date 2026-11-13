@@ -373,10 +373,6 @@
     <string name="intro_login_to_spotify">Melde dich an für Spotify Songtexte, Canvas und mehr</string>
     <string name="enable_spotify_lyrics">Spotify Songtexte nutzen</string>
     <string name="spotify_lyrícs_info">Mehr Lyrics ohne Übersetzung</string>
-    <string name="enable_canvas">Canvas nutzen</string>
-    <string name="canvas_info">Zeige Spotify Canvas in SimpMusic</string>
-    <string name="enable_animated_artwork">Animiertes Cover</string>
-    <string name="animated_artwork_info">Spiele das animierte Cover des Albums anstelle eines Canvas ab. Es ist kein Konto erforderlich. Bei Alben ohne animiertes Cover wird weiterhin das Standbild angezeigt.</string>
     <string name="spotify_lyrics_provider">Songtexte bereitgestellt von Spotify</string>
     <string name="offline_mode">Offline-Modus</string>
     <string name="added_to_youtube_liked">Zu YouTube-Like-Playlist hinzugefügt</string>
@@ -446,8 +442,6 @@
     <string name="updating">Updating</string>
     <string name="go_to_log_in_page">Zur Anmeldeseite</string>
     <string name="log_in_warning">YouTube Music erfordert jetzt das Einloggen um Musik zu streamen, Piped Instance kann manchmal nicht funktionieren. Du solltest dich bei YouTube anmelden, um ein besseres Erlebnis mit SimpMusic zu bekommen.</string>
-    <string name="spotify_canvas_cache">Canvas-Cache</string>
-    <string name="clear_canvas_cache">Leere Canvas-Cache</string>
     <string name="listening_history">Hörverlauf</string>
     <string name="clear_listening_history">Hörverlauf löschen</string>
     <string name="clear_listening_history_description">Lösche deine lokalen Hörstatistiken und entferne Titel, auf die sonst nirgendwo in der App verwiesen wird</string>

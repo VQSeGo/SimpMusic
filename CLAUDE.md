@@ -111,6 +111,14 @@
   `lastfmApiKey` / `lastfmSecret` в BuildKonfig, ключи `LASTFM_API_KEY` / `LASTFM_SECRET` в `local.properties`, схема
   `wordbyword://` в манифесте, Conveyor и `.desktop`; ключи DataStore `lastfm_session_key`, `lastfm_username`,
   `lastfm_scrobble_enabled`; `LoginSyncService.LASTFM`). Синхронизация входа игнорирует поле `lastfm` от старого телефона.
+  Также: Spotify Canvas и анимированные обложки альбомов Apple Music (запрос на каждый трек, полноэкранный режим плеера
+  с прячущимися кнопками, `AnimatedArtworkPage.kt` с сеткой цветов `AppleMusicMeshBackdrop`, ряд «Most played» с картинками
+  canvas в библиотеке, кэш `CANVAS_CACHE` на Android; `getCanvas` в `SharedViewModel`,
+  `LyricsCanvasRepository.getCanvas` / `getAMAnimatedArtwork`, `SongRepository.getCanvasSong`, ключи DataStore
+  `spotify_canvas` и `am_animated_artwork`, запрос `canvaz` в `core/service/spotify`, поиск альбомов и треков в клиенте
+  Apple Music). Spotify остаётся источником текстов. Анимированная обложка исполнителя на странице исполнителя (AM,
+  `getArtistEditorial`, `ArtistMotion`) и логотип-имя остаются: их пользователь не смотрел. Столбцы `song.canvasUrl` и
+  `song.canvasThumbUrl` остаются в базе без кода, который в них пишет.
 - Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
   (на десктопе исправлено).
 
@@ -135,7 +143,7 @@
   ведёт Crowdin, добавляем английский и русский.
 - Настройки, не требующие нового ключа в `core`, храним через `dataStoreManager.getString/putString`.
 - Общие помощники, которые нужны в нескольких местах, выносим в отдельный файл, а не оставляем в файле
-  удалённого стиля (пример: `AnimatedArtworkPage.kt`).
+  удалённого стиля (пример: `ArtworkPagerLogic.kt`).
 - Приватность: FOSS-сборка без трекинга; Sentry и Discord OAuth только при `isFullBuild=true`.
 - В `.claude/skills/` лежат скиллы kotlin-footguns (228 ловушек Kotlin/Compose/десктоп-JVM) и общие
   Android-скиллы. Перед правкой плеера, Room, StateFlow или сборки стоит открыть подходящий скилл;

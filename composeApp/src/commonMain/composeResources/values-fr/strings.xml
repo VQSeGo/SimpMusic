@@ -373,10 +373,6 @@
     <string name="intro_login_to_spotify">Connectez-vous pour des paroles Spotify, Canvas, et plus encore !</string>
     <string name="enable_spotify_lyrics">Activer les paroles Spotify</string>
     <string name="spotify_lyrícs_info">Plus de paroles sans traduction</string>
-    <string name="enable_canvas">Activer la toile</string>
-    <string name="canvas_info">Afficher Spotify Canvas dans SimpMusic</string>
-    <string name="enable_animated_artwork">Illustrations animées</string>
-    <string name="animated_artwork_info">Lancez la pochette animée de l'album à la place d'un Canvas. Aucun compte n'est nécessaire. Les albums qui n'en ont pas conservent leur pochette statique.</string>
     <string name="spotify_lyrics_provider">Paroles fournies par Spotify</string>
     <string name="offline_mode">Mode hors-ligne</string>
     <string name="added_to_youtube_liked">Ajouté aux favoris YouTube</string>
@@ -446,8 +442,6 @@
     <string name="updating">Mise à jour</string>
     <string name="go_to_log_in_page">Accéder à la page de connexion</string>
     <string name="log_in_warning">YouTube Music vous demande désormais de vous connecter pour écouter de la musique en streaming ; il arrive également que Piped Instance ne fonctionne pas. Nous vous recommandons de vous connecter à YouTube pour profiter pleinement de SimpMusic.</string>
-    <string name="spotify_canvas_cache">Cache de Spotify Canvas</string>
-    <string name="clear_canvas_cache">Vider le cache de Canvas</string>
     <string name="listening_history">Historique d'écoute</string>
     <string name="clear_listening_history">Effacer l'historique d'écoute</string>
     <string name="clear_listening_history_description">Effacez vos statistiques d'écoute locales et supprimez les morceaux auxquels aucun autre élément de l'application ne fait référence</string>
