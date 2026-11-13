@@ -235,7 +235,6 @@ class PromoSelectionTest {
             listOf(
                 promo("analytics", "simpmusic://analytics"),
                 promo("wrapped", "simpmusic://library?tab=wrapped"),
-                promo("taste", "simpmusic://taste"),
                 promo("youtube", "simpmusic://library?tab=youtube_music_playlist"),
                 promo("library", "simpmusic://library?tab=your_library"),
                 // A list named by ?type= is what opens, whatever ?tab= says.
@@ -248,7 +247,7 @@ class PromoSelectionTest {
 
         assertEquals(all.map { it.id }, ids(localTracking = true, youTubeLoggedIn = true))
         assertEquals(listOf("youtube", "library", "favorite"), ids(localTracking = false, youTubeLoggedIn = true))
-        assertEquals(listOf("analytics", "wrapped", "taste", "library", "favorite"), ids(localTracking = true, youTubeLoggedIn = false))
+        assertEquals(listOf("analytics", "wrapped", "library", "favorite"), ids(localTracking = true, youTubeLoggedIn = false))
     }
 
     @Test

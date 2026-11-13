@@ -55,7 +55,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.maxrave.common.LibraryChipType
 import com.maxrave.domain.data.entities.SongEntity
-import com.maxrave.domain.data.model.taste.TasteProfile
 import com.maxrave.domain.utils.LocalResource
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
@@ -74,8 +73,6 @@ import com.maxrave.simpmusic.ui.component.LibraryItem
 import com.maxrave.simpmusic.ui.component.LibraryItemState
 import com.maxrave.simpmusic.ui.component.LibraryItemType
 import com.maxrave.simpmusic.ui.component.LibraryTilingBox
-import com.maxrave.simpmusic.ui.component.taste.ShareTasteSheet
-import com.maxrave.simpmusic.ui.component.taste.TasteCard
 import com.maxrave.simpmusic.ui.component.ListenTogetherIconButton
 import com.maxrave.simpmusic.ui.component.RippleIconButton
 import com.maxrave.simpmusic.ui.component.selection.SelectedSongsBottomSheet
@@ -91,8 +88,6 @@ import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.LibraryViewModel
 import com.maxrave.simpmusic.viewModel.SharedViewModel
 import com.maxrave.simpmusic.viewModel.SongSelectionViewModel
-import com.maxrave.simpmusic.viewModel.TasteUiState
-import com.maxrave.simpmusic.viewModel.TasteViewModel
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.hazeSource
@@ -155,10 +150,6 @@ fun LibraryScreen(
 
     val selectionState = rememberSongSelectionState()
     val selectionViewModel: SongSelectionViewModel = koinViewModel()
-    val tasteViewModel: TasteViewModel = koinViewModel()
-    // Held here rather than inside the list item, so the sheet does not close if its card scrolls
-    // out of composition behind it.
-    var sharingTaste by remember { mutableStateOf<TasteProfile?>(null) }
     var showSelectionSheet by rememberSaveable { mutableStateOf(false) }
     var showSelectionAddToPlaylist by rememberSaveable { mutableStateOf(false) }
     val accountThumbnail by viewModel.accountThumbnail.collectAsStateWithLifecycle()
@@ -280,23 +271,6 @@ fun LibraryScreen(
                     ) {
                         item {
                             LibraryTilingBox(navController, libraryOverview, cachedPreview)
-                        }
-
-                        // The reading is drawn from playback_event, so the card follows the same
-                        // setting the Wrapped chip and the Analytics tab do.
-                        if (localTrackingEnabled) {
-                            item(key = "taste") {
-                                val tasteState by tasteViewModel.uiState.collectAsStateWithLifecycle()
-                                if (tasteState != TasteUiState.Hidden) {
-                                    TasteCard(
-                                        state = tasteState,
-                                        onGenerate = tasteViewModel::generate,
-                                        onOpenSettings = { navController.navigate(SettingsDestination) },
-                                        onShare = { sharingTaste = it },
-                                        modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 8.dp),
-                                    )
-                                }
-                            }
                         }
 
                         if (!listCanvasSong.data.isNullOrEmpty()) {
@@ -425,9 +399,6 @@ fun LibraryScreen(
                 }
             }
         }
-    }
-    sharingTaste?.let { profile ->
-        ShareTasteSheet(profile = profile, onDismiss = { sharingTaste = null })
     }
     if (showAddSheet) {
         CreateLocalPlaylistSheet(

@@ -330,18 +330,6 @@ fun App(
                         }
                     }
 
-                    // simpmusic://taste — the AI taste card, which sits on Your library. A link of its
-                    // own rather than library?tab=your_library, so it can say that the card exists only
-                    // while local tracking is on.
-                    "taste" -> {
-                        if (isAppLinkAvailable(appPath, null, localTrackingOn, youTubeLoggedIn)) {
-                            viewModel.requestLibraryTab(LibraryChipType.YOUR_LIBRARY)
-                            navController.navigate(LibraryDestination)
-                        } else {
-                            viewModel.makeToast(getString(Res.string.this_link_is_not_supported))
-                        }
-                    }
-
                     // simpmusic://recognize — the Quick Settings tile (Android only): Search with the
                     // song recognition sheet open.
                     "recognize" -> {

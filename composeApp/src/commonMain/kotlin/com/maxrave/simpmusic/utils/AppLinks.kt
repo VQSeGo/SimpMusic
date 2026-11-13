@@ -7,12 +7,11 @@ import com.maxrave.simpmusic.getPlatform
 
 // Every path the deep-link router in App.kt opens; anything else gets its "link not supported" toast.
 // A path added there must be added here too, or no launch banner can point at it.
-private val APP_LINK_PATHS = setOf("watch", "playlist", "channel", "c", "album", "library", "analytics", "taste", "recognize")
+private val APP_LINK_PATHS = setOf("watch", "playlist", "channel", "c", "album", "library", "analytics", "recognize")
 
 /**
- * Whether the screen a `simpmusic://` link opens exists for this user right now. Analytics, the
- * Wrapped chip and the AI taste card (`taste`) exist only while local tracking is on, the YouTube
- * playlists chip only while signed in, and song recognition (`recognize`) only on Android. The router
+ * Whether the screen a `simpmusic://` link opens exists for this user right now. Analytics and the
+ * Wrapped chip exist only while local tracking is on, the YouTube playlists chip only while signed in, and song recognition (`recognize`) only on Android. The router
  * turns such a link away with a toast, and a launch banner pointing at one is not shown, so the two
  * always agree.
  */
@@ -24,7 +23,7 @@ fun isAppLinkAvailable(
 ): Boolean =
     when {
         appPath !in APP_LINK_PATHS -> false
-        appPath == "analytics" || appPath == "taste" -> localTrackingOn
+        appPath == "analytics" -> localTrackingOn
         appPath == "recognize" -> getPlatform() == Platform.Android
         appPath == "library" && libraryTab == LibraryChipType.WRAPPED -> localTrackingOn
         appPath == "library" && libraryTab == LibraryChipType.YOUTUBE_MUSIC_PLAYLIST -> youTubeLoggedIn

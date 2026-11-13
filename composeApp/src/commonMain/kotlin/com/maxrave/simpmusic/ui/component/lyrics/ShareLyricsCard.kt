@@ -150,7 +150,7 @@ internal fun ShareLyricsCard(
 }
 
 /**
- * Whose app made the card — the last thing on every share card, lyrics and taste alike.
+ * Whose app made the card — the last thing on every share card.
  *
  * Disc + glyph, the way Spotify signs its card. The circle is filled with the content colour and
  * the logo prints on it through shareTintOn — the same rule as every other inverted surface here,

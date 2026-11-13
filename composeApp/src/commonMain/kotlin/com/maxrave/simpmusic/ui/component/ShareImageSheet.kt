@@ -120,8 +120,8 @@ internal fun ShareImageSheet(
         scrimColor = Color.Black.copy(alpha = .6f),
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
     ) {
-        // Scrolls because the image can be taller than a short phone: a long taste reading or a
-        // receipt alone can fill the sheet, and the pills would otherwise be pushed off screen.
+        // Scrolls because the image can be taller than a short phone: a receipt
+        // alone can fill the sheet, and the pills would otherwise be pushed off screen.
         // The gradient sits outside the scroll so it stays put while the content moves.
         Column(
             modifier =

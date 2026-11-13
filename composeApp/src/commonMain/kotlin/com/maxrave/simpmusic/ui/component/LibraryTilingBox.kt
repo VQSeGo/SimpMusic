@@ -39,7 +39,6 @@ import com.maxrave.domain.data.model.library.LibraryCollectionPreview
 import com.maxrave.domain.data.model.library.LibraryOverview
 import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.getPlatform
-import com.maxrave.simpmusic.ui.component.taste.libraryCardColor
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
 import com.maxrave.simpmusic.ui.theme.typo
