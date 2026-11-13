@@ -423,10 +423,7 @@
     <string name="crossfade_disabled">Dinonaktifkan</string>
     <string name="crossfade_duration">Durasi memudar</string>
     <string name="set_crossfade_duration">Tentukan durasi crossfade dalam (%1$ds) detik</string>
-    <string name="crossfade_auto">Otomatis</string>
     <string name="crossfade_auto_description">Hitung durasi secara otomatis berdasarkan BPM (memerlukan aliran audio 320kbps yang dilengkapi data BPM)</string>
-    <string name="crossfade_dj_mode">Transisi Gaya DJ</string>
-    <string name="crossfade_dj_mode_description">Terapkan penyaringan low-pass dan high-pass selama proses pemudaran untuk transisi yang lebih halus, menyerupai transisi DJ (sama seperti Apple Music Automix).</string>
     <string name="youtube_subtitle_language">Bahasa terjemahan Subtitle YouTube</string>
     <string name="youtube_subtitle_language_message">Ketikan kode bahasa (Cth: id) (2 kata). Ini adalah bahasa terjemahan yang lebih disukai untuk subtitle YouTube.</string>
     <string name="simpmusic_lyrics">Lirik SimpMusic</string>

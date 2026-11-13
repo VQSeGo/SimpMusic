@@ -435,10 +435,7 @@
     <string name="crossfade_disabled">ปิดใช้งาน</string>
     <string name="crossfade_duration">ระยะเวลาในการครอสเฟด</string>
     <string name="set_crossfade_duration">ตั้งค่าระยะเวลา Crossfade เป็นวินาที (%1$ds)</string>
-    <string name="crossfade_auto">อัตโนมัติ</string>
     <string name="crossfade_auto_description">คำนวณระยะเวลาอัตโนมัติตาม BPM (ต้องใช้สตรีม 320 kbps ที่มีข้อมูล BPM)</string>
-    <string name="crossfade_dj_mode">การเปลี่ยนเพลงสไตล์ DJ</string>
-    <string name="crossfade_dj_mode_description">ใช้การไล่ปรับฟิลเตอร์ Low-pass และ High-pass ระหว่างช่วง Crossfade เพื่อให้การเปลี่ยนเพลงนุ่มนวลและลื่นไหลแบบ DJ (คล้ายฟีเจอร์ Automix ของ Apple Music)</string>
     <string name="youtube_subtitle_language">ภาษาการแปลคำบรรยายบน YouTube</string>
     <string name="youtube_subtitle_language_message">พิมพ์รหัสภาษาประเภท (เช่น: en) (2 ตัวอักษร) นี่คือภาษาที่ต้องการใช้แปลคำบรรยาย YouTube</string>
     <string name="simpmusic_lyrics">SimpMusic Lyrics</string>

@@ -521,10 +521,7 @@
     <string name="crossfade_disabled">Désactivé</string>
     <string name="crossfade_duration">Durée du fondu enchaîné</string>
     <string name="set_crossfade_duration">Définir la durée du fondu enchaîné en secondes (%1$ds)</string>
-    <string name="crossfade_auto">Auto</string>
     <string name="crossfade_auto_description">Calculer automatiquement la durée en fonction du BPM (nécessite un flux de 320 kbps contenant les données de BPM)</string>
-    <string name="crossfade_dj_mode">Transition façon DJ</string>
-    <string name="crossfade_dj_mode_description">Appliquez des balayages de filtres passe-bas et passe-haut pendant le fondu enchaîné pour obtenir une transition plus fluide, à la manière d'un DJ (à l'instar de la fonction Automix d'Apple Music).</string>
     <string name="auto_download_liked_songs">Téléchargez les titres que vous aimez</string>
     <string name="auto_download_liked_songs_description">Lorsque vous ajoutez un titre à vos Favoris, celui-ci est automatiquement téléchargé pour une écoute hors ligne, selon le paramètre de qualité de téléchargement que vous avez défini. L'activation de cette option entraîne également le téléchargement des titres que vous avez déjà « aimés ». Le fait de retirer un « J'aime » ne supprime jamais un téléchargement.</string>
     <string name="downloading_liked_songs">Téléchargement de %1$d titres aimés</string>

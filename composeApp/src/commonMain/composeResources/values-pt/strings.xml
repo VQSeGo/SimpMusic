@@ -420,10 +420,7 @@
     <string name="crossfade_disabled">Desativado</string>
     <string name="crossfade_duration">Duração da Transição</string>
     <string name="set_crossfade_duration">Defina a duração da transição em segundos (%1$ds)</string>
-    <string name="crossfade_auto">Auto</string>
     <string name="crossfade_auto_description">Calcular a duração automaticamente com base no BPM (requer o stream de 320kbps com dados BPM)</string>
-    <string name="crossfade_dj_mode">Transição estilo DJ</string>
-    <string name="crossfade_dj_mode_description">Aplica filtros passa-baixa e passa-alta durante o crossfade para uma transição mais suave, estilo DJ (semelhante ao Automix do Apple Music).</string>
     <string name="youtube_subtitle_language">Idioma da Tradução das Legendas do YouTube</string>
     <string name="youtube_subtitle_language_message">Digite o código do idioma (Ex: pt) (2 letras). Este é o idioma preferido para tradução das legendas do YouTube.</string>
     <string name="simpmusic_lyrics">SimpMusic Letras</string>

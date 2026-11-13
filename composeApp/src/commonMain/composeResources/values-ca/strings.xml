@@ -410,10 +410,7 @@
     <string name="crossfade_disabled">Desactivat</string>
     <string name="crossfade_duration">Durada del crosssfade</string>
     <string name="set_crossfade_duration">Estableixi la duració del crossfade en segons (%1$ds)</string>
-    <string name="crossfade_auto">Automàtic</string>
     <string name="crossfade_auto_description">Calcular la durada automàticament basant-se en els BPM (requereix la reproducció a 320 kbps amb dades de BPM)</string>
-    <string name="crossfade_dj_mode">Transició a l'estil DJ</string>
-    <string name="crossfade_dj_mode_description">Aplicar crossfade de filtres passa-baix i passa-alt durant l'encadenament per a una transició més suau a l'estil DJ (similar a l'Automix d'Apple Music)</string>
     <string name="youtube_subtitle_language">Idioma de la traducció dels subtítols de YouTube</string>
     <string name="youtube_subtitle_language_message">Escrigui el codi d'idioma (per exemple: ca) (dues lletres). Aquest és l'idioma per a la traducció dels subtítols de YouTube preferent</string>
     <string name="simpmusic_lyrics">SimpMusic Lyrics</string>

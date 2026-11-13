@@ -436,10 +436,7 @@
     <string name="crossfade_disabled">Devredışı</string>
     <string name="crossfade_duration">Geçiş Süresi</string>
     <string name="set_crossfade_duration">Çapraz geçiş süresini saniye cinsinden ayarla (%1$ds)</string>
-    <string name="crossfade_auto">Oto</string>
     <string name="crossfade_auto_description">BPM'ye göre süreyi otomatik olarak hesaplar (BPM verisi içeren 320kbps akış gerektirir)</string>
-    <string name="crossfade_dj_mode">DJ Tarzı Geçiş</string>
-    <string name="crossfade_dj_mode_description">Geçiş sırasında daha yumuşak, DJ benzeri bir geçiş için alçak geçiren ve yüksek geçiren filtre taramaları uygulayın (Apple Music Automix'e benzer).</string>
     <string name="downloading_liked_songs">%1$d beğenilen şarkı indiriliyor</string>
     <string name="youtube_subtitle_language">YouTube Altyazı Çeviri Dili</string>
     <string name="youtube_subtitle_language_message">Dil kodunu yazın (Örn: en) (2 harf). Bu, YouTube altyazıları için tercih edilen çeviri dilidir.</string>

@@ -500,10 +500,7 @@
     <string name="crossfade_disabled">Desactivado</string>
     <string name="crossfade_duration">Duración del crossfade</string>
     <string name="set_crossfade_duration">Establecer la duración del crossfade en segundos (%1$ds)</string>
-    <string name="crossfade_auto">Automático</string>
     <string name="crossfade_auto_description">Calcula automáticamente la duración basada en BPM (requiere flujo de 320kbps con datos BPM)</string>
-    <string name="crossfade_dj_mode">Transición estilo DJ</string>
-    <string name="crossfade_dj_mode_description">Aplica un filtro de barrido durante el efecto crossfade para una transición más suave (similar al Automix de Apple Music).</string>
     <string name="auto_download_liked_songs">Descargar canciones que te gustan</string>
     <string name="auto_download_liked_songs_description">Descargue automáticamente una canción para la reproducción sin conexión cuando la añada a Favoritas, usando su configuración de calidad de descarga. Activar esto también la descarga las canciones que ya te gustaron. Eliminar un favorito nunca borra una descarga.</string>
     <string name="downloading_liked_songs">Descargando %1$d canciones que me gustan</string>

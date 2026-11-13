@@ -426,10 +426,7 @@
     <string name="crossfade_disabled">꺼짐</string>
     <string name="crossfade_duration">크로스페이드 지속 시간</string>
     <string name="set_crossfade_duration">크로스페이드 시간을 초 단위로 설정 (%1$d초)</string>
-    <string name="crossfade_auto">자동</string>
     <string name="crossfade_auto_description">BPM을 기준으로 재생 시간을 자동으로 계산합니다(BPM 데이터가 포함된 320kbps 스트림 필요)</string>
-    <string name="crossfade_dj_mode">DJ 스타일 전환</string>
-    <string name="crossfade_dj_mode_description">크로스페이드 중에 로우패스 및 하이패스 필터 스윕을 적용하여 더욱 부드럽고 DJ 스타일의 전환 효과를 만드세요 (Apple Music의 Automix와 유사).</string>
     <string name="auto_download_liked_songs">좋아요한 곡 다운로드</string>
     <string name="youtube_subtitle_language">YouTube 자막 번역 언어</string>
     <string name="youtube_subtitle_language_message">언어 코드 2글자(예: ko)를 입력합니다. YouTube 자막의 기본 번역 언어에 해당합니다.</string>

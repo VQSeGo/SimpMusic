@@ -212,10 +212,7 @@ import simpmusic.composeapp.generated.resources.clear_thumbnail_cache
 import simpmusic.composeapp.generated.resources.content
 import simpmusic.composeapp.generated.resources.content_country
 import simpmusic.composeapp.generated.resources.crossfade
-import simpmusic.composeapp.generated.resources.crossfade_auto
 import simpmusic.composeapp.generated.resources.crossfade_description
-import simpmusic.composeapp.generated.resources.crossfade_dj_mode
-import simpmusic.composeapp.generated.resources.crossfade_dj_mode_description
 import simpmusic.composeapp.generated.resources.crossfade_duration
 import simpmusic.composeapp.generated.resources.crossfade_skip_album
 import simpmusic.composeapp.generated.resources.crossfade_skip_album_description
@@ -514,7 +511,6 @@ fun SettingScreen(
 
     val crossfadeEnabled by viewModel.crossfadeEnabled.collectAsStateWithLifecycle()
     val crossfadeDuration by viewModel.crossfadeDuration.collectAsStateWithLifecycle()
-    val crossfadeDjMode by viewModel.crossfadeDjMode.collectAsStateWithLifecycle()
     val crossfadeSkipAlbum by viewModel.crossfadeSkipAlbum.collectAsStateWithLifecycle()
     val castState by viewModel.castState.collectAsStateWithLifecycle()
 
@@ -1387,8 +1383,6 @@ fun SettingScreen(
                             subtitle =
                                 if (castState.isRemote) {
                                     stringResource(Res.string.not_available_while_casting)
-                                } else if (crossfadeDuration == DataStoreManager.CROSSFADE_DURATION_AUTO) {
-                                    stringResource(Res.string.crossfade_auto)
                                 } else {
                                     "${crossfadeDuration / 1000}s"
                                 },
@@ -1401,8 +1395,6 @@ fun SettingScreen(
                                             SettingAlertState.SelectData(
                                                 listSelect =
                                                     listOf(
-                                                        (crossfadeDuration == DataStoreManager.CROSSFADE_DURATION_AUTO) to
-                                                            runBlocking { getString(Res.string.crossfade_auto) },
                                                         (crossfadeDuration == 1000) to "1s",
                                                         (crossfadeDuration == 2000) to "2s",
                                                         (crossfadeDuration == 3000) to "3s",
@@ -1419,12 +1411,6 @@ fun SettingScreen(
                                             runBlocking { getString(Res.string.change) } to { state ->
                                                 val duration =
                                                     when (state.selectOne?.getSelected()) {
-                                                        runBlocking {
-                                                            getString(
-                                                                Res.string.crossfade_auto,
-                                                            )
-                                                        },
-                                                        -> DataStoreManager.CROSSFADE_DURATION_AUTO
                                                         "1s" -> 1000
                                                         "2s" -> 2000
                                                         "3s" -> 3000
@@ -1445,18 +1431,6 @@ fun SettingScreen(
                             },
                         )
 //                        if (getPlatform() == Platform.Android) {
-                        SettingItem(
-                            title = stringResource(Res.string.crossfade_dj_mode),
-                            subtitle =
-                                if (castState.isRemote) {
-                                    stringResource(Res.string.not_available_while_casting)
-                                } else {
-                                    stringResource(Res.string.crossfade_dj_mode_description)
-                                },
-                            smallSubtitle = true,
-                            switch = ((crossfadeDjMode) to { viewModel.setCrossfadeDjMode(it) }),
-                            isEnable = !castState.isRemote,
-                        )
                         SettingItem(
                             title = stringResource(Res.string.crossfade_skip_album),
                             subtitle =

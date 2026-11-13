@@ -518,10 +518,7 @@
     <string name="crossfade_disabled">無効</string>
     <string name="crossfade_duration">クロスフェードの時間</string>
     <string name="set_crossfade_duration">クロスフェードの長さを秒単位で設定 (%1$ds)</string>
-    <string name="crossfade_auto">オート</string>
     <string name="crossfade_auto_description">BPM に基づいて時間を自動的に計算します。（BPM データで 320kbps ストリームが必要です）</string>
-    <string name="crossfade_dj_mode">DJスタイルのトランジション</string>
-    <string name="crossfade_dj_mode_description">クロスフェード中にローパス フィルターとハイパス フィルターのスイープを適用して、よりスムーズな DJ のようなトランジションを実現します (Apple Music Automix と同様)。</string>
     <string name="auto_download_liked_songs">高評価済みの曲をダウンロード</string>
     <string name="auto_download_liked_songs_description">お気に入りに追加した曲を、設定したダウンロード音質で自動的にダウンロードし、オフラインで再生できるようにします。この機能をオンにすると、すでに「高評価」した曲もダウンロードされます。「高評価」を解除しても、ダウンロード済みの曲は削除されません。</string>
     <string name="downloading_liked_songs">%1$d高評価済みの曲をダウンロード中</string>

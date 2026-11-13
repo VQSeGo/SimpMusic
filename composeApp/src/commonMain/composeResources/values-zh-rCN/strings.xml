@@ -418,10 +418,7 @@
     <string name="crossfade_disabled">已禁用</string>
     <string name="crossfade_duration">交叉淡入淡出持续时间</string>
     <string name="set_crossfade_duration">设置交叉淡入淡出持续时间(%1$d秒)</string>
-    <string name="crossfade_auto">自动</string>
     <string name="crossfade_auto_description">基于BPM自动计算持续时间 (需要 320kbps 串流与BPM数据)</string>
-    <string name="crossfade_dj_mode">DJ风格过渡</string>
-    <string name="crossfade_dj_mode_description">在交叉淡入淡出期间应用低通和高通滤波扫频效果，以实现更平滑、类似 DJ 风格的过渡（类似于 Apple Music 的 Automix 功能）。</string>
     <string name="youtube_subtitle_language">YouTube 字幕翻译语言</string>
     <string name="youtube_subtitle_language_message">输入语言代码 (Eg: en) (2 letters)。这是YouTube 字幕的首选翻译语言。</string>
     <string name="simpmusic_lyrics">SimpMusic 歌词</string>

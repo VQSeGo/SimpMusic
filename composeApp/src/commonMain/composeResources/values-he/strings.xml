@@ -526,10 +526,7 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nנבנה ב-❤️ מ�
     <string name="crossfade_disabled">מושבת</string>
     <string name="crossfade_duration">אורך קרוספייד</string>
     <string name="set_crossfade_duration">הגדר את משך הזמן של הקרוספייד בשניות (%1$dש')</string>
-    <string name="crossfade_auto">אוטומטי</string>
     <string name="crossfade_auto_description">חישוב אוטומטי של משך זמן בהתבסס על BPM (דורש זרם של 320kbps עם נתוני BPM)</string>
-    <string name="crossfade_dj_mode">מעבר בסגנון די-ג'יי</string>
-    <string name="crossfade_dj_mode_description">החל סוויפים של מסנני low-pass ו-high-pass במהלך קרוספייד למעבר חלק יותר, דמוי די-ג'יי (בדומה ל-Automix של Apple Music).</string>
     <string name="auto_download_liked_songs">הורד סרטונים שאתה אוהב</string>
     <string name="auto_download_liked_songs_description">הורדה אוטומטית של שיר להשמעה במצב לא מקוון בעת ​​הוספתו למועדפים, עם הגדרת איכות ההורדה שלכם. הפעלת אפשרות זו תוריד גם את השירים שכבר אהבתם. הסרת לייק לעולם לא תמחק הורדה.</string>
     <string name="downloading_liked_songs">מוריד %1$d שירים מועדפים</string>

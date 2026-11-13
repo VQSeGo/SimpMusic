@@ -521,10 +521,7 @@
     <string name="crossfade_disabled">Inaktiverad</string>
     <string name="crossfade_duration">Övertoningens längd</string>
     <string name="set_crossfade_duration">Ange övertoningens längd i sekunder (%1$d s)</string>
-    <string name="crossfade_auto">Automatiskt</string>
     <string name="crossfade_auto_description">Beräkna längden automatiskt utifrån BPM (kräver en ström på 320 kbit/s med BPM-data)</string>
-    <string name="crossfade_dj_mode">Övergång i DJ-stil</string>
-    <string name="crossfade_dj_mode_description">Använd svepande lågpass- och högpassfilter under övertoningen för en mjukare övergång i DJ-stil (liknande Automix i Apple Music).</string>
     <string name="auto_download_liked_songs">Hämta låtar du gillar</string>
     <string name="auto_download_liked_songs_description">Hämta automatiskt en låt för offlinelyssning när du lägger till den i Favoriter, med den hämtningskvalitet du har valt. När du aktiverar detta hämtas även låtar som du redan gillar. Om du tar bort en gilla-markering raderas aldrig den hämtade låten.</string>
     <string name="downloading_liked_songs">Hämtar gillade låtar: %1$d</string>

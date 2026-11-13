@@ -504,10 +504,7 @@
     <string name="crossfade_disabled">已停用</string>
     <string name="crossfade_duration">交叉淡入淡出持續時間</string>
     <string name="set_crossfade_duration">設定交叉淡入淡出秒數（%1$d 秒）</string>
-    <string name="crossfade_auto">自動</string>
     <string name="crossfade_auto_description">根據 BPM 自動計算時長（需要 320kbps 的 BPM 資料流）</string>
-    <string name="crossfade_dj_mode">DJ風格過渡</string>
-    <string name="crossfade_dj_mode_description">在交叉淡入淡出期間套用低通和高通濾波器掃描，以獲得更平滑、類似 DJ 的過渡效果（類似於 Apple Music Automix）。</string>
     <string name="auto_download_liked_songs">下載您想要的曲目</string>
     <string name="auto_download_liked_songs_description">將歌曲新增至收藏夾後，即可自動下載歌曲以供離線播放，下載品質將根據您的設定自動調整。啟用此功能後，您已收藏的歌曲也會自動下載。取消收藏不會刪除已下載的歌曲。</string>
     <string name="downloading_liked_songs">正在下載%1$d首喜愛的曲子</string>
