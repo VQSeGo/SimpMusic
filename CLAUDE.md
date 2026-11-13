@@ -107,6 +107,10 @@
   группа в настройках, выбор категорий, тост «пропущен сегмент»; `StreamRepository.getSkipSegments`, `YouTube.getSkipSegments`,
   `SponsorBlockType`, `SponsorSkipSegments`, ключи DataStore `sponsor_block_enabled` и девять ключей категорий `sponsor`,
   `selfpromo`, `interaction`, `intro`, `outro`, `preview`, `music_offtopic`, `poi_highlight`, `filler`).
+  Также: Last.fm (скробблинг в обоих обработчиках плеера, вход, группа в настройках, модули `lastfm` и `lastfm-empty`, поля
+  `lastfmApiKey` / `lastfmSecret` в BuildKonfig, ключи `LASTFM_API_KEY` / `LASTFM_SECRET` в `local.properties`, схема
+  `wordbyword://` в манифесте, Conveyor и `.desktop`; ключи DataStore `lastfm_session_key`, `lastfm_username`,
+  `lastfm_scrobble_enabled`; `LoginSyncService.LASTFM`). Синхронизация входа игнорирует поле `lastfm` от старого телефона.
 - Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
   (на десктопе исправлено).
 
@@ -132,7 +136,7 @@
 - Настройки, не требующие нового ключа в `core`, храним через `dataStoreManager.getString/putString`.
 - Общие помощники, которые нужны в нескольких местах, выносим в отдельный файл, а не оставляем в файле
   удалённого стиля (пример: `AnimatedArtworkPage.kt`).
-- Приватность: FOSS-сборка без трекинга; Sentry, Last.fm, Discord OAuth только при `isFullBuild=true`.
+- Приватность: FOSS-сборка без трекинга; Sentry и Discord OAuth только при `isFullBuild=true`.
 - В `.claude/skills/` лежат скиллы kotlin-footguns (228 ловушек Kotlin/Compose/десктоп-JVM) и общие
   Android-скиллы. Перед правкой плеера, Room, StateFlow или сборки стоит открыть подходящий скилл;
   `footgun-scan` проверяет дифф.
