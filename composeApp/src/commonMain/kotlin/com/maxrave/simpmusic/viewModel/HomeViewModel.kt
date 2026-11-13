@@ -13,6 +13,7 @@ import com.maxrave.domain.manager.DataStoreManager.Values.TRUE
 import com.maxrave.domain.repository.HomeRepository
 import com.maxrave.domain.utils.Resource
 import com.maxrave.logger.Logger
+import com.maxrave.simpmusic.Startup
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -184,6 +185,7 @@ class HomeViewModel(
     }
 
     fun getHomeItemList(params: String? = null) {
+        Startup.mark("home-requested")
         loading.value = true
         _homeListState.value = ListState.LOADING
         language =

@@ -206,6 +206,7 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
         )
         loadKoinModules(viewModelModule)
     }
+    Startup.mark("koin-done")
 
     val language =
         runBlocking {
@@ -277,6 +278,7 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
         sharedViewModel.setIntent(intent)
     }
 
+    Startup.mark("pre-window")
     governedApplication {
         // Main Window
         val windowState =

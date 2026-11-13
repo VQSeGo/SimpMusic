@@ -21,6 +21,7 @@ import com.maxrave.common.AppIdentity
 import com.maxrave.data.di.loader.loadAllModules
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.logger.Logger
+import com.maxrave.simpmusic.Startup
 import com.maxrave.simpmusic.di.viewModelModule
 import com.maxrave.simpmusic.service.backup.AutoBackupScheduler
 import com.maxrave.simpmusic.utils.NetworkFirstInterceptor
@@ -74,6 +75,7 @@ class SimpMusicApplication :
             )
             loadKoinModules(viewModelModule)
         }
+        Startup.mark("koin-done")
         // provide custom configuration
         val workConfig =
             Configuration

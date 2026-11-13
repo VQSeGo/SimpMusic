@@ -13,3 +13,6 @@ sealed class Platform {
 }
 
 expect fun getPlatform(): Platform
+
+/** Milliseconds since this process started; the zero point of the `Startup` log marks. */
+expect fun millisSinceProcessStart(): Long

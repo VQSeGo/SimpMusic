@@ -118,10 +118,12 @@ import com.maxrave.domain.utils.toSongEntity
 import com.maxrave.domain.utils.toTrack
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
+import com.maxrave.simpmusic.Startup
 import com.maxrave.simpmusic.expect.openUrl
 import com.maxrave.simpmusic.expect.ui.HorizontalScrollBar
 import com.maxrave.simpmusic.expect.ui.layerBackdrop
 import com.maxrave.simpmusic.expect.ui.rememberBackdrop
+import com.maxrave.simpmusic.expect.ui.rememberReportFullyDrawn
 import com.maxrave.simpmusic.extension.angledGradientBackground
 import com.maxrave.simpmusic.extension.artworkScrimBrush
 import com.maxrave.simpmusic.extension.getScreenSizeInfo
@@ -385,6 +387,14 @@ fun HomeScreen(
                 Logger.w("HomeScreen", "scrollState.firstVisibleItemIndex: ${scrollState.firstVisibleItemIndex}")
                 onRefresh.invoke()
             }
+        }
+    }
+    // Once per process: the first time Home has real content on screen.
+    val reportFullyDrawn = rememberReportFullyDrawn()
+    val homeShown = !loading && homeData.isNotEmpty()
+    LaunchedEffect(homeShown) {
+        if (homeShown && Startup.markOnce("home-shown")) {
+            reportFullyDrawn()
         }
     }
     LaunchedEffect(key1 = loading) {
