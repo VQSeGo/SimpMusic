@@ -56,8 +56,6 @@ include(
     ":crashlytics-empty",
     ":cast",
     ":cast-empty",
-    ":lastfm",
-    ":lastfm-empty",
     ":kizzy",
     ":discord",
     ":listenTogether",

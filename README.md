@@ -55,7 +55,6 @@ A FOSS YouTube Music client for Android and Desktop with many features from<br>S
 - Synced lyrics from SimpMusic Lyrics, LRCLIB, BetterLyrics, Spotify (require login) and YouTube Transcript - AI lyrics translation (BETA) (\*)  
 - Personalize data (\**) and multi-YouTube-account support    
 - Dislike songs on YouTube Music so it recommends them less (NEW)
-- Last.fm scrobbling (Full version)
 - Supports SponsorBlock and Return YouTube Dislike
 - Sleep Timer    
 - Android Auto with online content, feature rich UI/UX

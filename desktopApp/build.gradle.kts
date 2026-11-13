@@ -403,8 +403,6 @@ tasks.register("packageConveyorAppImage") {
         // ~/.local/share/applications and runs update-desktop-database. So every scheme listed in
         // `app.url-schemes` in conveyor.conf has to be repeated here as an x-scheme-handler MIME
         // type, or xdg-open finds no handler for it and the redirect dies in the browser.
-        // "wordbyword" is the Last.fm auth callback and was missing, which is why Last.fm login
-        // could never come back to the app on Linux.
         desktopFile.writeText(
             """[Desktop Entry]
             |Type=Application
@@ -416,7 +414,7 @@ tasks.register("packageConveyorAppImage") {
             |Terminal=false
             |Categories=Audio;AudioVideo;
             |StartupWMClass=SimpMusic
-            |MimeType=x-scheme-handler/simpmusic;x-scheme-handler/wordbyword;
+            |MimeType=x-scheme-handler/simpmusic;
             |
             """.trimMargin(),
         )

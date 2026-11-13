@@ -130,15 +130,8 @@ kotlin {
             api(projects.domain)
             implementation(projects.data)
 
-            // Last.fm (gated: real scrobbler for full builds, no-op stub for FOSS builds).
-            // `api` rather than `implementation` so :androidApp can hand it the credentials from
-            // BuildKonfig at startup, the same way it does for Sentry.
-            if (isFullBuild) {
-                api(projects.lastfm)
-            } else {
-                api(projects.lastfmEmpty)
-            }
-            // `api` for the same reason: :androidApp hands it the Discord application id at startup.
+            // `api` rather than `implementation` so :androidApp can hand it the Discord application id
+            // from BuildKonfig at startup, the same way it does for Sentry.
             api(projects.discord)
 
             // Navigation Compose
@@ -860,32 +853,16 @@ buildkonfig {
                 )
                 buildConfigField(
                     STRING,
-                    "lastfmApiKey",
-                    properties.getProperty("LASTFM_API_KEY") ?: "",
-                )
-                buildConfigField(
-                    STRING,
-                    "lastfmSecret",
-                    properties.getProperty("LASTFM_SECRET") ?: "",
-                )
-                buildConfigField(
-                    STRING,
                     "discordClientId",
                     properties.getProperty("DISCORD_CLIENT_ID") ?: "",
                 )
             } catch (e: Exception) {
                 println("Failed to load secrets from local.properties: ${e.message}")
                 buildConfigField(STRING, "sentryDsn", "")
-                buildConfigField(STRING, "lastfmApiKey", "")
-                buildConfigField(STRING, "lastfmSecret", "")
                 buildConfigField(STRING, "discordClientId", "")
             }
         } else {
             buildConfigField(STRING, "sentryDsn", "")
-            // A FOSS build ships no Last.fm credentials, so `isLastfmAvailable()` stays false and
-            // the feature hides itself. The stub module is linked in this flavour anyway.
-            buildConfigField(STRING, "lastfmApiKey", "")
-            buildConfigField(STRING, "lastfmSecret", "")
             // No Discord application either, so Rich Presence keeps going through kizzy.
             buildConfigField(STRING, "discordClientId", "")
         }
