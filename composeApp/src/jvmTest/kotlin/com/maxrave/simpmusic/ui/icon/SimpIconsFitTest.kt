@@ -51,7 +51,7 @@ class SimpIconsFitTest {
     @Test
     fun aGlyphInsideTheLiveAreaIsLeftAsGenerated() {
         // Each of these already keeps to the 20×20 square, so none is rebuilt and nothing is enlarged.
-        listOf("QueueMusic", "MoreVert", "CommentOutline").forEach { name ->
+        listOf("QueueMusic", "MoreVert").forEach { name ->
             assertTrue(icon(name).root.all { it is VectorPath }, "$name was rebuilt")
         }
     }

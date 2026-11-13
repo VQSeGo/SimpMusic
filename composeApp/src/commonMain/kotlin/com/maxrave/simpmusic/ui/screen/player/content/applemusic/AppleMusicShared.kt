@@ -87,7 +87,6 @@ import com.maxrave.simpmusic.ui.component.ExplicitBadge
 import com.maxrave.simpmusic.ui.component.heartBurst
 import com.maxrave.simpmusic.ui.component.rememberHeartBurstState
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
-import com.maxrave.simpmusic.ui.icon.CommentOutline
 import com.maxrave.simpmusic.ui.icon.FastForward
 import com.maxrave.simpmusic.ui.icon.FastRewind
 import com.maxrave.simpmusic.ui.icon.Groups
@@ -770,10 +769,10 @@ internal fun AppleMusicDockButton(
 }
 
 /**
- * Lyrics · [Output | Listen Together | Comments] · Queue. The capsule holds the two
+ * Lyrics · [Output | Listen Together] · Queue. The capsule holds the two
  * answers to "where is this playing": which speaker (the output sheet, which is also where Cast
- * lives now) and which people (Listen Together), with the comments sheet at its right end. Joined
- * by hairlines rather than gaps, so the segments read as one object.
+ * lives now) and which people (Listen Together). Joined by a hairline rather than a gap, so the
+ * segments read as one object.
  */
 @Composable
 internal fun AppleMusicActionRow(
@@ -784,7 +783,6 @@ internal fun AppleMusicActionRow(
     activeContentColor: Color,
     onOpenOutput: () -> Unit,
     onOpenListenTogether: () -> Unit,
-    onOpenComments: () -> Unit,
     modifier: Modifier = Modifier,
 ) = LeftToRight {
     // Straight off the repository, like ListenTogetherIconButton: one boolean off a StateFlow is all
@@ -796,10 +794,10 @@ internal fun AppleMusicActionRow(
         // tablet or Desktop window. There the segments give up width first, keeping 16dp spare, down
         // to 36dp (the glyph still clear of the capsule's rounded ends): the row fits down to 190dp.
         val segmentWidth =
-            ((maxWidth - DOCK_BUTTON_SIZE * 2 - 2.dp - 16.dp) / 3).coerceIn(36.dp, CAPSULE_SEGMENT_WIDTH)
+            ((maxWidth - DOCK_BUTTON_SIZE * 2 - 1.dp - 16.dp) / 2).coerceIn(36.dp, CAPSULE_SEGMENT_WIDTH)
         // A quarter of the spare width at each end, the rest between. SpaceEvenly
         // over the full row pushed the two glyphs out to the gutters, away from the capsule.
-        val content = DOCK_BUTTON_SIZE * 2 + segmentWidth * 3 + 2.dp
+        val content = DOCK_BUTTON_SIZE * 2 + segmentWidth * 2 + 1.dp
         val edgeInset = ((maxWidth - content) / 4).coerceAtLeast(0.dp)
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = edgeInset),
@@ -843,19 +841,6 @@ internal fun AppleMusicActionRow(
                     width = segmentWidth,
                     highlighted = room.inRoom,
                     onClick = onOpenListenTogether,
-                )
-                Box(
-                    modifier =
-                        Modifier
-                            .width(1.dp)
-                            .fillMaxHeight()
-                            .background(Color.White.copy(alpha = 0.20f)),
-                )
-                AppleMusicCapsuleSegment(
-                    icon = SimpIcons.CommentOutline,
-                    width = segmentWidth,
-                    highlighted = false,
-                    onClick = onOpenComments,
                 )
             }
             AppleMusicDockButton(
@@ -1001,7 +986,6 @@ internal fun AppleMusicBottomCluster(
             activeContentColor = activePillContent,
             onOpenOutput = onOpenOutput,
             onOpenListenTogether = actions.onOpenListenTogether,
-            onOpenComments = actions.onShowComments,
         )
         Spacer(modifier = Modifier.height(14.dp))
         // Crossfaded, since it changes on its own — a headset connecting renames the line under the

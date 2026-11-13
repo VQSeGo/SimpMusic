@@ -122,8 +122,6 @@ class NowPlayingContentActions(
     val onShowQueue: () -> Unit,
     val onShowInfo: () -> Unit,
     val onShowAddToPlaylist: () -> Unit,
-    /** Opens the comments sheet for the track playing. */
-    val onShowComments: () -> Unit,
     val onShowFullscreenLyrics: () -> Unit,
     /** Writes the lyrics timing offset of the track playing. */
     val onLyricsOffsetChange: (Int) -> Unit,
