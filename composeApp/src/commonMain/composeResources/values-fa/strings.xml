@@ -183,26 +183,8 @@
     <string name="check_for_update">بررسی به‌روزرسانی</string>
     <string name="last_checked_at">آخرین بررسی در %1$s</string>
     <string name="checking">در حال بررسی</string>
-    <string name="sponsorblock_skip_segment">SponsorBlock: رد کردن بخش %1$s</string>
-    <string name="sponsor">حامی</string>
-    <string name="self_promotion">تبلیغ خود</string>
-    <string name="interaction">تعامل</string>
-    <string name="intro">مقدمه</string>
-    <string name="outro">خاتمه</string>
-    <string name="preview">پیش‌نمایش</string>
-    <string name="music_off_topic">موسیقی خارج از موضوع</string>
-    <string name="poi_highlight">نکته مهم</string>
-    <string name="filler">پر کننده</string>
-    <string name="sponsorBlock">SponsorBlock</string>
-    <string name="enable_sponsor_block">به‌کارگیری SponsorBlock</string>
-    <string name="categories_sponsor_block">انتخاب رفتار رد کردن بخش</string>
-    <string name="what_segments_will_be_skipped">کدام بخش‌ها رد خواهند شد</string>
     <string name="save">نگه‌داری</string>
     <string name="saved">نگه‌داری شد</string>
-    <string name="sponsor_block_intro">SponsorBlock یک سامانه جمع‌سپاری شده برای رد کردن بخش‌های
-    آزاردهنده ویدیوهای یوتیوب است.\nریزگان بیشتر: https://sponsor.ajay.app/\nدر SimpMusic،
-    SponsorBlock فقط زمانی موجود است که دستگاه آنلاین باشد</string>
-    <string name="skip_sponsor_part_of_video">رد کردن بخش حامی ویدیو</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">یک خطای غیرمنتظره
     رخ داده است. از بابت ناراحتی عذرخواهی می‌کنیم.</string>
     <string name="customactivityoncrash_error_activity_restart_app">برنامه را دوباره راه‌اندازی کنید</string>
