@@ -131,7 +131,6 @@ import simpmusic.composeapp.generated.resources.login_success
 import simpmusic.composeapp.generated.resources.play_next
 import simpmusic.composeapp.generated.resources.shared
 import simpmusic.composeapp.generated.resources.updated
-import simpmusic.composeapp.generated.resources.vote_submitted
 import java.io.FileOutputStream
 import kotlin.math.abs
 import kotlin.reflect.KClass
@@ -1104,26 +1103,6 @@ class SharedViewModel(
                             dataStoreManager.translationLanguage.first(),
                         )
                         log("Removed out-of-sync translated lyrics for $videoId")
-                        val simpMusicLyricsId = lyrics.simpMusicLyrics?.id
-                        if (lyricsProvider == LyricsProvider.SIMPMUSIC && !simpMusicLyricsId.isNullOrEmpty()) {
-                            viewModelScope.launch {
-                                lyricsCanvasRepository
-                                    .voteSimpMusicTranslatedLyrics(
-                                        translatedLyricsId = simpMusicLyricsId,
-                                        false,
-                                    ).collectLatest {
-                                        when (it) {
-                                            is Resource.Error -> {
-                                                Logger.w(tag, "Vote SimpMusic Translated Lyrics Error ${it.message}")
-                                            }
-
-                                            is Resource.Success -> {
-                                                Logger.d(tag, "Vote SimpMusic Translated Lyrics Success")
-                                            }
-                                        }
-                                    }
-                            }
-                        }
                         nowPlayingScreenData.value.lyricsData?.lyrics?.let {
                             getAITranslationLyrics(
                                 videoId,
@@ -1136,23 +1115,9 @@ class SharedViewModel(
             }
         }
 
-        val shouldSendLyricsToSimpMusic =
-            runBlocking {
-                dataStoreManager.helpBuildLyricsDatabase.first() == TRUE
-            } &&
-                lyricsProvider != LyricsProvider.SIMPMUSIC
         if (_nowPlayingState.value?.songEntity?.videoId == videoId) {
-            val track = _nowPlayingState.value?.track
             when (isTranslatedLyrics) {
                 true -> {
-                    if (lyricsProvider == LyricsProvider.SIMPMUSIC) {
-                        _translatedVoteState.value =
-                            VoteData(
-                                id = lyrics.simpMusicLyrics?.id ?: "",
-                                vote = lyrics.simpMusicLyrics?.vote ?: 0,
-                                state = VoteState.Idle,
-                            )
-                    }
                     _nowPlayingScreenData.update {
                         it.copy(
                             lyricsData =
@@ -1161,38 +1126,9 @@ class SharedViewModel(
                                 ),
                         )
                     }
-                    if (shouldSendLyricsToSimpMusic && track != null) {
-                        viewModelScope.launch {
-                            lyricsCanvasRepository
-                                .insertSimpMusicTranslatedLyrics(
-                                    dataStoreManager,
-                                    track,
-                                    lyrics,
-                                    dataStoreManager.translationLanguage.first(),
-                                ).collect {
-                                    when (it) {
-                                        is Resource.Error -> {
-                                            log("Insert SimpMusic Translated Lyrics Error ${it.message}", LogLevel.WARN)
-                                        }
-
-                                        is Resource.Success -> {
-                                            log("Insert SimpMusic Translated Lyrics Success")
-                                        }
-                                    }
-                                }
-                        }
-                    }
                 }
 
                 false -> {
-                    if (lyricsProvider == LyricsProvider.SIMPMUSIC) {
-                        _lyricsVoteState.value =
-                            VoteData(
-                                id = lyrics.simpMusicLyrics?.id ?: "",
-                                vote = lyrics.simpMusicLyrics?.vote ?: 0,
-                                state = VoteState.Idle,
-                            )
-                    }
                     _nowPlayingScreenData.update {
                         it.copy(
                             lyricsData =
@@ -1212,27 +1148,6 @@ class SharedViewModel(
                                 syncType = lyrics.syncType,
                             ),
                         )
-                    }
-                    if (shouldSendLyricsToSimpMusic && track != null) {
-                        viewModelScope.launch {
-                            lyricsCanvasRepository
-                                .insertSimpMusicLyrics(
-                                    dataStoreManager,
-                                    track,
-                                    duration,
-                                    lyrics,
-                                ).collect {
-                                    when (it) {
-                                        is Resource.Error -> {
-                                            Logger.w(tag, "Insert SimpMusic Lyrics Error ${it.message}")
-                                        }
-
-                                        is Resource.Success -> {
-                                            Logger.d(tag, "Insert SimpMusic Lyrics Success")
-                                        }
-                                    }
-                                }
-                        }
                     }
                 }
             }
@@ -1268,7 +1183,6 @@ class SharedViewModel(
                         ?.artist
                         ?: ""
                 }
-            resetLyricsVoteState()
             val lyricsProvider = dataStoreManager.lyricsProvider.first()
             when (lyricsProvider) {
                 DataStoreManager.SIMPMUSIC -> {
@@ -1513,22 +1427,9 @@ class SharedViewModel(
             when (response) {
                 is Resource.Success if (data != null) -> {
                     // If SimpMusic translated lyrics are RICH_SYNCED (word-by-word),
-                    // convert to LINE_SYNCED, downvote, and fallback to AI translation
+                    // fall back to AI translation
                     if (data.syncType == "RICH_SYNCED") {
-                        Logger.w(tag, "SimpMusic translated lyrics are RICH_SYNCED, downvoting and falling back to AI")
-                        val simpMusicLyricsId = data.simpMusicLyrics?.id
-                        if (!simpMusicLyricsId.isNullOrEmpty()) {
-                            viewModelScope.launch {
-                                lyricsCanvasRepository
-                                    .voteSimpMusicTranslatedLyrics(simpMusicLyricsId, false)
-                                    .collectLatest { voteResult ->
-                                        when (voteResult) {
-                                            is Resource.Error -> Logger.w(tag, "Downvote RICH_SYNCED translated lyrics error: ${voteResult.message}")
-                                            is Resource.Success -> Logger.d(tag, "Downvote RICH_SYNCED translated lyrics success")
-                                        }
-                                    }
-                            }
-                        }
+                        Logger.w(tag, "SimpMusic translated lyrics are RICH_SYNCED, falling back to AI")
                         // Fallback to AI translation
                         getAITranslationLyrics(videoId, lyrics)
                     } else {
@@ -1870,119 +1771,6 @@ class SharedViewModel(
         }
     }
 
-    // Vote state for translated lyrics
-    private val _translatedVoteState = MutableStateFlow<VoteData?>(null)
-    val translatedVoteState: StateFlow<VoteData?> = _translatedVoteState.asStateFlow()
-
-    // Vote state for original lyrics
-    private val _lyricsVoteState = MutableStateFlow<VoteData?>(null)
-    val lyricsVoteState: StateFlow<VoteData?> = _lyricsVoteState.asStateFlow()
-
-    /**
-     * Vote for SimpMusic original lyrics (upvote or downvote)
-     * @param upvote true for upvote, false for downvote
-     */
-    fun voteLyrics(upvote: Boolean) {
-        val lyricsData = _nowPlayingScreenData.value.lyricsData
-        val lyricsProvider = lyricsData?.lyricsProvider
-        val simpMusicLyricsId = lyricsData?.lyrics?.simpMusicLyrics?.id ?: return
-
-        if (lyricsProvider != LyricsProvider.SIMPMUSIC || simpMusicLyricsId.isEmpty()) {
-            Logger.w(tag, "Cannot vote: not a SimpMusic lyrics or missing ID")
-            return
-        }
-
-        viewModelScope.launch {
-            _lyricsVoteState.update {
-                it?.copy(
-                    state = VoteState.Loading,
-                )
-            }
-            lyricsCanvasRepository
-                .voteSimpMusicLyrics(
-                    lyricsId = simpMusicLyricsId,
-                    upvote = upvote,
-                ).collectLatest { result ->
-                    when (result) {
-                        is Resource.Error -> {
-                            Logger.w(tag, "Vote SimpMusic Lyrics Error ${result.message}")
-                            _lyricsVoteState.update {
-                                it?.copy(
-                                    state = VoteState.Error(result.message ?: "Unknown error"),
-                                )
-                            }
-                        }
-
-                        is Resource.Success -> {
-                            Logger.d(tag, "Vote SimpMusic Lyrics Success")
-                            _lyricsVoteState.update {
-                                it?.copy(
-                                    state = VoteState.Success(upvote),
-                                    vote = it.vote + if (upvote) 1 else -1,
-                                )
-                            }
-                            makeToast(getString(Res.string.vote_submitted))
-                        }
-                    }
-                }
-        }
-    }
-
-    private fun resetLyricsVoteState() {
-        _lyricsVoteState.value = null
-        _translatedVoteState.value = null
-    }
-
-    /**
-     * Vote for SimpMusic translated lyrics (upvote or downvote)
-     * @param upvote true for upvote, false for downvote
-     */
-    fun voteTranslatedLyrics(upvote: Boolean) {
-        val translatedLyrics = _nowPlayingScreenData.value.lyricsData?.translatedLyrics
-        val lyricsProvider = translatedLyrics?.second
-        val simpMusicLyricsId = translatedLyrics?.first?.simpMusicLyrics?.id ?: return
-
-        if (lyricsProvider != LyricsProvider.SIMPMUSIC || simpMusicLyricsId.isEmpty()) {
-            Logger.w(tag, "Cannot vote: not a SimpMusic translated lyrics or missing ID")
-            return
-        }
-
-        viewModelScope.launch {
-            _translatedVoteState.update {
-                it?.copy(
-                    state = VoteState.Loading,
-                )
-            }
-            lyricsCanvasRepository
-                .voteSimpMusicTranslatedLyrics(
-                    translatedLyricsId = simpMusicLyricsId,
-                    upvote = upvote,
-                ).collectLatest { result ->
-                    when (result) {
-                        is Resource.Error -> {
-                            Logger.w(tag, "Vote SimpMusic Translated Lyrics Error ${result.message}")
-                            _translatedVoteState.update {
-                                it?.copy(
-                                    state = VoteState.Error(result.message ?: "Unknown error"),
-                                )
-                            }
-                        }
-
-                        is Resource.Success -> {
-                            Logger.d(tag, "Vote SimpMusic Translated Lyrics Success")
-                            _translatedVoteState.update {
-                                it?.copy(
-                                    state = VoteState.Success(upvote),
-                                    vote = it.vote + if (upvote) 1 else -1,
-                                )
-                            }
-                            makeToast(getString(Res.string.vote_submitted))
-                        }
-                    }
-                }
-        }
-    }
-
     fun shouldStopMusicService(): Boolean = runBlocking { dataStoreManager.killServiceOnExit.first() == TRUE }
 
     fun isUserLoggedIn(): Boolean = runBlocking { dataStoreManager.cookie.first().isNotEmpty() }
@@ -1994,7 +1782,7 @@ class SharedViewModel(
     // Last in the class on purpose. Properties start in the order they are written, and this block runs
     // on Main.immediate: when a track is already playing (the activity was recreated, a rotation) the
     // first collector fires inside the constructor and used to reach fields declared further down,
-    // still null (resetLyricsVoteState -> NullPointerException, and the app crashed on every rotation).
+    // still null (a NullPointerException, and the app crashed on every rotation).
     init {
         viewModelScope.launch {
             log("SharedViewModel init")
@@ -2416,26 +2204,6 @@ data class NowPlayingScreenData(
                 playlistName = "",
             )
     }
-}
-
-data class VoteData(
-    val id: String,
-    val vote: Int,
-    val state: VoteState,
-)
-
-sealed class VoteState {
-    data object Idle : VoteState()
-
-    data object Loading : VoteState()
-
-    data class Success(
-        val upvote: Boolean,
-    ) : VoteState()
-
-    data class Error(
-        val message: String,
-    ) : VoteState()
 }
 
 /**
