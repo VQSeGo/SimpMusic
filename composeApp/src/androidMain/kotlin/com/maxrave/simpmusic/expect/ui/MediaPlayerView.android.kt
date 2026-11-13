@@ -5,33 +5,12 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import com.maxrave.domain.data.model.metadata.Lyrics
 import com.maxrave.domain.data.model.streams.TimeLine
-import com.maxrave.media3.ui.MediaPlayerView
 import com.maxrave.media3.ui.MediaPlayerViewWithSubtitle
 import com.maxrave.simpmusic.extension.findActivity
-import com.maxrave.simpmusic.extension.getScreenSizeInfo
 import com.maxrave.simpmusic.ui.theme.typo
-
-@Composable
-actual fun MediaPlayerView(
-    url: String,
-    modifier: Modifier,
-    cropToBounds: Boolean,
-    onFirstFrame: () -> Unit,
-) {
-    MediaPlayerView(
-        modifier = modifier,
-        context = LocalContext.current,
-        density = LocalDensity.current,
-        url = url,
-        screenSize = getScreenSizeInfo(),
-        cropToBounds = cropToBounds,
-        onFirstFrame = onFirstFrame,
-    )
-}
 
 // Fully qualified: the media3-ui helper shares this function's name and signature.
 @Composable
