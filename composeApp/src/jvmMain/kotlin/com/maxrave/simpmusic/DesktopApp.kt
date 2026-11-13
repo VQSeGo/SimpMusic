@@ -30,6 +30,7 @@ import coil3.request.crossfade
 import com.maxrave.common.AppIdentity
 import com.maxrave.data.di.loader.loadAllModules
 import com.maxrave.domain.manager.DataStoreManager
+import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.mediaservice.handler.MediaPlayerHandler
 import com.maxrave.domain.mediaservice.handler.ToastType
 import com.maxrave.domain.notification.DesktopNotificationManager
@@ -237,6 +238,10 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
         Sentry.startSession()
         Sentry.startTransaction(SENTRY_APP_OPEN, SENTRY_APP_OPEN).finish()
     }
+
+    // The download queue clears the leftovers of an interrupted download when it is built, and Koin builds
+    // it lazily: without this, the first screen to ask for it is the first moment that happens.
+    getKoin().get<DownloadHandler>()
 
     val mediaPlayerHandler by inject<MediaPlayerHandler>(MediaPlayerHandler::class.java)
     mediaPlayerHandler.showToast = { type ->
