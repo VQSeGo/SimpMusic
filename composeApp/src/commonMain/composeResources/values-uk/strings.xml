@@ -222,8 +222,6 @@
     <string name="skip_sponsor_part_of_video">Пропустити частину відео зі спонсором</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Виникла неочікувана помилка. Вибачте за незручності.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Перезапустити додаток</string>
-    <string name="help_build_lyrics_database">Допоможіть SimpMusic перекласти тексти пісень</string>
-    <string name="help_build_lyrics_database_description">Надішліть ваші збережені тексти пісень в базу даних SimpMusic</string>
     <string name="customactivityoncrash_error_activity_close_app">Закрити застосунок</string>
     <string name="customactivityoncrash_error_activity_error_details">Деталі помилки</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Деталі помилки</string>
@@ -564,10 +562,6 @@
     <string name="preferred_audio_language">Бажана мова аудіо</string>
     <string name="preferred_audio_language_message">Деякі відео, переважно подкасти, містять кілька аудіодоріжок різними мовами. Введіть код мови (наприклад: vi) (2 літери), щоб відтворити цю доріжку, якщо вона є. Залиште поле порожнім, щоб завжди відтворювати оригінальний аудіозапис.</string>
     <string name="original_audio">Оригінальне аудіо</string>
-    <string name="use_anonymous">Використовувати анонімне ім'я для співпраці</string>
-    <string name="contributor_name">Ім'я учасника</string>
-    <string name="contributor_email">Електронна пошта учасника</string>
-    <string name="anonymous">Анонімно</string>
     <string name="simpmusic_lyrics">Тексти пісень SimpMusic</string>
     <string name="lyrics_provider_simpmusic">Тексти пісень надано SimpMusic Lyrics</string>
     <string name="backup_in_progress">Виконується резервне копіювання</string>
@@ -684,11 +678,6 @@
     <string name="no_data_analytics">Будь ласка, увімкніть музику, щоб переглянути аналітику</string>
     <string name="rate_translated_lyrics">Оцінити переклад</string>
     <string name="rate_lyrics">Оцінити текст</string>
-    <string name="vote_for_lyrics">Голосувати за текст пісні</string>
-    <string name="upvote">Уподобати</string>
-    <string name="downvote">Невподобати</string>
-    <string name="vote_submitted">Дякуємо, що проголосували за цей текст!</string>
-    <string name="vote_error">Не вдалося надіслати</string>
     <string name="open_app">Відкрити SimpMusic</string>
     <string name="close_miniplayer">Закрити міні-плеєр</string>
     <string name="open_miniplayer">Відкрити міні-плеєр</string>

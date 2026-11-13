@@ -221,8 +221,6 @@
     <string name="skip_sponsor_part_of_video">Pomiń część filmu sponsora</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Wystąpił nieoczekiwany błąd. Przepraszamy za niedogodności.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Zrestartuj aplikację</string>
-    <string name="help_build_lyrics_database">Pomóż zbudować bazę tekstów piosenek SimpMusic</string>
-    <string name="help_build_lyrics_database_description">Wyślij swoje zapisane teksty do bazy danych tekstów piosenek SimpMusic</string>
     <string name="customactivityoncrash_error_activity_close_app">Zamknij aplikację</string>
     <string name="customactivityoncrash_error_activity_error_details">Opis błędu</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Opis błędu</string>
@@ -499,10 +497,6 @@
     <string name="set_crossfade_duration">Ustaw czas przejścia w sekundach (%1$ds)</string>
     <string name="youtube_subtitle_language">Język tłumaczenia napisów YouTube</string>
     <string name="youtube_subtitle_language_message">Wpisz kod języka (Eg: en) (2 litery). Jest to preferowany język tłumaczenia napisów YouTube.</string>
-    <string name="use_anonymous">Użyj anonimowej nazwy, aby wnieść wkład</string>
-    <string name="contributor_name">Nazwa kontrybutora</string>
-    <string name="contributor_email">E-mail kontrybutora</string>
-    <string name="anonymous">Anonimowy</string>
     <string name="simpmusic_lyrics">Teksty SimpMusic</string>
     <string name="lyrics_provider_simpmusic">Tekst dostarczony przez Teksty SimpMusic</string>
     <string name="backup_in_progress">Kopia zapasowa w toku</string>
@@ -563,11 +557,6 @@
     <string name="no_data_analytics">Odtwarzaj muzykę, aby zobaczyć analizy</string>
     <string name="rate_translated_lyrics">Oceń tłumaczenie</string>
     <string name="rate_lyrics">Oceń tekst</string>
-    <string name="vote_for_lyrics">Głosuj na tekst</string>
-    <string name="upvote">Głos za</string>
-    <string name="downvote">Głos przeciw</string>
-    <string name="vote_submitted">Dziękujemy za głosowanie nad tym tekstem!</string>
-    <string name="vote_error">Przesyłanie nie powiodło się</string>
     <string name="open_app">Otwórz SimpMusic</string>
     <string name="close_miniplayer">Zamknij mini odtwarzacz</string>
     <string name="open_miniplayer">Otwórz mini odtwarzacz</string>

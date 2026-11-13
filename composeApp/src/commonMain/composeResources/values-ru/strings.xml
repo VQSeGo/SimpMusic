@@ -234,8 +234,6 @@
     <string name="skip_sponsor_part_of_video">Пропустить спонсорскую часть видео</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Неизвестная ошибка. Извините за неудобства.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Перезапустить приложение</string>
-    <string name="help_build_lyrics_database">Помогите SimpMusic Lyrics создать базу данных текстов песен</string>
-    <string name="help_build_lyrics_database_description">Отправить сохраненные тексты песен в базу данных SimpMusic lyrics</string>
     <string name="customactivityoncrash_error_activity_close_app">Закрыть приложение</string>
     <string name="customactivityoncrash_error_activity_error_details">Подробные сведения об ошибке</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Подробные сведения об ошибке</string>
@@ -587,10 +585,6 @@
     <string name="preferred_audio_language">Предпочитаемый язык аудио</string>
     <string name="preferred_audio_language_message">Некоторые видео, в основном подкасты, поставляются с несколькими аудиодорожками на разных языках. Введите код языка (например: ru) (2 буквы) чтобы проигрывать такие дорожки, если они есть. Оставьте пустым, чтобы всегда играть оригинальное аудио.</string>
     <string name="original_audio">Исходное аудио</string>
-    <string name="use_anonymous">Использовать анонимное имя для участия</string>
-    <string name="contributor_name">Имя участника</string>
-    <string name="contributor_email">Почта участника</string>
-    <string name="anonymous">Анонимно</string>
     <string name="simpmusic_lyrics">SimpMusic Lyrics</string>
     <string name="lyrics_provider_simpmusic">Текст песни предоставлен SimpMusic Lyrics</string>
     <string name="backup_in_progress">Выполняется резервное копирование</string>
@@ -708,11 +702,6 @@
     <string name="no_data_analytics">Послушайте музыку, чтобы увидеть статистику</string>
     <string name="rate_translated_lyrics">Оцените перевод</string>
     <string name="rate_lyrics">Оцените текст</string>
-    <string name="vote_for_lyrics">Проголосуйте за текст</string>
-    <string name="upvote">Нравится</string>
-    <string name="downvote">Не нравится</string>
-    <string name="vote_submitted">Спасибо за оценку текста!</string>
-    <string name="vote_error">Не удалось отправить</string>
     <string name="open_app">Открыть SimpMusic</string>
     <string name="close_miniplayer">Закрыть мини-плеер</string>
     <string name="open_miniplayer">Открыть мини-плеер</string>

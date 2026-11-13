@@ -204,8 +204,6 @@
     <string name="skip_sponsor_part_of_video">跳过视频赞助部分</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">发生意外错误。很抱歉给您带来不便。</string>
     <string name="customactivityoncrash_error_activity_restart_app">重启应用</string>
-    <string name="help_build_lyrics_database">帮助SimpMusic 歌词建立歌词数据库</string>
-    <string name="help_build_lyrics_database_description">将您保存的歌词发送到 SimpMusic 歌词数据库中</string>
     <string name="customactivityoncrash_error_activity_close_app">关闭应用</string>
     <string name="customactivityoncrash_error_activity_error_details">错误信息</string>
     <string name="customactivityoncrash_error_activity_error_details_title">错误信息</string>
@@ -459,10 +457,6 @@
     <string name="crossfade_dj_mode_description">在交叉淡入淡出期间应用低通和高通滤波扫频效果，以实现更平滑、类似 DJ 风格的过渡（类似于 Apple Music 的 Automix 功能）。</string>
     <string name="youtube_subtitle_language">YouTube 字幕翻译语言</string>
     <string name="youtube_subtitle_language_message">输入语言代码 (Eg: en) (2 letters)。这是YouTube 字幕的首选翻译语言。</string>
-    <string name="use_anonymous">使用匿名名称来贡献信息</string>
-    <string name="contributor_name">贡献者名称</string>
-    <string name="contributor_email">贡献者邮箱</string>
-    <string name="anonymous">匿名</string>
     <string name="simpmusic_lyrics">SimpMusic 歌词</string>
     <string name="lyrics_provider_simpmusic">歌词由 BetterLyrics 提供</string>
     <string name="backup_in_progress">正在备份</string>
@@ -538,11 +532,6 @@
     <string name="no_data_analytics">请播放一些音乐以查看分析</string>
     <string name="rate_translated_lyrics">评价翻译</string>
     <string name="rate_lyrics">评价歌词</string>
-    <string name="vote_for_lyrics">给歌词投票</string>
-    <string name="upvote">点赞</string>
-    <string name="downvote">点踩</string>
-    <string name="vote_submitted">感谢您为这份歌词投票！</string>
-    <string name="vote_error">发送失败</string>
     <string name="open_app">打开 SimpMusic</string>
     <string name="close_miniplayer">关闭迷你播放器</string>
     <string name="open_miniplayer">打开迷你播放器</string>

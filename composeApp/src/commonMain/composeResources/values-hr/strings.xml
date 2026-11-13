@@ -209,8 +209,6 @@
     <string name="skip_sponsor_part_of_video">Skip sponsor part of video</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">An unexpected error occurred. Sorry for the inconvenience.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Restart app</string>
-    <string name="help_build_lyrics_database">Help SimpMusic lyrics build the lyrics database</string>
-    <string name="help_build_lyrics_database_description">Send your saved lyrics to SimpMusic lyrics's database</string>
     <string name="customactivityoncrash_error_activity_close_app">Zatvori app</string>
     <string name="customactivityoncrash_error_activity_error_details">Pogreška details</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Pogreška details</string>
@@ -543,10 +541,6 @@
     <string name="crossfade_skip_album_description">Skip the crossfade between tracks of the same album, so albums meant to run without gaps still do. The transition out of the album still crossfades.</string>
     <string name="youtube_subtitle_language">YouTube Subtitle Translation Jezik</string>
     <string name="youtube_subtitle_language_message">Type language code (Eg: en) (2 letters). This is the preferred translation language for YouTube subtitles.</string>
-    <string name="use_anonymous">Use anonymous name to contribute</string>
-    <string name="contributor_name">Contributor name</string>
-    <string name="contributor_email">Contributor email</string>
-    <string name="anonymous">Anonymous</string>
     <string name="simpmusic_lyrics">SimpMusic Tekst pjesme</string>
     <string name="lyrics_provider_simpmusic">Tekst pjesme provided by SimpMusic Tekst pjesme</string>
     <string name="backup_in_progress">Natragup in progress</string>
@@ -663,11 +657,6 @@
     <string name="no_data_analytics">Please play some music to see analytics</string>
     <string name="rate_translated_lyrics">Rate translation</string>
     <string name="rate_lyrics">Rate lyrics</string>
-    <string name="vote_for_lyrics">Vote for lyrics</string>
-    <string name="upvote">Upvote</string>
-    <string name="downvote">Downvote</string>
-    <string name="vote_submitted">Thank you for voting this lyrics!</string>
-    <string name="vote_error">Failed to submit</string>
     <string name="open_app">Otvori SimpMusic</string>
     <string name="close_miniplayer">Zatvori Mini-player</string>
     <string name="open_miniplayer">Otvori Mini-player</string>

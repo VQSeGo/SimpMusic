@@ -232,8 +232,6 @@
     <string name="skip_sponsor_part_of_video">דלג על חלק הפרסומות בסרטון</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">שגיאה לא צפויה התרחשה. מצטערים על אי הנוחות.</string>
     <string name="customactivityoncrash_error_activity_restart_app">הפעל מחדש את האפליקציה</string>
-    <string name="help_build_lyrics_database">עזור ל-SimpMusic lyrics לבנות את מאגר המילים</string>
-    <string name="help_build_lyrics_database_description">שלחו את המילים ששמרתם למאגר המילים של SimpMusic lyrics</string>
     <string name="customactivityoncrash_error_activity_close_app">סגור את האפליקציה</string>
     <string name="customactivityoncrash_error_activity_error_details">פרטי שגיאה</string>
     <string name="customactivityoncrash_error_activity_error_details_title">פרטי שגיאה</string>
@@ -585,10 +583,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nנבנה ב-❤️ מ�
     <string name="preferred_audio_language">שפת שמע מועדפת</string>
     <string name="preferred_audio_language_message">חלק מהסרטונים, בעיקר פודקאסטים, מגיעים עם מספר רצועות שמע בשפות שונות. הקלד קוד שפה (לדוגמה: vi) (2 אותיות) כדי להשמיע רצועה זו כאשר היא קיימת. השאר ריק כדי להשמיע תמיד את האודיו המקורי.</string>
     <string name="original_audio">אודיו מקורי</string>
-    <string name="use_anonymous">השתמש בשם אנונימי כדי לתרום</string>
-    <string name="contributor_name">שם התורם</string>
-    <string name="contributor_email">אימייל התורם</string>
-    <string name="anonymous">אנונימי</string>
     <string name="simpmusic_lyrics">מילים של SimpMusic</string>
     <string name="lyrics_provider_simpmusic">מילים מסופקות על ידי SimpMusic Lyrics</string>
     <string name="backup_in_progress">גיבוי בתהליך</string>
@@ -705,11 +699,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nנבנה ב-❤️ מ�
     <string name="no_data_analytics">אנא נגן קצת מוזיקה כדי לראות נתונים</string>
     <string name="rate_translated_lyrics">דרג תרגום</string>
     <string name="rate_lyrics">דרג מילים</string>
-    <string name="vote_for_lyrics">הצבע למילים</string>
-    <string name="upvote">הצבעה חיוביות</string>
-    <string name="downvote">הצבעה שלילית</string>
-    <string name="vote_submitted">תודה שהצבעת למילים האלו!</string>
-    <string name="vote_error">השליחה נכשלה</string>
     <string name="open_app">פתח את SimpMusic</string>
     <string name="close_miniplayer">סגור את המיני-נגן</string>
     <string name="open_miniplayer">פתח את המיני-נגן</string>

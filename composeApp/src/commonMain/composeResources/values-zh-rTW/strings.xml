@@ -219,8 +219,6 @@
     <string name="skip_sponsor_part_of_video">跳過影片中的贊助商部分</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">發生意外錯誤。請稍後再試。</string>
     <string name="customactivityoncrash_error_activity_restart_app">重啟應用程式</string>
-    <string name="help_build_lyrics_database">協助 SimpMusic 建立歌詞資料庫</string>
-    <string name="help_build_lyrics_database_description">將您儲存的歌詞上傳至 SimpMusic 的資料庫</string>
     <string name="customactivityoncrash_error_activity_close_app">關閉應用程式</string>
     <string name="customactivityoncrash_error_activity_error_details">錯誤訊息</string>
     <string name="customactivityoncrash_error_activity_error_details_title">錯誤訊息</string>
@@ -556,10 +554,6 @@
     <string name="preferred_audio_language">偏好的音軌語言</string>
     <string name="preferred_audio_language_message">一些影片（最常見的是Podcast）會由多個不同語言的音軌組成。輸入一個語言代碼（2個字母，如 vi）以在該語言對應的音軌存在時播放它。將它留空以總是播放預設的音軌。</string>
     <string name="original_audio">原聲</string>
-    <string name="use_anonymous">匿名提供貢獻</string>
-    <string name="contributor_name">貢獻者姓名或稱謂</string>
-    <string name="contributor_email">貢獻者電子郵件</string>
-    <string name="anonymous">匿名</string>
     <string name="simpmusic_lyrics">SimpMusic 歌詞資料庫</string>
     <string name="lyrics_provider_simpmusic">歌詞由 SimpMusic 歌詞資料庫提供</string>
     <string name="backup_in_progress">正在準備備份</string>
@@ -676,11 +670,6 @@
     <string name="no_data_analytics">請播放一些音樂以查看分析結果</string>
     <string name="rate_translated_lyrics">翻譯評分</string>
     <string name="rate_lyrics">評價歌詞</string>
-    <string name="vote_for_lyrics">為歌詞投票</string>
-    <string name="upvote">讚</string>
-    <string name="downvote">倒讚</string>
-    <string name="vote_submitted">感謝你的投票！</string>
-    <string name="vote_error">提交失敗</string>
     <string name="open_app">打開 SimpMusic</string>
     <string name="close_miniplayer">關閉迷你播放器</string>
     <string name="open_miniplayer">開啟迷你播放器</string>

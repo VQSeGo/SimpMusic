@@ -194,8 +194,6 @@
     <string name="skip_sponsor_part_of_video">تخطي جزء الراعي من الفيديو</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">حدث خطأ غير متوقع. نأسف للإزعاج.</string>
     <string name="customactivityoncrash_error_activity_restart_app">إعادة تشغيل التطبيق</string>
-    <string name="help_build_lyrics_database">ساعدنا لتقوية قاعدة البيانات الخاصة بكلمات الأغاني</string>
-    <string name="help_build_lyrics_database_description">أرسل كلمات الأغاني المسجلة إلى قاعدة البيانات</string>
     <string name="customactivityoncrash_error_activity_close_app">إغلاق التطبيق</string>
     <string name="customactivityoncrash_error_activity_error_details">تفاصيل الخطأ</string>
     <string name="customactivityoncrash_error_activity_error_details_title">تفاصيل الخطأ</string>

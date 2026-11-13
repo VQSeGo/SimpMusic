@@ -227,8 +227,6 @@
     <string name="skip_sponsor_part_of_video">動画の協賛シーンなどをスキップします</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">予期しないエラーが発生しました。ご迷惑をおかけして申し訳ありません。</string>
     <string name="customactivityoncrash_error_activity_restart_app">アプリを再起動</string>
-    <string name="help_build_lyrics_database">SimpMusicの歌詞データベースの構築を手伝う</string>
-    <string name="help_build_lyrics_database_description">保存した歌詞をSimpMusicの歌詞データベースに送信します</string>
     <string name="customactivityoncrash_error_activity_close_app">アプリを終了</string>
     <string name="customactivityoncrash_error_activity_error_details">エラーの詳細</string>
     <string name="customactivityoncrash_error_activity_error_details_title">エラーの詳細</string>
@@ -577,10 +575,6 @@
     <string name="preferred_audio_language">優先する音声言語</string>
     <string name="preferred_audio_language_message">一部のビデオ、主にポッドキャストには、異なる言語の複数のオーディオトラックが含まれています。言語コード（例：vi）（2文字）を入力すると、そのトラックが存在する場合に再生されます。空欄のままにすると、常に元のオーディオが再生されます。</string>
     <string name="original_audio">オリジナル音声</string>
-    <string name="use_anonymous">匿名で貢献する</string>
-    <string name="contributor_name">貢献者名</string>
-    <string name="contributor_email">貢献者のメールアドレス</string>
-    <string name="anonymous">匿名</string>
     <string name="simpmusic_lyrics">SimpMusic Lyrics</string>
     <string name="lyrics_provider_simpmusic">SimpMusic Lyricsが提供する歌詞</string>
     <string name="backup_in_progress">バックアップ中</string>
@@ -697,11 +691,6 @@
     <string name="no_data_analytics">統計を見るために音楽を再生してください</string>
     <string name="rate_translated_lyrics">翻訳を評価</string>
     <string name="rate_lyrics">歌詞を評価</string>
-    <string name="vote_for_lyrics">歌詞に投票する</string>
-    <string name="upvote">賛成票</string>
-    <string name="downvote">反対票</string>
-    <string name="vote_submitted">この歌詞に投票していただきありがとうございます！</string>
-    <string name="vote_error">送信に失敗しました</string>
     <string name="open_app">SimpMusicを開く</string>
     <string name="close_miniplayer">ミニプレーヤーを閉じる</string>
     <string name="open_miniplayer">ミニプレイヤーを開く</string>

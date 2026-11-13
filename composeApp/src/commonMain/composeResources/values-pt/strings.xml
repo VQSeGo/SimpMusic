@@ -204,8 +204,6 @@
     <string name="skip_sponsor_part_of_video">Pular parte do patrocinador do vídeo</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Um erro inesperado acabou acontecendo. Pedimos desculpas pelo inconveniente.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Reiniciar aplicativo</string>
-    <string name="help_build_lyrics_database">Ajude o SimpMusic Letras a construir o banco de dados de letras</string>
-    <string name="help_build_lyrics_database_description">Envie suas letras salvas para o banco de dados do SimpMusic Letras</string>
     <string name="customactivityoncrash_error_activity_close_app">Fechar aplicativo</string>
     <string name="customactivityoncrash_error_activity_error_details">Detalhes do erro</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Detalhes do erro</string>
@@ -461,10 +459,6 @@
     <string name="crossfade_dj_mode_description">Aplica filtros passa-baixa e passa-alta durante o crossfade para uma transição mais suave, estilo DJ (semelhante ao Automix do Apple Music).</string>
     <string name="youtube_subtitle_language">Idioma da Tradução das Legendas do YouTube</string>
     <string name="youtube_subtitle_language_message">Digite o código do idioma (Ex: pt) (2 letras). Este é o idioma preferido para tradução das legendas do YouTube.</string>
-    <string name="use_anonymous">Usar nome anônimo para contribuir</string>
-    <string name="contributor_name">Nome do colaborador</string>
-    <string name="contributor_email">E-mail do colaborador</string>
-    <string name="anonymous">Anônimo</string>
     <string name="simpmusic_lyrics">SimpMusic Letras</string>
     <string name="lyrics_provider_simpmusic">Lyrics provided by SimpMusic Lyrics</string>
     <string name="backup_in_progress">Recuperação Em Progresso</string>
@@ -525,11 +519,6 @@
     <string name="no_data_analytics">Toque algumas músicas para ver as estatísticas</string>
     <string name="rate_translated_lyrics">Avaliar tradução</string>
     <string name="rate_lyrics">Avalie as letras</string>
-    <string name="vote_for_lyrics">Vote pelas letras</string>
-    <string name="upvote">Aprovar</string>
-    <string name="downvote">Desaprovar</string>
-    <string name="vote_submitted">Obrigado por votar nessa letra!</string>
-    <string name="vote_error">Falha ao enviar</string>
     <string name="open_app">Abrir SimpMusic</string>
     <string name="close_miniplayer">Fechar Mini-player</string>
     <string name="open_miniplayer">Abrir Mini-player</string>

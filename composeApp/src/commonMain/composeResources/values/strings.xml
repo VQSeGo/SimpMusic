@@ -233,8 +233,6 @@
     <string name="skip_sponsor_part_of_video">Skip sponsor part of video</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">An unexpected error occurred. Sorry for the inconvenience.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Restart app</string>
-    <string name="help_build_lyrics_database">Help SimpMusic lyrics build the lyrics database</string>
-    <string name="help_build_lyrics_database_description">Send your saved lyrics to SimpMusic lyrics's database</string>
     <string name="customactivityoncrash_error_activity_close_app">Close app</string>
     <string name="customactivityoncrash_error_activity_error_details">Error details</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Error details</string>
@@ -607,10 +605,6 @@
     <string name="preferred_audio_language">Preferred audio language</string>
     <string name="preferred_audio_language_message">Some videos, mostly podcasts, come with several audio tracks in different languages. Type a language code (Eg: vi) (2 letters) to play that track when it exists. Leave it empty to always play the original audio.</string>
     <string name="original_audio">Original audio</string>
-    <string name="use_anonymous">Use anonymous name to contribute</string>
-    <string name="contributor_name">Contributor name</string>
-    <string name="contributor_email">Contributor email</string>
-    <string name="anonymous">Anonymous</string>
     <string name="simpmusic_lyrics">SimpMusic Lyrics</string>
     <string name="lyrics_provider_simpmusic">Lyrics provided by SimpMusic Lyrics</string>
     <string name="backup_in_progress">Backup in progress</string>
@@ -732,11 +726,6 @@
     <string name="no_data_analytics">Please play some music to see analytics</string>
     <string name="rate_translated_lyrics">Rate translation</string>
     <string name="rate_lyrics">Rate lyrics</string>
-    <string name="vote_for_lyrics">Vote for lyrics</string>
-    <string name="upvote">Upvote</string>
-    <string name="downvote">Downvote</string>
-    <string name="vote_submitted">Thank you for voting this lyrics!</string>
-    <string name="vote_error">Failed to submit</string>
     <string name="open_app">Open SimpMusic</string>
     <string name="close_miniplayer">Close Mini-player</string>
     <string name="open_miniplayer">Open Mini-player</string>

@@ -206,8 +206,6 @@
     <string name="skip_sponsor_part_of_video">Lewati bagian sponsor dari video</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Terjadi kesalahan yang tidak terduga. Mohon maaf atas ketidaknyamanan ini.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Mulai ulang aplikasi</string>
-    <string name="help_build_lyrics_database">Bantu SimpMusic membangun basis data lirik</string>
-    <string name="help_build_lyrics_database_description">Kirim lirik yang telah Anda simpan ke basis data lirik SimpMusic</string>
     <string name="customactivityoncrash_error_activity_close_app">Tutup aplikasi</string>
     <string name="customactivityoncrash_error_activity_error_details">Rincian kesalahan</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Rincian kesalahan</string>
@@ -464,10 +462,6 @@
     <string name="crossfade_dj_mode_description">Terapkan penyaringan low-pass dan high-pass selama proses pemudaran untuk transisi yang lebih halus, menyerupai transisi DJ (sama seperti Apple Music Automix).</string>
     <string name="youtube_subtitle_language">Bahasa terjemahan Subtitle YouTube</string>
     <string name="youtube_subtitle_language_message">Ketikan kode bahasa (Cth: id) (2 kata). Ini adalah bahasa terjemahan yang lebih disukai untuk subtitle YouTube.</string>
-    <string name="use_anonymous">Gunakan nama anonim untuk berkontribusi</string>
-    <string name="contributor_name">Nama kontributor</string>
-    <string name="contributor_email">Email kontributor</string>
-    <string name="anonymous">Anonim</string>
     <string name="simpmusic_lyrics">Lirik SimpMusic</string>
     <string name="lyrics_provider_simpmusic">Lirik disediakan oleh SimpMusic Lyrics</string>
     <string name="backup_in_progress">Pencadangan sedang berlangsung</string>
@@ -528,11 +522,6 @@
     <string name="no_data_analytics">Silakan putar musik untuk melihat analisa</string>
     <string name="rate_translated_lyrics">Nilai terjemahan</string>
     <string name="rate_lyrics">Nilai lirik</string>
-    <string name="vote_for_lyrics">Vote lirik</string>
-    <string name="upvote">Beri jempol</string>
-    <string name="downvote">Beri nilai buruk</string>
-    <string name="vote_submitted">Terima kasih telah menilai lirik ini!</string>
-    <string name="vote_error">Gagal mengirimkan</string>
     <string name="open_app">Buka SimpMusic</string>
     <string name="close_miniplayer">Tutup pemutar Mini</string>
     <string name="open_miniplayer">Buka pemutar Mini</string>

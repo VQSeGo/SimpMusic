@@ -229,8 +229,6 @@
     <string name="skip_sponsor_part_of_video">Hoppa över sponsordelen av videon</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Ett oväntat fel inträffade. Vi beklagar besväret.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Starta om appen</string>
-    <string name="help_build_lyrics_database">Hjälp till att bygga upp SimpMusics låttextdatabas</string>
-    <string name="help_build_lyrics_database_description">Skicka dina sparade låttexter till SimpMusics låttextdatabas</string>
     <string name="customactivityoncrash_error_activity_close_app">Stäng appen</string>
     <string name="customactivityoncrash_error_activity_error_details">Information om felet</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Information om felet</string>
@@ -580,10 +578,6 @@
     <string name="preferred_audio_language">Föredraget ljudspråk</string>
     <string name="preferred_audio_language_message">Vissa videor, främst poddar, har flera ljudspår på olika språk. Ange en språkkod med två bokstäver (t.ex. vi) för att spela det ljudspåret när det finns. Lämna fältet tomt för att alltid spela originalljudet.</string>
     <string name="original_audio">Originalljud</string>
-    <string name="use_anonymous">Använd ett anonymt namn när du bidrar</string>
-    <string name="contributor_name">Bidragsgivarens namn</string>
-    <string name="contributor_email">Bidragsgivarens e-postadress</string>
-    <string name="anonymous">Anonym</string>
     <string name="simpmusic_lyrics">SimpMusic Lyrics</string>
     <string name="lyrics_provider_simpmusic">Låttexter tillhandahålls av SimpMusic Lyrics</string>
     <string name="backup_in_progress">Säkerhetskopiering pågår</string>
@@ -700,11 +694,6 @@
     <string name="no_data_analytics">Spela lite musik för att se statistik</string>
     <string name="rate_translated_lyrics">Betygsätt översättningen</string>
     <string name="rate_lyrics">Betygsätt låttexten</string>
-    <string name="vote_for_lyrics">Rösta på låttexten</string>
-    <string name="upvote">Rösta upp</string>
-    <string name="downvote">Rösta ned</string>
-    <string name="vote_submitted">Tack för att du röstade på den här låttexten!</string>
-    <string name="vote_error">Det gick inte att skicka</string>
     <string name="open_app">Öppna SimpMusic</string>
     <string name="close_miniplayer">Stäng minispelaren</string>
     <string name="open_miniplayer">Öppna minispelaren</string>

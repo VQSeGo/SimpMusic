@@ -206,8 +206,6 @@
     <string name="skip_sponsor_part_of_video">वीडियो के प्रायोजक भाग को छोड़ें</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">एक अप्रत्याशित त्रुटि हुई। क्षमा करें।</string>
     <string name="customactivityoncrash_error_activity_restart_app">ऐप पुनः प्रारंभ करें</string>
-    <string name="help_build_lyrics_database">सिम्पम्यूजिक गीत को गीत डेटाबेस बनाने में सहायता करें</string>
-    <string name="help_build_lyrics_database_description">अपने सहेजे गए गीत सिम्पम्यूजिक गीत डेटाबेस में भेजें</string>
     <string name="customactivityoncrash_error_activity_close_app">ऐप बंद करें</string>
     <string name="customactivityoncrash_error_activity_error_details">त्रुटि विवरण</string>
     <string name="customactivityoncrash_error_activity_error_details_title">त्रुटि विवरण</string>
@@ -437,9 +435,6 @@
     <string name="set_crossfade_duration">क्रॉसफेड अवधि सेकंड में सेट करें (%1$ds)</string>
     <string name="youtube_subtitle_language">यूट्यूब उपशीर्षक की अनुवाद भाषा</string>
     <string name="youtube_subtitle_language_message">भाषा कोड दर्ज करें (उदा.: en) (2 अक्षर)। यह यूट्यूब उपशीर्षकों की आपकी पसंदीदा अनुवाद भाषा है।</string>
-    <string name="use_anonymous">अनाम नाम से योगदान करें</string>
-    <string name="contributor_name">योगदानकर्ता नाम</string>
-    <string name="anonymous">अनाम</string>
     <string name="simpmusic_lyrics">गीत SimpMusic Lyrics द्वारा प्रदान किए गए</string>
     <string name="lyrics_provider_simpmusic">गीत के बोल सिम्पम्यूज़िक लिरिक्स द्वारा प्रदान किए गए</string>
     <string name="backup_in_progress">बैकप चल रहा है</string>

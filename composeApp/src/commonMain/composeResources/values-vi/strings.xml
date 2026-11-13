@@ -227,8 +227,6 @@
     <string name="skip_sponsor_part_of_video">Bỏ qua phân đoạn được tài trợ của video</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Đã xảy ra lỗi không mong muốn. Xin lỗi vì sự bất tiện.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Khởi động lại ứng dụng</string>
-    <string name="help_build_lyrics_database">Giúp đỡ SimpMusic lyrics xây dựng cơ sở dữ liệu lời bài hát</string>
-    <string name="help_build_lyrics_database_description">Gửi lời bài hát đã lưu của bạn tới cơ sở dữ liệu của SimpMusic lyrics</string>
     <string name="customactivityoncrash_error_activity_close_app">Đóng ứng dụng</string>
     <string name="customactivityoncrash_error_activity_error_details">Chi tiết lỗi</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Chi tiết lỗi</string>
@@ -577,10 +575,6 @@
     <string name="preferred_audio_language">Ngôn ngữ âm thanh ưu tiên</string>
     <string name="preferred_audio_language_message">Một số video, chủ yếu là podcast, đi kèm với một số bản âm thanh bằng các ngôn ngữ khác nhau. Nhập mã ngôn ngữ (Ví dụ: vi) (2 chữ cái) để phát bản nhạc đó khi có. Để trống để luôn phát âm thanh gốc.</string>
     <string name="original_audio">Âm thanh gốc</string>
-    <string name="use_anonymous">Sử dụng tên ẩn danh để đóng góp</string>
-    <string name="contributor_name">Tên người đóng góp</string>
-    <string name="contributor_email">Email người đóng góp</string>
-    <string name="anonymous">Ẩn danh</string>
     <string name="simpmusic_lyrics">SimpMusic Lyrics</string>
     <string name="lyrics_provider_simpmusic">Lời bài hát được cung cấp bởi SimpMusic Lyrics</string>
     <string name="backup_in_progress">Đang sao lưu</string>
@@ -697,11 +691,6 @@
     <string name="no_data_analytics">Hãy nghe một vài bài hát để xem thống kê</string>
     <string name="rate_translated_lyrics">Đánh giá bản dịch</string>
     <string name="rate_lyrics">Đánh giá lời bài hát</string>
-    <string name="vote_for_lyrics">Bình chọn cho lời bài hát</string>
-    <string name="upvote">Ủng hộ</string>
-    <string name="downvote">Không thích</string>
-    <string name="vote_submitted">Cảm ơn vì đã bình chọn cho lời bài hát!</string>
-    <string name="vote_error">Gửi không thành công</string>
     <string name="open_app">Mở SimpMusic</string>
     <string name="close_miniplayer">Đóng trình phát thu nhỏ</string>
     <string name="open_miniplayer">Mở trình phát thu nhỏ</string>

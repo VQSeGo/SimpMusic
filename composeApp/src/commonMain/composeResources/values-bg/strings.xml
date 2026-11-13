@@ -200,8 +200,6 @@
     <string name="skip_sponsor_part_of_video">Прескачане на спонсорираната част</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Появи се непредвидена грешка. Извиняваме се за неудобството.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Рестартирай приложението</string>
-    <string name="help_build_lyrics_database">Помогнете на SimpMusic лирики да построи датабазата за лирики</string>
-    <string name="help_build_lyrics_database_description">Пратете вашите запазени лирики към датабазата на SimpMusic лирики</string>
     <string name="customactivityoncrash_error_activity_close_app">Затвори приложението</string>
     <string name="customactivityoncrash_error_activity_error_details">Подробности за грешката</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Подробности за грешката</string>

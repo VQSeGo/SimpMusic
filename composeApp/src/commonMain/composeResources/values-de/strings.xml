@@ -229,8 +229,6 @@
     <string name="skip_sponsor_part_of_video">Gesponserten Teil des Videos überspringen</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Ein unerwarteter Fehler ist aufgetreten. Entschuldigung für die Unannehmlichkeiten.</string>
     <string name="customactivityoncrash_error_activity_restart_app">App neu starten</string>
-    <string name="help_build_lyrics_database">Hilf SimpMusic-Lyrics beim Aufbau der Songtext-Datenbank</string>
-    <string name="help_build_lyrics_database_description">Sende deine gespeicherten Songtexte an die SimpMusic-Lyrics-Datenbank</string>
     <string name="customactivityoncrash_error_activity_close_app">App schließen</string>
     <string name="customactivityoncrash_error_activity_error_details">Fehlerdetails</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Fehlerdetails</string>
@@ -580,10 +578,6 @@
     <string name="preferred_audio_language">Bevorzugte Audio-Sprache</string>
     <string name="preferred_audio_language_message">Einige Videos, vor allem Podcasts, verfügen über mehrere Audiospuren in verschiedenen Sprachen. Geben Sie einen Sprachcode (z. B. „vi“) (2 Buchstaben) ein, um die entsprechende Spur abzuspielen, sofern vorhanden. Lassen Sie das Feld leer, um immer die Original-Audiospur abzuspielen.</string>
     <string name="original_audio">Original-Audio</string>
-    <string name="use_anonymous">Anonymen Namen verwenden, um beizutragen</string>
-    <string name="contributor_name">Name des Mitwirkenden</string>
-    <string name="contributor_email">E-Mail des Mitwirkenden</string>
-    <string name="anonymous">Anonym</string>
     <string name="simpmusic_lyrics">SimpMusic-Lyrics</string>
     <string name="lyrics_provider_simpmusic">Songtexte von SimpMusic-Lyrics bereitgestellt</string>
     <string name="backup_in_progress">Backup wird erstellt</string>
@@ -700,11 +694,6 @@
     <string name="no_data_analytics">Bitte spiele Musik ab, um die Statistiken anzuzeigen.</string>
     <string name="rate_translated_lyrics">Übersetzung bewerten</string>
     <string name="rate_lyrics">Songtext bewerten</string>
-    <string name="vote_for_lyrics">Für Songtext abstimmen</string>
-    <string name="upvote">Positiv bewerten</string>
-    <string name="downvote">Negativ bewerten</string>
-    <string name="vote_submitted">Danke für die Abstimmung über diesen Songtext!</string>
-    <string name="vote_error">Fehler beim Senden</string>
     <string name="open_app">SimpMusic öffnen</string>
     <string name="close_miniplayer">Mini-Player schließen</string>
     <string name="open_miniplayer">Mini-Player öffnen</string>

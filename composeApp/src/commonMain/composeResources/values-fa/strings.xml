@@ -206,8 +206,6 @@
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">یک خطای غیرمنتظره
     رخ داده است. از بابت ناراحتی عذرخواهی می‌کنیم.</string>
     <string name="customactivityoncrash_error_activity_restart_app">برنامه را دوباره راه‌اندازی کنید</string>
-    <string name="help_build_lyrics_database">به SimpMusic کمک کنید تا پایگاه داده متن ترانه را بسازد</string>
-    <string name="help_build_lyrics_database_description">متن ترانه‌های ذخیره شده خود را به پایگاه داده متن SimpMusic ارسال کنید</string>
     <string name="customactivityoncrash_error_activity_close_app">برنامه را ببندید</string>
     <string name="customactivityoncrash_error_activity_error_details">ریزگان خطا</string>
     <string name="customactivityoncrash_error_activity_error_details_title">ریزگان خطا</string>
@@ -444,10 +442,6 @@
     <string name="set_crossfade_duration">مدت زمان درهم آمیزی را بر حسب ثانیه تنظیم کنید (%1$ds)</string>
     <string name="youtube_subtitle_language">زبان ترجمه زیرنویس یوتیوب</string>
     <string name="youtube_subtitle_language_message">کد زبان (مثلاً en) (دو حرف) را تایپ کنید. این زبان ترجمه ترجیحی برای زیرنویس‌های یوتیوب است.</string>
-    <string name="use_anonymous">استفاده از اسم ناشناس برای مشارکت</string>
-    <string name="contributor_name">اسم مشارکت کننده</string>
-    <string name="contributor_email">ایمیل مشارکت کننده</string>
-    <string name="anonymous">ناشناس</string>
     <string name="simpmusic_lyrics">متن ترانه‌های SimpMusic</string>
     <string name="lyrics_provider_simpmusic">متن ترانه‌ها ارائه شده توسط سرویس متن ترانه‌های SimpMusic</string>
     <string name="backup_in_progress">پشتیبان گیری در حال انجام است</string>

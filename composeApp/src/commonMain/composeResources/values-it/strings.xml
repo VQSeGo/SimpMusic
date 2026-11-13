@@ -228,8 +228,6 @@
     <string name="skip_sponsor_part_of_video">Salta la parte dello sponsor del video</string>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Si è verificato un errore imprevisto. Ci dispiace per l'inconvenienza.</string>
     <string name="customactivityoncrash_error_activity_restart_app">Riavvia l'applicazione</string>
-    <string name="help_build_lyrics_database">Aiuta SimpMusic a costruire il database dei testi</string>
-    <string name="help_build_lyrics_database_description">Invia i tuoi testi salvati al database dei testi di SimpMusic</string>
     <string name="customactivityoncrash_error_activity_close_app">Chiudi l'applicazione</string>
     <string name="customactivityoncrash_error_activity_error_details">Dettagli errore</string>
     <string name="customactivityoncrash_error_activity_error_details_title">Dettagli errore</string>
@@ -556,10 +554,6 @@
     <string name="youtube_subtitle_language_message">Codice lingua tipo (Es: it) (2 lettere). Questa è la lingua preferita per i sottotitoli di YouTube.</string>
     <string name="preferred_audio_language">Lingua preferita per l'audio</string>
     <string name="original_audio">Audio originale</string>
-    <string name="use_anonymous">Usa nome anonimo per contribuire</string>
-    <string name="contributor_name">Nome del collaboratore</string>
-    <string name="contributor_email">E-mail del collaboratore</string>
-    <string name="anonymous">Anonimo</string>
     <string name="simpmusic_lyrics">Testi di SimpMusic</string>
     <string name="lyrics_provider_simpmusic">Testi forniti da SimpMusic Lyrics</string>
     <string name="backup_in_progress">Duplicazione in corso</string>
@@ -648,11 +642,6 @@
     <string name="no_data_analytics">Per favore riproduci musica per vedere le analisi</string>
     <string name="rate_translated_lyrics">Valuta traduzione</string>
     <string name="rate_lyrics">Valuta testo</string>
-    <string name="vote_for_lyrics">Vota il testo</string>
-    <string name="upvote">Vota a favore</string>
-    <string name="downvote">Vota negativamente</string>
-    <string name="vote_submitted">Grazie per aver votato questo testo!</string>
-    <string name="vote_error">Invio non riuscito</string>
     <string name="open_app">Apri SimpMusic</string>
     <string name="close_miniplayer">Chiudi il mini-lettore</string>
     <string name="open_miniplayer">Apri il mini-lettore</string>
