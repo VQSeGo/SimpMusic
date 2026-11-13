@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.lastOrNull
@@ -186,11 +185,6 @@ class SettingsViewModel(
     private val _preferredAudioLanguage = MutableStateFlow("")
     val preferredAudioLanguage: StateFlow<String> = _preferredAudioLanguage
 
-    private var _helpBuildLyricsDatabase: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val helpBuildLyricsDatabase: StateFlow<Boolean> = _helpBuildLyricsDatabase
-    private var _contributor: MutableStateFlow<Pair<String, String>> = MutableStateFlow(Pair("", ""))
-    val contributor: StateFlow<Pair<String, String>> = _contributor
-
     private var _backupDownloaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val backupDownloaded: StateFlow<Boolean> = _backupDownloaded
 
@@ -268,7 +262,6 @@ class SettingsViewModel(
     init {
         getYoutubeSubtitleLanguage()
         getPreferredAudioLanguage()
-        getHelpBuildLyricsDatabase()
     }
 
     fun getAudioSessionId() = mediaPlayerHandler.player.audioSessionId
@@ -317,7 +310,6 @@ class SettingsViewModel(
         getCrossfadeSkipAlbum()
         getAutoDownloadLikedSongs()
         getSmartDownloads()
-        getContributorNameAndEmail()
         getBackupDownloaded()
         getUpdateChannel()
         getEnableLiquidGlass()
@@ -720,30 +712,6 @@ class SettingsViewModel(
             dataStoreManager.autoBackupLastTime.collect { time ->
                 _autoBackupLastTime.value = time
             }
-        }
-    }
-
-    private fun getContributorNameAndEmail() {
-        viewModelScope.launch {
-            combine(dataStoreManager.contributorName, dataStoreManager.contributorEmail) { name, email ->
-                name to email
-            }.collect { contributor ->
-                _contributor.value = contributor
-            }
-        }
-    }
-
-    fun setContributorName(name: String) {
-        viewModelScope.launch {
-            dataStoreManager.setContributorLyricsDatabase(name to contributor.value.second)
-            getContributorNameAndEmail()
-        }
-    }
-
-    fun setContributorEmail(email: String) {
-        viewModelScope.launch {
-            dataStoreManager.setContributorLyricsDatabase(contributor.value.first to email)
-            getContributorNameAndEmail()
         }
     }
 
@@ -2024,21 +1992,6 @@ class SettingsViewModel(
     fun setPreferredAudioLanguage(language: String) {
         viewModelScope.launch {
             dataStoreManager.setPreferredAudioLanguage(language)
-        }
-    }
-
-    fun getHelpBuildLyricsDatabase() {
-        viewModelScope.launch {
-            dataStoreManager.helpBuildLyricsDatabase.collect { helpBuildLyricsDatabase ->
-                _helpBuildLyricsDatabase.emit(helpBuildLyricsDatabase == DataStoreManager.TRUE)
-            }
-        }
-    }
-
-    fun setHelpBuildLyricsDatabase(help: Boolean) {
-        viewModelScope.launch {
-            dataStoreManager.setHelpBuildLyricsDatabase(help)
-            getHelpBuildLyricsDatabase()
         }
     }
 }
