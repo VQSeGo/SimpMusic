@@ -133,7 +133,6 @@ fun LibraryScreen(
     val monthlyRecaps by viewModel.monthlyRecaps.collectAsStateWithLifecycle()
     val nowPlaying by viewModel.nowPlayingVideoId.collectAsStateWithLifecycle()
     val youTubePlaylist by viewModel.youTubePlaylist.collectAsStateWithLifecycle()
-    val listCanvasSong by viewModel.listCanvasSong.collectAsStateWithLifecycle()
     val yourLocalPlaylist by viewModel.yourLocalPlaylist.collectAsStateWithLifecycle()
     val favoritePlaylist by viewModel.favoritePlaylist.collectAsStateWithLifecycle()
     val downloadedPlaylist by viewModel.downloadedPlaylist.collectAsStateWithLifecycle()
@@ -193,7 +192,6 @@ fun LibraryScreen(
             }
 
             LibraryChipType.YOUR_LIBRARY -> {
-                viewModel.getCanvasSong()
                 viewModel.getRecentlyAdded()
             }
 
@@ -271,20 +269,6 @@ fun LibraryScreen(
                     ) {
                         item {
                             LibraryTilingBox(navController, libraryOverview, cachedPreview)
-                        }
-
-                        if (!listCanvasSong.data.isNullOrEmpty()) {
-                            item {
-                                LibraryItem(
-                                    state =
-                                        LibraryItemState(
-                                            type = LibraryItemType.CanvasSong,
-                                            data = listCanvasSong.data ?: emptyList(),
-                                            isLoading = listCanvasSong is LocalResource.Loading,
-                                        ),
-                                    navController = navController,
-                                )
-                            }
                         }
 
                         item {

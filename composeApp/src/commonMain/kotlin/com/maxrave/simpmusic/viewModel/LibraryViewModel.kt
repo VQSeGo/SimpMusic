@@ -105,10 +105,6 @@ class LibraryViewModel(
         MutableStateFlow(LocalResource.Loading())
     val chartPlaylists: StateFlow<LocalResource<List<ChartItem>>> get() = _chartPlaylists.asStateFlow()
 
-    private val _listCanvasSong: MutableStateFlow<LocalResource<List<SongEntity>>> =
-        MutableStateFlow(LocalResource.Loading())
-    val listCanvasSong: StateFlow<LocalResource<List<SongEntity>>> get() = _listCanvasSong.asStateFlow()
-
     /**
      * The months the Wrapped tab offers a recap for, newest first.
      *
@@ -275,15 +271,6 @@ class LibraryViewModel(
             podcastRepository.getFavoritePodcasts().collectLatest { podcasts ->
                 val sortedList = podcasts.sortedByDescending { it.favoriteTime }
                 _favoritePodcasts.value = LocalResource.Success(sortedList)
-            }
-        }
-    }
-
-    fun getCanvasSong() {
-        _listCanvasSong.value = LocalResource.Loading()
-        viewModelScope.launch {
-            songRepository.getCanvasSong(max = 5).collect { data ->
-                _listCanvasSong.value = LocalResource.Success(data)
             }
         }
     }
