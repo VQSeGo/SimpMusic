@@ -23,7 +23,6 @@ import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.theme.typo
 import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.Res
-import simpmusic.composeapp.generated.resources.ai
 
 @Composable
 fun ExplicitBadge(modifier: Modifier = Modifier) {
@@ -39,32 +38,10 @@ fun ExplicitBadge(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun AIBadge() {
-    Box(
-        modifier = Modifier.height(24.dp)
-            .padding(3.dp)
-            .wrapContentWidth()
-            .clip(RoundedCornerShape(2.dp))
-            .background(Color.LightGray),
-        contentAlignment = Alignment.Center,
-    ) {
-        BasicText(
-            text = stringResource(Res.string.ai),
-            color = { Color.Black },
-            maxLines = 1,
-            autoSize = TextAutoSize.StepBased(minFontSize = 6.sp),
-            style = typo().labelSmall,
-            modifier = Modifier.padding(horizontal = 4.dp)
-        )
-    }
-}
-
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun PreviewBadge() {
     Column {
         ExplicitBadge()
-        AIBadge()
     }
 }

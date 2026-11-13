@@ -87,7 +87,6 @@ import com.maxrave.simpmusic.extension.parseTimestampToMilliseconds
 import com.maxrave.simpmusic.extension.mouseDragScroll
 import com.maxrave.simpmusic.extension.smoothScrimBrush
 import com.maxrave.simpmusic.getPlatform
-import com.maxrave.simpmusic.ui.component.AIBadge
 import com.maxrave.simpmusic.ui.component.DescriptionView
 import com.maxrave.simpmusic.ui.component.ExplicitBadge
 import com.maxrave.simpmusic.ui.component.HeartCheckBox
@@ -587,10 +586,6 @@ internal fun ExpressiveBelowTheFold(
                             style = typo().labelMedium,
                             color = Color.White,
                         )
-                        if (state.screenData.lyricsData?.translatedLyrics?.second == LyricsProvider.AI) {
-                            Spacer(modifier = Modifier.width(8.dp))
-                            AIBadge()
-                        }
                         Spacer(modifier = Modifier.weight(1f))
                         if (state.screenData.lyricsData.hasTiming()) {
                             CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {

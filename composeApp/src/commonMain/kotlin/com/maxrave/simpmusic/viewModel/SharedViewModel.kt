@@ -23,7 +23,6 @@ import com.maxrave.domain.data.entities.NewFormatEntity
 import com.maxrave.domain.data.entities.PlaylistEntity
 import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.data.entities.SongInfoEntity
-import com.maxrave.domain.data.entities.TranslatedLyricsEntity
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.canvas.CanvasResult
 import com.maxrave.domain.data.model.download.DownloadProgress
@@ -40,7 +39,6 @@ import com.maxrave.domain.extension.isVideo
 import com.maxrave.domain.extension.toGenericMediaItem
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.data.model.lyrics.RomanizationLanguage
-import com.maxrave.domain.manager.DataStoreManager.Values.FALSE
 import com.maxrave.domain.manager.DataStoreManager.Values.TRUE
 import com.maxrave.domain.mediaservice.handler.ControlState
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
@@ -72,7 +70,6 @@ import com.maxrave.domain.utils.toListName
 import com.maxrave.domain.utils.toLyrics
 import com.maxrave.domain.utils.toLyricsEntity
 import com.maxrave.domain.utils.toSongEntity
-import com.maxrave.domain.utils.toSyncedLyrics
 import com.maxrave.domain.utils.toTrack
 import com.maxrave.logger.LogLevel
 import com.maxrave.logger.Logger
@@ -598,10 +595,6 @@ class SharedViewModel(
                         false,
                         LyricsProvider.OFFLINE,
                     )
-                    getAITranslationLyrics(
-                        track.videoId,
-                        lyricsData,
-                    )
                 } else if (_nowPlayingState.value?.songEntity?.videoId == track.videoId) {
                     // The end of every provider and of the offline cache: the one place the app
                     // knows this song has no lyrics, which is what offers Add lyrics.
@@ -622,7 +615,6 @@ class SharedViewModel(
     ) {
         updateLyrics(videoId, (timeline.value.total / 1000).toInt(), lyrics, false, LyricsProvider.OFFLINE)
         insertLyrics(lyrics.toLyricsEntity(videoId))
-        viewModelScope.launch { getAITranslationLyrics(videoId, lyrics) }
     }
 
     fun loadSharedMediaItem(videoId: String) {
@@ -1032,8 +1024,7 @@ class SharedViewModel(
                     },
             )
 
-        if (isTranslatedLyrics && lyricsProvider != LyricsProvider.AI) {
-            // Skip sync validation for AI translations — timestamps are copied programmatically
+        if (isTranslatedLyrics) {
             val originalLyrics = _nowPlayingScreenData.value.lyricsData?.lyrics
             val originalLines = originalLyrics?.lines
             val lyricsLines = lyrics.lines
@@ -1103,12 +1094,6 @@ class SharedViewModel(
                             dataStoreManager.translationLanguage.first(),
                         )
                         log("Removed out-of-sync translated lyrics for $videoId")
-                        nowPlayingScreenData.value.lyricsData?.lyrics?.let {
-                            getAITranslationLyrics(
-                                videoId,
-                                it,
-                            )
-                        }
                     }
                     return
                 }
@@ -1251,10 +1236,7 @@ class SharedViewModel(
                 insertLyrics(
                     data.toLyricsEntity(videoId),
                 )
-                getSimpMusicTranslatedLyrics(
-                    videoId,
-                    data,
-                )
+                getSimpMusicTranslatedLyrics(videoId)
             } else if (dataStoreManager.spotifyLyrics.first() == TRUE) {
                 getSpotifyLyrics(
                     song.toTrack().copy(durationSeconds = duration),
@@ -1302,11 +1284,6 @@ class SharedViewModel(
                                 true,
                                 LyricsProvider.YOUTUBE,
                             )
-                        } else {
-                            getAITranslationLyrics(
-                                videoId,
-                                lyrics,
-                            )
                         }
                     }
 
@@ -1350,10 +1327,6 @@ class SharedViewModel(
                                     song.videoId,
                                 ) ?: return@collectLatest,
                             )
-                            getAITranslationLyrics(
-                                song.videoId,
-                                data,
-                            )
                         }
 
                         else -> {
@@ -1396,10 +1369,6 @@ class SharedViewModel(
                                     song.videoId,
                                 ),
                             )
-                            getAITranslationLyrics(
-                                song.videoId,
-                                data,
-                            )
                         }
 
                         else -> {
@@ -1416,22 +1385,17 @@ class SharedViewModel(
         }
     }
 
-    private suspend fun getSimpMusicTranslatedLyrics(
-        videoId: String,
-        lyrics: Lyrics,
-    ) {
+    private suspend fun getSimpMusicTranslatedLyrics(videoId: String) {
         val translationLanguage =
             dataStoreManager.translationLanguage.first()
         lyricsCanvasRepository.getSimpMusicTranslatedLyrics(videoId, translationLanguage).collectLatest { response ->
             val data = response.data
             when (response) {
                 is Resource.Success if (data != null) -> {
-                    // If SimpMusic translated lyrics are RICH_SYNCED (word-by-word),
-                    // fall back to AI translation
+                    // Word-by-word (RICH_SYNCED) translations are skipped: only line-level or plain
+                    // translated lyrics are shown.
                     if (data.syncType == "RICH_SYNCED") {
-                        Logger.w(tag, "SimpMusic translated lyrics are RICH_SYNCED, falling back to AI")
-                        // Fallback to AI translation
-                        getAITranslationLyrics(videoId, lyrics)
+                        Logger.w(tag, "SimpMusic translated lyrics are RICH_SYNCED, not shown")
                     } else {
                         Logger.d(tag, "Get SimpMusic Translated Lyrics Success")
                         updateLyrics(
@@ -1446,81 +1410,7 @@ class SharedViewModel(
 
                 else -> {
                     Logger.d(tag, "Get SimpMusic Translated Lyrics Error: ${response.message}")
-                    getAITranslationLyrics(
-                        videoId,
-                        lyrics,
-                    )
                 }
-            }
-        }
-    }
-
-    private suspend fun getAITranslationLyrics(
-        videoId: String,
-        lyrics: Lyrics,
-    ) {
-        Logger.d(tag, "Get AI Translation Lyrics for $videoId")
-        if (dataStoreManager.useAITranslation.first() == TRUE &&
-            dataStoreManager.aiApiKey.first().isNotEmpty() &&
-            dataStoreManager.enableTranslateLyric.first() == FALSE
-        ) {
-            val savedTranslatedLyrics =
-                lyricsCanvasRepository
-                    .getSavedTranslatedLyrics(
-                        videoId,
-                        dataStoreManager.translationLanguage.first(),
-                    ).firstOrNull()
-            if (savedTranslatedLyrics != null) {
-                Logger.d(tag, "Get Saved Translated Lyrics")
-                updateLyrics(
-                    videoId,
-                    0,
-                    savedTranslatedLyrics.toLyrics(),
-                    true,
-                    LyricsProvider.AI,
-                )
-            } else {
-                // Convert RICH_SYNCED to LINE_SYNCED before sending to AI
-                // AI should only work with line-level or plain lyrics
-                val lyricsForAi =
-                    if (lyrics.syncType == "RICH_SYNCED") {
-                        lyrics.toSyncedLyrics()
-                    } else {
-                        lyrics
-                    }
-                lyricsCanvasRepository
-                    .getAITranslationLyrics(
-                        lyricsForAi,
-                        dataStoreManager.translationLanguage.first(),
-                    ).cancellable()
-                    .collectLatest {
-                        val data = it.data
-                        when (it) {
-                            is Resource.Success if (data != null) -> {
-                                Logger.d(tag, "Get AI Translate Lyrics Success")
-                                lyricsCanvasRepository.insertTranslatedLyrics(
-                                    TranslatedLyricsEntity(
-                                        videoId = videoId,
-                                        language = dataStoreManager.translationLanguage.first(),
-                                        error = false,
-                                        lines = data.lines,
-                                        syncType = data.syncType,
-                                    ),
-                                )
-                                updateLyrics(
-                                    videoId,
-                                    0,
-                                    data,
-                                    true,
-                                    LyricsProvider.AI,
-                                )
-                            }
-
-                            else -> {
-                                Logger.w(tag, "Get AI Translate Lyrics Error: ${it.message}")
-                            }
-                        }
-                    }
             }
         }
     }
@@ -1549,10 +1439,6 @@ class SharedViewModel(
                                 data,
                                 false,
                                 LyricsProvider.SPOTIFY,
-                            )
-                            getAITranslationLyrics(
-                                track.videoId,
-                                data,
                             )
                         }
                     }
@@ -2156,7 +2042,6 @@ enum class LyricsProvider {
     SPOTIFY,
     LRCLIB,
     BETTER_LYRICS,
-    AI,
     OFFLINE,
 }
 
