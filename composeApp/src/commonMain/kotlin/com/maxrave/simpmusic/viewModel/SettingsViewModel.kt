@@ -42,6 +42,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.lastOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -287,6 +288,16 @@ class SettingsViewModel(
             dataStoreManager.localTrackingEnabled.collect { enabled ->
                 _localTrackingEnabled.value = enabled == DataStoreManager.TRUE
             }
+        }
+    }
+
+    /** "Debug logging" (Developer option). On unless turned off; the loggers pick a change up at once. */
+    val debugLogging: Flow<Boolean> =
+        dataStoreManager.getString(Logger.DEBUG_LOGGING_KEY).map { it != DataStoreManager.FALSE }
+
+    fun setDebugLogging(enabled: Boolean) {
+        viewModelScope.launch {
+            dataStoreManager.putString(Logger.DEBUG_LOGGING_KEY, if (enabled) DataStoreManager.TRUE else DataStoreManager.FALSE)
         }
     }
 

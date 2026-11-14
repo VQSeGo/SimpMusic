@@ -434,7 +434,7 @@ fun NowPlayingScreenContent(
     }
 
     LaunchedEffect(screenDataState) {
-        Logger.d(TAG, "ScreenDataState: $screenDataState")
+        Logger.d(TAG) { "ScreenDataState: ${Logger.clip(screenDataState)}" }
     }
 
     // Palette generation lives in its own NEVER-restarting effect. Keyed on screenDataState it

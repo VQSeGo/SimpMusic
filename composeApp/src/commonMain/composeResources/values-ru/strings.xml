@@ -879,6 +879,8 @@
     <string name="developer_option">Функции разработчика</string>
     <string name="app_log">Логи приложения</string>
     <string name="app_log_description">Просмотр, фильрация и экспорт логов приложения</string>
+    <string name="debug_logging">Отладочный журнал</string>
+    <string name="debug_logging_description">Подробные записи сети и приложения в logcat и консоли. Выключите для скорости; действует сразу</string>
     <string name="log_errors">Ошибки</string>
     <string name="log_search_hint">Поиск по тегу или сообщению</string>
     <string name="log_level_info">Информация</string>

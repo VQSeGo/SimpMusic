@@ -176,6 +176,8 @@ import simpmusic.composeapp.generated.resources.about_us
 import simpmusic.composeapp.generated.resources.add_an_account
 import simpmusic.composeapp.generated.resources.app_log
 import simpmusic.composeapp.generated.resources.app_log_description
+import simpmusic.composeapp.generated.resources.debug_logging
+import simpmusic.composeapp.generated.resources.debug_logging_description
 import simpmusic.composeapp.generated.resources.app_name
 import simpmusic.composeapp.generated.resources.developer_option
 import simpmusic.composeapp.generated.resources.audio
@@ -459,6 +461,7 @@ fun SettingScreen(
     val videoDownloadQuality by viewModel.videoDownloadQuality.collectAsStateWithLifecycle()
     val keepYoutubePlaylistOffline by viewModel.keepYouTubePlaylistOffline.collectAsStateWithLifecycle()
     val localTrackingEnabled by viewModel.localTrackingEnabled.collectAsStateWithLifecycle(initialValue = false)
+    val debugLogging by viewModel.debugLogging.collectAsStateWithLifecycle(initialValue = true)
     val analyticsTabEnabled by sharedViewModel.analyticsTabEnabled.collectAsStateWithLifecycle(initialValue = true)
     val playVideo by remember { viewModel.playVideoInsteadOfAudio.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
     val radioAudioOnly by remember { viewModel.radioAudioOnly.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
@@ -2197,6 +2200,11 @@ fun SettingScreen(
                     onClick = {
                         navController.navigate(AppLogDestination)
                     },
+                )
+                SettingItem(
+                    title = stringResource(Res.string.debug_logging),
+                    subtitle = stringResource(Res.string.debug_logging_description),
+                    switch = (debugLogging to { viewModel.setDebugLogging(it) }),
                 )
             }
         }

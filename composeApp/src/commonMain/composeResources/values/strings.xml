@@ -907,6 +907,8 @@
     <string name="developer_option">Developer option</string>
     <string name="app_log">App log</string>
     <string name="app_log_description">View, filter and export the app's log</string>
+    <string name="debug_logging">Debug logging</string>
+    <string name="debug_logging_description">Detailed network and app entries in logcat and the console. Turn off for speed; applies at once</string>
     <string name="log_errors">Errors</string>
     <string name="log_search_hint">Search tag or message</string>
     <string name="log_level_info">Info</string>

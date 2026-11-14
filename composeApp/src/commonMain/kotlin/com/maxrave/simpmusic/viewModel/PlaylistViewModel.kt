@@ -186,7 +186,7 @@ class PlaylistViewModel(
                         val data = res.data
                         when (res) {
                             is Resource.Success if (data != null) -> {
-                                Logger.d(tag, "Radio data: $data")
+                                Logger.d(tag) { "Radio data: ${Logger.clip(data)}" }
                                 _uiState.value =
                                     Success(
                                         data =
@@ -223,7 +223,7 @@ class PlaylistViewModel(
                         val data = res.data
                         when (res) {
                             is Resource.Success if (data != null) -> {
-                                Logger.d(tag, "Playlist data: $data")
+                                Logger.d(tag) { "Playlist data: ${Logger.clip(data)}" }
                                 log("Playlist endpoint: ${data.first.shuffleEndpoint}")
                                 _uiState.value =
                                     Success(

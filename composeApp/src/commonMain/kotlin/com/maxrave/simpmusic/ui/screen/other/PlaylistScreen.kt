@@ -359,7 +359,7 @@ fun PlaylistScreen(
         when (state) {
             is PlaylistUIState.Success -> {
                 val data = state.data
-                Logger.d(tag, "data: $data")
+                Logger.d(tag) { "data: ${Logger.clip(data)}" }
                 if (data == null) return@Crossfade
                 val hazeState =
                     rememberHazeState()

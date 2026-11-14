@@ -1797,7 +1797,7 @@ class SharedViewModel(
                 launch {
                     Logger.w(tag, "ControllerJob is running")
                     mediaPlayerHandler.controlState.collectLatest {
-                        Logger.w(tag, "ControlState is $it")
+                        Logger.d(tag, "ControlState is $it")
                         _controllerState.value = it
                         // Propagate crossfade state to timeline so UI can react
                         _timeline.update { timeline ->

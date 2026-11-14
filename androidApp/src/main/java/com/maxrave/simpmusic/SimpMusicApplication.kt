@@ -33,7 +33,7 @@ import multiplatform.network.cmptoast.AppContext
 import okhttp3.OkHttpClient
 import okio.FileSystem
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
+import org.koin.android.logger.AndroidLogger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.loadKoinModules
@@ -60,8 +60,12 @@ class SimpMusicApplication :
         configCrashlytics(this, BuildKonfig.sentryDsn)
         // Before Koin: DiscordRepository is created at start and reads which login this build uses.
         configDiscord(BuildKonfig.discordClientId)
+        // Info, not Debug: Debug listed every definition and instance (~470 lines on the main thread
+        // before the first frame) and never helped find a bug. The level drops to Error below when
+        // "Debug logging" is off.
+        val koinLogger = AndroidLogger(Level.INFO)
         startKoin {
-            androidLogger(level = Level.DEBUG)
+            logger(koinLogger)
             androidContext(this@SimpMusicApplication)
             loadAllModules(
                 AppIdentity(
@@ -74,6 +78,8 @@ class SimpMusicApplication :
             loadKoinModules(viewModelModule)
         }
         Startup.mark("koin-done")
+        // Read inside startKoin (CommonRepositoryImpl.init); Koin logs little after its start either way.
+        koinLogger.level = if (Logger.debugLogging) Level.INFO else Level.ERROR
         // provide custom configuration
         val workConfig =
             Configuration
