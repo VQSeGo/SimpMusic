@@ -330,7 +330,7 @@ class SearchViewModel(
                 }
                 _searchScreenUIState.value = SearchScreenUIState.Success
             } catch (e: Exception) {
-                e.printStackTrace()
+                Logger.e("SearchViewModel", "searchAll failed: ${e.message}", e)
                 _searchScreenUIState.value = SearchScreenUIState.Error
             }
         }

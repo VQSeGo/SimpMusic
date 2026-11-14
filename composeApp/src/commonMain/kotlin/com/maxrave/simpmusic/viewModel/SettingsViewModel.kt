@@ -1017,7 +1017,7 @@ class SettingsViewModel(
                 }
             }.onFailure {
                 withContext(Dispatchers.Main) {
-                    it.printStackTrace()
+                    Logger.e("SettingsViewModel", "backup failed: ${it.message}", it)
                     makeToast(getString(Res.string.backup_create_failed))
                 }
             }
@@ -1034,7 +1034,7 @@ class SettingsViewModel(
                     }
                 }.onFailure {
                     withContext(Dispatchers.Main) {
-                        it.printStackTrace()
+                        Logger.e("SettingsViewModel", "restore failed: ${it.message}", it)
                         makeToast(getString(Res.string.restore_failed))
                     }
                 }
@@ -1281,7 +1281,7 @@ class SettingsViewModel(
                 false
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Logger.e("SettingsViewModel", "addAccount failed: ${e.message}", e)
             Logger.e("Auth", "YouTube: sign-in failed: ${e.message}")
             runBlocking {
                 dataStoreManager.setCookie(currentCookie, currentPageId, currentAuthUser)

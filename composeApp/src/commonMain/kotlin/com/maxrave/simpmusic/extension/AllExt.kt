@@ -110,7 +110,7 @@ fun parseTimestampToMilliseconds(timestamp: String): Double {
                     (minutes * 60 + seconds)
                 } catch (e: NumberFormatException) {
                     // Handle parsing error
-                    e.printStackTrace()
+                    Logger.e("AllExt", "parseTimestampToMilliseconds failed: ${e.message}", e)
                     return 0.0
                 }
             }
@@ -123,7 +123,7 @@ fun parseTimestampToMilliseconds(timestamp: String): Double {
                     (hours * 3600 + minutes * 60 + seconds)
                 } catch (e: NumberFormatException) {
                     // Handle parsing error
-                    e.printStackTrace()
+                    Logger.e("AllExt", "parseTimestampToMilliseconds failed: ${e.message}", e)
                     return 0.0
                 }
             }
