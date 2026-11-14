@@ -135,6 +135,12 @@
   Также: комментарии YouTube (код удалён полностью: `CommentsViewModel`, `CommentsBottomSheet`, иконка `CommentOutline`,
   `SongRepository.getComments` / `postComment` / `performCommentAction`, `YouTube.comments` / `createComment`, `CommentsPage`,
   модели и строки). Кнопки комментариев в плеере уже не было.
+  Также: Google Cast (передача на Chromecast и колонки): модули `cast` и `cast-empty`, `CastHandoffManager`,
+  `CastStreamResolver`, обёртка `wrapWithCastPlayer` основного плеера и маршрутизация на приёмник в
+  `CrossfadeExoPlayerAdapter`, `GenericCastState` / `MediaPlayerHandler.castState` / `onCastStateChanged`, `CastButton`
+  (`expect` и оба `actual`), иконка `MusicCast`, строки `audio_output_cast` и `not_available_while_casting` (настройки
+  эквалайзера и кроссфейда больше не гаснут), зависимости `media3-cast`, `play-services-cast-framework`, `mediarouter`.
+  `MAIN_PLAYER` в Koin теперь сам `ForwardingPlayer` адаптера, его же получает `MediaLibrarySession`.
 - Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки
