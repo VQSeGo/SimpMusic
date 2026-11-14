@@ -143,9 +143,7 @@ fun LibraryScreen(
     val cachedPreview by viewModel.cachedPreview.collectAsStateWithLifecycle()
     // The player cache is no table to observe, so the Cached card is read again each time the
     // screen is shown — coming back from the list after removing a song included.
-    if (getPlatform() == Platform.Android) {
-        LaunchedEffect(Unit) { viewModel.refreshCachedPreview() }
-    }
+    LaunchedEffect(Unit) { viewModel.refreshCachedPreview() }
 
     val selectionState = rememberSongSelectionState()
     val selectionViewModel: SongSelectionViewModel = koinViewModel()

@@ -37,8 +37,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.maxrave.domain.data.model.library.LibraryCollectionPreview
 import com.maxrave.domain.data.model.library.LibraryOverview
-import com.maxrave.simpmusic.Platform
-import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
 import com.maxrave.simpmusic.ui.theme.typo
@@ -108,28 +106,21 @@ fun LibraryTilingBox(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         FavoriteCard(overview?.favorite, container) { open(LibraryDynamicPlaylistType.Favorite) }
-        if (getPlatform() == Platform.Android) {
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                followedCard(Modifier.weight(1f))
-                mostPlayedCard(Modifier.weight(1f))
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                downloadedCard(Modifier.weight(1f))
-                CollectionCard(
-                    title = Res.string.cached,
-                    preview = cached,
-                    countText = cached?.count?.let { pluralStringResource(Res.plurals.liked_songs_count, it, it) },
-                    round = false,
-                    container = container,
-                    modifier = Modifier.weight(1f),
-                ) { open(LibraryDynamicPlaylistType.Cached) }
-            }
-        } else {
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                followedCard(Modifier.weight(1f))
-                mostPlayedCard(Modifier.weight(1f))
-                downloadedCard(Modifier.weight(1f))
-            }
+        // Desktop's cache is the listening cache in ~/.simpmusic/cache (ListenCache), Android's the player cache.
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            followedCard(Modifier.weight(1f))
+            mostPlayedCard(Modifier.weight(1f))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            downloadedCard(Modifier.weight(1f))
+            CollectionCard(
+                title = Res.string.cached,
+                preview = cached,
+                countText = cached?.count?.let { pluralStringResource(Res.plurals.liked_songs_count, it, it) },
+                round = false,
+                container = container,
+                modifier = Modifier.weight(1f),
+            ) { open(LibraryDynamicPlaylistType.Cached) }
         }
     }
 }

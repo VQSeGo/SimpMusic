@@ -1663,26 +1663,28 @@ fun SettingScreen(
                 )
             }
         }
-        if (getPlatform() == Platform.Android) {
-            item(key = "storage") {
-                SettingGroup(title = stringResource(Res.string.storage)) {
-                    SettingItem(
-                        title = stringResource(Res.string.player_cache),
-                        subtitle = "${playerCache.bytesToMB()} MB",
-                        onClick = {
-                            viewModel.setBasicAlertData(
-                                SettingBasicAlertState(
-                                    title = runBlocking { getString(Res.string.clear_player_cache) },
-                                    message = null,
-                                    confirm =
-                                        runBlocking { getString(Res.string.clear) } to {
-                                            viewModel.clearPlayerCache()
-                                        },
-                                    dismiss = runBlocking { getString(Res.string.cancel) },
-                                ),
-                            )
-                        },
-                    )
+        item(key = "storage") {
+            SettingGroup(title = stringResource(Res.string.storage)) {
+                SettingItem(
+                    title = stringResource(Res.string.player_cache),
+                    subtitle = "${playerCache.bytesToMB()} MB",
+                    onClick = {
+                        viewModel.setBasicAlertData(
+                            SettingBasicAlertState(
+                                title = runBlocking { getString(Res.string.clear_player_cache) },
+                                message = null,
+                                confirm =
+                                    runBlocking { getString(Res.string.clear) } to {
+                                        viewModel.clearPlayerCache()
+                                    },
+                                dismiss = runBlocking { getString(Res.string.cancel) },
+                            ),
+                        )
+                    },
+                )
+                // Desktop has no download cache to clear here (downloads are managed on their own
+                // screen), and its image cache has no size reader yet.
+                if (getPlatform() == Platform.Android) {
                     SettingItem(
                         title = stringResource(Res.string.downloaded_cache),
                         subtitle = "${downloadedCache.bytesToMB()} MB",
@@ -1717,31 +1719,34 @@ fun SettingScreen(
                             )
                         },
                     )
-                    SettingItem(
-                        title = stringResource(Res.string.limit_player_cache),
-                        subtitle = LIMIT_CACHE_SIZE.getItemFromData(limitPlayerCache).toString(),
-                        onClick = {
-                            viewModel.setAlertData(
-                                SettingAlertState(
-                                    title = runBlocking { getString(Res.string.limit_player_cache) },
-                                    selectOne =
-                                        SettingAlertState.SelectData(
-                                            listSelect =
-                                                LIMIT_CACHE_SIZE.items.map { item ->
-                                                    (item == LIMIT_CACHE_SIZE.getItemFromData(limitPlayerCache)) to item.toString()
-                                                },
-                                        ),
-                                    confirm =
-                                        runBlocking { getString(Res.string.change) } to { state ->
-                                            viewModel.setPlayerCacheLimit(
-                                                LIMIT_CACHE_SIZE.getDataFromItem(state.selectOne?.getSelected()),
-                                            )
-                                        },
-                                    dismiss = runBlocking { getString(Res.string.cancel) },
-                                ),
-                            )
-                        },
-                    )
+                }
+                SettingItem(
+                    title = stringResource(Res.string.limit_player_cache),
+                    subtitle = LIMIT_CACHE_SIZE.getItemFromData(limitPlayerCache).toString(),
+                    onClick = {
+                        viewModel.setAlertData(
+                            SettingAlertState(
+                                title = runBlocking { getString(Res.string.limit_player_cache) },
+                                selectOne =
+                                    SettingAlertState.SelectData(
+                                        listSelect =
+                                            LIMIT_CACHE_SIZE.items.map { item ->
+                                                (item == LIMIT_CACHE_SIZE.getItemFromData(limitPlayerCache)) to item.toString()
+                                            },
+                                    ),
+                                confirm =
+                                    runBlocking { getString(Res.string.change) } to { state ->
+                                        viewModel.setPlayerCacheLimit(
+                                            LIMIT_CACHE_SIZE.getDataFromItem(state.selectOne?.getSelected()),
+                                        )
+                                    },
+                                dismiss = runBlocking { getString(Res.string.cancel) },
+                            ),
+                        )
+                    },
+                )
+                // The storage breakdown is measured on Android only (calculateDataFraction).
+                if (getPlatform() == Platform.Android) {
                     Box(
                         Modifier.padding(
                             horizontal = 16.dp,
