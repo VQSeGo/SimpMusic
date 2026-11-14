@@ -170,16 +170,23 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
     // ~/.simpmusic/settings.preferences_pb and crash with an "Unable to rename
     // ...tmp" IOException (#2044) before it ever reached the old in-Compose check.
     // Bail out here, before Koin/DataStore initialize.
+    //
+    // The link is written for the running instance BEFORE the check: the check itself sends the
+    // restore request, and the running instance reads the file as soon as it gets it. Written
+    // after, the file landed once the running instance had already looked, and a link sent to a
+    // running app was dropped (it opened on the next unrelated restore instead).
+    deepLinkArg?.let { DesktopDeepLinkHandler.writePendingUri(it) }
     val isSingleInstance =
         SingleInstanceManager.isSingleInstance(
             onRestoreRequest = { DesktopRestoreSignal.request() },
         )
     if (!isSingleInstance) {
-        // Second instance: forward the deep link (if any) to the running instance,
-        // then exit. Nothing has touched the DataStore file yet.
-        deepLinkArg?.let { DesktopDeepLinkHandler.writePendingUri(it) }
+        // Second instance: the running one picks up the link written above. Nothing has touched
+        // the DataStore file yet.
         return
     }
+    // First instance: the link is delivered directly below, so the copy for a running instance goes.
+    if (deepLinkArg != null) DesktopDeepLinkHandler.discardPendingUri()
     // Past the guard on purpose: a second instance must not open the same log files.
     Logger.enableFileLogging(getHomeFolderPath(listOf(".simpmusic", "logs")))
 

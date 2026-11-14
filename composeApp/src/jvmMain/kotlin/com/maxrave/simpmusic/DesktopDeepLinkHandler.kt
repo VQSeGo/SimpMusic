@@ -68,6 +68,11 @@ object DesktopDeepLinkHandler {
         }
     }
 
+    /** Deletes the pending URI file: a first instance that wrote it delivers its link itself. */
+    fun discardPendingUri() {
+        runCatching { pendingUriFile.delete() }
+    }
+
     /**
      * Read and consume the pending URI file written by a second instance.
      * Called by the first instance when it receives a restore request.
