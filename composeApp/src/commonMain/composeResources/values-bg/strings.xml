@@ -121,9 +121,6 @@
     <string name="about_us">За нас</string>
     <string name="version">Версия</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">Buy me a coffee</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Заглавие</string>
     <string name="custom_order">Персонализирана поръчка</string>
     <string name="album">Албум</string>
@@ -241,7 +238,6 @@
     <string name="unlimited">Неограничен</string>
     <string name="third_party_libraries">Библиотеки на трети страни</string>
     <string name="description_and_licenses">Описание и лицензи</string>
-    <string name="author">Автор</string>
     <string name="other_app">Друго приложение</string>
     <string name="database">База данни на приложението</string>
     <string name="free_space">Свободно пространство</string>
@@ -316,7 +312,6 @@
     <string name="repeat_off">Изключване на повторение</string>
     <string name="youtube_transcript">YouTube транскрипт</string>
     <string name="user_interface">Интерфейс</string>
-    <string name="donation">Ако харесвате работата ми, почерпете ме кафе</string>
     <string name="relax">Спокойствие</string>
     <string name="sleep">Сън</string>
     <string name="energize">Енергизиране</string>

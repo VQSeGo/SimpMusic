@@ -116,9 +116,6 @@
     <string name="about_us">אודותינו</string>
     <string name="version">גרסה</string>
     <string name="github">גיטהאב</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">קנה לי קפה</string>
-    <string name="paypal">פיי-פאל</string>
     <string name="title">כותרת</string>
     <string name="album">אלבום</string>
     <string name="youtube_url">קישור ליו-טיוב</string>
@@ -236,7 +233,6 @@
     <string name="unlimited">ללא הגבלה</string>
     <string name="third_party_libraries">ספריות צד שלישי</string>
     <string name="description_and_licenses">תיאור ורישיונות</string>
-    <string name="author">מחבר</string>
     <string name="other_app">יישום אחר</string>
     <string name="database">מסד נתונים של אפליקציה</string>
     <string name="free_space">מקום פנוי</string>
@@ -311,7 +307,6 @@ SimpMusic תמיד בחינם וללא פרסומות\n\nבונה מ ❤️מ-Tu
     <string name="repeat_off">חזרה כבויה</string>
     <string name="youtube_transcript">תמלול יוטיוב</string>
     <string name="user_interface">ממשק</string>
-    <string name="donation">אם אתה אוהב את העבודה שלי, תן ​​לי קפה</string>
     <string name="relax">לְהִרָגַע</string>
     <string name="sleep">שינה</string>
     <string name="energize">אנרגיה מידית</string>

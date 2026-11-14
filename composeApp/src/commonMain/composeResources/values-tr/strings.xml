@@ -121,9 +121,6 @@
     <string name="about_us">Hakkımızda</string>
     <string name="version">Sürüm</string>
     <string name="github">GitHub</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">Bana bir kahve ısmarla</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Başlık</string>
     <string name="custom_order">Özel sipariş</string>
     <string name="album">Albüm</string>
@@ -243,7 +240,6 @@
     <string name="unlimited">Sınırsız</string>
     <string name="third_party_libraries">Üçüncü taraf kütüphaneleri</string>
     <string name="description_and_licenses">Açıklama ve lisanslar</string>
-    <string name="author">Yazar</string>
     <string name="other_app">Diğer uygulamalar</string>
     <string name="database">Uygulama veritabanı</string>
     <string name="free_space">Boş alan</string>
@@ -343,7 +339,6 @@
     <string name="theme_color_wallpaper">Duvar Kağıdı</string>
     <string name="theme_color_custom">Özel</string>
     <string name="custom_color">Özel renk</string>
-    <string name="donation">Eğer işimi seviyorsanız bana bir kahve verin</string>
     <string name="relax">Rahatlama</string>
     <string name="sleep">Uyku</string>
     <string name="energize">Enerjik</string>
@@ -425,7 +420,6 @@
     <string name="your_discord_token">Discord jetonunuz</string>
     <string name="can_not_be_empty">Boş olamaz</string>
     <string name="processing">İşleme</string>
-    <string name="website">Website</string>
     <string name="download_this_song_video_file_to_your_device">Bu şarkıyı/video dosyasını cihazınıza indirin</string>
     <string name="kill_service_on_exit">Çıkınca hizmeti sonlandır</string>
     <string name="kill_service_on_exit_description">Uygulama kapatılırsa arka plan müzik çalarını durdur</string>

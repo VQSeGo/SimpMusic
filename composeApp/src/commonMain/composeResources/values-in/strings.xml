@@ -116,9 +116,6 @@
     <string name="about_us">Tentang kami</string>
     <string name="version">Versi</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">Belikan aku secangkir kopi</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Judul</string>
     <string name="album">Album</string>
     <string name="youtube_url">URL YouTube</string>
@@ -236,7 +233,6 @@
     <string name="unlimited">Tanpa Batas</string>
     <string name="third_party_libraries">Pustaka pihak ketiga</string>
     <string name="description_and_licenses">Deskripsi dan lisensi</string>
-    <string name="author">Penulis</string>
     <string name="other_app">Aplikasi lainnya</string>
     <string name="database">Database app</string>
     <string name="free_space">Ruang kosong</string>
@@ -306,7 +302,6 @@
     <string name="repeat_off">Pengulangan Mati</string>
     <string name="youtube_transcript">Transkripsi Youtube</string>
     <string name="user_interface">Tampilan</string>
-    <string name="donation">Jika Anda menyukai pekerjaan saya, beri saya kopi</string>
     <string name="relax">Santai</string>
     <string name="sleep">Tidur</string>
     <string name="energize">Energik</string>

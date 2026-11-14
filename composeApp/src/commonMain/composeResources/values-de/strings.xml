@@ -137,13 +137,6 @@
     <string name="about_us">Über uns</string>
     <string name="version">Version</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">Folge mir auf X</string>
-    <string name="buy_me_a_coffee">Spendiere mir einen Kaffee</string>
-    <string name="developer_blog">Entwickler-Blog</string>
-    <string name="developer_blog_tagline">Lesen Sie Entwicklernotizen, Tutorials &amp; hinter den Kulissen</string>
-    <string name="visit_blog">Blog besuchen</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Titel</string>
     <string name="custom_order">Individuelle Reinfolge</string>
     <string name="album">Album</string>
@@ -269,7 +262,6 @@
     <string name="unlimited">Unbegrenzt</string>
     <string name="third_party_libraries">Bibliotheken von Drittanbietern</string>
     <string name="description_and_licenses">Beschreibung und Lizenzen</string>
-    <string name="author">Autor</string>
     <string name="other_app">Andere App</string>
     <string name="database">App-Datenbank</string>
     <string name="free_space">Freiraum</string>
@@ -421,7 +413,6 @@
     <string name="theme_color_wallpaper">Wallpaper</string>
     <string name="theme_color_custom">Benutzerdefiniert</string>
     <string name="custom_color">Benutzerdefinierte Farbe</string>
-    <string name="donation">Wenn du meine Arbeit magst, fühl dich frei mir einen Kaffee zu spendieren</string>
     <string name="relax">Entspannen</string>
     <string name="sleep">Schlafen</string>
     <string name="energize">Energie anziehen</string>
@@ -506,7 +497,6 @@
     <string name="your_discord_token">Dein Discord-Token</string>
     <string name="can_not_be_empty">Darf nicht leer sein</string>
     <string name="processing">In Bearbeitung</string>
-    <string name="website">Webseite</string>
     <string name="download_this_song_video_file_to_your_device">Lade diese Song/Videodatei auf dein Gerät herunter</string>
     <string name="kill_service_on_exit">Dienst beim Beenden beenden</string>
     <string name="kill_service_on_exit_description">Hintergrundmusikplayer beim Beenden der App stoppen</string>

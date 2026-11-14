@@ -127,11 +127,6 @@
     <string name="about_us">हमारे बारे में</string>
     <string name="version">संस्करण</string>
     <string name="github">गिट्हब</string>
-    <string name="maxrave_dev">मैक्सरेव-देव</string>
-    <string name="follow_me_on_x">मुझे X पर फ़ॉलो करें</string>
-    <string name="buy_me_a_coffee">मुझे एक कॉफी खरीदें</string>
-    <string name="developer_blog">डेवलपर ब्लॉग</string>
-    <string name="paypal">पेयपाल</string>
     <string name="title">शीर्षक</string>
     <string name="album">एल्बम</string>
     <string name="youtube_url">यूट्यूब यूआरएल</string>
@@ -247,7 +242,6 @@
     <string name="unlimited">असीमित</string>
     <string name="third_party_libraries">थर्ड पार्टी लाइब्रेरी</string>
     <string name="description_and_licenses">विवरण और लाइसेंस</string>
-    <string name="author">लेखक</string>
     <string name="other_app">अन्य ऐप</string>
     <string name="database">ऐप डेटाबेस</string>
     <string name="free_space">खाली स्थान</string>
@@ -321,7 +315,6 @@
     <string name="repeat_off">दोहराना बंद</string>
     <string name="youtube_transcript">YouTube ट्रांसक्रिप्ट</string>
     <string name="user_interface">इंटरफ़ेस</string>
-    <string name="donation">यदि आपको मेरा काम पसंद है, तो मुझे एक कॉफी दें</string>
     <string name="relax">आराम</string>
     <string name="sleep">नींद</string>
     <string name="energize">ऊर्जावान</string>
@@ -393,7 +386,6 @@
     <string name="your_youtube_cookie">आपकी यूट्यूब कुकी</string>
     <string name="can_not_be_empty">खाली नहीं हो सकता</string>
     <string name="processing">प्रसंस्करण</string>
-    <string name="website">वेबसाइट</string>
     <string name="download_this_song_video_file_to_your_device">इस गीत/वीडियो फ़ाइल को अपने डिवाइस पर डाउनलोड करें</string>
     <string name="kill_service_on_exit">बाहर निकलने पर सेवा समाप्त करें</string>
     <string name="kill_service_on_exit_description">ऐप से बाहर निकलते समय बैकग्राउंड म्यूजिक प्लेयर बंद करें</string>

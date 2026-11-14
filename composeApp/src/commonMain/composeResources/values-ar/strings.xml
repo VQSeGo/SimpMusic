@@ -117,9 +117,6 @@
     <string name="about_us">من نحن</string>
     <string name="version">الإصدار</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">اشتر لي قهوة</string>
-    <string name="paypal">PayPal</string>
     <string name="title">العنوان</string>
     <string name="album">الألبوم</string>
     <string name="youtube_url">رابط YouTube</string>
@@ -234,7 +231,6 @@
     <string name="unlimited">غير محدود</string>
     <string name="third_party_libraries">مكتبات Third party</string>
     <string name="description_and_licenses">الوصف و التراخيص</string>
-    <string name="author">المؤلف</string>
     <string name="other_app">تطبيق آخر</string>
     <string name="database">قاعدة بيانات التطبيق</string>
     <string name="free_space">مساحة فارغة</string>
@@ -312,7 +308,6 @@
     <string name="repeat_off">التكرار معطل</string>
     <string name="youtube_transcript">تَرْجَمَة الخاصة ب YouTube</string>
     <string name="user_interface">الواجهة</string>
-    <string name="donation">إذا كنت تحب عملي، فتبرع لي</string>
     <string name="relax">استرخاء</string>
     <string name="sleep">نوم</string>
     <string name="energize">تنشيط</string>

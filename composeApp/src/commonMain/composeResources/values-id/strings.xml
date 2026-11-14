@@ -121,12 +121,6 @@
     <string name="about_us">Tentang kami</string>
     <string name="version">Versi</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">Belikan Aku secangkir kopi</string>
-    <string name="developer_blog">Blog Pengembang</string>
-    <string name="developer_blog_tagline">Baca catatan pengembang, tutorial &amp; cerita di balik layar</string>
-    <string name="visit_blog">Kunjungi blog</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Judul</string>
     <string name="custom_order">Urutan khusus</string>
     <string name="album">Album</string>
@@ -247,7 +241,6 @@
     <string name="unlimited">Tanpa Batas</string>
     <string name="third_party_libraries">Pustaka pihak ketiga</string>
     <string name="description_and_licenses">Deskripsi dan lisensi</string>
-    <string name="author">Penulis</string>
     <string name="other_app">Aplikasi lainnya</string>
     <string name="database">Database aplikasi</string>
     <string name="free_space">Kosongkan ruang</string>
@@ -332,7 +325,6 @@
     <string name="theme_color_wallpaper">Wallpaper</string>
     <string name="theme_color_custom">Khusus</string>
     <string name="custom_color">Warna khusus</string>
-    <string name="donation">Jika Anda menyukai pekerjaan saya, beri saya kopi</string>
     <string name="relax">Santai</string>
     <string name="sleep">Tidur</string>
     <string name="energize">Energik</string>
@@ -411,7 +403,6 @@
     <string name="your_discord_token">Token Discord Anda</string>
     <string name="can_not_be_empty">Tidak boleh kosong</string>
     <string name="processing">Memproses</string>
-    <string name="website">Situs web</string>
     <string name="download_this_song_video_file_to_your_device">Unduh lagu ini/file video ke perangkat Anda</string>
     <string name="kill_service_on_exit">Hentikan layanan saat keluar</string>
     <string name="kill_service_on_exit_description">Hentikan pemutaran musik di latar belakang ketika keluar aplikasi</string>

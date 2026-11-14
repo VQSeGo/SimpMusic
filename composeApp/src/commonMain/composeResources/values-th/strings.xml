@@ -121,12 +121,6 @@
     <string name="about_us">เกี่ยวกับเรา</string>
     <string name="version">เวอร์ชัน</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">เลี้ยงกาแฟให้ฉัน</string>
-    <string name="developer_blog">บล็อกนักพัฒนา</string>
-    <string name="developer_blog_tagline">อ่านบันทึกจากผู้พัฒนา บทแนะนำ &amp; เบื้องหลังการทำงาน</string>
-    <string name="visit_blog">เยี่ยมชมบล็อก</string>
-    <string name="paypal">PayPal</string>
     <string name="title">ชื่อ</string>
     <string name="custom_order">กำหนดลำดับเอง</string>
     <string name="album">อัลบั้ม</string>
@@ -245,7 +239,6 @@
     <string name="unlimited">ไม่จำกัด</string>
     <string name="third_party_libraries">ไลบรารีของบุคคลที่สาม</string>
     <string name="description_and_licenses">รายละเอียดและใบอนุญาต</string>
-    <string name="author">ผู้สร้าง</string>
     <string name="other_app">แอปอื่นๆ</string>
     <string name="database">ฐานข้อมูลแอพพลิเคชั่น</string>
     <string name="free_space">เพื่มพื้นที่ว่าง</string>
@@ -345,7 +338,6 @@
     <string name="theme_color_wallpaper">วอลเปเปอร์</string>
     <string name="theme_color_custom">กำหนดเอง</string>
     <string name="custom_color">กำหนดสี</string>
-    <string name="donation">ถ้าคุณชอบแอปนี้ สามารถเลี้ยงกาแฟให้ฉันได้</string>
     <string name="relax">ผ่อนคลาย</string>
     <string name="sleep">นอน</string>
     <string name="energize">เพิ่มพลัง</string>
@@ -423,7 +415,6 @@
     <string name="your_discord_token">Token Discord ของคุณ</string>
     <string name="can_not_be_empty">ไม่สามารถเว้นว่างได้</string>
     <string name="processing">กำลังประมวลผล</string>
-    <string name="website">เว็บ​ไซ​ต์</string>
     <string name="download_this_song_video_file_to_your_device">ดาวน์โหลดไฟล์เพลง/วิดีโอนี้ ลงในอุปกรณ์ของคุณ</string>
     <string name="kill_service_on_exit">ยุติบริการเมื่อออกจากแอป</string>
     <string name="kill_service_on_exit_description">หยุดการเล่นเพลงเบื้องหลังเมื่อปิดแอป</string>

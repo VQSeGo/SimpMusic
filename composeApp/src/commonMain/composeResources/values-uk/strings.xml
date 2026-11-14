@@ -132,13 +132,6 @@
     <string name="about_us">Про нас</string>
     <string name="version">Версія</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">Слідкуйте за мною на X</string>
-    <string name="buy_me_a_coffee">Купіть мені каву</string>
-    <string name="developer_blog">Блог розробника</string>
-    <string name="developer_blog_tagline">Читайте нотатки розробника, навчальні посібники та закулісся</string>
-    <string name="visit_blog">Відвідати блог</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Назва</string>
     <string name="custom_order">Власний порядок</string>
     <string name="album">Альбом</string>
@@ -262,7 +255,6 @@
     <string name="unlimited">Необмежено</string>
     <string name="third_party_libraries">Сторонні бібліотеки</string>
     <string name="description_and_licenses">Опис і ліцензії</string>
-    <string name="author">Автор</string>
     <string name="other_app">Інші додатки</string>
     <string name="database">База даних застосунку</string>
     <string name="free_space">Вільне місце</string>
@@ -412,7 +404,6 @@
     <string name="theme_color_wallpaper">Шпалери</string>
     <string name="theme_color_custom">Власний</string>
     <string name="custom_color">Власний колір</string>
-    <string name="donation">Якщо ви оцінили мою роботу, дайте мені на каву</string>
     <string name="relax">Відпочинок</string>
     <string name="sleep">Сон</string>
     <string name="energize">Енергія</string>
@@ -497,7 +488,6 @@
     <string name="your_discord_token">Ваш Discord токен</string>
     <string name="can_not_be_empty">Не може бути порожнім</string>
     <string name="processing">Обробка</string>
-    <string name="website">Веб-сайт</string>
     <string name="download_this_song_video_file_to_your_device">Завантажити цю пісню/відео файл на ваш пристрій</string>
     <string name="kill_service_on_exit">Завершити роботу служби при виході</string>
     <string name="kill_service_on_exit_description">Зупинити фоновий програвач при виході з програми</string>

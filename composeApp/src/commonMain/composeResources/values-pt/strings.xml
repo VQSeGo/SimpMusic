@@ -121,12 +121,6 @@
     <string name="about_us">Sobre nós</string>
     <string name="version">Versão</string>
     <string name="github">GitHub</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">Compre-me um café</string>
-    <string name="developer_blog">Blog do Desenvolvedor</string>
-    <string name="developer_blog_tagline">Leia notas de desenvolvimento, tutoriais &amp; nos bastidores</string>
-    <string name="visit_blog">Visite o Blog</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Título</string>
     <string name="custom_order">Manual</string>
     <string name="album">Álbum</string>
@@ -245,7 +239,6 @@
     <string name="unlimited">Ilimitado</string>
     <string name="third_party_libraries">Bibliotecas de terceiros</string>
     <string name="description_and_licenses">Descrição e licenças</string>
-    <string name="author">Autor</string>
     <string name="other_app">Outro aplicativo</string>
     <string name="database">Banco de dados de aplicativos</string>
     <string name="free_space">Espaço livre</string>
@@ -329,7 +322,6 @@
     <string name="theme_color">Cor do tema</string>
     <string name="theme_color_default">Padrão</string>
     <string name="theme_color_wallpaper">Papel de parede</string>
-    <string name="donation">Se curtiu o meu trabalho, me paga um café</string>
     <string name="relax">Relaxante</string>
     <string name="sleep">Suspensão</string>
     <string name="energize">Inspirar</string>
@@ -408,7 +400,6 @@
     <string name="your_discord_token">Seu Discord token</string>
     <string name="can_not_be_empty">Não pode estar vazio</string>
     <string name="processing">Processando</string>
-    <string name="website">Site</string>
     <string name="download_this_song_video_file_to_your_device">Baixar este arquivo de música/vídeo para seu dispositivo</string>
     <string name="kill_service_on_exit">Encerrar serviço ao sair</string>
     <string name="kill_service_on_exit_description">Parar reprodutor de música em segundo plano ao sair do app</string>

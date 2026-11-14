@@ -121,10 +121,6 @@
     <string name="about_us">درباره ما</string>
     <string name="version">نگارش</string>
     <string name="github">گیت‌هاب</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">برای من یک قهوه بخر</string>
-    <string name="developer_blog">وبلاگ توسعه دهنده</string>
-    <string name="paypal">پی‌پال</string>
     <string name="title">عنوان</string>
     <string name="custom_order">مرتب‌سازی سفارشی</string>
     <string name="album">آلبوم</string>
@@ -248,7 +244,6 @@
     <string name="unlimited">نامحدود</string>
     <string name="third_party_libraries">کتابخانه‌های شخص ثالث</string>
     <string name="description_and_licenses">توضیحات و مجوزها</string>
-    <string name="author">نویسنده</string>
     <string name="other_app">برنامه دیگر</string>
     <string name="database">پایگاه داده برنامه</string>
     <string name="free_space">فضای خالی</string>
@@ -325,7 +320,6 @@
     <string name="repeat_off">تکرار خاموش</string>
     <string name="youtube_transcript">متن ویدیو یوتیوب</string>
     <string name="user_interface">رابط کاربری</string>
-    <string name="donation">اگر از کار من خوشتان می‌آید، یک قهوه به من بدهید</string>
     <string name="relax">آرامش</string>
     <string name="sleep">خواب</string>
     <string name="energize">انرژی‌بخش</string>
@@ -398,7 +392,6 @@
     <string name="your_discord_token">توکن دیسکورد شما</string>
     <string name="can_not_be_empty">نمی تواند خالی باشد</string>
     <string name="processing">در حال پردازش</string>
-    <string name="website">وب‎سایت</string>
     <string name="download_this_song_video_file_to_your_device">این فایل آهنگ/ویدیو را روی دستگاه خود دانلود کنید</string>
     <string name="kill_service_on_exit">بستن سرویس هنگام خروج</string>
     <string name="kill_service_on_exit_description">توقف پخش موسیقی پس زمینه هنگام خروج از برنامه</string>

@@ -116,9 +116,6 @@
     <string name="about_us">Haqqımızda</string>
     <string name="version">Versiya</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">Mənə qəhvə al</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Başlıq</string>
     <string name="album">Albom</string>
     <string name="youtube_url">YouTube URL</string>
@@ -231,7 +228,6 @@
     <string name="unlimited">Məhdudiyyətsiz</string>
     <string name="third_party_libraries">Üçüncü tərəf kitabxanaları</string>
     <string name="description_and_licenses">Açıqlama və lisenziyalar</string>
-    <string name="author">Yaradıcı</string>
     <string name="other_app">Digər tətbiq</string>
     <string name="database">Tətbiq məlumat bazası</string>
     <string name="free_space">Boş yer</string>
@@ -301,7 +297,6 @@
     <string name="repeat_off">Təkrarlama Bağlı</string>
     <string name="youtube_transcript">YouTube Transkripsiya</string>
     <string name="user_interface">Cild</string>
-    <string name="donation">İşimi sevirsinizsə, mənə qəhvə verin</string>
     <string name="relax">Dincəl</string>
     <string name="sleep">Yuxu</string>
     <string name="energize">Enerjili</string>

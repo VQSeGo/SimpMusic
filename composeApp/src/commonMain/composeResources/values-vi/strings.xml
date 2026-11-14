@@ -135,13 +135,6 @@
     <string name="about_us">Về tôi</string>
     <string name="version">Phiên bản</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">Theo dõi tôi trên X</string>
-    <string name="buy_me_a_coffee">Hỗ trợ tôi</string>
-    <string name="developer_blog">Blog của nhà phát triển</string>
-    <string name="developer_blog_tagline">Đọc các ghi chép của nhà phát triển, hướng dẫn &amp; đằng sau các tính năng</string>
-    <string name="visit_blog">Ghé thăm blog</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Tiêu đề</string>
     <string name="custom_order">Bộ lọc tuỳ chỉnh</string>
     <string name="album">Album</string>
@@ -267,7 +260,6 @@
     <string name="unlimited">Không giới hạn</string>
     <string name="third_party_libraries">Thư viện bên thứ ba</string>
     <string name="description_and_licenses">Mô tả và giấy phép</string>
-    <string name="author">Tác giả</string>
     <string name="other_app">Ứng dụng khác</string>
     <string name="database">Cơ sở dữ liệu của ứng dụng</string>
     <string name="free_space">Còn trống</string>
@@ -418,7 +410,6 @@
     <string name="theme_color_wallpaper">Hình nền</string>
     <string name="theme_color_custom">Tuỳ chỉnh</string>
     <string name="custom_color">Màu tùy chỉnh</string>
-    <string name="donation">Nếu bạn yêu thích những gi mà tác giả đã làm, hãy gửi cho họ một ly cà phê</string>
     <string name="relax">Thư giãn</string>
     <string name="sleep">Dễ ngủ</string>
     <string name="energize">Nạp năng lượng</string>
@@ -503,7 +494,6 @@
     <string name="your_discord_token">Mã token Discord</string>
     <string name="can_not_be_empty">Không được để trống</string>
     <string name="processing">Đang xử lý</string>
-    <string name="website">Trang web</string>
     <string name="download_this_song_video_file_to_your_device">Tải xuống bài hát/video này về thiết bị của bạn</string>
     <string name="kill_service_on_exit">Tắt trình phát nhạc khi thoát ứng dụng</string>
     <string name="kill_service_on_exit_description">Dừng trình phát nhạc trong nền khi thoát ứng dụng</string>

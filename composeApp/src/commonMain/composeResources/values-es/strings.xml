@@ -127,13 +127,6 @@
     <string name="about_us">Sobre nosotros</string>
     <string name="version">Versión</string>
     <string name="github">GitHub</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">Sigueme en X</string>
-    <string name="buy_me_a_coffee">Cómprame un café</string>
-    <string name="developer_blog"></string>
-    <string name="developer_blog_tagline">Leer notas de desarrollo, tutoriales &amp; detrás de la escena</string>
-    <string name="visit_blog">Visita el blog</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Título</string>
     <string name="custom_order">Orden personalizado</string>
     <string name="album">Álbum</string>
@@ -257,7 +250,6 @@
     <string name="unlimited">Ilimitado</string>
     <string name="third_party_libraries">Bibliotecas de terceros</string>
     <string name="description_and_licenses">Descripción y licencias</string>
-    <string name="author">Autor</string>
     <string name="other_app">Otra aplicación</string>
     <string name="database">Base de datos de la aplicación</string>
     <string name="free_space">Espacio libre</string>
@@ -402,7 +394,6 @@
     <string name="theme_color_wallpaper">Fondo de pantalla</string>
     <string name="theme_color_custom">Personalizado</string>
     <string name="custom_color">Color personalizado</string>
-    <string name="donation">Si te gusta mi trabajo, invítame un café</string>
     <string name="relax">Relax</string>
     <string name="sleep">Para dormir</string>
     <string name="energize">Enérgica</string>
@@ -487,7 +478,6 @@
     <string name="your_discord_token">Tu token de Discord</string>
     <string name="can_not_be_empty">No puede estar vacío</string>
     <string name="processing">Procesando</string>
-    <string name="website">Página web</string>
     <string name="download_this_song_video_file_to_your_device">Descargar este archivo de canción/vídeo a tu dispositivo</string>
     <string name="kill_service_on_exit">Cerrar servicio al salir</string>
     <string name="kill_service_on_exit_description">Detener reproductor de música en segundo plano al salir de la aplicación</string>

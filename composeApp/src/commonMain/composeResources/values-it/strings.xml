@@ -137,13 +137,6 @@
     <string name="about_us">Su di noi</string>
     <string name="version">Versione</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">Seguimi su X</string>
-    <string name="buy_me_a_coffee">Offrimi un caffè</string>
-    <string name="developer_blog">Blog degli sviluppatori</string>
-    <string name="developer_blog_tagline">Leggi le note degli sviluppatori, i tutorial e i dietro le quinte</string>
-    <string name="visit_blog">Visita il blog</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Titolo</string>
     <string name="custom_order">Ordine personalizzato</string>
     <string name="album">Album</string>
@@ -269,7 +262,6 @@
     <string name="unlimited">Illimitato</string>
     <string name="third_party_libraries">Librerie di terze parti</string>
     <string name="description_and_licenses">Descrizione e licenze</string>
-    <string name="author">Autore</string>
     <string name="other_app">Altre app</string>
     <string name="database">Database delle applicazioni</string>
     <string name="free_space">Spazio libero</string>
@@ -407,7 +399,6 @@
     <string name="theme_color_wallpaper">Sfondo</string>
     <string name="theme_color_custom">Personalizzato</string>
     <string name="custom_color">Colore personalizzato</string>
-    <string name="donation">Se apprezzi il mio lavoro, donami un caffè</string>
     <string name="relax">Relax</string>
     <string name="sleep">Riposo</string>
     <string name="energize">Energetico</string>
@@ -492,7 +483,6 @@
     <string name="your_discord_token">Il tuo token di Discord</string>
     <string name="can_not_be_empty">Il campo non può essere vuoto</string>
     <string name="processing">In elaborazione</string>
-    <string name="website">Sito web</string>
     <string name="download_this_song_video_file_to_your_device">Scarica questa canzone/file video sul tuo dispositivo</string>
     <string name="kill_service_on_exit">Termina il servizio all'uscita</string>
     <string name="kill_service_on_exit_description">Ferma il riproduttore musicale in background all'uscita dall'app</string>

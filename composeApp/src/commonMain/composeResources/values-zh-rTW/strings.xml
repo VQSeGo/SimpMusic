@@ -130,13 +130,6 @@
     <string name="about_us">關於我們</string>
     <string name="version">版本</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">在X上追蹤我</string>
-    <string name="buy_me_a_coffee">求贊助QAQ</string>
-    <string name="developer_blog">部落格</string>
-    <string name="developer_blog_tagline">閱讀開發日誌、教學及幕後花絮</string>
-    <string name="visit_blog">訪問紀錄</string>
-    <string name="paypal">Paypal</string>
     <string name="title">標題</string>
     <string name="custom_order">客製訂單</string>
     <string name="album">專輯</string>
@@ -260,7 +253,6 @@
     <string name="unlimited">無限制</string>
     <string name="third_party_libraries">第三方程式庫</string>
     <string name="description_and_licenses">開放原始碼軟體的授權詳細資料</string>
-    <string name="author">作者</string>
     <string name="other_app">其他應用程式</string>
     <string name="database">應用程式資料庫</string>
     <string name="free_space">可用空間</string>
@@ -405,7 +397,6 @@
     <string name="theme_color_wallpaper">跟隨桌布</string>
     <string name="theme_color_custom">自訂</string>
     <string name="custom_color">自訂顏色</string>
-    <string name="donation">如果你喜歡我的工作，請給我一杯咖啡</string>
     <string name="relax">放鬆</string>
     <string name="sleep">睡眠</string>
     <string name="energize">活力</string>
@@ -490,7 +481,6 @@
     <string name="your_discord_token">你的 Discord token</string>
     <string name="can_not_be_empty">不能為空</string>
     <string name="processing">處理中</string>
-    <string name="website">網站</string>
     <string name="download_this_song_video_file_to_your_device">下載此歌曲/影片檔案到您的裝置</string>
     <string name="kill_service_on_exit">離開時關閉服務</string>
     <string name="kill_service_on_exit_description">離開應用程式時停止背景音樂播放器</string>

@@ -116,9 +116,6 @@
     <string name="about_us">Tietoa meistä</string>
     <string name="version">Versio</string>
     <string name="github">GitHub</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">Osta minulle kahvi</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Otsikko</string>
     <string name="album">Albumi</string>
     <string name="youtube_url">YouTube-URL</string>
@@ -231,7 +228,6 @@
     <string name="unlimited">Rajoittamaton</string>
     <string name="third_party_libraries">Kolmansien osapuolten kirjastot</string>
     <string name="description_and_licenses">Kuvaus ja lisenssit</string>
-    <string name="author">Tekijä</string>
     <string name="other_app">Muut sovellukset</string>
     <string name="database">Sovellustietokanta</string>
     <string name="free_space">Vapaata tilaa</string>

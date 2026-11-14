@@ -139,15 +139,9 @@
     <string name="restore_your_data">Восстановление данных</string>
     <string name="restore_your_saved_data">Восстановление сохраненных данных</string>
     <string name="about_us">О нас</string>
+    <string name="based_on_simpmusic">Основано на SimpMusic (maxrave-dev), GPL-3.0</string>
     <string name="version">Версия</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">Следите за мной на X</string>
-    <string name="buy_me_a_coffee">Купите мне кофе</string>
-    <string name="developer_blog">Блог разработчика</string>
-    <string name="developer_blog_tagline">Читайте заметки разработчика, руководства и информацию о процессе разработки</string>
-    <string name="visit_blog">Посетить блог</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Название</string>
     <string name="custom_order">Свой порядок</string>
     <string name="album">Альбом</string>
@@ -274,7 +268,6 @@
     <string name="unlimited">Безлимитный</string>
     <string name="third_party_libraries">Сторонние библиотеки</string>
     <string name="description_and_licenses">Описание и лицензии</string>
-    <string name="author">Автор</string>
     <string name="other_app">Другое приложение</string>
     <string name="database">База данных приложений</string>
     <string name="free_space">Свободное место</string>
@@ -428,7 +421,6 @@
     <string name="theme_color_wallpaper">Обои</string>
     <string name="theme_color_custom">Пользовательский</string>
     <string name="custom_color">Пользовательский цвет</string>
-    <string name="donation">Если вам нравится моя работа — купите мне кофе</string>
     <string name="relax">Релакс</string>
     <string name="sleep">Сон</string>
     <string name="energize">Тренировка</string>
@@ -513,7 +505,6 @@
     <string name="your_discord_token">Ваш Discord токен</string>
     <string name="can_not_be_empty">Не может быть пустым</string>
     <string name="processing">Обработка</string>
-    <string name="website">Веб-сайт</string>
     <string name="download_this_song_video_file_to_your_device">Загрузите эту песню/видеофайл на свое устройство</string>
     <string name="kill_service_on_exit">Убить сервис при выходе</string>
     <string name="kill_service_on_exit_description">Остановить воспроизведение при выходе из приложения</string>

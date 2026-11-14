@@ -121,12 +121,6 @@
     <string name="about_us">O aplikaciji us</string>
     <string name="version">Version</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">Buy me a coffee</string>
-    <string name="developer_blog">Developer Blog</string>
-    <string name="developer_blog_tagline">Read dev notes, tutorials &amp; behind-the-scenes</string>
-    <string name="visit_blog">Visit blog</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Title</string>
     <string name="custom_order">Prilagođeno order</string>
     <string name="album">Album</string>
@@ -250,7 +244,6 @@
     <string name="unlimited">Unlimited</string>
     <string name="third_party_libraries">Third party libraries</string>
     <string name="description_and_licenses">Opis and licenses</string>
-    <string name="author">Author</string>
     <string name="other_app">Other app</string>
     <string name="database">App database</string>
     <string name="free_space">Free space</string>
@@ -395,7 +388,6 @@
     <string name="theme_color_wallpaper">Wallpaper</string>
     <string name="theme_color_custom">Prilagođeno</string>
     <string name="custom_color">Prilagođeno color</string>
-    <string name="donation">If you love my work, give me a coffee</string>
     <string name="relax">Relax</string>
     <string name="sleep">Sleep</string>
     <string name="energize">Energize</string>
@@ -480,7 +472,6 @@
     <string name="your_discord_token">Your Discord token</string>
     <string name="can_not_be_empty">Can not be empty</string>
     <string name="processing">Processing</string>
-    <string name="website">Web-stranica</string>
     <string name="download_this_song_video_file_to_your_device">Preuzmi this song/video file to your device</string>
     <string name="kill_service_on_exit">Kill service on exit</string>
     <string name="kill_service_on_exit_description">Stop background music player when exiting app</string>

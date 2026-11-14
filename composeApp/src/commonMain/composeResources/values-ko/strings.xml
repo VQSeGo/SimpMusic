@@ -121,12 +121,6 @@
     <string name="about_us">정보</string>
     <string name="version">버전</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="buy_me_a_coffee">Buy me a coffee</string>
-    <string name="developer_blog">개발자 블로그</string>
-    <string name="developer_blog_tagline">개발 노트, 튜토리얼 &amp; 비하인드 스토리를 읽어보세요</string>
-    <string name="visit_blog">블로그 방문하기</string>
-    <string name="paypal">PayPal</string>
     <string name="title">제목</string>
     <string name="custom_order">사용자 지정 순서</string>
     <string name="album">앨범</string>
@@ -245,7 +239,6 @@
     <string name="unlimited">무제한</string>
     <string name="third_party_libraries">서드파티 라이브러리</string>
     <string name="description_and_licenses">설명 및 라이선스</string>
-    <string name="author">제작자</string>
     <string name="other_app">다른 앱</string>
     <string name="database">앱 데이터베이스</string>
     <string name="free_space">남은 공간</string>
@@ -336,7 +329,6 @@
     <string name="theme_color_wallpaper">배경화면</string>
     <string name="theme_color_custom">사용자 지정</string>
     <string name="custom_color">사용자 지정 색상</string>
-    <string name="donation">앱이 마음에 드시면, 커피 한 잔으로 응원해주세요</string>
     <string name="relax">휴식</string>
     <string name="sleep">잠잘 때</string>
     <string name="energize">에너지 충전</string>
@@ -414,7 +406,6 @@
     <string name="your_discord_token">내 Discord 토큰</string>
     <string name="can_not_be_empty">비워둘 수 없습니다</string>
     <string name="processing">처리 중</string>
-    <string name="website">웹사이트</string>
     <string name="download_this_song_video_file_to_your_device">이 음악/동영상 파일을 기기로 다운로드</string>
     <string name="kill_service_on_exit">나갈 때 서비스 종료</string>
     <string name="kill_service_on_exit_description">앱을 종료할 때 백그라운드 음악 플레이어 멈춤</string>

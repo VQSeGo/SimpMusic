@@ -145,6 +145,11 @@
   «Канал обновлений», ключ DataStore `update_channel`, строка `update_channel`). Обновления берутся только из релизов
   форка `VQSeGo/SimpMusic`; новее считается тег с большими числами, суффикс (`-1`, `-hf`) не в счёт, поэтому перед
   релизом поднимают `version-name` в `gradle/libs.versions.toml`.
+  Также: раздел об авторе и пожертвованиях (строки настроек «Автор», «Следите за мной на X», «Блог разработчика», «Купи кофе»,
+  те же ссылки и кнопки сайта, блога и спонсорства на `CreditScreen`; строковые ключи `author`, `maxrave_dev`, `follow_me_on_x`,
+  `buy_me_a_coffee`, `developer_blog`, `developer_blog_tagline`, `donation`, `paypal`, `visit_blog`, `website`; строка автора в
+  `EndOfPage`). Авторство оригинала (GPL-3.0) остаётся: строка `based_on_simpmusic` рядом с версией в настройках и на `CreditScreen`,
+  там же юридический текст. Кнопка Discord «Visit SimpMusic» ведёт на репозиторий форка, GitHub и «Проблемы» на `CreditScreen` тоже.
 - Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки

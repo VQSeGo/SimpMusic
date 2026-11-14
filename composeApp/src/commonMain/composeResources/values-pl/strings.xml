@@ -129,13 +129,6 @@
     <string name="about_us">O nas</string>
     <string name="version">Wersja</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">Obserwuj mnie na X</string>
-    <string name="buy_me_a_coffee">Kup mi kawę</string>
-    <string name="developer_blog">Blog dewelopera</string>
-    <string name="developer_blog_tagline">Czytaj notatki deweloperów &amp; poradniki i materiały zza kulis</string>
-    <string name="visit_blog">Odwiedź blog</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Tytuł</string>
     <string name="custom_order">Kolejność niestandardowa</string>
     <string name="album">Album</string>
@@ -261,7 +254,6 @@
     <string name="unlimited">Nieograniczone</string>
     <string name="third_party_libraries">Biblioteki zewnętrzne</string>
     <string name="description_and_licenses">Opis i licencje</string>
-    <string name="author">Autor</string>
     <string name="other_app">Inne aplikacje</string>
     <string name="database">Baza aplikacji</string>
     <string name="free_space">Wolne miejsce</string>
@@ -376,7 +368,6 @@
     <string name="theme_color_wallpaper">Tapeta</string>
     <string name="theme_color_custom">Niestandardowy</string>
     <string name="custom_color">Kolor niestandardowy</string>
-    <string name="donation">Jeśli lubisz moją pracę, kup mi kawę</string>
     <string name="relax">Relaks</string>
     <string name="sleep">Sen</string>
     <string name="energize">Pobudzenie</string>
@@ -453,7 +444,6 @@
     <string name="your_discord_token">Twój token Discord</string>
     <string name="can_not_be_empty">Nie może być puste</string>
     <string name="processing">Przetwarzane</string>
-    <string name="website">Strona</string>
     <string name="download_this_song_video_file_to_your_device">Pobierz ten plik piosenki/wideo na swoje urządzenie</string>
     <string name="kill_service_on_exit">Zabij usługę przy wyjściu</string>
     <string name="kill_service_on_exit_description">Zatrzymaj muzykę w tle podczas zamykania aplikacji</string>

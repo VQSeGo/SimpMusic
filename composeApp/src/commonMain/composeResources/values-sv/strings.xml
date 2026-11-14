@@ -137,13 +137,6 @@
     <string name="about_us">Om oss</string>
     <string name="version">Version</string>
     <string name="github">GitHub</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">Följ mig på X</string>
-    <string name="buy_me_a_coffee">Bjud mig på en kaffe</string>
-    <string name="developer_blog">Utvecklarblogg</string>
-    <string name="developer_blog_tagline">Läs utvecklaranteckningar, guider &amp; material bakom kulisserna</string>
-    <string name="visit_blog">Besök bloggen</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Titel</string>
     <string name="custom_order">Egen ordning</string>
     <string name="album">Album</string>
@@ -269,7 +262,6 @@
     <string name="unlimited">Obegränsat</string>
     <string name="third_party_libraries">Tredjepartsbibliotek</string>
     <string name="description_and_licenses">Beskrivning och licenser</string>
-    <string name="author">Upphovsperson</string>
     <string name="other_app">Annan app</string>
     <string name="database">Appens databas</string>
     <string name="free_space">Ledigt utrymme</string>
@@ -421,7 +413,6 @@
     <string name="theme_color_wallpaper">Bakgrundsbild</string>
     <string name="theme_color_custom">Anpassad</string>
     <string name="custom_color">Anpassad färg</string>
-    <string name="donation">Om du uppskattar mitt arbete får du gärna bjuda mig på en kaffe</string>
     <string name="relax">Slappna av</string>
     <string name="sleep">Sömn</string>
     <string name="energize">Få energi</string>
@@ -506,7 +497,6 @@
     <string name="your_discord_token">Din Discord-token</string>
     <string name="can_not_be_empty">Får inte vara tomt</string>
     <string name="processing">Bearbetar</string>
-    <string name="website">Webbplats</string>
     <string name="download_this_song_video_file_to_your_device">Hämta den här låt- eller videofilen till din enhet</string>
     <string name="kill_service_on_exit">Avsluta bakgrundstjänsten när appen stängs</string>
     <string name="kill_service_on_exit_description">Stoppa musikspelartjänsten när appen stängs</string>

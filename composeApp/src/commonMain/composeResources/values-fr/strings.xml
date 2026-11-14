@@ -137,13 +137,6 @@
     <string name="about_us">À propos de nous</string>
     <string name="version">Version</string>
     <string name="github">GitHub</string>
-    <string name="maxrave_dev">maxrave-dev</string>
-    <string name="follow_me_on_x">Suivez-moi sur X</string>
-    <string name="buy_me_a_coffee">Offrez-moi un café ! ☕</string>
-    <string name="developer_blog">Blog des développeurs</string>
-    <string name="developer_blog_tagline">Lisez les notes des développeurs, les tutoriels &amp; les coulisses du projet</string>
-    <string name="visit_blog">Consultez le blog</string>
-    <string name="paypal">PayPal</string>
     <string name="title">Titre</string>
     <string name="custom_order">Commande personnalisée</string>
     <string name="album">Album</string>
@@ -269,7 +262,6 @@
     <string name="unlimited">Illimité</string>
     <string name="third_party_libraries">Bibliothèques tierces</string>
     <string name="description_and_licenses">Description et licences</string>
-    <string name="author">Auteur</string>
     <string name="other_app">Autre application</string>
     <string name="database">Base de données d'applications</string>
     <string name="free_space">Espace libre</string>
@@ -421,7 +413,6 @@
     <string name="theme_color_wallpaper">Fond d'écran</string>
     <string name="theme_color_custom">Personnalisé</string>
     <string name="custom_color">Couleur personnalisée</string>
-    <string name="donation">Si vous appréciez mon travail, offrez-moi un café ! ☕</string>
     <string name="relax">Détente</string>
     <string name="sleep">Sommeil</string>
     <string name="energize">Stimulant</string>
@@ -506,7 +497,6 @@
     <string name="your_discord_token">Votre jeton Discord</string>
     <string name="can_not_be_empty">Ne peut pas être vide</string>
     <string name="processing">Traitement</string>
-    <string name="website">Site web</string>
     <string name="download_this_song_video_file_to_your_device">Télécharger ce fichier audio/vidéo sur votre appareil</string>
     <string name="kill_service_on_exit">Arrêter le service à la fermeture</string>
     <string name="kill_service_on_exit_description">Arrêter la lecture de la musique en arrière-plan à la fermeture de l'application</string>
