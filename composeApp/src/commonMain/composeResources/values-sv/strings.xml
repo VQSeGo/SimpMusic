@@ -272,7 +272,7 @@
     <string name="older_first">Äldre först</string>
     <string name="newer_first">Nyare först</string>
     <string name="added_date">Datum då den lades till</string>
-    <string name="credit_app">En enkel musikapp som använder YouTube Music som datakälla \n\nSimpMusic är ett projekt med öppen källkod för att strömma musik från YouTube och YouTube Music utan annonser och spårning. SimpMusic har många funktioner:\n\n - Strömma musik \n - Synkroniserade låttexter\n - Personanpassade data\n - med mera … \n\nSimpMusic är alltid gratis och utan annonser\n\nSkapad med ❤️ av Tuan Minh Nguyen Duc (maxrave-dev)</string>
+    <string name="credit_app">En enkel musikapp som använder YouTube Music som datakälla \n\nSimpMusic är ett projekt med öppen källkod för att strömma musik från YouTube och YouTube Music utan annonser och spårning. SimpMusic har många funktioner:\n\n - Strömma musik \n - Synkroniserade låttexter\n - Personanpassade data\n - med mera … \n\nSimpMusic är alltid gratis och utan annonser\n\nBuild with ❤️ and Claude from VQSeGo</string>
     <string name="issue_tracker">Ärendehantering</string>
     <string name="featured_playlists">Utvalda spellistor</string>
     <string name="featured_inArtist">Medverkar på</string>
