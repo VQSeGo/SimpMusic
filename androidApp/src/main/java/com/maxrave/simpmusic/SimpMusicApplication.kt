@@ -12,11 +12,6 @@ import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
 import coil3.annotation.ExperimentalCoilApi
-import coil3.compose.preferEndFirstIntrinsicSize
-import coil3.disk.DiskCache
-import coil3.network.okhttp.OkHttpNetworkFetcherFactory
-import coil3.request.CachePolicy
-import coil3.request.crossfade
 import com.maxrave.common.AppIdentity
 import com.maxrave.data.di.loader.loadAllModules
 import com.maxrave.domain.manager.DataStoreManager
@@ -24,14 +19,12 @@ import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Startup
 import com.maxrave.simpmusic.di.viewModelModule
 import com.maxrave.simpmusic.service.backup.AutoBackupScheduler
-import com.maxrave.simpmusic.utils.NetworkFirstInterceptor
+import com.maxrave.simpmusic.utils.AppImageLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import multiplatform.network.cmptoast.AppContext
-import okhttp3.OkHttpClient
-import okio.FileSystem
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.component.KoinComponent
@@ -128,32 +121,7 @@ class SimpMusicApplication :
 
     @OptIn(ExperimentalCoilApi::class)
     override fun newImageLoader(context: PlatformContext): ImageLoader {
-        lateinit var imageLoader: ImageLoader
-        imageLoader =
-            ImageLoader
-                .Builder(context)
-                .components {
-                    add(NetworkFirstInterceptor { imageLoader })
-                    add(
-                        OkHttpNetworkFetcherFactory(
-                            callFactory = {
-                                OkHttpClient()
-                            },
-                        ),
-                    )
-                }.diskCachePolicy(CachePolicy.ENABLED)
-                .networkCachePolicy(CachePolicy.ENABLED)
-                .diskCache(
-                    DiskCache
-                        .Builder()
-                        .directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
-                        .maxSizeBytes(512L * 1024 * 1024)
-                        .build(),
-                ).crossfade(true)
-                // CrossfadePainter otherwise sizes itself as max(placeholder, image) once and keeps it,
-                // so a square holder over a wide banner leaves the banner zoomed after the fade.
-                .preferEndFirstIntrinsicSize(true)
-                .build()
-        return imageLoader
+        // cacheDir explicitly: the okio temp directory resolves to it on Android, but only by convention.
+        return AppImageLoader.build(context, AppImageLoader.cacheDirectory(cacheDir))
     }
 }

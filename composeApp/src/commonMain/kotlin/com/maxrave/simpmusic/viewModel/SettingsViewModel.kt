@@ -756,8 +756,9 @@ class SettingsViewModel(
 
     fun getThumbCacheSize(context: PlatformContext) {
         viewModelScope.launch {
-            val diskCache = SingletonImageLoader.get(context).diskCache
-            _thumbCacheSize.emit(diskCache?.size)
+            // The first touch opens the cache journal: file work, not for the main thread.
+            val size = withContext(Dispatchers.IO) { SingletonImageLoader.get(context).diskCache?.size }
+            _thumbCacheSize.emit(size)
         }
     }
 
@@ -1379,7 +1380,7 @@ class SettingsViewModel(
     @ExperimentalCoilApi
     fun clearThumbnailCache(platformContext: PlatformContext) {
         viewModelScope.launch {
-            SingletonImageLoader.get(platformContext).diskCache?.clear()
+            withContext(Dispatchers.IO) { SingletonImageLoader.get(platformContext).diskCache?.clear() }
             makeToast(getString(Res.string.clear_thumbnail_cache))
             getThumbCacheSize(platformContext)
         }

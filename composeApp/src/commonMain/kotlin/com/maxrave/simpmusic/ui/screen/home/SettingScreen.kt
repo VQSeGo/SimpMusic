@@ -1685,8 +1685,7 @@ fun SettingScreen(
                         )
                     },
                 )
-                // Desktop has no download cache to clear here (downloads are managed on their own
-                // screen), and its image cache has no size reader yet.
+                // Desktop has no download cache to clear here (downloads are managed on their own screen).
                 if (getPlatform() == Platform.Android) {
                     SettingItem(
                         title = stringResource(Res.string.downloaded_cache),
@@ -1705,24 +1704,24 @@ fun SettingScreen(
                             )
                         },
                     )
-                    SettingItem(
-                        title = stringResource(Res.string.thumbnail_cache),
-                        subtitle = "${thumbnailCache.bytesToMB()} MB",
-                        onClick = {
-                            viewModel.setBasicAlertData(
-                                SettingBasicAlertState(
-                                    title = runBlocking { getString(Res.string.clear_thumbnail_cache) },
-                                    message = null,
-                                    confirm =
-                                        runBlocking { getString(Res.string.clear) } to {
-                                            viewModel.clearThumbnailCache(platformContext)
-                                        },
-                                    dismiss = runBlocking { getString(Res.string.cancel) },
-                                ),
-                            )
-                        },
-                    )
                 }
+                SettingItem(
+                    title = stringResource(Res.string.thumbnail_cache),
+                    subtitle = "${thumbnailCache.bytesToMB()} MB",
+                    onClick = {
+                        viewModel.setBasicAlertData(
+                            SettingBasicAlertState(
+                                title = runBlocking { getString(Res.string.clear_thumbnail_cache) },
+                                message = null,
+                                confirm =
+                                    runBlocking { getString(Res.string.clear) } to {
+                                        viewModel.clearThumbnailCache(platformContext)
+                                    },
+                                dismiss = runBlocking { getString(Res.string.cancel) },
+                            ),
+                        )
+                    },
+                )
                 SettingItem(
                     title = stringResource(Res.string.limit_player_cache),
                     subtitle = LIMIT_CACHE_SIZE.getItemFromData(limitPlayerCache).toString(),
