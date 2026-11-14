@@ -135,8 +135,7 @@
   Также: комментарии YouTube (код удалён полностью: `CommentsViewModel`, `CommentsBottomSheet`, иконка `CommentOutline`,
   `SongRepository.getComments` / `postComment` / `performCommentAction`, `YouTube.comments` / `createComment`, `CommentsPage`,
   модели и строки). Кнопки комментариев в плеере уже не было.
-- Ещё не сделано: редизайн настроек; такой же фикс гонки подписки на трек в `MediaServiceHandlerImpl`
-  (на десктопе исправлено).
+- Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки
 
