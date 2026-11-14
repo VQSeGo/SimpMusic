@@ -104,6 +104,7 @@ import com.maxrave.simpmusic.ui.theme.parseThemeColorHex
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.utils.VersionManager
 import com.maxrave.simpmusic.utils.isAppLinkAvailable
+import com.maxrave.simpmusic.utils.pickUpdateDownloadUrl
 import com.maxrave.simpmusic.utils.libraryTabOf
 import com.maxrave.simpmusic.viewModel.SharedViewModel
 import com.mikepenz.markdown.m3.Markdown
@@ -408,8 +409,7 @@ fun App(
     LaunchedEffect(updateData) {
         val response = updateData ?: return@LaunchedEffect
         // Only a NEWER release is offered. This used to compare the tags for inequality, which told a
-        // build ahead of the latest release (dev, beta) to "update" back down to it, and told every
-        // F-Droid-channel user to update on each launch: that channel's tag carries no leading "v".
+        // build ahead of the latest release (dev, beta) to "update" back down to it.
         if (viewModel.showedUpdateDialog && VersionManager.isBehind(response.tagName)) {
             shouldShowUpdateDialog = true
         }
@@ -846,7 +846,7 @@ fun App(
                                 onClick = {
                                     shouldShowUpdateDialog = false
                                     viewModel.showedUpdateDialog = false
-                                    openUrl("https://simpmusic.org/download")
+                                    openUrl(pickUpdateDownloadUrl(response.assets, response.pageUrl, getPlatform().osName()))
                                 },
                             ) {
                                 Text(

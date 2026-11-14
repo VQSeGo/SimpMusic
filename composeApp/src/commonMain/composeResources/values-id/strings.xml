@@ -446,7 +446,6 @@
     <string name="no_playlist_found">Tidak ada daftar putar lokal yang ditemukan, silakan buat terlebih dahulu</string>
     <string name="list_all_cookies_of_this_page">Daftar semua cookie dari halaman ini</string>
     <string name="copied_to_clipboard">Disalin ke papan klip</string>
-    <string name="update_channel">Perbaharui saluran</string>
     <string name="enable_liquid_glass_effect">Aktifkan liquid glass (BETA)</string>
     <string name="enable_liquid_glass_effect_description">Aktifkan efek liquid glass iOS di beberapa posisi (Android 13+)</string>
     <string name="your_library">Pustaka Anda</string>

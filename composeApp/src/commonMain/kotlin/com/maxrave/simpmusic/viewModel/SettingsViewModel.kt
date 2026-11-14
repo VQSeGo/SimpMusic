@@ -135,8 +135,6 @@ class SettingsViewModel(
     val proxyPassword: StateFlow<String> = _proxyPassword
     private var _autoCheckUpdate = MutableStateFlow(false)
     val autoCheckUpdate: StateFlow<Boolean> = _autoCheckUpdate
-    private var _updateChannel: MutableStateFlow<String> = MutableStateFlow(DataStoreManager.GITHUB)
-    val updateChannel: StateFlow<String> = _updateChannel
     private val _crossfadeEnabled = MutableStateFlow<Boolean>(false)
     val crossfadeEnabled: StateFlow<Boolean> = _crossfadeEnabled
     private val _crossfadeDuration = MutableStateFlow<Int>(5000)
@@ -258,7 +256,6 @@ class SettingsViewModel(
         getAutoDownloadLikedSongs()
         getSmartDownloads()
         getBackupDownloaded()
-        getUpdateChannel()
         getEnableLiquidGlass()
         getExplicitContentEnabled()
         getDiscordLoggedIn()
@@ -531,21 +528,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             dataStoreManager.setEnableLiquidGlass(enableLiquidGlass)
             getEnableLiquidGlass()
-        }
-    }
-
-    private fun getUpdateChannel() {
-        viewModelScope.launch {
-            dataStoreManager.updateChannel.collect { channel ->
-                _updateChannel.value = channel
-            }
-        }
-    }
-
-    fun setUpdateChannel(channel: String) {
-        viewModelScope.launch {
-            dataStoreManager.setUpdateChannel(channel)
-            getUpdateChannel()
         }
     }
 

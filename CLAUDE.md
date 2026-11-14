@@ -141,6 +141,10 @@
   (`expect` и оба `actual`), иконка `MusicCast`, строки `audio_output_cast` и `not_available_while_casting` (настройки
   эквалайзера и кроссфейда больше не гаснут), зависимости `media3-cast`, `play-services-cast-framework`, `mediarouter`.
   `MAIN_PLAYER` в Koin теперь сам `ForwardingPlayer` адаптера, его же получает `MediaLibrarySession`.
+  Также: выбор канала обновлений и ветка F-Droid (запрос к `f-droid.org`, `FdroidResponse`, `checkForFdroidUpdate`, настройка
+  «Канал обновлений», ключ DataStore `update_channel`, строка `update_channel`). Обновления берутся только из релизов
+  форка `VQSeGo/SimpMusic`; новее считается тег с большими числами, суффикс (`-1`, `-hf`) не в счёт, поэтому перед
+  релизом поднимают `version-name` в `gradle/libs.versions.toml`.
 - Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки

@@ -536,7 +536,6 @@
     <string name="no_playlist_found">Nessuna playlist locale trovata, per favore creane prima una</string>
     <string name="list_all_cookies_of_this_page">Elenca tutti i cookie di questa pagina</string>
     <string name="copied_to_clipboard">Copiato negli appunti</string>
-    <string name="update_channel">Aggiorna il canale</string>
     <string name="enable_liquid_glass_effect">Abilita liquid glass (BETA)</string>
     <string name="enable_liquid_glass_effect_description">Abilita l'effetto liquid glass di iOS in alcuni punti (Android 13+)</string>
     <string name="your_library">La tua libreria</string>

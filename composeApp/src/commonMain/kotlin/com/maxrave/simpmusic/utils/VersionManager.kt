@@ -31,31 +31,47 @@ object VersionManager {
 }
 
 /**
- * True when release [tag] should be offered to a build running [current]. GitHub tags carry a leading
- * "v" ("v2.3.0") and F-Droid's do not ("2.3.0"). It is offered unless it is this very version or this
- * build is already ahead of it (dev and beta builds run ahead of the latest release). A hotfix
- * ("2.3.0-hf") has the same numbers as the release it fixes, so only its name tells it apart.
+ * True when release [tag] is newer than a build running [current]. The fork's releases are tagged
+ * `v<version>` (see `.github/workflows/release.yml`) and the build carries the bare `<version>` from
+ * `libs.versions.toml`, so a leading "v" is ignored. Only the dotted numbers decide, compared part by
+ * part ("2.10.0" is newer than "2.9.0"); a suffix such as "-1" or "-hf" does not, since the build
+ * cannot carry it, and a tag that differs from the build only by a suffix would otherwise be offered
+ * on every launch. The one exception is a pre-release build ("2.5.0-beta") and the final release
+ * with the same numbers. An empty or unparsable tag or version is never newer.
  */
 internal fun isNewerRelease(
     current: String,
     tag: String,
 ): Boolean {
-    val release = tag.trim().removePrefix("v")
-    return release != current && compareVersions(current, release) <= 0
+    val installed = parseVersion(current) ?: return false
+    val release = parseVersion(tag) ?: return false
+    val diff = compareVersions(installed.numbers, release.numbers)
+    return diff < 0 || (diff == 0 && installed.suffix != null && release.suffix == null)
 }
 
-/** Dotted versions compared number by number, so "2.10.0" is newer than "2.9.0". A suffix such as "-hf" is ignored. */
-internal fun compareVersions(
-    a: String,
-    b: String,
+internal class ParsedVersion(
+    val numbers: List<Int>,
+    val suffix: String?,
+)
+
+private val versionPattern = Regex("""\d+(\.\d+)*""")
+
+/** "v2.5.1-hf" to ([2, 5, 1], "hf"); null for anything that does not start with dotted numbers. */
+internal fun parseVersion(raw: String): ParsedVersion? {
+    val version = raw.trim().removePrefix("v").removePrefix("V")
+    val numbers = version.substringBefore('-')
+    if (!versionPattern.matches(numbers)) return null
+    val suffix = if ('-' in version) version.substringAfter('-').ifBlank { null } else null
+    return ParsedVersion(numbers.split('.').map { it.toIntOrNull() ?: return null }, suffix)
+}
+
+private fun compareVersions(
+    a: List<Int>,
+    b: List<Int>,
 ): Int {
-    val x = versionNumbers(a)
-    val y = versionNumbers(b)
-    for (i in 0 until maxOf(x.size, y.size)) {
-        val diff = x.getOrElse(i) { 0 }.compareTo(y.getOrElse(i) { 0 })
+    for (i in 0 until maxOf(a.size, b.size)) {
+        val diff = a.getOrElse(i) { 0 }.compareTo(b.getOrElse(i) { 0 })
         if (diff != 0) return diff
     }
     return 0
 }
-
-private fun versionNumbers(version: String): List<Int> = version.substringBefore('-').split('.').map { it.trim().toIntOrNull() ?: 0 }

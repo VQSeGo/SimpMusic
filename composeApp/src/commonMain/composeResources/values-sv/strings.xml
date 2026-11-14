@@ -556,7 +556,6 @@
     <string name="no_playlist_found">Inga lokala spellistor hittades. Skapa en först.</string>
     <string name="list_all_cookies_of_this_page">Visa alla cookies på den här sidan</string>
     <string name="copied_to_clipboard">Kopierat till urklipp</string>
-    <string name="update_channel">Uppdateringskanal</string>
     <string name="enable_liquid_glass_effect">Aktivera Liquid Glass (BETA)</string>
     <string name="enable_liquid_glass_effect_description">Aktivera iOS-effekten Liquid Glass på vissa ställen (Android 13+)</string>
     <string name="your_library">Ditt bibliotek</string>

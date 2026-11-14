@@ -2,7 +2,9 @@ name: Release
 
 # Builds the phone APKs, the Linux AppImage and the Windows installer and publishes them as a GitHub
 # release. Run it with the button on the Actions tab and type the version (the tag is made for you), or
-# push a tag like v2.5.0-1. The button needs this file on the repository's default branch.
+# push a tag like v2.5.1. The tag number must be the version-name in gradle/libs.versions.toml, bumped
+# before the release: the app offers an update only when the tag's numbers are higher than its own
+# (a suffix such as -1 does not count). The button needs this file on the repository's default branch.
 #
 # Secrets: SIGNING_KEY (keystore in base64), ALIAS, KEY_STORE_PASSWORD, KEY_PASSWORD and
 # CONVEYOR_SIGNING_KEY. The Windows certificate derives from the last one, so keep it the same.
@@ -10,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version, for example 2.5.0-1'
+        description: 'Version, for example 2.5.1 (the version-name of the build)'
         required: true
         type: string
   push:

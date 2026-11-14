@@ -75,6 +75,7 @@ import com.maxrave.simpmusic.expect.ui.toByteArray
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.screen.player.albumIdOf
 import com.maxrave.simpmusic.utils.VersionManager
+import com.maxrave.simpmusic.utils.pickUpdateDownloadUrl
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -807,45 +808,34 @@ class SharedViewModel(
         // startup, can never miss a check that is already under way but not yet marked.
         _isCheckingUpdate.value = true
         viewModelScope.launch {
-            val updateChannel = dataStoreManager.updateChannel.first()
             dataStoreManager.putString(
                 "CheckForUpdateAt",
                 System.currentTimeMillis().toString(),
             )
-            if (updateChannel == DataStoreManager.GITHUB) {
-                updateRepository.checkForGithubReleaseUpdate().collectLatest { response ->
-                    val data = response.data
-                    when (response) {
-                        is Resource.Success if (data != null) -> {
-                            _updateResponse.value = data
-                            showedUpdateDialog = true
-                        }
-
-                        else -> {
-                            log("Check for update error: ${response.message}", LogLevel.WARN)
-                        }
+            updateRepository.checkForGithubReleaseUpdate().collectLatest { response ->
+                val data = response.data
+                when (response) {
+                    is Resource.Success if (data != null) -> {
+                        val newer = VersionManager.isBehind(data.tagName)
+                        Logger.i(
+                            "Update",
+                            "latest ${data.tagName} current ${VersionManager.getVersionName()} newer=$newer " +
+                                "url=${if (newer) pickUpdateDownloadUrl(data.assets, data.pageUrl, getPlatform().osName()) else "-"}",
+                        )
+                        _updateResponse.value = data
+                        showedUpdateDialog = true
                     }
-                    _isCheckingUpdate.value = false
-                }
-            } else if (updateChannel == DataStoreManager.FDROID) {
-                updateRepository.checkForFdroidUpdate().collectLatest { response ->
-                    val data = response.data
-                    when (response) {
-                        is Resource.Success if (data != null) -> {
-                            _updateResponse.value = data
-                            showedUpdateDialog = true
-                        }
 
-                        else -> {
-                            log("Check for update error: ${response.message}", LogLevel.WARN)
-                        }
+                    // A repository without a release answers 404 and a missing network throws: neither
+                    // is worth more than a log line, there is nothing for the user to do about it.
+                    else -> {
+                        Logger.i("Update", "check failed: ${response.message}")
                     }
-                    _isCheckingUpdate.value = false
                 }
+                _isCheckingUpdate.value = false
             }
         }.invokeOnCompletion {
-            // Also for a channel neither branch handles, and for a check that throws: the launch
-            // banner waits for this flag, so it must never stay raised.
+            // Also for a check that throws: the flag must never stay raised.
             _isCheckingUpdate.value = false
         }
     }
@@ -1513,7 +1503,14 @@ class SharedViewModel(
         _reloadDestination.value = null
     }
 
-    fun shouldCheckForUpdate(): Boolean = runBlocking { dataStoreManager.autoCheckForUpdates.first() == TRUE }
+    suspend fun shouldCheckForUpdate(): Boolean = dataStoreManager.autoCheckForUpdates.first() == TRUE
+
+    /** The launch check: reads the setting off the main thread, then asks GitHub if it is on. */
+    fun checkForUpdateIfEnabled() {
+        viewModelScope.launch {
+            if (shouldCheckForUpdate()) checkForUpdate()
+        }
+    }
 
     private var _downloadFileProgress = MutableStateFlow<DownloadProgress>(DownloadProgress.INIT)
     val downloadFileProgress: StateFlow<DownloadProgress> get() = _downloadFileProgress

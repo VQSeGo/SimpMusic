@@ -265,9 +265,7 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
     desktopNotificationManager.initialize()
 
     val sharedViewModel = getKoin().get<SharedViewModel>()
-    if (sharedViewModel.shouldCheckForUpdate()) {
-        sharedViewModel.checkForUpdate()
-    }
+    sharedViewModel.checkForUpdateIfEnabled()
 
     // Connect deep link handler to SharedViewModel
     DesktopDeepLinkHandler.listener = { intent ->
