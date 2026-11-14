@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearWavyProgressIndicator
+import androidx.compose.material3.WavyProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -27,6 +28,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.maxrave.simpmusic.ui.component.wavyIndicatorSpeed
 import kotlin.math.roundToInt
 
 /**
@@ -128,6 +130,13 @@ fun WavySeekBar(
             trackColor = trackColor,
             // No wave on the empty part of the track, and none at progress 0.
             amplitude = { p -> if (p > 0f) targetAmplitude else 0f },
+            // A flat bar's wave still moves, so the speed is what stops it redrawing while paused.
+            wavelength = WavyProgressIndicatorDefaults.LinearDeterminateWavelength,
+            waveSpeed =
+                wavyIndicatorSpeed(
+                    waving = targetAmplitude > 0f,
+                    speed = WavyProgressIndicatorDefaults.LinearDeterminateWavelength,
+                ),
             modifier =
                 Modifier
                     .fillMaxWidth()

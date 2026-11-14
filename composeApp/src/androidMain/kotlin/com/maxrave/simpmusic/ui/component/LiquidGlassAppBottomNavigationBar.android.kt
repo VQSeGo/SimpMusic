@@ -78,6 +78,7 @@ actual fun LiquidGlassAppBottomNavigationBar(
     showMixForYouTab: Boolean,
     onOpenNowPlaying: () -> Unit,
     liquidGlass: Boolean,
+    miniPlayerCovered: Boolean,
     reloadDestinationIfNeeded: (KClass<*>) -> Unit,
 ) {
     val layer = rememberGraphicsLayer()
@@ -343,6 +344,7 @@ actual fun LiquidGlassAppBottomNavigationBar(
                     .layoutId("miniPlayer"),
                 backdrop = backdrop,
                 isVisible = isShowMiniPlayer,
+                isCovered = miniPlayerCovered,
                 onClick = {
                     onOpenNowPlaying()
                 },

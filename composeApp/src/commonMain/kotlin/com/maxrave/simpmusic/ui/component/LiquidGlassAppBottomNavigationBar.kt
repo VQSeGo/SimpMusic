@@ -37,6 +37,8 @@ expect fun LiquidGlassAppBottomNavigationBar(
     onOpenNowPlaying: () -> Unit = {},
     // False draws the same folding bar in the flat material (liquid glass turned off).
     liquidGlass: Boolean = true,
+    // The Now Playing sheet covers the bar: the mini player stops its per-frame work (see MiniPlayer's isCovered).
+    miniPlayerCovered: Boolean = false,
     reloadDestinationIfNeeded: (KClass<*>) -> Unit = { _ -> },
 )
 

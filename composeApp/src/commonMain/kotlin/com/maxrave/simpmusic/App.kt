@@ -540,6 +540,7 @@ fun App(
                                     showAnalyticsTab = showAnalyticsTab,
                                     showMixForYouTab = showMixForYouTab,
                                     liquidGlass = isLiquidGlassEnabled == TRUE,
+                                    miniPlayerCovered = isShowNowPlaylistScreen,
                                 ) { klass ->
                                     viewModel.reloadDestination(klass)
                                 }

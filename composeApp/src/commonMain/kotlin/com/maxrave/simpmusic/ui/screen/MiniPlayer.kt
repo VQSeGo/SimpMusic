@@ -65,6 +65,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.WavyProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -73,6 +74,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -108,6 +110,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.maxrave.domain.data.entities.SongEntity
+import com.maxrave.domain.data.model.streams.TimeLine
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.utils.connectArtists
 import com.maxrave.logger.Logger
@@ -126,6 +129,7 @@ import com.maxrave.simpmusic.ui.component.QueueBottomSheet
 import com.maxrave.simpmusic.ui.component.liquidGlass
 import com.maxrave.simpmusic.ui.component.rememberGlassLuminance
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
+import com.maxrave.simpmusic.ui.component.wavyIndicatorSpeed
 import com.maxrave.simpmusic.ui.icon.Close
 import com.maxrave.simpmusic.ui.icon.Headphones
 import com.maxrave.simpmusic.ui.icon.OpenInFull
@@ -153,6 +157,8 @@ import kotlin.math.roundToLong
 
 private const val TAG = "MiniPlayer"
 
+private fun TimeLine.progressFraction(): Float = if (total > 0L && current >= 0L) current.toFloat() / total else 0f
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MiniPlayer(
@@ -164,6 +170,13 @@ fun MiniPlayer(
     onOpenFullscreenLyrics: () -> Unit = {},
     // ConstraintLayout keeps Gone content composed, so its visibility must gate sampling separately.
     isVisible: Boolean = true,
+    /**
+     * Something opaque sits over the card: the Now Playing sheet on Android, a window of its own.
+     * The window under it is still drawn, and drawn whole, on every frame anything in it changes,
+     * so while covered the card stops the per-frame work nobody can see: the ring's wave, the
+     * progress tween and the glass sampling. The progress snaps to the position when uncovered.
+     */
+    isCovered: Boolean = false,
     /** Lets the queue's song sheets open artist and album pages; the Desktop capsule's queue needs it. */
     navController: NavController? = null,
 ) {
@@ -179,7 +192,7 @@ fun MiniPlayer(
     // colour; without the loop the glass sits at luminance 0, a 2dp blur and a 0.12 darken, which
     // reads as a smear. The setting governs the Android card and the Desktop capsule alike.
     val useGlassSurface = isLiquidGlassEnabled == DataStoreManager.TRUE
-    val luminance = rememberGlassLuminance(layer, enabled = useGlassSurface && isVisible)
+    val luminance = rememberGlassLuminance(layer, enabled = useGlassSurface && isVisible && !isCovered)
 
     val isDarkTheme = LocalIsDarkTheme.current
     val textColor by animateColorAsState(
@@ -207,10 +220,6 @@ fun MiniPlayer(
         remember {
             mutableStateOf(false)
         }
-    val (progress, setProgress) =
-        remember {
-            mutableFloatStateOf(0f)
-        }
     val (isCrossfading, setIsCrossfading) =
         remember {
             mutableStateOf(false)
@@ -218,11 +227,15 @@ fun MiniPlayer(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val animatedProgress by animateFloatAsState(
-        targetValue = progress,
-        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
-        label = "",
-    )
+    // Driven from the timeline collector below and read only inside the indicators' progress
+    // lambdas, which run at draw time. animateFloatAsState needs its target read in this body, and
+    // with the position ticking every 50 ms that recomposed the whole mini player 20 times a second
+    // for as long as anything played, under the Now Playing sheet too, on the same UI thread.
+    val animatedProgress = remember { Animatable(0f) }
+    val latestIsCovered by rememberUpdatedState(isCovered)
+    LaunchedEffect(isCovered) {
+        if (!isCovered) animatedProgress.snapTo(sharedViewModel.timeline.value.progressFraction())
+    }
 
     val offsetX = remember { Animatable(initialValue = 0f) }
     val offsetY = remember { Animatable(0f) }
@@ -252,13 +265,9 @@ fun MiniPlayer(
             launch {
                 sharedViewModel.timeline.collect { timeline ->
                     loading = timeline.loading
-                    val prog =
-                        if (timeline.total > 0L && timeline.current >= 0L) {
-                            timeline.current.toFloat() / timeline.total
-                        } else {
-                            0f
-                        }
-                    setProgress(prog)
+                    if (!latestIsCovered) {
+                        launch { animatedProgress.animateTo(timeline.progressFraction(), ProgressIndicatorDefaults.ProgressAnimationSpec) }
+                    }
                 }
             }
         job1.join()
@@ -396,7 +405,7 @@ fun MiniPlayer(
                                     // Progress rides a ring around the artwork: wavy while playing, flat when paused.
                                     val ringStroke = Stroke(width = with(LocalDensity.current) { 3.dp.toPx() }, cap = StrokeCap.Round)
                                     CircularWavyProgressIndicator(
-                                        progress = { animatedProgress },
+                                        progress = { animatedProgress.value },
                                         modifier = Modifier.fillMaxSize(),
                                         color = MaterialTheme.colorScheme.primary,
                                         trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
@@ -404,7 +413,15 @@ fun MiniPlayer(
                                         trackStroke = ringStroke,
                                         // A raw 0/1, never a tweened value: the node animates amplitude
                                         // itself and drops new targets mid-animation (see WavySeekBar).
-                                        amplitude = { p -> if (p > 0f && isPlaying) 1f else 0f },
+                                        amplitude = { p -> if (p > 0f && isPlaying && !isCovered) 1f else 0f },
+                                        // A flat ring's wave still moves, so the speed is what stops it redrawing.
+                                        wavelength = WavyProgressIndicatorDefaults.CircularWavelength,
+                                        waveSpeed =
+                                            wavyIndicatorSpeed(
+                                                waving = isPlaying && !isCovered,
+                                                speed = WavyProgressIndicatorDefaults.CircularWavelength,
+                                                visible = !isCovered,
+                                            ),
                                     )
                                 }
                                 AsyncImage(
@@ -570,7 +587,7 @@ fun MiniPlayer(
                     ) {
                         LeftToRight {
                             LinearProgressIndicator(
-                                progress = { animatedProgress },
+                                progress = { animatedProgress.value },
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()

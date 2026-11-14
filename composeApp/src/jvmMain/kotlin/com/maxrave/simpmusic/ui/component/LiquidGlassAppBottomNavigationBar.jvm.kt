@@ -17,6 +17,7 @@ actual fun LiquidGlassAppBottomNavigationBar(
     showMixForYouTab: Boolean,
     onOpenNowPlaying: () -> Unit,
     liquidGlass: Boolean,
+    miniPlayerCovered: Boolean,
     reloadDestinationIfNeeded: (KClass<*>) -> Unit
 ) {
 }
