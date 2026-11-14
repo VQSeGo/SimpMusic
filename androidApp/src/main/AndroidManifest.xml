@@ -81,6 +81,11 @@
         tools:replace="android:name"
         tools:targetApi="tiramisu">
 
+        <!-- Lets simpleperf and Perfetto trace a release build; needed for a baseline profile too. -->
+        <profileable
+            android:shell="true"
+            tools:targetApi="q" />
+
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden|screenSize|screenLayout|smallestScreenSize"
