@@ -154,6 +154,10 @@
   `ShazamSignature`, `expect`/`actual` `SongRecognition`, плитка шторки `RecognitionTileService`, ссылка `simpmusic://recognize` и
   `SharedViewModel.requestSongRecognition`, иконка `GraphicEq`, строки `recognize_*` и `qs_tile_recognize_song`, разрешение
   `RECORD_AUDIO` и `uses-feature` микрофона: других пользователей записи звука нет).
+  Также: импорт плейлистов из других приложений (строка «Импортировать плейлист» в группе «Резервная копия» и подпись со ссылкой
+  на `simpmusic.org/tools`, диалог прогресса, `ImportViewModel`, `ImportRepository` / `ImportRepositoryImpl`, модели `ImportData`,
+  `readPickedFile` на обеих платформах, `insertLocalPlaylistWithTracks` в DAO, девять строк `import_*`). Сохранение и восстановление
+  резервной копии (`restore_your_data`, `restoreNative`, `filePickerResult`) остались.
 - Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки

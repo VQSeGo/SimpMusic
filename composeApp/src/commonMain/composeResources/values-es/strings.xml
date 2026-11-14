@@ -599,15 +599,6 @@
     <string name="home_offline_subtitle">Compruebe su conexión a Internet e inténtelo de nuevo, o escuche su música descargada.</string>
     <string name="listen_to_downloaded">Escucha la música descargada</string>
     <string name="playing_on_device">Reproduciendo en %1$s</string>
-    <string name="import_data">Importar listas de reproducción</string>
-    <string name="import_playlists_from_other_apps">Importar listas de reproducción desde otra aplicación</string>
-    <string name="import_data_intro">Importar trae en listas convertidas de Spotify u otra aplicación cliente de YT.\nHerramienta de conversión: https://www. impmusic.org/tools\nEn SimpMusic, sólo se pueden importar los archivos de la lista de reproducción en nuestro propio formato</string>
-    <string name="import_reading_file">Leyendo archivo…</string>
-    <string name="import_progress_songs">%1$d de %2$d canciones</string>
-    <string name="import_result">Creadas %1$d listas de reproducción e importadas %2$d canciones.</string>
-    <string name="import_result_skipped">Se omitieron %1$d entradas porque su canción no estaba en el archivo.</string>
-    <string name="import_failed">Error en la importación</string>
-    <string name="import_invalid_file">Este archivo no es un archivo de importación válido de SimpMusic. Convierte tu biblioteca en simpmusic.org primero.</string>
     <string name="analytics">Analíticas</string>
     <string name="select_all">Seleccionar todo</string>
     <string name="n_selected">%1$d seleccionados</string>

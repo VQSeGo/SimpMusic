@@ -515,9 +515,6 @@
     <string name="home_offline_subtitle">ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณแล้วลองใหม่อีกครั้ง หรือฟังเพลงที่คุณดาวน์โหลดไว้</string>
     <string name="listen_to_downloaded">ฟังเพลงที่ดาวน์โหลด</string>
     <string name="playing_on_device">กำลังเล่นบน %1$s</string>
-    <string name="import_reading_file">กำลังอ่านไฟล์...</string>
-    <string name="import_progress_songs">%1$d จาก %2$d เพลง</string>
-    <string name="import_failed">นำเข้าไม่สำเร็จ</string>
     <string name="analytics">การวิเคราะห์</string>
     <string name="select_all">เลือกทั้งหมด</string>
     <!-- Listen Together -->

@@ -28,7 +28,7 @@ actual fun filePickerResult(onResultUri: (String?) -> Unit): FilePickerLauncher 
     return remember {
         object : FilePickerLauncher {
             override fun launch() {
-                // A plain path: restoreNative and readPickedFile open it with File(uri.toString()).
+                // A plain path: restoreNative opens it with File(uri.toString()).
                 showOpenFileDialog(filter = null) { file -> currentOnResultUri(file?.absolutePath) }
             }
         }

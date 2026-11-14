@@ -8,7 +8,7 @@ interface FilePickerLauncher {
 
 /**
  * Opens a chooser for one file of any type. [onResultUri] gets a content Uri on Android and a plain
- * file path on Desktop — what restoreNative and readPickedFile open on each — or null.
+ * file path on Desktop — what restoreNative opens on each — or null.
  */
 @Composable
 expect fun filePickerResult(onResultUri: (String?) -> Unit): FilePickerLauncher

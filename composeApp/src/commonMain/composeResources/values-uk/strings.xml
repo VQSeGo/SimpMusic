@@ -637,15 +637,6 @@
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_usb">Звук по USB</string>
     <string name="audio_output_hdmi">HDMI</string>
-    <string name="import_data">Імпорт плейлиста</string>
-    <string name="import_playlists_from_other_apps">Імпортувати плейлісти з іншого додатка</string>
-    <string name="import_data_intro">Функція імпорту дозволяє завантажувати плейлисти, конвертовані з Spotify або іншого клієнтського додатка YT Music.\nІнструмент для конвертації: https://www.simpmusic.org/tools\nУ SimpMusic можна імпортувати лише файли плейлистів у нашому власному форматі</string>
-    <string name="import_reading_file">Читання файлу…</string>
-    <string name="import_progress_songs">%1$d з %2$d пісень</string>
-    <string name="import_result">Створено %1$d плейлистів і імпортовано %2$d пісні.</string>
-    <string name="import_result_skipped">%1$d записів було пропущено, оскільки відповідні пісні були відсутні у файлі.</string>
-    <string name="import_failed">Помилка імпорту</string>
-    <string name="import_invalid_file">Цей файл не є дійсним файлом для імпорту в SimpMusic. Спочатку перетворіть свою бібліотеку на сайті simpmusic.org.</string>
     <string name="analytics">Аналітика</string>
     <string name="select_all">Вибрати все</string>
     <string name="n_selected">%1$d обрано</string>

@@ -484,12 +484,6 @@
     <string name="home_offline_subtitle">İnternet bağlantınızı kontrol edin ve yeniden deneyin yada indirdiğiniz müzikleri dinleyin.</string>
     <string name="listen_to_downloaded">İndirilen müzikleri dinle</string>
     <string name="playing_on_device">%1$s'da oynatılıyor</string>
-    <string name="import_data">Çalma listelerini içe aktar</string>
-    <string name="import_playlists_from_other_apps">Başka uygulamadan çalma listeleri aktar</string>
-    <string name="import_reading_file">Dosya okunuyor...</string>
-    <string name="import_result">%1$d liste oluşturuldu ve %2$d şarkı aktarıldı.</string>
-    <string name="import_result_skipped">%1$d şarkının dosyası olmaması nedeniyle atlandı.</string>
-    <string name="import_failed">Aktarma tamamlanmadı</string>
     <string name="select_all">Tümünü seç</string>
     <string name="n_selected">%1$d seçildi</string>
     <string name="n_songs_selected">%1$d şarkı seçildi</string>

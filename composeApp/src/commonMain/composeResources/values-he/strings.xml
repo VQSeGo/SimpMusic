@@ -658,15 +658,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nBuild with ❤️ and 
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_usb">אודיו USB</string>
     <string name="audio_output_hdmi">HDMI</string>
-    <string name="import_data">יבא פלייליסטים</string>
-    <string name="import_playlists_from_other_apps">יבא פלייליסטים מאפליקציה אחרת</string>
-    <string name="import_data_intro">ייבוא מביא פלייליסטים שהומרו מ-Spotify או מאפליקציית לקוח אחרת של YouTube Music.\nכלי המרה: https://www.simpmusic.org/tools\nב-SimpMusic, ניתן לייבא רק קבצי פלייליסט בפורמט שלנו</string>
-    <string name="import_reading_file">קורא קובץ…</string>
-    <string name="import_progress_songs">%1$d מתוך %2$d שירים</string>
-    <string name="import_result">נוצרו %1$d פלייליסטים ויובאו %2$d שירים.</string>
-    <string name="import_result_skipped">%1$d רשומות דולגו מכיוון שהשיר שלהן היה חסר בקובץ.</string>
-    <string name="import_failed">ייבוא נכשל</string>
-    <string name="import_invalid_file">הקובץ הזה הוא לא קובץ ייבוא תקין של SimpMusic. המר את הספרייה שלך ב-simpmsuic.org תחילה.</string>
     <string name="analytics">נתונים</string>
     <string name="select_all">בחר הכל</string>
     <string name="n_selected">%1$d נבחרו</string>

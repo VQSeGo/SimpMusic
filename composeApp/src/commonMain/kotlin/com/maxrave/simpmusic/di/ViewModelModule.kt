@@ -8,7 +8,6 @@ import com.maxrave.simpmusic.viewModel.ListenTogetherViewModel
 import com.maxrave.simpmusic.viewModel.ArtistViewModel
 import com.maxrave.simpmusic.viewModel.BrowseViewModel
 import com.maxrave.simpmusic.viewModel.HomeViewModel
-import com.maxrave.simpmusic.viewModel.ImportViewModel
 import com.maxrave.simpmusic.viewModel.LibraryDynamicPlaylistViewModel
 import com.maxrave.simpmusic.viewModel.LibrarySidebarViewModel
 import com.maxrave.simpmusic.viewModel.LibraryViewModel
@@ -91,11 +90,6 @@ val viewModelModule =
                 get(),
                 get(),
                 get(),
-                get(),
-            )
-        }
-        viewModel {
-            ImportViewModel(
                 get(),
             )
         }

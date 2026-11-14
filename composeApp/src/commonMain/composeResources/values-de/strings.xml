@@ -653,16 +653,6 @@
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_usb">USB-Audio</string>
     <string name="audio_output_hdmi">HDMI</string>
-    <string name="import_data">Playlists importieren</string>
-    <string name="import_playlists_from_other_apps">Playlisten von einer anderen App importieren</string>
-    <string name="import_data_intro">Mit der Importfunktion kannst Du Playlists einlesen, die aus Spotify oder einer anderen YT Music-Client-App konvertiert wurden. Konvertierungstool: https://www.simpmusic.org/tools 
-In SimpMusic können nur Playlist-Dateien in unserem eigenen Format importiert werden</string>
-    <string name="import_reading_file">Datei wird gelesen…</string>
-    <string name="import_progress_songs">%1$d von %2$d Songs</string>
-    <string name="import_result">%1$d Playlisten erstellt und %2$d Songs importiert.</string>
-    <string name="import_result_skipped">%1$d Einträge wurden übersprungen, da der entsprechende Titel in der Datei fehlte.</string>
-    <string name="import_failed">Import fehlgeschlagen</string>
-    <string name="import_invalid_file">Diese Datei ist keine gültige SimpMusic Importdatei. Konvertiere zuerst deine Bibliothek auf simpmusic.org.</string>
     <string name="analytics">Statistiken</string>
     <string name="select_all">Alles auswählen</string>
     <string name="n_selected">%1$d ausgewählt</string>

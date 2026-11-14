@@ -653,15 +653,6 @@
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_usb">USB-ljud</string>
     <string name="audio_output_hdmi">HDMI</string>
-    <string name="import_data">Importera spellistor</string>
-    <string name="import_playlists_from_other_apps">Importera spellistor från en annan app</string>
-    <string name="import_data_intro">Med importfunktionen kan du importera spellistor som har konverterats från Spotify eller en annan YouTube Music-klient.\nKonverteringsverktyg: https://www.simpmusic.org/tools\nI SimpMusic kan endast spellistefiler i SimpMusics eget format importeras</string>
-    <string name="import_reading_file">Läser filen…</string>
-    <string name="import_progress_songs">Låtar: %1$d av %2$d</string>
-    <string name="import_result">Skapade spellistor: %1$d. Importerade låtar: %2$d.</string>
-    <string name="import_result_skipped">Poster som hoppades över eftersom motsvarande låt saknades i filen: %1$d.</string>
-    <string name="import_failed">Importen misslyckades</string>
-    <string name="import_invalid_file">Filen är inte en giltig SimpMusic-importfil. Konvertera först ditt bibliotek på simpmusic.org.</string>
     <string name="analytics">Statistik</string>
     <string name="select_all">Markera alla</string>
     <string name="n_selected">Markerade: %1$d</string>
