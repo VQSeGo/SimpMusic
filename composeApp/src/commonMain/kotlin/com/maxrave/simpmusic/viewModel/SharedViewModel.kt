@@ -122,6 +122,8 @@ import kotlin.math.abs
 import kotlin.reflect.KClass
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 // DataStore key for the kotlin-footguns star prompt. Cleared on every version bump,
 // so the ask comes back after an update - same policy as OPEN_APP_TIME.
@@ -243,6 +245,13 @@ class SharedViewModel(
     private var _likeStatus = MutableStateFlow(YouTubeLikeStatus.INDIFFERENT)
     val likeStatus: StateFlow<YouTubeLikeStatus> = _likeStatus
     private var likeStatusJob: Job? = null
+
+    // When the lyrics of a track were asked for, for the `Offline: lyrics` lines: how long until a
+    // text was on screen. Reset on every track change.
+    private var lyricsRequestedAt: Pair<String, TimeMark>? = null
+
+    private fun lyricsElapsedMs(videoId: String): Long? =
+        lyricsRequestedAt?.takeIf { it.first == videoId }?.second?.elapsedNow()?.inWholeMilliseconds
 
     // The track whose dislike request is still waiting for YouTube. An id rather than a flag, so the
     // pending state belongs to that track only and the next one starts out dislikeable.
@@ -450,6 +459,7 @@ class SharedViewModel(
                     // The end of every provider and of the offline cache: the one place the app
                     // knows this song has no lyrics, which is what offers Add lyrics.
                     _nowPlayingScreenData.update { it.copy(lyricsNotFound = true) }
+                    Logger.i("Offline", "lyrics ${track.videoId} not found ${lyricsElapsedMs(track.videoId)} ms")
                 }
             }
         }
@@ -974,6 +984,7 @@ class SharedViewModel(
                                 ),
                         )
                     }
+                    Logger.i("Offline", "lyrics $videoId shown $lyricsProvider ${lyricsElapsedMs(videoId)} ms")
                     // Save lyrics to database
                     viewModelScope.launch {
                         lyricsCanvasRepository.insertLyrics(
@@ -1001,6 +1012,9 @@ class SharedViewModel(
         // A fetch in flight is not "no lyrics": switching the provider re-fetches the same song, and
         // Add lyrics offered meanwhile could be saved over the lyrics the new provider finds.
         _nowPlayingScreenData.update { it.copy(lyricsNotFound = false) }
+        if (lyricsRequestedAt?.first != song.videoId || _nowPlayingScreenData.value.lyricsData != null) {
+            lyricsRequestedAt = song.videoId to TimeSource.Monotonic.markNow()
+        }
         viewModelScope.launch {
             val videoId = song.videoId
             log("Get Lyrics From Format for $videoId", LogLevel.WARN)
@@ -1654,6 +1668,7 @@ class SharedViewModel(
                     _timeline.update {
                         it.copy(total = seededTotal, current = mediaPlayerHandler.getProgress().coerceAtLeast(0L))
                     }
+                    lyricsRequestedAt = null
                     state.songEntity?.let { track ->
                         _nowPlayingScreenData.value =
                             NowPlayingScreenData(
