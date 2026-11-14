@@ -80,6 +80,7 @@ import com.maxrave.simpmusic.viewModel.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -92,6 +93,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -1028,10 +1030,18 @@ class SharedViewModel(
         }
     }
 
+    // The chain of lyrics providers of the track playing, and the track it was started for. One chain per
+    // track: the timeline job fires again whenever the player reports a different length, and the chain
+    // used to start afresh each time (and without a network answer four to six `not found` lines per
+    // track). Only an explicit [explicit] request, such as a provider switch, starts a second one.
+    private var lyricsChainJob: Job? = null
+    private var lyricsChainFor: String? = null
+
     private fun getLyricsFromFormat(
         isVideo: Boolean,
         song: SongEntity,
         duration: Int,
+        explicit: Boolean = false,
     ) {
         // A live broadcast has nothing to sync lyrics to — the "duration" mpv reports for it is only
         // its seek window — so no provider is asked. Every caller comes through here.
@@ -1039,6 +1049,8 @@ class SharedViewModel(
         // The timeline job still pairs the new length with the previous track for a moment: whatever
         // came back would be dropped by updateLyrics, so it is not asked for.
         if (_nowPlayingState.value?.songEntity?.videoId != song.videoId) return
+        if (!explicit && lyricsChainFor == song.videoId) return
+        lyricsChainFor = song.videoId
         // A fetch in flight is not "no lyrics": switching the provider re-fetches the same song, and
         // Add lyrics offered meanwhile could be saved over the lyrics the new provider finds.
         _nowPlayingScreenData.update { it.copy(lyricsNotFound = false) }
@@ -1047,9 +1059,10 @@ class SharedViewModel(
         }
         // Switching the provider keeps what is on screen; a new track starts from its saved copy.
         if (_nowPlayingScreenData.value.lyricsData == null) showSavedLyrics(song.videoId, duration)
-        viewModelScope.launch {
+        lyricsChainJob?.cancel()
+        lyricsChainJob = viewModelScope.launch {
             val videoId = song.videoId
-            log("Get Lyrics From Format for $videoId", LogLevel.WARN)
+            Logger.d(tag, "Get Lyrics From Format for $videoId")
             val artistName = song.artistName
             val artist =
                 if (artistName?.firstOrNull() != null &&
@@ -1196,12 +1209,12 @@ class SharedViewModel(
             }
     }
 
-    private fun getLrclibLyrics(
+    private suspend fun getLrclibLyrics(
         song: SongEntity,
         artist: String,
         duration: Int,
     ) {
-        viewModelScope.launch {
+        coroutineScope {
             lyricsCanvasRepository
                 .getLrclibLyricsData(
                     artist,
@@ -1233,12 +1246,12 @@ class SharedViewModel(
         }
     }
 
-    private fun getBetterLyrics(
+    private suspend fun getBetterLyrics(
         song: SongEntity,
         artist: String,
         duration: Int,
     ) {
-        viewModelScope.launch {
+        coroutineScope {
             lyricsCanvasRepository
                 .getBetterLyrics(
                     artist,
@@ -1307,12 +1320,12 @@ class SharedViewModel(
         }
     }
 
-    private fun getSpotifyLyrics(
+    private suspend fun getSpotifyLyrics(
         track: Track,
         query: String,
         duration: Int? = null,
     ) {
-        viewModelScope.launch {
+        coroutineScope {
             Logger.d("Check SpotifyLyrics", "SpotifyLyrics $query")
             lyricsCanvasRepository.getSpotifyLyrics(dataStoreManager, query, duration).cancellable().collect { response ->
                 Logger.d("Check SpotifyLyrics", response.toString())
@@ -1369,7 +1382,7 @@ class SharedViewModel(
         viewModelScope.launch {
             val songEntity = nowPlayingState.value?.songEntity ?: return@launch
             val isVideo = nowPlayingState.value?.mediaItem?.isVideo() ?: false
-            getLyricsFromFormat(isVideo, songEntity, timeline.value.total.toInt() / 1000)
+            getLyricsFromFormat(isVideo, songEntity, timeline.value.total.toInt() / 1000, explicit = true)
         }
     }
 
@@ -1601,7 +1614,6 @@ class SharedViewModel(
                             if (timeline.total > 0 && nowPlaying.songEntity != null) {
                                 nowPlaying.songEntity?.let { song ->
                                     if (nowPlayingScreenData.value.lyricsData == null) {
-                                        Logger.w(tag, "Get lyrics from format")
                                         getLyricsFromFormat(nowPlaying.mediaItem.isVideo(), song, (timeline.total / 1000).toInt())
                                     }
                                 }
@@ -1616,7 +1628,8 @@ class SharedViewModel(
                 }
             val lyricsProviderJob =
                 launch {
-                    dataStoreManager.lyricsProvider.distinctUntilChanged().collectLatest {
+                    dataStoreManager.lyricsProvider.distinctUntilChanged().drop(1).collectLatest {
+                        // The first value is the setting as it is, not a change: the timeline job asks.
                         setLyricsProvider()
                     }
                 }
@@ -1676,6 +1689,8 @@ class SharedViewModel(
                     // only while none are shown. With the old ones still there it skipped the new
                     // track until the player reported a length of its own (0.2-0.5 s later).
                     lyricsRequestedAt = null
+                    lyricsChainFor = null
+                    lyricsChainJob?.cancel()
                     savedLyricsJob?.cancel()
                     _nowPlayingScreenData.update { it.copy(lyricsData = null, lyricsNotFound = false) }
                     _nowPlayingState.value = state
