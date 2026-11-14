@@ -167,6 +167,11 @@
   Android. Строки в состоянии «качается» возобновляются при запуске. Обрывы googlevideo лечит докачка кусками
   (`downloadInRanges`). Незаконченный файл лежит в `downloads/.partial` и переносится в `downloads/<id>.webm` целиком: плеер
   берёт файл по точному имени, любой файл с таким именем считается готовым.
+- Базовый профиль Android (`androidApp/src/main/generated/baselineProfiles/baseline-prof.txt`, коммитится) пишет модуль
+  `:baselineprofile`; нужен подключённый разблокированный телефон (API 33+). Перегенерировать после заметных правок UI:
+  `ANDROID_SERIAL=<телефон> ./gradlew :androidApp:generateBaselineProfile` (через `systemd-run`, как выше), ~7 мин. Ставится
+  копия `com.maxrave.simpmusic.bp` без входа рядом с рабочим приложением; Gradle сам её удаляет, проверьте `pm list packages`.
+  Замер старта с профилем и без: `:baselineprofile:connectedBenchmarkReleaseAndroidTest`.
 - Иконки — сгенерированные `ImageVector` в `ui/icon/` (`SimpIcons.X` + отдельный импорт на каждую).
   Как добавить новую: скилл `simpmusic-icons`.
 - Строки только в `composeApp/src/commonMain/composeResources/values*/strings.xml`. Остальные языки
