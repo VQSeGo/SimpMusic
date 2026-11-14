@@ -160,6 +160,9 @@
 - Общие помощники, которые нужны в нескольких местах, выносим в отдельный файл, а не оставляем в файле
   удалённого стиля (пример: `ArtworkPagerLogic.kt`).
 - Приватность: FOSS-сборка без трекинга; Sentry и Discord OAuth только при `isFullBuild=true`.
+- Отладочный журнал: Настройки → «Функции разработчика» → «Отладочный журнал» (ключ `debug_logging`, по умолчанию вкл,
+  действует сразу; `Logger.debugLogging` гасит `Logger.d`, curl, Ktor `Logging`, OkHttp). Секреты (cookie, `SAPISIDHASH`, `sp_dc`,
+  токены) маскируются всегда (`LogRedaction` в `core/common`); дампы пишите `Logger.d(tag) { Logger.clip(x) }`.
 - В `.claude/skills/` лежат скиллы kotlin-footguns (228 ловушек Kotlin/Compose/десктоп-JVM) и общие
   Android-скиллы. Перед правкой плеера, Room, StateFlow или сборки стоит открыть подходящий скилл;
   `footgun-scan` проверяет дифф.
