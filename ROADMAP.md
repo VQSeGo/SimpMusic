@@ -97,7 +97,7 @@
 | 26 | [x] f1956b27 | ЧИСТ B — раздел об авторе и пожертвованиях | 25 | Строку «Основано на SimpMusic (maxrave-dev), GPL-3.0» оставить |
 | 27 | [x] 112c4d86 | ЧИСТ I — распознавание музыки | — | — |
 | 28 | [x] 3a19feb2 | ЧИСТ J — комментарии | — | — |
-| 29 | [ ] | ЧИСТ K — импорт плейлистов | — | — |
+| 29 | [x] a9f75966 | ЧИСТ K — импорт плейлистов | — | — |
 | 30 | [ ] | ЧИСТ M — подкасты | 19 | Разбор главной теперь вызывается и для кэша (строка 19): отбрасывать подкасты в общем разборщике |
 | 31 | [ ] | ЧИСТ N — автоматические резервные копии | — | — |
 | 32 | [ ] | ЧИСТ O — романизация текстов | 20 | — |
@@ -264,7 +264,7 @@
 - Хвост строки 26: авторство видно строкой «Основано на SimpMusic (maxrave-dev), GPL-3.0» под версией и на `CreditScreen`;
   кнопка Discord «Visit SimpMusic» ведёт на форк. Остались ссылки на сайт оригинала вне ЧИСТ B: `chart.simpmusic.org`
   (`GridLibraryPlaylist.kt`, `SearchScreen.kt`), блог «how-to-login» (`Cookies.jvm.kt`, `ListeningReceipt.kt`, `YTItem.kt`,
-  `AndroidManifest.xml`), `import_data_intro` → `simpmusic.org/tools` (уйдёт с ЧИСТ K), Discord «Listen on SimpMusic»
+  `AndroidManifest.xml`), `import_data_intro` → `simpmusic.org/tools` (удалено в строке 29), Discord «Listen on SimpMusic»
   (`simpmusic.org/app/watch`). Строка `credit_app` «Build with ❤️ from … (maxrave-dev)» звучит так, будто сборку делал он.
 - Сделано 2026-11-14 (`9579404b`…`6eba8167`): прокрутка плеера на Android, 60 Гц, при игре 69 % → 0,06 % опоздавших кадров,
   медиана 44 → 11 мс (радуга кроссфейда и `timeline` больше не рекомпонуют весь экран; окно под листом не перерисовывается;
