@@ -58,7 +58,7 @@ import com.maxrave.simpmusic.ui.icon.Download
 import com.maxrave.simpmusic.ui.icon.KeyboardArrowDown
 import com.maxrave.simpmusic.ui.icon.Share
 import com.maxrave.simpmusic.ui.icon.SimpIcons
-import com.maxrave.simpmusic.ui.screen.player.content.applemusic.appleMusicVerticalFadeEdges
+import com.maxrave.simpmusic.ui.component.verticalFadeEdges
 import kotlinx.coroutines.launch
 import multiplatform.network.cmptoast.ToastGravity
 import multiplatform.network.cmptoast.showToast
@@ -310,7 +310,7 @@ private fun ShareLyricsPicker(
     Box(modifier = modifier.fillMaxWidth()) {
         LazyColumn(
             state = listState,
-            modifier = Modifier.fillMaxWidth().appleMusicVerticalFadeEdges(topFade = 24.dp, bottomFade = 96.dp),
+            modifier = Modifier.fillMaxWidth().verticalFadeEdges(topFade = 24.dp, bottomFade = 96.dp),
             // Room for the floating pill to hover over the last lines rather than cover them.
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 110.dp),
         ) {
