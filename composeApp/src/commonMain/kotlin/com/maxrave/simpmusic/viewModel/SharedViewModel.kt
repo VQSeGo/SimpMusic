@@ -1049,6 +1049,9 @@ class SharedViewModel(
         // A live broadcast has nothing to sync lyrics to — the "duration" mpv reports for it is only
         // its seek window — so no provider is asked. Every caller comes through here.
         if (LiveStreamRegistry.isLive(song.videoId)) return
+        // The timeline job still pairs the new length with the previous track for a moment: whatever
+        // came back would be dropped by updateLyrics, so it is not asked for.
+        if (_nowPlayingState.value?.songEntity?.videoId != song.videoId) return
         // A fetch in flight is not "no lyrics": switching the provider re-fetches the same song, and
         // Add lyrics offered meanwhile could be saved over the lyrics the new provider finds.
         _nowPlayingScreenData.update { it.copy(lyricsNotFound = false) }
