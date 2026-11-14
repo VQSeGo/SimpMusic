@@ -23,6 +23,7 @@ import com.maxrave.domain.data.entities.LocalPlaylistEntity
 import com.maxrave.domain.data.entities.PairSongLocalPlaylist
 import com.maxrave.domain.data.entities.SetVideoIdEntity
 import com.maxrave.domain.data.entities.SongEntity
+import com.maxrave.domain.data.entities.collectionDownloadState
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
@@ -560,16 +561,7 @@ class LocalPlaylistViewModel(
         if (listJob.isEmpty()) return
         viewModelScope.launch {
             downloadUtils.downloadTask.collect { download ->
-                val states = listJob.map { download[it] }
-                val resolved =
-                    when {
-                        // Checked before completeness: one track actively downloading is enough
-                        // to call the playlist downloading, even if the rest are still unreported.
-                        states.any { it == STATE_DOWNLOADING } -> STATE_DOWNLOADING
-                        states.all { it == STATE_DOWNLOADED } -> STATE_DOWNLOADED
-                        states.any { it == null } -> null
-                        else -> STATE_NOT_DOWNLOADED
-                    }
+                val resolved = collectionDownloadState(listJob.map { download[it] })
                 if (resolved == null || resolved == uiState.value.downloadState) return@collect
                 localPlaylistRepository.updateLocalPlaylistDownloadState(resolved, id)
                 _uiState.update { it.copy(downloadState = resolved) }

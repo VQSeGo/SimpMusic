@@ -8,6 +8,7 @@ import com.maxrave.common.Config
 import com.maxrave.domain.data.entities.DownloadState.STATE_DOWNLOADED
 import com.maxrave.domain.data.entities.DownloadState.STATE_DOWNLOADING
 import com.maxrave.domain.data.entities.PlaylistEntity
+import com.maxrave.domain.data.entities.collectionDownloadState
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.browse.playlist.Author
 import com.maxrave.domain.data.model.browse.playlist.PlaylistBrowse
@@ -117,24 +118,14 @@ class PlaylistViewModel(
                                                     }
                                                 }
                                             }
-                                            downloadUtils.downloads.collectLatest { downloads ->
-                                                var count = 0
-                                                tracks.forEachIndexed { index, track ->
-                                                    val trackDownloadState = downloads[track.videoId]?.first?.state
-                                                    val videoDownloadState =
-                                                        downloads[track.videoId]?.second?.state ?: DownloadHandler.State.STATE_COMPLETED
-                                                    if (trackDownloadState == DownloadHandler.State.STATE_DOWNLOADING ||
-                                                        videoDownloadState == DownloadHandler.State.STATE_DOWNLOADING
-                                                    ) {
-                                                        updatePlaylistDownloadState(id, STATE_DOWNLOADING)
-                                                    } else if (trackDownloadState == DownloadHandler.State.STATE_COMPLETED &&
-                                                        videoDownloadState == DownloadHandler.State.STATE_COMPLETED
-                                                    ) {
-                                                        count++
-                                                    }
-                                                    if (count == tracks.size) {
-                                                        updatePlaylistDownloadState(id, STATE_DOWNLOADED)
-                                                    }
+                                            // Per-track states, not the raw audio/video pairs: a clip counts as
+                                            // downloaded once its audio is, the video half comes on top.
+                                            downloadUtils.downloadTask.collectLatest { task ->
+                                                val resolved = collectionDownloadState(tracks.map { task[it.videoId] })
+                                                if ((resolved == STATE_DOWNLOADING || resolved == STATE_DOWNLOADED) &&
+                                                    resolved != playlistEntity.value?.downloadState
+                                                ) {
+                                                    updatePlaylistDownloadState(id, resolved)
                                                 }
                                             }
                                         }
