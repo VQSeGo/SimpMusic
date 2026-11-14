@@ -961,3 +961,35 @@ restored=<bool>`, `resolve warm-up brave <мс> (player code …, extraction …
 - Попутно: при каждом холодном запуске резолвятся и предзагрузки восстановленной очереди, которые через 2–3 с
   выбрасываются (очередь заменяет ссылка); их запросы идут параллельно с нужным треком.
 
+
+**Мелкие баги (строка 38 ROADMAP, 2026-11-14; ПК — AppImage из `core` `3ed2818` и основного `9724e2b2`; основной
+телефон не был подключён, тестовый Mi 9T ставить APK не даёт: `INSTALL_FAILED_USER_RESTRICTED`, нужно подтверждение
+на экране).**
+
+- MPRIS (`core` `9d22aa2`). Причина: NPYC вешает на JMTC `onPlay` и `onPause` одну и ту же функцию `onPlayPause`;
+  JMTC сам различает `Play`/`Pause`/`PlayPause`. Теперь колбэки JMTC ставятся напрямую. `playerctl -p SimpMusic`:
+  `play` на играющем ×2 — `Playing`; `pause` → `Paused`; `play-pause` переключает в обе стороны. Второй `pause` на
+  паузе: `playerctl` пишет «No player could handle this command» (у нас `CanPause=false` на паузе, его ставит NPYC),
+  прямой вызов `busctl … Player Pause` проходит, статус `Paused`.
+- Deep link ПК (`20d599ea`, `9724e2b2`). Воспроизведено на старом AppImage: холодный старт с
+  `simpmusic://album?id=MPREb_JfbPlRKryR4` — второе окно, поток EDT в `WindowExceptionHandlerFactory` (окно ошибки),
+  альбом не открылся. Причина: эффект ссылки в `App.kt` шёл раньше, чем NavHost задал граф; теперь ждёт
+  `currentBackStackEntryFlow.first()`. После: `Current destination: …AlbumDestination` через 8 с, одно окно. Попутно
+  найдено: ссылка в уже запущенное приложение терялась — второй экземпляр писал файл ссылки после запроса восстановления,
+  первый успевал заглянуть раньше (файл оставался и открывался при следующем восстановлении). Теперь файл пишется до
+  проверки. После: второй альбом и `https://music.youtube.com/watch?v=6RRj_DQtsh0` в запущенное приложение открылись
+  (`source 6RRj_DQtsh0 download`).
+- Медиакнопка без пакета (`core` `17b3df7`). На Mi 9T со старой сборкой: трек играет (`state=3`),
+  `cmd media_session dispatch pause` → `12:09:26 IllegalArgumentException: packageName should be nonempty`, процесс
+  умер. Причина в Media3 1.11.1 (на `main` то же): `MediaSessionCompat.Callback` перед каждым вызовом строит
+  `RemoteUserInfo` из пустого пакета. Обёртка платформенного колбэка (`androidx/media3/session/EmptyPackageMediaButtonGuard.kt`
+  в модуле `media3`): всё передаётся как было, кнопка от вызывающего без пакета применяется к плееру напрямую, метка
+  `MediaButton: key <code> without a package name, applied directly`. Собрано (`assembleRelease`), на устройстве
+  НЕ проверено (не поставить).
+- Кэш после загрузки (`core` `12ceb7b`). Прогон: скачанный `6RRj_DQtsh0` скопирован в `cache/`, первые 64 КБ загрузки
+  забиты мусором, ссылка → `09:18:38.122Z heal 6RRj_DQtsh0` → `redownload queued` → `source … cache` (играет из кэша) →
+  `09:19:09.278Z cache 6RRj_DQtsh0 dropped (downloaded)`; в `cache/` файла нет, загрузка совпала с исходной по md5.
+- Статус плейлиста (`core` `3ed2818`, `282364a6`). `PlaylistViewModel` читал сырые пары аудио/видео; теперь
+  `collectionDownloadState` по `downloadTask` (там клип «скачан» по аудио), то же правило в `LocalPlaylistViewModel`
+  (очередь теперь считается «качается»). `AlbumViewModel` уже читал `downloadTask`. 6 юнит-тестов
+  `CollectionDownloadStateTest`; на устройстве не проверено.
