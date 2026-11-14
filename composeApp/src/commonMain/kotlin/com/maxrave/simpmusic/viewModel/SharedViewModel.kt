@@ -442,26 +442,42 @@ class SharedViewModel(
         }
     }
 
-    private fun getSavedLyrics(track: Track) {
-        viewModelScope.launch {
-            lyricsCanvasRepository.getSavedLyrics(track.videoId).cancellable().collectLatest { lyrics ->
-                if (lyrics != null) {
-                    val lyricsData = lyrics.toLyrics()
-                    Logger.d(tag, "Saved Lyrics $lyricsData")
-                    updateLyrics(
-                        track.videoId,
-                        track.durationSeconds ?: 0,
-                        lyricsData,
-                        false,
-                        LyricsProvider.OFFLINE,
-                    )
-                } else if (_nowPlayingState.value?.songEntity?.videoId == track.videoId) {
-                    // The end of every provider and of the offline cache: the one place the app
-                    // knows this song has no lyrics, which is what offers Add lyrics.
-                    _nowPlayingScreenData.update { it.copy(lyricsNotFound = true) }
-                    Logger.i("Offline", "lyrics ${track.videoId} not found ${lyricsElapsedMs(track.videoId)} ms")
-                }
+    // The read of the saved lyrics of the track playing. One at a time: a newer track's read replaces it.
+    private var savedLyricsJob: Job? = null
+
+    /**
+     * Shows the lyrics saved the last time this track played, at once, while the providers are
+     * still being asked: without a network they are all there is, and with one they are on screen
+     * until a provider answers ([updateLyrics] replaces them, or keeps them when the text is the same).
+     */
+    private fun showSavedLyrics(
+        videoId: String,
+        duration: Int,
+    ) {
+        savedLyricsJob?.cancel()
+        savedLyricsJob =
+            viewModelScope.launch {
+                val saved = lyricsCanvasRepository.getSavedLyrics(videoId).firstOrNull() ?: return@launch
+                // The track changed during the read, or a provider was quicker: neither is ours to cover.
+                if (_nowPlayingState.value?.songEntity?.videoId != videoId) return@launch
+                if (_nowPlayingScreenData.value.lyricsData != null) return@launch
+                Logger.i("Offline", "lyrics $videoId saved shown ${lyricsElapsedMs(videoId)} ms")
+                updateLyrics(videoId, duration, saved.toLyrics(), false, LyricsProvider.OFFLINE)
             }
+    }
+
+    /**
+     * Every provider failed for [videoId]. Only now, and only when not even saved lyrics are on
+     * screen, is the song known to have no lyrics, which is what offers Add lyrics.
+     */
+    private fun onLyricsProvidersFailed(videoId: String) {
+        viewModelScope.launch {
+            // Offline every provider fails at once, which can be before the saved copy is read.
+            savedLyricsJob?.join()
+            if (_nowPlayingState.value?.songEntity?.videoId != videoId) return@launch
+            if (_nowPlayingScreenData.value.lyricsData != null) return@launch
+            _nowPlayingScreenData.update { it.copy(lyricsNotFound = true) }
+            Logger.i("Offline", "lyrics $videoId not found ${lyricsElapsedMs(videoId)} ms")
         }
     }
 
@@ -866,6 +882,9 @@ class SharedViewModel(
         isTranslatedLyrics: Boolean,
         lyricsProvider: LyricsProvider = LyricsProvider.SIMPMUSIC,
     ) {
+        // An answer for a track that is no longer playing: it must not land on the next one (nor
+        // judge, as a translation, the next one's lyrics against itself).
+        if (_nowPlayingState.value?.songEntity?.videoId != videoId) return
         if (inputLyrics == null) {
             _nowPlayingScreenData.update {
                 it.copy(
@@ -975,6 +994,23 @@ class SharedViewModel(
                 }
 
                 false -> {
+                    val shown = _nowPlayingScreenData.value.lyricsData
+                    val fromNetwork = lyricsProvider != LyricsProvider.OFFLINE
+                    val replacesSaved = fromNetwork && shown?.lyricsProvider == LyricsProvider.OFFLINE
+                    if (shown != null && shown.lyrics.lines == lyrics.lines && shown.lyrics.syncType == lyrics.syncType) {
+                        // The same text again: a provider confirming the saved copy, or a second
+                        // fetch of the same song. The lines and their translation stay as they are,
+                        // so nothing redraws; only the source in the caption moves on.
+                        if (shown.lyricsProvider != lyricsProvider) {
+                            _nowPlayingScreenData.update {
+                                it.copy(lyricsData = it.lyricsData?.copy(lyricsProvider = lyricsProvider))
+                            }
+                        }
+                        if (replacesSaved) {
+                            Logger.i("Offline", "lyrics $videoId network same $lyricsProvider ${lyricsElapsedMs(videoId)} ms")
+                        }
+                        return
+                    }
                     _nowPlayingScreenData.update {
                         it.copy(
                             lyricsData =
@@ -984,8 +1020,12 @@ class SharedViewModel(
                                 ),
                         )
                     }
-                    Logger.i("Offline", "lyrics $videoId shown $lyricsProvider ${lyricsElapsedMs(videoId)} ms")
-                    // Save lyrics to database
+                    when {
+                        replacesSaved -> Logger.i("Offline", "lyrics $videoId network replaced $lyricsProvider ${lyricsElapsedMs(videoId)} ms")
+                        fromNetwork -> Logger.i("Offline", "lyrics $videoId network shown $lyricsProvider ${lyricsElapsedMs(videoId)} ms")
+                    }
+                    // Saved lyrics come from the database, and Add lyrics writes its own copy.
+                    if (!fromNetwork) return
                     viewModelScope.launch {
                         lyricsCanvasRepository.insertLyrics(
                             LyricsEntity(
@@ -1015,6 +1055,8 @@ class SharedViewModel(
         if (lyricsRequestedAt?.first != song.videoId || _nowPlayingScreenData.value.lyricsData != null) {
             lyricsRequestedAt = song.videoId to TimeSource.Monotonic.markNow()
         }
+        // Switching the provider keeps what is on screen; a new track starts from its saved copy.
+        if (_nowPlayingScreenData.value.lyricsData == null) showSavedLyrics(song.videoId, duration)
         viewModelScope.launch {
             val videoId = song.videoId
             log("Get Lyrics From Format for $videoId", LogLevel.WARN)
@@ -1194,13 +1236,8 @@ class SharedViewModel(
                             )
                         }
 
-                        else -> {
-                            getSavedLyrics(
-                                song.toTrack().copy(
-                                    durationSeconds = duration,
-                                ),
-                            )
-                        }
+                        // Every chain of providers ends here.
+                        else -> onLyricsProvidersFailed(song.videoId)
                     }
                 }
         }
@@ -1637,6 +1674,13 @@ class SharedViewModel(
                 .distinctUntilChangedBy {
                     it.songEntity?.videoId
                 }.collectLatest { state ->
+                    // The previous track's lyrics go before the new track is published: publishing it
+                    // (and the timeline below) runs the timeline job at once, which asks for lyrics
+                    // only while none are shown. With the old ones still there it skipped the new
+                    // track until the player reported a length of its own (0.2-0.5 s later).
+                    lyricsRequestedAt = null
+                    savedLyricsJob?.cancel()
+                    _nowPlayingScreenData.update { it.copy(lyricsData = null, lyricsNotFound = false) }
                     _nowPlayingState.value = state
 
                     // Seed the timeline from METADATA as soon as the track is known, instead of
@@ -1668,7 +1712,6 @@ class SharedViewModel(
                     _timeline.update {
                         it.copy(total = seededTotal, current = mediaPlayerHandler.getProgress().coerceAtLeast(0L))
                     }
-                    lyricsRequestedAt = null
                     state.songEntity?.let { track ->
                         _nowPlayingScreenData.value =
                             NowPlayingScreenData(
