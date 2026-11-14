@@ -213,7 +213,14 @@ fun App(
         val data = intent.data
         Logger.d("MainActivity", "onCreate: $data")
         if (data != null) {
-            if (data.scheme == "simpmusic" && data.host == "discord-auth") {
+            val isDiscordCallback = data.scheme == "simpmusic" && data.host == "discord-auth"
+            // A link that launched the app arrives before the NavHost below has set its graph:
+            // on desktop this effect can run first, and navigate() then throws "You must call
+            // setGraph() before calling getGraph()". The back stack flow replays its latest entry
+            // and emits only once the graph is set, so waiting for it covers a cold start and
+            // returns at once for a link into a running app.
+            if (!isDiscordCallback) navController.currentBackStackEntryFlow.first()
+            if (isDiscordCallback) {
                 // Discord sends the user back here after they approve SimpMusic (Full builds):
                 // simpmusic://discord-auth?code=…&state=…. No navigation: the login
                 // screen is already open and closes itself once the login is stored.
