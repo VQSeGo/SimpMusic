@@ -654,10 +654,8 @@
     <string name="home_offline_subtitle">Kiểm tra kết nối internet của bạn và thử lại, hoặc nghe những bài hát đã được tải xuống.</string>
     <string name="listen_to_downloaded">Nghe những bài hát đã được tải xuống</string>
     <string name="playing_on_device">Phát trên %1$s</string>
-    <string name="not_available_while_casting">Không có sẵn khi đang trình chiếu</string>
     <string name="audio_output">Đầu ra âm thanh</string>
     <string name="audio_output_playing_here">Đang phát tại đây</string>
-    <string name="audio_output_cast">Truyền</string>
     <string name="audio_output_system_default">Mặc định của hệ thống</string>
     <string name="audio_output_wired">Tai nghe có dây</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

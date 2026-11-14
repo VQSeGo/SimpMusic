@@ -93,10 +93,6 @@ kotlin {
             api(projects.media3)
             api(projects.media3Ui)
 
-            // Google Cast is not used: always the no-op stub, so MediaRouter and the Cast
-            // framework never start up (they cost ~0.1 s of the main thread at launch).
-            implementation(projects.castEmpty)
-
             // Login sync QR scanner: CameraX + ZXing, not ML Kit, which F-Droid rejects as proprietary
             implementation(libs.camera.camera2)
             implementation(libs.camera.lifecycle)

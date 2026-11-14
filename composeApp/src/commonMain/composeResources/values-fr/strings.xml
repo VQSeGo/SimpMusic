@@ -657,10 +657,8 @@
     <string name="home_offline_subtitle">Vérifiez votre connexion Internet et réessayez, ou écoutez la musique que vous avez téléchargée.</string>
     <string name="listen_to_downloaded">Écouter de la musique téléchargée</string>
     <string name="playing_on_device">Écouter sur %1$s</string>
-    <string name="not_available_while_casting">Indisponible pendant la diffusion</string>
     <string name="audio_output">Sortie audio</string>
     <string name="audio_output_playing_here">Jouer ici</string>
-    <string name="audio_output_cast">Cast</string>
     <string name="audio_output_system_default">Paramètres par défaut du système</string>
     <string name="audio_output_wired">Casques filaires</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

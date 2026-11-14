@@ -12,7 +12,6 @@ import com.maxrave.common.VIDEO_QUALITY
 import com.maxrave.domain.data.entities.DownloadState
 import com.maxrave.domain.data.entities.GoogleAccountEntity
 import com.maxrave.domain.data.model.lyrics.RomanizationDictionaryState
-import com.maxrave.domain.data.player.GenericCastState
 import com.maxrave.domain.data.player.ReverbPreset
 import com.maxrave.domain.extension.toNetScapeString
 import com.maxrave.domain.manager.DataStoreManager
@@ -83,8 +82,6 @@ class SettingsViewModel(
 ) : BaseViewModel() {
     private val databasePath: String? = commonRepository.getDatabasePath()
     private val downloadUtils: DownloadHandler by inject()
-
-    val castState: StateFlow<GenericCastState> get() = mediaPlayerHandler.castState
 
     /** READY everywhere the dictionary is bundled (Desktop), so only Android ever leaves it. */
     val japaneseDictionaryState: StateFlow<RomanizationDictionaryState> =

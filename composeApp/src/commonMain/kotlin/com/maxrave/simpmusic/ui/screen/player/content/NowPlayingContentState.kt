@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.maxrave.domain.data.entities.NewFormatEntity
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.streams.TimeLine
-import com.maxrave.domain.data.player.GenericCastState
 import com.maxrave.domain.mediaservice.handler.ControlState
 import com.maxrave.simpmusic.extension.GradientOffset
 import com.maxrave.simpmusic.viewModel.NowPlayingScreenData
@@ -69,7 +68,6 @@ class NowPlayingContentState(
     val controllerState: ControlState,
     val timelineState: TimeLine,
     val timelineFlow: StateFlow<TimeLine>,
-    val castState: GenericCastState,
     val shouldShowVideo: Boolean,
     val isUserLoggedIn: Boolean,
     /** The album of the track playing, or null when it has none to open. */

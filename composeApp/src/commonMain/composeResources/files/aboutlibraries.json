@@ -2101,27 +2101,6 @@
             ]
         },
         {
-            "uniqueId": "androidx.media3:media3-cast",
-            "artifactVersion": "1.11.1",
-            "name": "Media3 Cast module",
-            "description": "",
-            "developers": [
-                {
-                    "name": "The Android Open Source Project"
-                }
-            ],
-            "scm": {
-                "connection": "scm:git:https://github.com/androidx/media.git",
-                "url": "https://github.com/androidx/media"
-            },
-            "licenses": [
-                "Apache-2.0"
-            ],
-            "funding": [
-                
-            ]
-        },
-        {
             "uniqueId": "androidx.media3:media3-common",
             "artifactVersion": "1.11.1",
             "name": "Media3 common module",
@@ -2505,31 +2484,6 @@
             "name": "Media",
             "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
             "website": "https://developer.android.com/jetpack/androidx/releases/media#1.8.0",
-            "developers": [
-                {
-                    "name": "The Android Open Source Project"
-                }
-            ],
-            "organization": {
-                "name": "The Android Open Source Project"
-            },
-            "scm": {
-                "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
-                "url": "https://cs.android.com/androidx/platform/frameworks/support"
-            },
-            "licenses": [
-                "Apache-2.0"
-            ],
-            "funding": [
-                
-            ]
-        },
-        {
-            "uniqueId": "androidx.mediarouter:mediarouter",
-            "artifactVersion": "1.9.0-beta01",
-            "name": "MediaRouter",
-            "description": "Android MediaRouter Support Library",
-            "website": "https://developer.android.com/jetpack/androidx/releases/mediarouter#1.9.0-beta01",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -4042,36 +3996,6 @@
             "uniqueId": "com.google.android.gms:play-services-basement",
             "artifactVersion": "18.12.0",
             "name": "play-services-basement",
-            "description": "",
-            "developers": [
-                
-            ],
-            "licenses": [
-                "ASDKL"
-            ],
-            "funding": [
-                
-            ]
-        },
-        {
-            "uniqueId": "com.google.android.gms:play-services-cast",
-            "artifactVersion": "23.0.0",
-            "name": "play-services-cast",
-            "description": "",
-            "developers": [
-                
-            ],
-            "licenses": [
-                "ASDKL"
-            ],
-            "funding": [
-                
-            ]
-        },
-        {
-            "uniqueId": "com.google.android.gms:play-services-cast-framework",
-            "artifactVersion": "23.0.0",
-            "name": "play-services-cast-framework",
             "description": "",
             "developers": [
                 

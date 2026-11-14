@@ -305,7 +305,6 @@ import simpmusic.composeapp.generated.resources.monthly
 import simpmusic.composeapp.generated.resources.never
 import simpmusic.composeapp.generated.resources.no_account
 import simpmusic.composeapp.generated.resources.normalize_volume
-import simpmusic.composeapp.generated.resources.not_available_while_casting
 import simpmusic.composeapp.generated.resources.ok
 import simpmusic.composeapp.generated.resources.open_system_equalizer
 import simpmusic.composeapp.generated.resources.original_audio
@@ -515,7 +514,6 @@ fun SettingScreen(
     val crossfadeEnabled by viewModel.crossfadeEnabled.collectAsStateWithLifecycle()
     val crossfadeDuration by viewModel.crossfadeDuration.collectAsStateWithLifecycle()
     val crossfadeSkipAlbum by viewModel.crossfadeSkipAlbum.collectAsStateWithLifecycle()
-    val castState by viewModel.castState.collectAsStateWithLifecycle()
 
     val isCheckingUpdate by sharedViewModel.isCheckingUpdate.collectAsStateWithLifecycle()
 
@@ -1290,13 +1288,7 @@ fun SettingScreen(
                     AnimatedVisibility(visible = equalizerType == DataStoreManager.EQUALIZER_TYPE_SYSTEM) {
                         SettingItem(
                             title = stringResource(Res.string.open_system_equalizer),
-                            subtitle =
-                                if (castState.isRemote) {
-                                    stringResource(Res.string.not_available_while_casting)
-                                } else {
-                                    stringResource(Res.string.use_your_system_equalizer)
-                                },
-                            isEnable = !castState.isRemote,
+                            subtitle = stringResource(Res.string.use_your_system_equalizer),
                             onClick = {
                                 coroutineScope.launch {
                                     resultLauncher.launch()
@@ -1369,27 +1361,15 @@ fun SettingScreen(
                 // Crossfade (all platforms)
                 SettingItem(
                     title = stringResource(Res.string.crossfade),
-                    subtitle =
-                        if (castState.isRemote) {
-                            stringResource(Res.string.not_available_while_casting)
-                        } else {
-                            stringResource(Res.string.crossfade_description)
-                        },
+                    subtitle = stringResource(Res.string.crossfade_description),
                     smallSubtitle = true,
                     switch = (crossfadeEnabled to { viewModel.setCrossfadeEnabled(it) }),
-                    isEnable = !castState.isRemote,
                 )
                 AnimatedVisibility(visible = crossfadeEnabled) {
                     Column {
                         SettingItem(
                             title = stringResource(Res.string.crossfade_duration),
-                            subtitle =
-                                if (castState.isRemote) {
-                                    stringResource(Res.string.not_available_while_casting)
-                                } else {
-                                    "${crossfadeDuration / 1000}s"
-                                },
-                            isEnable = !castState.isRemote,
+                            subtitle = "${crossfadeDuration / 1000}s",
                             onClick = {
                                 viewModel.setAlertData(
                                     SettingAlertState(
@@ -1436,15 +1416,9 @@ fun SettingScreen(
 //                        if (getPlatform() == Platform.Android) {
                         SettingItem(
                             title = stringResource(Res.string.crossfade_skip_album),
-                            subtitle =
-                                if (castState.isRemote) {
-                                    stringResource(Res.string.not_available_while_casting)
-                                } else {
-                                    stringResource(Res.string.crossfade_skip_album_description)
-                                },
+                            subtitle = stringResource(Res.string.crossfade_skip_album_description),
                             smallSubtitle = true,
                             switch = ((crossfadeSkipAlbum) to { viewModel.setCrossfadeSkipAlbum(it) }),
-                            isEnable = !castState.isRemote,
                         )
 //                        }
                     }

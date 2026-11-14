@@ -501,7 +501,6 @@
     <string name="home_offline_subtitle">Periksa sambungan internet Anda dan coba lagi, atau dengarkan musik yang sudah Anda unduh.</string>
     <string name="listen_to_downloaded">Dengarkan musik yang sudah diunduh</string>
     <string name="playing_on_device">Memutar pada %1$s</string>
-    <string name="not_available_while_casting">Tidak tersedia saat melakukan casting</string>
     <!-- Listen Together -->
     <string name="wrapped_recap_month">Rekap %1$s</string>
     <string name="wrapped_recap_month_year">Rekap %1$s %2$s</string>

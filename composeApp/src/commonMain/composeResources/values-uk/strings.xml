@@ -641,10 +641,8 @@
     <string name="home_offline_subtitle">Перевірте підключення до Інтернету і повторіть спробу, або слухайте вашу завантажену музику.</string>
     <string name="listen_to_downloaded">Слухати завантажену музику</string>
     <string name="playing_on_device">Відтворюється на %1$s</string>
-    <string name="not_available_while_casting">Недоступно під час трансляції</string>
     <string name="audio_output">Аудіо вихід</string>
     <string name="audio_output_playing_here">Відтворюється тут</string>
-    <string name="audio_output_cast">Трансляція</string>
     <string name="audio_output_system_default">Системна за замовчуванням</string>
     <string name="audio_output_wired">Дротові навушники</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

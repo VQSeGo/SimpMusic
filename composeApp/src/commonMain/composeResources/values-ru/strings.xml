@@ -665,10 +665,8 @@
     <string name="home_offline_subtitle">Проверьте подключение к Интернету и повторите попытку, или прослушивайте скачанную музыку.</string>
     <string name="listen_to_downloaded">Слушать скачанную музыку</string>
     <string name="playing_on_device">Воспроизводится на %1$s</string>
-    <string name="not_available_while_casting">Недоступно во время трансляции</string>
     <string name="audio_output">Вывод звука</string>
     <string name="audio_output_playing_here">Играет здесь</string>
-    <string name="audio_output_cast">Каст</string>
     <string name="audio_output_system_default">По умолчанию</string>
     <string name="audio_output_wired">Проводные наушники</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

@@ -662,10 +662,8 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nנבנה ב-❤️ מ�
     <string name="home_offline_subtitle">בדוק את חיבור האינטרנט שלך ונסה שוב, או האזן למוזיקה שהורדת.</string>
     <string name="listen_to_downloaded">האזן למוזיקה שהורדת</string>
     <string name="playing_on_device">מתנגן ב-%1$s</string>
-    <string name="not_available_while_casting">לא זמין בזמן שידור</string>
     <string name="audio_output">פלט אודיו</string>
     <string name="audio_output_playing_here">מתנגן כאן</string>
-    <string name="audio_output_cast">שדר</string>
     <string name="audio_output_system_default">ברירת המחדל של המערכת</string>
     <string name="audio_output_wired">אוזניות חוטיות</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

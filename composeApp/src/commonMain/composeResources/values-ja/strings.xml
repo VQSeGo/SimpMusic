@@ -654,10 +654,8 @@
     <string name="home_offline_subtitle">インターネット接続を確認して、もう一度試すか、ダウンロードした音楽を聴いてください。</string>
     <string name="listen_to_downloaded">ダウンロードした音楽を再生</string>
     <string name="playing_on_device">%1$sを再生中</string>
-    <string name="not_available_while_casting">キャスト中は利用できません</string>
     <string name="audio_output">オーディオ出力</string>
     <string name="audio_output_playing_here">ここで再生中</string>
-    <string name="audio_output_cast">キャスト</string>
     <string name="audio_output_system_default">システムのデフォルト</string>
     <string name="audio_output_wired">有線ヘッドフォン</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

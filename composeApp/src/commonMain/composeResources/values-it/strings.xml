@@ -619,10 +619,8 @@
     <string name="home_offline_subtitle">Controlla la tua connessione internet e riprova o ascolta la tua musica già scaricata.</string>
     <string name="listen_to_downloaded">Ascolta la musica scaricata</string>
     <string name="playing_on_device">In riproduzione su %1$s</string>
-    <string name="not_available_while_casting">Non disponibile durante il casting</string>
     <string name="audio_output">Uscita audio</string>
     <string name="audio_output_playing_here">Riproduzione qui</string>
-    <string name="audio_output_cast">Cast</string>
     <string name="audio_output_system_default">Predefinito di sistema</string>
     <string name="audio_output_wired">Cuffie cablate</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

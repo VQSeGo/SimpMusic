@@ -751,7 +751,7 @@ fun FullscreenLyricsContent(
 /**
  * Landscape: the artwork with the current Now Playing style's track row and playback controls under
  * it on the left, the lyrics on the right. Only the row and the controls come from the style — its
- * action row (info, cast, queue…) stays on the Now Playing page.
+ * action row (shuffle, repeat, queue…) stays on the Now Playing page.
  */
 @Composable
 private fun FullscreenLyricsLandscape(

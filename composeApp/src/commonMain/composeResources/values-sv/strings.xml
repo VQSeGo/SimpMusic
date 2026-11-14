@@ -657,10 +657,8 @@
     <string name="home_offline_subtitle">Kontrollera internetanslutningen och försök igen, eller lyssna på musik du har hämtat.</string>
     <string name="listen_to_downloaded">Lyssna på hämtad musik</string>
     <string name="playing_on_device">Spelas upp på %1$s</string>
-    <string name="not_available_while_casting">Inte tillgängligt medan du castar</string>
     <string name="audio_output">Ljudutgång</string>
     <string name="audio_output_playing_here">Spelas här</string>
-    <string name="audio_output_cast">Cast</string>
     <string name="audio_output_system_default">Systemets standard</string>
     <string name="audio_output_wired">Trådanslutna hörlurar</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

@@ -187,7 +187,6 @@ fun NowPlayingScreenContent(
     val lyricsOffsetMs by sharedViewModel.getLyricsOffsetMs().collectAsStateWithLifecycle(0)
     val likeStatus by sharedViewModel.likeStatus.collectAsStateWithLifecycle()
     val isDislikePending by sharedViewModel.isDislikePending.collectAsStateWithLifecycle()
-    val castState by sharedViewModel.castState.collectAsStateWithLifecycle()
     // Apple Music style's quality line under the progress bar — see NowPlayingContentState.toAudioQualityLabel.
     val formatState by sharedViewModel.format.collectAsStateWithLifecycle(initialValue = null)
 
@@ -554,7 +553,6 @@ fun NowPlayingScreenContent(
             controllerState = controllerState,
             timelineState = timelineState,
             timelineFlow = sharedViewModel.timeline,
-            castState = castState,
             shouldShowVideo = shouldShowVideo,
             isUserLoggedIn = isUserLoggedIn,
             // The queue's copy as well: a song row written before its album was known keeps none.

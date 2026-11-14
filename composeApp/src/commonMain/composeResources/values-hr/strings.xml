@@ -621,7 +621,6 @@
     <string name="home_offline_subtitle">Check your internet connection and try again, or listen to your downloaded music.</string>
     <string name="listen_to_downloaded">Listen to downloaded music</string>
     <string name="playing_on_device">Playing on %1$s</string>
-    <string name="not_available_while_casting">Nije dostupno while casting</string>
     <string name="import_data">Import playlists</string>
     <string name="import_playlists_from_other_apps">Import playlists from another app</string>
     <string name="import_data_intro">Import brings in playlists converted from Spotify or another YT Music client app.\nConverting tool: https://www.simpmusic.org/tools\nIn SimpMusic, only playlist files in our own format can be imported</string>

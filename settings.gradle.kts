@@ -54,8 +54,6 @@ include(
     ":media3-ui",
     ":crashlytics",
     ":crashlytics-empty",
-    ":cast",
-    ":cast-empty",
     ":kizzy",
     ":discord",
     ":listenTogether",

@@ -634,10 +634,8 @@
     <string name="home_offline_subtitle">請檢查您的網路連線並重試，或聆聽您已下載的音樂。</string>
     <string name="listen_to_downloaded">聆聽已下載的音樂</string>
     <string name="playing_on_device">在 %1$s 上播放</string>
-    <string name="not_available_while_casting">投影期間不可用</string>
     <string name="audio_output">音訊輸出</string>
     <string name="audio_output_playing_here">正在此播放</string>
-    <string name="audio_output_cast">裝置</string>
     <string name="audio_output_system_default">系統預設</string>
     <string name="audio_output_wired">有線耳機</string>
     <string name="audio_output_bluetooth">藍牙</string>

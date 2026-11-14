@@ -657,7 +657,6 @@
     <string name="home_offline_subtitle">Überprüfe deine Internetverbindung und versuche es noch einmal, oder höre deine heruntergeladene Musik.</string>
     <string name="listen_to_downloaded">Heruntergeladene Musik hören</string>
     <string name="playing_on_device">Abspielen auf %1$s</string>
-    <string name="not_available_while_casting">Während des Castings nicht verfügbar</string>
     <string name="audio_output">Audio-Ausgang</string>
     <string name="audio_output_playing_here">Hier abspielen</string>
     <string name="audio_output_system_default">Systemstandard</string>

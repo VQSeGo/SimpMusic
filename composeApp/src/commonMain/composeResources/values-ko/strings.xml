@@ -524,7 +524,6 @@
     <string name="home_offline_subtitle">인터넷 연결을 확인하고 다시 시도하거나 다운로드한 음악을 들어보세요.</string>
     <string name="listen_to_downloaded">다운로드한 음악 듣기</string>
     <string name="playing_on_device">%1$s에서 재생 중</string>
-    <string name="not_available_while_casting">전송중 불가능한 작업입니다</string>
     <string name="import_data">재생 목록 가져오기</string>
     <string name="import_reading_file">파일 읽는중…</string>
     <string name="import_progress_songs">%2$d곡 중 %1$d곡</string>

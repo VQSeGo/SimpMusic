@@ -502,7 +502,6 @@
     <string name="home_offline_subtitle">请检查您的网络连接并重试，或收听您已下载的音乐。</string>
     <string name="listen_to_downloaded">收听已下载的音乐</string>
     <string name="playing_on_device">正在 %1$s 上播放</string>
-    <string name="not_available_while_casting">投影时不可用</string>
     <string name="import_data">导入播放列表</string>
     <string name="import_reading_file">正在读取文件…</string>
     <string name="import_progress_songs">%1$d 首歌曲中的 %2$d 首</string>
