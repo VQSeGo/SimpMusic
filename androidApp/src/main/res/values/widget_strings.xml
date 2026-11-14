@@ -17,5 +17,4 @@
     <string name="widget_insights_top_songs">Top songs · 30 days</string>
     <string name="widget_insights_top_artists">Top artists · 30 days</string>
     <string name="widget_recently_added">Recently added</string>
-    <string name="qs_tile_recognize_song">Recognize song</string>
 </resources>

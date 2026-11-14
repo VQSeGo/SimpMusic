@@ -150,6 +150,10 @@
   `buy_me_a_coffee`, `developer_blog`, `developer_blog_tagline`, `donation`, `paypal`, `visit_blog`, `website`; строка автора в
   `EndOfPage`). Авторство оригинала (GPL-3.0) остаётся: строка `based_on_simpmusic` рядом с версией в настройках и на `CreditScreen`,
   там же юридический текст. Кнопка Discord «Visit SimpMusic» ведёт на репозиторий форка, GitHub и «Проблемы» на `CreditScreen` тоже.
+  Также: распознавание музыки через Shazam (Android: кнопка микрофона в поиске и лист `SongRecognitionSheet`, `SongRecognizer`,
+  `ShazamSignature`, `expect`/`actual` `SongRecognition`, плитка шторки `RecognitionTileService`, ссылка `simpmusic://recognize` и
+  `SharedViewModel.requestSongRecognition`, иконка `GraphicEq`, строки `recognize_*` и `qs_tile_recognize_song`, разрешение
+  `RECORD_AUDIO` и `uses-feature` микрофона: других пользователей записи звука нет).
 - Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки

@@ -103,7 +103,6 @@ import com.maxrave.domain.utils.toSongEntity
 import com.maxrave.domain.utils.toTrack
 import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.expect.ui.PlatformBackHandler
-import com.maxrave.simpmusic.expect.ui.SongRecognitionSheet
 import com.maxrave.simpmusic.expect.ui.layerBackdrop
 import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.extension.getScreenSizeInfo
@@ -130,7 +129,6 @@ import com.maxrave.simpmusic.ui.component.selection.rememberSongSelectionState
 import com.maxrave.simpmusic.ui.icon.ArrowBackIosNew
 import com.maxrave.simpmusic.ui.icon.ArrowOutward
 import com.maxrave.simpmusic.ui.icon.Close
-import com.maxrave.simpmusic.ui.icon.GraphicEq
 import com.maxrave.simpmusic.ui.icon.History
 import com.maxrave.simpmusic.ui.icon.Search
 import com.maxrave.simpmusic.ui.icon.SimpIcons
@@ -167,7 +165,6 @@ import simpmusic.composeapp.generated.resources.in_search
 import simpmusic.composeapp.generated.resources.no_results_found
 import simpmusic.composeapp.generated.resources.playlists
 import simpmusic.composeapp.generated.resources.podcasts
-import simpmusic.composeapp.generated.resources.recognize_song
 import simpmusic.composeapp.generated.resources.retry
 import simpmusic.composeapp.generated.resources.search_for
 import simpmusic.composeapp.generated.resources.search_for_songs_artists_albums_playlists_and_more
@@ -282,15 +279,6 @@ fun SearchScreen(
     val selectionViewModel: SongSelectionViewModel = koinViewModel()
     var showSelectionSheet by rememberSaveable { mutableStateOf(false) }
     var showSelectionAddToPlaylist by rememberSaveable { mutableStateOf(false) }
-    var showRecognition by rememberSaveable { mutableStateOf(false) }
-    // The sheet asked for by simpmusic://recognize (the Quick Settings tile), opened once and cleared.
-    val songRecognitionRequest by sharedViewModel.songRecognitionRequest.collectAsStateWithLifecycle()
-    LaunchedEffect(songRecognitionRequest) {
-        if (songRecognitionRequest) {
-            showRecognition = true
-            sharedViewModel.requestSongRecognition(false)
-        }
-    }
     val currentVideoId by searchViewModel.nowPlayingVideoId.collectAsStateWithLifecycle()
     val chipRowState = rememberScrollState()
     val pullToRefreshState = rememberPullToRefreshState()
@@ -397,27 +385,6 @@ fun SearchScreen(
             },
             navController = navController,
             song = sheetSong,
-        )
-    }
-    if (showRecognition) {
-        SongRecognitionSheet(
-            onFind = { query ->
-                searchText = query
-                focusManager.clearFocus()
-                isSearchSubmitted = true
-                searchViewModel.insertSearchHistory(query)
-                when (searchScreenState.searchType) {
-                    SearchType.ALL -> searchViewModel.searchAll(query)
-                    SearchType.SONGS -> searchViewModel.searchSongs(query)
-                    SearchType.VIDEOS -> searchViewModel.searchVideos(query)
-                    SearchType.ALBUMS -> searchViewModel.searchAlbums(query)
-                    SearchType.ARTISTS -> searchViewModel.searchArtists(query)
-                    SearchType.PLAYLISTS -> searchViewModel.searchPlaylists(query)
-                    SearchType.FEATURED_PLAYLISTS -> searchViewModel.searchFeaturedPlaylist(query)
-                    SearchType.PODCASTS -> searchViewModel.searchPodcast(query)
-                }
-            },
-            onDismiss = { showRecognition = false },
         )
     }
 
@@ -1164,17 +1131,6 @@ fun SearchScreen(
                                 Icon(
                                     imageVector = SimpIcons.Close,
                                     contentDescription = "Clear search",
-                                )
-                            }
-                        } else if (getPlatform() == Platform.Android) {
-                            // An empty field offers song recognition instead (Android only).
-                            IconButton(
-                                modifier = Modifier.clip(CircleShape),
-                                onClick = { showRecognition = true },
-                            ) {
-                                Icon(
-                                    imageVector = SimpIcons.GraphicEq,
-                                    contentDescription = stringResource(Res.string.recognize_song),
                                 )
                             }
                         }
