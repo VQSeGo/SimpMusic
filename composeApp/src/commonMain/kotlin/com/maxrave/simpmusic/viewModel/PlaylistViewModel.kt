@@ -425,15 +425,11 @@ class PlaylistViewModel(
         return true
     }
 
-    private suspend fun applyLocalPlaylist(
+    private fun applyLocalPlaylist(
         playlistEntity: PlaylistEntity,
         tracks: List<Track>,
     ) {
         _playlistEntity.value = playlistEntity
-        playlistRepository.updatePlaylistInLibrary(
-            playlistId = playlistEntity.id,
-            inLibrary = now(),
-        )
         _uiState.value =
             Success(
                 data =
@@ -455,6 +451,15 @@ class PlaylistViewModel(
         _tracks.value = tracks
         _continuation.value = null
         _tracksListState.value = ListState.PAGINATION_EXHAUST
+        // After the screen is filled: this write can wait seconds behind other database work.
+        viewModelScope.launch {
+            val writeStarted = TimeSource.Monotonic.markNow()
+            playlistRepository.updatePlaylistInLibrary(
+                playlistId = playlistEntity.id,
+                inLibrary = now(),
+            )
+            Logger.d(tag) { "playlist ${playlistEntity.id} inLibrary written in ${writeStarted.elapsedNow().inWholeMilliseconds} ms" }
+        }
         if (playlistEntity.downloadState != STATE_DOWNLOADED) {
             checkDownloadedPlaylist?.cancel()
             checkDownloadedPlaylist =
