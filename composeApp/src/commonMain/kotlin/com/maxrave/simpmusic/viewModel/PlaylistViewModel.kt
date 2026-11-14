@@ -32,6 +32,8 @@ import com.maxrave.simpmusic.viewModel.PlaylistUIState.Error
 import com.maxrave.simpmusic.viewModel.PlaylistUIState.Loading
 import com.maxrave.simpmusic.viewModel.PlaylistUIState.Success
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -92,6 +94,11 @@ class PlaylistViewModel(
     val downloadedList: StateFlow<List<String>> = _downloadedList
 
     private var playlistEntityJob: Job? = null
+    private var loadJob: Job? = null
+
+    // The playlist the screen is loading or showing. Every write of a load checks it, so the answer
+    // for a playlist the user has already left cannot land on the next one.
+    private var loadingId: String? = null
     private var newUpdateJob: Job? = null
     private var checkDownloadedPlaylist: Job? = null
 
@@ -169,11 +176,22 @@ class PlaylistViewModel(
         _listColors.value = emptyList()
         checkDownloadedPlaylist?.cancel()
         checkDownloadedPlaylist = null
+        playlistEntityJob?.cancel()
     }
 
+    /**
+     * Opens playlist [id]. A radio comes from the network only, as before. Any other playlist shows
+     * its saved copy from the database at once, when there is one, and then the network answer:
+     * the track list is replaced only when it differs, so an unchanged list keeps its rows and the
+     * scroll position. A network error leaves the saved copy on screen; without one the screen
+     * closes with a message, as before.
+     */
     fun getData(id: String) {
+        loadJob?.cancel()
         resetData()
-        viewModelScope.launch {
+        loadingId = id
+        val started = TimeSource.Monotonic.markNow()
+        loadJob = viewModelScope.launch {
             // Check radio
             if (id.isRadioPlaylistId()) {
                 playlistRepository
@@ -216,15 +234,42 @@ class PlaylistViewModel(
                         }
                     }
             } else {
+                val localShown = showLocalPlaylist(id, started)
                 // This is an online playlist
                 playlistRepository
                     .getPlaylistData(id, getString(Res.string.view_count))
                     .collect { res ->
+                        if (loadingId != id) return@collect
                         val data = res.data
                         when (res) {
                             is Resource.Success if (data != null) -> {
                                 Logger.d(tag) { "Playlist data: ${Logger.clip(data)}" }
                                 log("Playlist endpoint: ${data.first.shuffleEndpoint}")
+                                val shown = _tracks.value.map { it.videoId }
+                                val fresh = data.first.tracks.map { it.videoId }
+                                when {
+                                    !localShown -> {
+                                        _tracks.value = data.first.tracks
+                                        setContinuation(data.second)
+                                    }
+                                    // The same list: rows, download marks and scroll stay as they are;
+                                    // only the next page comes from the network.
+                                    shown == fresh -> {
+                                        setContinuation(data.second)
+                                        Logger.i("Offline", "playlist $id network same ${started.elapsedNow().inWholeMilliseconds} ms")
+                                    }
+                                    // The saved copy holds the whole playlist (paged through for a
+                                    // download) and the network's first page is its beginning:
+                                    // keep the whole list, there is nothing to page.
+                                    data.second != null && shown.size > fresh.size && shown.subList(0, fresh.size) == fresh -> {
+                                        Logger.i("Offline", "playlist $id network same ${started.elapsedNow().inWholeMilliseconds} ms")
+                                    }
+                                    else -> {
+                                        _tracks.value = data.first.tracks
+                                        setContinuation(data.second)
+                                        Logger.i("Offline", "playlist $id network replaced ${started.elapsedNow().inWholeMilliseconds} ms")
+                                    }
+                                }
                                 _uiState.value =
                                     Success(
                                         data =
@@ -244,14 +289,18 @@ class PlaylistViewModel(
                                                 radioEndpoint = data.first.radioEndpoint,
                                             ),
                                     )
-                                _tracks.value = data.first.tracks
-                                _continuation.value = data.second
-                                if (data.second.isNullOrEmpty()) _tracksListState.value = ListState.PAGINATION_EXHAUST
                                 getPlaylistEntity(id = data.first.id, playlistBrowse = data.first)
                             }
 
                             else -> {
-                                getPlaylistEntity(id)
+                                if (localShown) {
+                                    Logger.i(
+                                        "Offline",
+                                        "playlist $id network failed, local stays ${started.elapsedNow().inWholeMilliseconds} ms: ${res.message}",
+                                    )
+                                } else {
+                                    getPlaylistEntity(id)
+                                }
                             }
                         }
                     }
@@ -345,61 +394,86 @@ class PlaylistViewModel(
                             }
                     }
                 } else if (playlistEntity != null) {
-                    _playlistEntity.value = playlistEntity
-                    playlistRepository.updatePlaylistInLibrary(
-                        playlistId = id,
-                        inLibrary = now(),
-                    )
-                    _uiState.value =
-                        Success(
-                            data =
-                                PlaylistState(
-                                    id = playlistEntity.id,
-                                    title = playlistEntity.title,
-                                    isRadio = false,
-                                    author =
-                                        Author(
-                                            id = "",
-                                            name = playlistEntity.author ?: "",
-                                        ),
-                                    thumbnail = playlistEntity.thumbnails,
-                                    description = playlistEntity.description,
-                                    trackCount = playlistEntity.trackCount,
-                                    year = playlistEntity.year ?: now().year.toString(),
-                                ),
-                        )
-                    _tracksListState.value = ListState.LOADING
-                    playlistEntity.tracks?.let {
-                        songRepository
-                            .getSongsByListVideoId(it)
-                            .singleOrNull()
-                            ?.let { song ->
-                                _tracks.value = song.map { it.toTrack() }
-                            }
-                    }
-                    _tracksListState.value = ListState.PAGINATION_EXHAUST
-                    if (playlistEntity.downloadState != STATE_DOWNLOADED) {
-                        checkDownloadedPlaylist =
-                            launch {
-                                val listSong =
-                                    songRepository
-                                        .getSongsByListVideoId(
-                                            playlistEntity.tracks ?: emptyList(),
-                                        ).firstOrNull()
-                                Logger.d(tag, "List song: $listSong")
-                                if (!listSong.isNullOrEmpty() && listSong.size == playlistEntity.tracks?.size &&
-                                    listSong.all {
-                                        it.downloadState == STATE_DOWNLOADED
-                                    }
-                                ) {
-                                    updatePlaylistDownloadState(playlistEntity.id, STATE_DOWNLOADED)
-                                }
-                            }
-                    }
+                    applyLocalPlaylist(playlistEntity, playlistEntity.tracks?.let { tracksOf(it) } ?: emptyList())
                 } else {
                     _uiState.value = Error("Empty response")
                 }
             }
+    }
+
+    private fun setContinuation(continuation: String?) {
+        _continuation.value = continuation
+        _tracksListState.value = if (continuation.isNullOrEmpty()) ListState.PAGINATION_EXHAUST else ListState.IDLE
+    }
+
+    private suspend fun tracksOf(videoIds: List<String>): List<Track> =
+        songRepository.getSongsByListVideoId(videoIds).singleOrNull()?.map { it.toTrack() } ?: emptyList()
+
+    /**
+     * Shows the saved copy of playlist [id] if the database has one with its tracks; returns whether
+     * it did. Its whole saved list is shown and nothing is paged after it.
+     */
+    private suspend fun showLocalPlaylist(
+        id: String,
+        started: TimeMark,
+    ): Boolean {
+        val entity = playlistRepository.getPlaylist(id).firstOrNull() ?: return false
+        val tracks = tracksOf(entity.tracks ?: return false)
+        if (tracks.isEmpty() || loadingId != id) return false
+        applyLocalPlaylist(entity, tracks)
+        Logger.i("Offline", "playlist $id local shown ${started.elapsedNow().inWholeMilliseconds} ms")
+        return true
+    }
+
+    private suspend fun applyLocalPlaylist(
+        playlistEntity: PlaylistEntity,
+        tracks: List<Track>,
+    ) {
+        _playlistEntity.value = playlistEntity
+        playlistRepository.updatePlaylistInLibrary(
+            playlistId = playlistEntity.id,
+            inLibrary = now(),
+        )
+        _uiState.value =
+            Success(
+                data =
+                    PlaylistState(
+                        id = playlistEntity.id,
+                        title = playlistEntity.title,
+                        isRadio = false,
+                        author =
+                            Author(
+                                id = "",
+                                name = playlistEntity.author ?: "",
+                            ),
+                        thumbnail = playlistEntity.thumbnails,
+                        description = playlistEntity.description,
+                        trackCount = playlistEntity.trackCount,
+                        year = playlistEntity.year ?: now().year.toString(),
+                    ),
+            )
+        _tracks.value = tracks
+        _continuation.value = null
+        _tracksListState.value = ListState.PAGINATION_EXHAUST
+        if (playlistEntity.downloadState != STATE_DOWNLOADED) {
+            checkDownloadedPlaylist?.cancel()
+            checkDownloadedPlaylist =
+                viewModelScope.launch {
+                    val listSong =
+                        songRepository
+                            .getSongsByListVideoId(
+                                playlistEntity.tracks ?: emptyList(),
+                            ).firstOrNull()
+                    Logger.d(tag, "List song: $listSong")
+                    if (!listSong.isNullOrEmpty() && listSong.size == playlistEntity.tracks?.size &&
+                        listSong.all {
+                            it.downloadState == STATE_DOWNLOADED
+                        }
+                    ) {
+                        updatePlaylistDownloadState(playlistEntity.id, STATE_DOWNLOADED)
+                    }
+                }
+        }
     }
 
     fun setBrush(listColors: List<Color>) {

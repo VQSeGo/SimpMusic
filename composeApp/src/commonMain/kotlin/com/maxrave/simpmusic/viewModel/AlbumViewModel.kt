@@ -3,6 +3,7 @@ package com.maxrave.simpmusic.viewModel
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import com.maxrave.common.Config
+import com.maxrave.domain.data.entities.AlbumEntity
 import com.maxrave.domain.data.entities.DownloadState
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.browse.artist.ResultAlbum
@@ -18,7 +19,10 @@ import com.maxrave.domain.utils.toAlbumEntity
 import com.maxrave.domain.utils.toArrayListTrack
 import com.maxrave.domain.utils.toSongEntity
 import com.maxrave.logger.LogLevel
+import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,94 +47,126 @@ class AlbumViewModel(
     val uiState: StateFlow<AlbumUIState> = _uiState
 
     private var job: Job? = null
+    private var loadJob: Job? = null
+    private var albumFlowFor: String? = null
     private var collectDownloadStateJob: Job? = null
 
+    /**
+     * Opens [browseId]: the saved copy from the database first, when there is one, then the
+     * network answer. The network replaces the saved copy only where it differs, so a list that
+     * did not change keeps its scroll position and nothing visible moves. Without a saved copy the
+     * screen waits for the network as before, and a network error closes it with a message.
+     *
+     * Opening another album cancels the previous load, and every write checks that the screen still
+     * shows the album it was loaded for, so a late answer for the old album cannot land on the new one.
+     */
     fun updateBrowseId(browseId: String) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(browseId = browseId) }
-            albumRepository.getAlbumData(browseId).collectLatest { res ->
-                when (res) {
-                    is Resource.Success -> {
-                        val data = res.data
-                        if (data != null) {
-                            _uiState.update {
-                                it.copy(
-                                    browseId = browseId,
-                                    audioPlaylistId = data.audioPlaylistId,
-                                    title = data.title,
-                                    thumbnail = data.thumbnails?.lastOrNull()?.url,
-                                    artists = data.artists,
-                                    year = data.year ?: now().year.toString(),
-                                    trackCount = data.trackCount,
-                                    description = data.description,
-                                    length = data.duration ?: "",
-                                    listTrack = data.tracks,
-                                    otherVersion = data.otherVersion,
-                                    loadState = LocalPlaylistState.PlaylistLoadState.Success,
-                                )
-                            }
-                            val localAlbum = albumRepository.getAlbum(browseId).lastOrNull()
-                            if (localAlbum != null) {
-                                _uiState.update {
-                                    it.copy(
-                                        downloadState = localAlbum.downloadState,
-                                        liked = localAlbum.liked,
+        loadJob?.cancel()
+        if (uiState.value.browseId != browseId) {
+            // Another album: nothing of the previous one may show under the new id.
+            job?.cancel()
+            collectDownloadStateJob?.cancel()
+            albumFlowFor = null
+            _uiState.value = AlbumUIState.initial().copy(browseId = browseId)
+        }
+        val started = TimeSource.Monotonic.markNow()
+        loadJob =
+            viewModelScope.launch {
+                val localShown = showLocalAlbum(browseId, started)
+                albumRepository.getAlbumData(browseId).collectLatest { res ->
+                    if (uiState.value.browseId != browseId) return@collectLatest
+                    when (res) {
+                        is Resource.Success -> {
+                            val data = res.data
+                            if (data != null) {
+                                val current = uiState.value
+                                val sameTracks = current.listTrack.map { it.videoId } == data.tracks.map { it.videoId }
+                                if (localShown) {
+                                    val same =
+                                        sameTracks &&
+                                            current.title == data.title &&
+                                            current.thumbnail == data.thumbnails?.lastOrNull()?.url &&
+                                            current.trackCount == data.trackCount
+                                    Logger.i(
+                                        "Offline",
+                                        "album $browseId network ${if (same) "same" else "replaced"} " +
+                                            "${started.elapsedNow().inWholeMilliseconds} ms",
                                     )
                                 }
-                                albumRepository.updateAlbumInLibrary(now(), browseId)
-                            } else {
-                                albumRepository.insertAlbum(data.toAlbumEntity(browseId)).singleOrNull().let {
-                                    log("Insert Album $it")
-                                    data.tracks.forEach { track ->
-                                        songRepository
-                                            .insertSong(
-                                                track.toSongEntity().copy(
-                                                    inLibrary = Config.REMOVED_SONG_DATE_TIME,
-                                                ),
-                                            ).singleOrNull()
-                                            ?.let {
-                                                log("Insert Song $it")
-                                            }
-                                    }
-                                }
-                            }
-                            getAlbumFlow(browseId)
-                        } else {
-                            makeToast(getString(Res.string.error) + ": Null data")
-                            _uiState.update {
-                                it.copy(
-                                    loadState = LocalPlaylistState.PlaylistLoadState.Error,
-                                )
-                            }
-                        }
-                    }
-
-                    is Resource.Error -> {
-                        albumRepository.getAlbum(browseId).singleOrNull().let { albumEntity ->
-                            if (albumEntity != null) {
                                 _uiState.update {
                                     it.copy(
                                         browseId = browseId,
-                                        audioPlaylistId = albumEntity.audioPlaylistId,
-                                        title = albumEntity.title,
-                                        thumbnail = albumEntity.thumbnails,
-                                        artists =
-                                            albumEntity.artistName.orEmpty().mapIndexed { index, name ->
-                                                Artist(id = albumEntity.artistId?.getOrNull(index), name = name)
-                                            },
-                                        year = albumEntity.year ?: now().year.toString(),
-                                        trackCount = albumEntity.trackCount,
-                                        description = albumEntity.description,
-                                        length = albumEntity.duration ?: "",
-                                        listTrack =
-                                            (
-                                                songRepository
-                                                    .getSongsByListVideoId(albumEntity.tracks ?: emptyList())
-                                                    .singleOrNull() ?: emptyList()
-                                            ).toArrayListTrack(),
+                                        audioPlaylistId = data.audioPlaylistId,
+                                        title = data.title,
+                                        thumbnail = data.thumbnails?.lastOrNull()?.url,
+                                        artists = data.artists,
+                                        year = data.year ?: now().year.toString(),
+                                        trackCount = data.trackCount,
+                                        description = data.description,
+                                        length = data.duration ?: "",
+                                        // The same tracks in the same order: keep the list object, so the
+                                        // rows are not rebuilt under the user's finger.
+                                        listTrack = if (sameTracks && it.listTrack.isNotEmpty()) it.listTrack else data.tracks,
+                                        otherVersion = data.otherVersion,
                                         loadState = LocalPlaylistState.PlaylistLoadState.Success,
                                     )
                                 }
+                                val localAlbum = albumRepository.getAlbum(browseId).lastOrNull()
+                                if (uiState.value.browseId != browseId) return@collectLatest
+                                if (localAlbum != null) {
+                                    _uiState.update {
+                                        it.copy(
+                                            downloadState = localAlbum.downloadState,
+                                            liked = localAlbum.liked,
+                                        )
+                                    }
+                                    albumRepository.updateAlbumInLibrary(now(), browseId)
+                                } else {
+                                    albumRepository.insertAlbum(data.toAlbumEntity(browseId)).singleOrNull().let {
+                                        log("Insert Album $it")
+                                        data.tracks.forEach { track ->
+                                            songRepository
+                                                .insertSong(
+                                                    track.toSongEntity().copy(
+                                                        inLibrary = Config.REMOVED_SONG_DATE_TIME,
+                                                    ),
+                                                ).singleOrNull()
+                                                ?.let {
+                                                    log("Insert Song $it")
+                                                }
+                                        }
+                                    }
+                                }
+                                getAlbumFlow(browseId)
+                            } else if (localShown) {
+                                Logger.i(
+                                    "Offline",
+                                    "album $browseId network failed, local stays ${started.elapsedNow().inWholeMilliseconds} ms: null data",
+                                )
+                            } else {
+                                makeToast(getString(Res.string.error) + ": Null data")
+                                _uiState.update {
+                                    it.copy(
+                                        loadState = LocalPlaylistState.PlaylistLoadState.Error,
+                                    )
+                                }
+                            }
+                        }
+
+                        is Resource.Error -> {
+                            if (localShown) {
+                                Logger.i(
+                                    "Offline",
+                                    "album $browseId network failed, local stays ${started.elapsedNow().inWholeMilliseconds} ms: ${res.message}",
+                                )
+                                return@collectLatest
+                            }
+                            // No usable saved copy was shown (none, or one without its tracks): what the
+                            // database has is still better than closing the screen.
+                            val albumEntity = albumRepository.getAlbum(browseId).singleOrNull()
+                            if (uiState.value.browseId != browseId) return@collectLatest
+                            if (albumEntity != null) {
+                                _uiState.update { localAlbumState(it, albumEntity, localTracks(albumEntity)) }
                             } else {
                                 log("Error: ${res.message}", LogLevel.ERROR)
                                 makeToast(getString(Res.string.error) + ": ${res.message}")
@@ -144,8 +180,57 @@ class AlbumViewModel(
                     }
                 }
             }
-        }
     }
+
+    /**
+     * Shows the saved copy of [browseId] if the database has one with its tracks. Returns whether it
+     * did. A screen already showing this album (back from another screen) is left alone: the network
+     * answer that follows refreshes it.
+     */
+    private suspend fun showLocalAlbum(
+        browseId: String,
+        started: TimeMark,
+    ): Boolean {
+        if (uiState.value.loadState == LocalPlaylistState.PlaylistLoadState.Success) return true
+        val albumEntity = albumRepository.getAlbum(browseId).singleOrNull() ?: return false
+        val tracks = localTracks(albumEntity)
+        if (tracks.isEmpty() || uiState.value.browseId != browseId) return false
+        _uiState.update { localAlbumState(it, albumEntity, tracks) }
+        Logger.i("Offline", "album $browseId local shown ${started.elapsedNow().inWholeMilliseconds} ms")
+        getAlbumFlow(browseId)
+        return true
+    }
+
+    private suspend fun localTracks(albumEntity: AlbumEntity): List<Track> =
+        (
+            songRepository
+                .getSongsByListVideoId(albumEntity.tracks ?: emptyList())
+                .singleOrNull() ?: emptyList()
+        ).toArrayListTrack()
+
+    private fun localAlbumState(
+        state: AlbumUIState,
+        albumEntity: AlbumEntity,
+        tracks: List<Track>,
+    ): AlbumUIState =
+        state.copy(
+            browseId = albumEntity.browseId,
+            audioPlaylistId = albumEntity.audioPlaylistId,
+            title = albumEntity.title,
+            thumbnail = albumEntity.thumbnails,
+            artists =
+                albumEntity.artistName.orEmpty().mapIndexed { index, name ->
+                    Artist(id = albumEntity.artistId?.getOrNull(index), name = name)
+                },
+            year = albumEntity.year ?: now().year.toString(),
+            trackCount = albumEntity.trackCount,
+            description = albumEntity.description,
+            length = albumEntity.duration ?: "",
+            listTrack = tracks,
+            downloadState = albumEntity.downloadState,
+            liked = albumEntity.liked,
+            loadState = LocalPlaylistState.PlaylistLoadState.Success,
+        )
 
     fun setBrush(brush: List<Color>) {
         _uiState.update {
@@ -167,6 +252,9 @@ class AlbumViewModel(
     }
 
     private fun getAlbumFlow(browseId: String) {
+        // Started by the saved copy already: restarting would only replay the same values.
+        if (albumFlowFor == browseId && job?.isActive == true) return
+        albumFlowFor = browseId
         job?.cancel()
         collectDownloadStateJob?.cancel()
         job =
@@ -185,6 +273,8 @@ class AlbumViewModel(
         collectDownloadStateJob =
             viewModelScope.launch {
                 downloadUtils.downloadTask.collectLatest { downloadTask ->
+                    // An empty list is not a downloaded album.
+                    if (uiState.value.listTrack.isEmpty()) return@collectLatest
                     var count = 0
                     uiState.value.listTrack.forEach { track ->
                         if (downloadTask[track.videoId] == DownloadState.STATE_DOWNLOADED) {

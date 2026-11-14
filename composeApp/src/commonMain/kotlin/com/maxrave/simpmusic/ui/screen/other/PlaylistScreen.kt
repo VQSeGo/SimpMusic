@@ -1,11 +1,13 @@
 package com.maxrave.simpmusic.ui.screen.other
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
@@ -352,15 +354,20 @@ fun PlaylistScreen(
         )
     }
 //    Box {
-    Crossfade(
+    // Keyed by the kind of state, not by the instance: when the network answer replaces the saved copy
+    // the list stays where it is instead of fading out and back in.
+    AnimatedContent(
         targetState = uiState,
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        contentKey = { it::class },
+        label = "playlist",
     ) { state ->
         Logger.w(tag, "State hash: ${state.hashCode()}")
         when (state) {
             is PlaylistUIState.Success -> {
                 val data = state.data
                 Logger.d(tag) { "data: ${Logger.clip(data)}" }
-                if (data == null) return@Crossfade
+                if (data == null) return@AnimatedContent
                 val hazeState =
                     rememberHazeState()
                 LazyColumn(
@@ -1286,7 +1293,7 @@ fun PlaylistScreen(
                     )
                 }
                 if (itemBottomSheetShow && currentItem != null) {
-                    val track = currentItem?.toSongEntity() ?: return@Crossfade
+                    val track = currentItem?.toSongEntity() ?: return@AnimatedContent
                     NowPlayingBottomSheet(
                         onDismiss = {
                             itemBottomSheetShow = false
