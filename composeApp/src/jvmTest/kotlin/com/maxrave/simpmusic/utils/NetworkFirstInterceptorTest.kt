@@ -109,7 +109,7 @@ class NetworkFirstInterceptorTest {
         assertEquals("cover:old", fixture.diskBody())
 
         fixture.client.requests.clear()
-        fixture.client.nowMillis += 1
+        fixture.client.nowMillis += BACKOFF_MS
         fixture.client.failure = null
         fixture.client.body = "cover:new"
         val refreshedResult = assertIs<SuccessResult>(fixture.load())
@@ -117,6 +117,51 @@ class NetworkFirstInterceptorTest {
         assertEquals(DataSource.NETWORK, refreshedResult.dataSource)
         assertEquals(1, fixture.client.requests.size)
         fixture.assertNoTemporaryEntries()
+    }
+
+    @Test
+    fun staleImagesSkipTheNetworkForAWhileAfterANetworkFailure() = withFixture(ttlMillis = DAY_MS) { fixture ->
+        fixture.prime()
+        fixture.loader.memoryCache?.clear()
+        fixture.client.nowMillis += DAY_MS
+        fixture.client.failure = SocketTimeoutException("connect timed out")
+        assertEquals("old", assertIs<TestImage>(assertIs<SuccessResult>(fixture.load()).image).label)
+        assertEquals(1, fixture.client.requests.size)
+
+        // Within the backoff a stale image comes from the cache at once, the network is not asked.
+        fixture.client.requests.clear()
+        fixture.loader.memoryCache?.clear()
+        fixture.client.nowMillis += BACKOFF_MS - 1
+        val staleResult = assertIs<SuccessResult>(fixture.load())
+        assertEquals("old", assertIs<TestImage>(staleResult.image).label)
+        assertEquals(DataSource.DISK, staleResult.dataSource)
+        assertEquals(0, fixture.client.requests.size)
+
+        // An image with nothing on disk still tries the network.
+        fixture.request = fixture.request.newBuilder().data(URL + "?other").build()
+        assertIs<ErrorResult>(fixture.load())
+        assertEquals(1, fixture.client.requests.size)
+        fixture.request = fixture.request.newBuilder().data(URL).build()
+
+        // After the backoff the network is tried again, and a success ends the backoff.
+        fixture.client.requests.clear()
+        fixture.client.nowMillis += BACKOFF_MS
+        fixture.client.failure = null
+        fixture.client.body = "cover:new"
+        assertEquals("new", assertIs<TestImage>(assertIs<SuccessResult>(fixture.load()).image).label)
+        assertEquals(1, fixture.client.requests.size)
+        fixture.assertNoTemporaryEntries(expectedEntries = 1)
+    }
+
+    @Test
+    fun httpErrorsDoNotStartTheOfflineBackoff() = withFixture { fixture ->
+        fixture.prime()
+        fixture.client.code = 500
+        fixture.client.body = "error:500"
+        fixture.load()
+        fixture.client.requests.clear()
+        fixture.load()
+        assertEquals(1, fixture.client.requests.size)
     }
 
     @Test
@@ -398,6 +443,7 @@ class NetworkFirstInterceptorTest {
 
     private companion object {
         const val DAY_MS = 24L * 60 * 60 * 1000
+        const val BACKOFF_MS = 120_000L
         const val URL = "https://example.test/cover.img"
     }
 }

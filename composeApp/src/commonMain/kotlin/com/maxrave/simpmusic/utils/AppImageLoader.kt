@@ -13,6 +13,7 @@ import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.crossfade
 import com.maxrave.logger.Logger
+import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okio.FileSystem
 import okio.Path.Companion.toPath
@@ -33,6 +34,7 @@ object AppImageLoader {
     // A cover is tens of kilobytes: 3 s without a connection or 8 s of silence means the network is not usable.
     private const val CONNECT_TIMEOUT_SECONDS = 3L
     private const val READ_TIMEOUT_SECONDS = 8L
+    private const val MAX_REQUESTS = 32
 
     // Only what helps to tell "came from disk" from "waited for the network" goes to the log.
     private const val SLOW_LOAD_MILLIS = 1000L
@@ -58,6 +60,14 @@ object AppImageLoader {
                             callFactory = {
                                 OkHttpClient
                                     .Builder()
+                                    .dispatcher(
+                                        // OkHttp runs 5 calls per host by default: on a hanging network a
+                                        // screenful of covers then waits for the timeout in turns of five.
+                                        Dispatcher().apply {
+                                            maxRequests = MAX_REQUESTS
+                                            maxRequestsPerHost = MAX_REQUESTS
+                                        },
+                                    )
                                     .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                                     .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                                     .build()

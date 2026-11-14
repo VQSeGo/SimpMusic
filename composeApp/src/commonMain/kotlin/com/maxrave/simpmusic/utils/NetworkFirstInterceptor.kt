@@ -12,6 +12,7 @@ import coil3.request.ImageRequest
 import coil3.request.ImageResult
 import coil3.request.SuccessResult
 import com.maxrave.logger.Logger
+import kotlin.concurrent.Volatile
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
@@ -19,6 +20,9 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.io.InterruptedIOException
+import java.net.SocketException
+import java.net.UnknownHostException
 import java.util.UUID
 
 /**
@@ -28,9 +32,16 @@ import java.util.UUID
  * Coil writes network responses to disk before decoding them, including some HTTP failures.
  * Stage each response under a temporary key in the SAME disk cache and promote it only after
  * decoding succeeds. This keeps a 404 or an undecodable 200 from replacing the offline fallback.
+ *
+ * After a refresh fails with a network error (no route, DNS, timeout), stale images skip the network
+ * for [offlineBackoffMillis]: on a network that accepts nothing every refresh would otherwise wait for
+ * its own timeout, one screenful after another. Images with nothing on disk still try the network.
+ * The window is long on purpose: a stale cover shown a little longer costs nothing, while each
+ * re-probe of a dead network costs every cover in flight one more timeout.
  */
 class NetworkFirstInterceptor(
     private val ttlMillis: Long = 24L * 60 * 60 * 1000,
+    private val offlineBackoffMillis: Long = 120_000L,
     private val nowMillis: () -> Long = { System.currentTimeMillis() },
     private val imageLoader: () -> ImageLoader,
 ) : Interceptor {
@@ -44,6 +55,10 @@ class NetworkFirstInterceptor(
     }
 
     private val requestLocks = mutableMapOf<String, RequestLock>()
+
+    // 0 = the last network attempt did not fail with a network error.
+    @Volatile
+    private var networkFailedAtMillis = 0L
     private val registryMutex = Mutex()
 
     override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
@@ -102,7 +117,7 @@ class NetworkFirstInterceptor(
                 // Warming RAM from disk must carry the original age, not start a new TTL.
                 updateMemoryEntry(loader.memoryCache, cachedResult, cachedAtMillis = cachedAtMillis)
             }
-            if (isFresh(cachedAtMillis)) return cachedResult.copy(request = request)
+            if (isFresh(cachedAtMillis) || networkRecentlyFailed()) return cachedResult.copy(request = request)
         }
 
         // Keep a successfully decoded stale image alive while refreshing. A failed refresh can
@@ -117,6 +132,7 @@ class NetworkFirstInterceptor(
 
         try {
             val networkResult = chain.withRequest(networkRequest).proceed()
+            recordNetworkOutcome(networkResult)
             if (networkResult is SuccessResult) {
                 val cachedAtMillis =
                     readCachedAt(diskCache, networkResult.diskCacheKey ?: temporaryKey)?.takeIf { it > 0 }
@@ -162,6 +178,32 @@ class NetworkFirstInterceptor(
             }
         }
     }
+
+    private fun networkRecentlyFailed(): Boolean {
+        val failedAt = networkFailedAtMillis
+        if (failedAt == 0L) return false
+        val now = nowMillis()
+        return now >= failedAt && now - failedAt < offlineBackoffMillis
+    }
+
+    private fun recordNetworkOutcome(result: ImageResult) {
+        when {
+            result is SuccessResult -> networkFailedAtMillis = 0L
+            // An HTTP error or an undecodable body means the network works; only transport failures count.
+            result is ErrorResult && result.throwable.isTransportFailure() -> {
+                if (networkFailedAtMillis == 0L) {
+                    Logger.d("Offline") {
+                        "image network failed (${result.throwable::class.simpleName}), stale covers skip it for ${offlineBackoffMillis / 1000} s"
+                    }
+                }
+                networkFailedAtMillis = nowMillis()
+            }
+        }
+    }
+
+    // No route or connection refused, DNS, and connect/read timeouts (SocketTimeoutException is one).
+    private fun Throwable.isTransportFailure(): Boolean =
+        this is SocketException || this is UnknownHostException || this is InterruptedIOException
 
     private fun isFresh(cachedAtMillis: Long?): Boolean {
         if (cachedAtMillis == null || cachedAtMillis <= 0) return false
