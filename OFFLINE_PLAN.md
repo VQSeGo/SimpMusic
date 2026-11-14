@@ -993,3 +993,23 @@ restored=<bool>`, `resolve warm-up brave <мс> (player code …, extraction …
   `collectionDownloadState` по `downloadTask` (там клип «скачан» по аудио), то же правило в `LocalPlaylistViewModel`
   (очередь теперь считается «качается»). `AlbumViewModel` уже читал `downloadTask`. 6 юнит-тестов
   `CollectionDownloadStateTest`; на устройстве не проверено.
+
+**ОПТ 3: лента с прошлого запуска (2026-11-14, ПК, AppImage из `core` `19b6c44` и основного `8ad50aff`; телефон в
+режиме полёта не проверялся).** Главная берёт ленту из `~/.simpmusic/home_cache.json` (Android: `files/home_cache.json`),
+затем запрашивает свежую. Метки `Offline: home cache hit/miss/stale key/unreadable/written/deleted` и
+`Offline: home network failed, cached feed stays`.
+
+- С1 (`desktop-no-network.sh offline`): `11:14:47.439Z home-requested` → `47.489 home cache hit: 83 KB` → `47.501 home network
+  failed, cached feed stays: UnknownHostException` → `48.164 home-shown` (0,7 с от запроса, 3,1 с от старта JVM). Вместо
+  «Can't connect» прошлая лента (3 полки первой страницы). Ошибка сети приходит с этой же лентой, список не очищается,
+  `homeListState` `LOADING` → `PAGINATION_EXHAUST` (подгрузки нет, ниже ленты блоки новинок/чарта; чарт и новинки без сети
+  пустые, настроения из своего кэша). Снэкбар с ошибкой сети показывается, как раньше.
+- С3 (имитация; штатный `hang` на этом ядре не поднимается: `ip link add … type dummy` → `Unknown device type`; вместо него
+  та же схема на `lo`: поддельный DNS отвечает 127.0.0.1, на 127.0.0.1:443 `net-helper.py proxy 443 --blackhole`, сеть ПК не
+  трогалась): `11:17:49.943Z home-requested` → `49.989 home cache hit` → `50.473 home-shown` (0,5 с). Лента видна всё время
+  ожидания; `11:17:59.975 getHomeItemList chart: Socket timeout` (10 с), `11:18:09.231 home network failed, cached feed stays:
+  SocketTimeoutException` (19,3 с), лента осталась.
+- Что должно быть на телефоне в режиме полёта (не проверялось, внесено в чек-лист): холодный старт сразу показывает прошлую
+  ленту вместо «Ошибка подключения»; снэкбар с ошибкой сети; внизу ленты нет крутилки подгрузки; кнопка/жест обновления
+  без сети оставляет ленту на месте (шиммер, затем та же лента и снэкбар). Пустой экран ошибки — только если файла нет
+  (первый запуск, выход из аккаунта) или он от другого аккаунта/языка/региона.
