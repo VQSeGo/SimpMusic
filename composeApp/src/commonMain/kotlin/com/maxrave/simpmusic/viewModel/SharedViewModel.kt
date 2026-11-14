@@ -551,7 +551,7 @@ class SharedViewModel(
                     .getSongById(track.videoId)
                     .collect { songEntity ->
                         if (songEntity != null) {
-                            Logger.w("Check like", "loadMediaItemFromTrack ${songEntity.liked}")
+                            Logger.d("Check like", "loadMediaItemFromTrack ${songEntity.liked}")
                             _liked.value = songEntity.liked
                         }
                     }
@@ -658,7 +658,7 @@ class SharedViewModel(
                 }
 
                 UIEvent.ToggleLike -> {
-                    Logger.w(tag, "ToggleLike")
+                    Logger.d(tag, "ToggleLike")
                     mediaPlayerHandler.onPlayerEvent(PlayerEvent.ToggleLike)
                 }
 
@@ -673,7 +673,7 @@ class SharedViewModel(
         }
 
     override fun onCleared() {
-        Logger.w("Check onCleared", "onCleared")
+        Logger.d("Check onCleared", "onCleared")
     }
 
     fun getLocation() {
@@ -1300,7 +1300,7 @@ class SharedViewModel(
                     // Word-by-word (RICH_SYNCED) translations are skipped: only line-level or plain
                     // translated lyrics are shown.
                     if (data.syncType == "RICH_SYNCED") {
-                        Logger.w(tag, "SimpMusic translated lyrics are RICH_SYNCED, not shown")
+                        Logger.d(tag, "SimpMusic translated lyrics are RICH_SYNCED, not shown")
                     } else {
                         Logger.d(tag, "Get SimpMusic Translated Lyrics Success")
                         updateLyrics(
@@ -1865,7 +1865,7 @@ class SharedViewModel(
                 }
             val controllerJob =
                 launch {
-                    Logger.w(tag, "ControllerJob is running")
+                    Logger.d(tag, "ControllerJob is running")
                     mediaPlayerHandler.controlState.collectLatest {
                         Logger.d(tag, "ControlState is $it")
                         _controllerState.value = it

@@ -575,7 +575,7 @@ fun LazyListState.isScrollingUp(): State<Boolean> {
 
     LaunchedEffect(Unit) {
         snapshotFlow { layoutInfo.totalItemsCount }.collect {
-            Logger.w("isScrollingUp", "firstVisibleItemIndex: $firstVisibleItemIndex")
+            Logger.d("isScrollingUp", "firstVisibleItemIndex: $firstVisibleItemIndex")
             previousIndex = firstVisibleItemIndex
             previousScrollOffset = firstVisibleItemScrollOffset
         }
@@ -606,7 +606,7 @@ fun LazyGridState.isScrollingUp(): State<Boolean> {
 
     LaunchedEffect(Unit) {
         snapshotFlow { layoutInfo.totalItemsCount }.collect {
-            Logger.w("isScrollingUp", "firstVisibleItemIndex: $firstVisibleItemIndex")
+            Logger.d("isScrollingUp", "firstVisibleItemIndex: $firstVisibleItemIndex")
             previousIndex = firstVisibleItemIndex
             previousScrollOffset = firstVisibleItemScrollOffset
         }
