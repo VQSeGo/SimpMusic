@@ -94,7 +94,7 @@
 | 23 | [x] 5086c9d7 | ОПТ 4 — отладочное логирование в релизе | 18, 19, 11 | Метки `Startup` и `Offline` уровня Info не удалять. Часть перечисленных там строк-дампов уже исчезла вместе с удалённым кодом. `createClient` перечитать: в нём теперь `HttpTimeout` |
 | 24 | [x] ef5d9bdd | ОПТ 5 — убрать Google Cast | 16 | `CrossfadeExoPlayerAdapter` и `Media3ServiceModule` изменились в строках 8, 15, 16: перечитать |
 | 25 | [x] fadffc54 | ОПТ 6 — проверка обновлений из репозитория форка | 8 | Оговорка «не трогать `remote-config.json`» снята: его загрузка удалена в строке 8 |
-| 26 | [ ] | ЧИСТ B — раздел об авторе и пожертвованиях | 25 | Строку «Основано на SimpMusic (maxrave-dev), GPL-3.0» оставить |
+| 26 | [x] f1956b27 | ЧИСТ B — раздел об авторе и пожертвованиях | 25 | Строку «Основано на SimpMusic (maxrave-dev), GPL-3.0» оставить |
 | 27 | [ ] | ЧИСТ I — распознавание музыки | — | — |
 | 28 | [x] 3a19feb2 | ЧИСТ J — комментарии | — | — |
 | 29 | [ ] | ЧИСТ K — импорт плейлистов | — | — |
@@ -258,3 +258,8 @@
   информационные `Logger.w` плеера → `d`, 67 `printStackTrace` → `Logger.e` (отмена корутины пишется как Debug), Ktor
   `Logging` удалён из `Ytmusic` и `SpotifyClient`, `LogRedaction` маскирует подписи в ссылках `googlevideo` и в трассировках.
   ПК, `app.log` за старт + минуту игры: 76 → 44 строк, `W/` 41 → 1. Хвосты строк 20, 23, 24 про журнал и тексты закрыты.
+- Хвост строки 26: авторство видно строкой «Основано на SimpMusic (maxrave-dev), GPL-3.0» под версией и на `CreditScreen`;
+  кнопка Discord «Visit SimpMusic» ведёт на форк. Остались ссылки на сайт оригинала вне ЧИСТ B: `chart.simpmusic.org`
+  (`GridLibraryPlaylist.kt`, `SearchScreen.kt`), блог «how-to-login» (`Cookies.jvm.kt`, `ListeningReceipt.kt`, `YTItem.kt`,
+  `AndroidManifest.xml`), `import_data_intro` → `simpmusic.org/tools` (уйдёт с ЧИСТ K), Discord «Listen on SimpMusic»
+  (`simpmusic.org/app/watch`). Строка `credit_app` «Build with ❤️ from … (maxrave-dev)» звучит так, будто сборку делал он.
