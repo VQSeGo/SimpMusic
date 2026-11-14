@@ -37,6 +37,7 @@ val mediaDir = File(rootDir, "core/media")
 rootProject.name = "SimpMusic"
 include(
     ":androidApp",
+    ":baselineprofile",
     ":vivoAndroidApp",
     ":composeApp",
     ":desktopApp",
