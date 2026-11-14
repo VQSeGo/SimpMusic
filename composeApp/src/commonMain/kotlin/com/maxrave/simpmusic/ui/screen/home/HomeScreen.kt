@@ -369,7 +369,7 @@ fun HomeScreen(
 
     val onRefresh: () -> Unit = {
         isRefreshing = true
-        viewModel.getHomeItemList(params)
+        viewModel.getHomeItemList(params, refresh = true)
         Logger.w("HomeScreen", "onRefresh")
     }
     LaunchedEffect(key1 = reloadDestination) {
@@ -413,7 +413,9 @@ fun HomeScreen(
             }
         }
 
-    LaunchedEffect(key1 = shouldStartPaginate.value) {
+    // Keyed on the list state too: scrolled to the end while the cached feed was up (paging held), the fresh
+    // feed turns the state IDLE without the scroll position changing, and paging must start then.
+    LaunchedEffect(shouldStartPaginate.value, homeListState) {
         Logger.d("HomeScreen", "shouldStartPaginate: ${shouldStartPaginate.value}")
         Logger.d("HomeScreen", "homeListState: $homeListState")
         Logger.d("HomeScreen", "Continuation: $continuation")

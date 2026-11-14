@@ -2,7 +2,6 @@ package com.maxrave.simpmusic.viewModel
 
 import androidx.lifecycle.viewModelScope
 import com.maxrave.domain.data.entities.SongEntity
-import com.maxrave.domain.data.model.home.HomeDataCombine
 import com.maxrave.domain.data.model.home.HomeItem
 import com.maxrave.domain.data.model.home.chart.Chart
 import com.maxrave.domain.data.model.mood.Mood
@@ -52,6 +51,9 @@ class HomeViewModel(
     val accountInfo: StateFlow<Pair<String?, String?>?> = _accountInfo
 
     private var homeJob: Job? = null
+
+    // The mood chip the feed on screen was loaded for; meaningful only while the list is not empty.
+    private var shownHomeParams: String? = null
 
     val showSnackBarErrorState = MutableSharedFlow<String>()
 
@@ -134,6 +136,8 @@ class HomeViewModel(
                         // CommonRepositoryImpl.init sets the stored cookie synchronously.
                         Logger.w(tag, "Cookie changed, refreshing home")
                         loading.value = true
+                        // Another account's feed must not survive a failed load of this one.
+                        _homeItemList.value = listOf()
                         delay(1000)
                     }
                     loadedCookie = inputs.cookie
@@ -158,103 +162,106 @@ class HomeViewModel(
         }
     }
 
-    fun getHomeItemList(params: String? = null) {
+    /**
+     * Loads Home. The feed, moods, chart and new releases load independently, so the feed (and its
+     * copy from the last launch, served first) is not held back by the slowest of the four.
+     *
+     * [refresh] is a deliberate reload (refresh button, pull, retry): shimmer and no cached copy. Otherwise a
+     * feed already on screen for the same chip stays there until the fresh one replaces it.
+     */
+    fun getHomeItemList(
+        params: String? = null,
+        refresh: Boolean = false,
+    ) {
         Startup.mark("home-requested")
-        loading.value = true
+        if (refresh || _homeItemList.value.isEmpty() || shownHomeParams != params) {
+            loading.value = true
+        }
         _homeListState.value = ListState.LOADING
         homeJob?.cancel()
         homeJob =
             viewModelScope.launch {
-                combine(
-                    homeRepository.getHomeData(
-                        params,
-                        getString(Res.string.view_count),
-                        getString(Res.string.song),
-                    ),
-                    homeRepository.getMoodAndMomentsData(),
-                    homeRepository.getChartData(dataStoreManager.chartKey.first()),
-                    homeRepository.getNewRelease(
-                        getString(Res.string.new_release),
-                        getString(Res.string.music_video),
-                    ),
-                ) { home, exploreMood, exploreChart, newRelease ->
-                    HomeDataCombine(home, exploreMood, exploreChart, newRelease)
-                }.collect { result ->
-                    val home = result.home
-                    Logger.d("home size", "${home.data?.second?.size}")
-                    val exploreMoodItem = result.mood
-                    val chart = result.chart
-                    val newRelease = result.newRelease
-                    when (home) {
-                        is Resource.Success -> {
-                            _continuation.value = home.data?.first
-                            _homeItemList.value = home.data?.second ?: listOf()
-                            _homeBackground.value = home.data?.third
-                        }
-
-                        else -> {
-                            _continuation.value = null
-                            _homeItemList.value = listOf()
-                        }
-                    }
-                    if (continuation.value.isNullOrEmpty()) {
+                val chartKey = dataStoreManager.chartKey.first()
+                launch {
+                    homeRepository
+                        .getHomeData(
+                            params,
+                            getString(Res.string.view_count),
+                            getString(Res.string.song),
+                            useCache = !refresh,
+                        ).collect { home -> onHomeFeed(home, params) }
+                    // A Success without a continuation may be the cached copy (its token is dropped) and paging
+                    // waits for the network. The flow has ended now, so nothing fresher is coming.
+                    if (_homeListState.value == ListState.LOADING) {
                         _homeListState.value = ListState.PAGINATION_EXHAUST
-                    } else {
-                        _homeListState.value = ListState.IDLE
-                    }
-                    when (chart) {
-                        is Resource.Success -> {
-                            _chart.value = chart.data
-                        }
-
-                        else -> {
-                            _chart.value = null
-                        }
-                    }
-                    when (newRelease) {
-                        is Resource.Success -> {
-                            _newRelease.value = newRelease.data ?: arrayListOf()
-                        }
-
-                        else -> {
-                            _newRelease.value = arrayListOf()
-                        }
-                    }
-                    when (exploreMoodItem) {
-                        is Resource.Success -> {
-                            _exploreMoodItem.value = exploreMoodItem.data
-                        }
-
-                        else -> {
-                            _exploreMoodItem.value = null
-                        }
-                    }
-                    regionCodeChart.value = dataStoreManager.chartKey.first()
-                    loadingChart.value = false
-                    dataStoreManager.cookie.first().let {
-                        if (it != "") {
-                            _accountInfo.emit(
-                                Pair(
-                                    dataStoreManager.getString("AccountName").first(),
-                                    dataStoreManager.getString("AccountThumbUrl").first(),
-                                ),
-                            )
-                        }
-                    }
-                    when {
-                        home is Resource.Error -> home.message
-                        exploreMoodItem is Resource.Error -> exploreMoodItem.message
-                        chart is Resource.Error -> chart.message
-                        else -> null
-                    }?.let {
-                        showSnackBarErrorState.emit(it)
-                        Logger.w("Error", "getHomeItemList: ${home.message}")
-                        Logger.w("Error", "getHomeItemList: ${exploreMoodItem.message}")
-                        Logger.w("Error", "getHomeItemList: ${chart.message}")
                     }
                     loading.value = false
                 }
+                launch {
+                    homeRepository.getMoodAndMomentsData().collect { mood ->
+                        _exploreMoodItem.value = (mood as? Resource.Success)?.data
+                        if (mood is Resource.Error) Logger.w("Error", "getHomeItemList mood: ${mood.message}")
+                    }
+                }
+                launch {
+                    homeRepository.getChartData(chartKey).collect { chart ->
+                        _chart.value = (chart as? Resource.Success)?.data
+                        if (chart is Resource.Error) Logger.w("Error", "getHomeItemList chart: ${chart.message}")
+                        regionCodeChart.value = chartKey
+                        loadingChart.value = false
+                    }
+                }
+                launch {
+                    homeRepository
+                        .getNewRelease(
+                            getString(Res.string.new_release),
+                            getString(Res.string.music_video),
+                        ).collect { newRelease ->
+                            _newRelease.value = (newRelease as? Resource.Success)?.data ?: arrayListOf()
+                        }
+                }
             }
+    }
+
+    private suspend fun onHomeFeed(
+        home: Resource<Triple<String?, List<HomeItem>, String?>>,
+        params: String?,
+    ) {
+        Logger.d("home size", "${home.data?.second?.size}")
+        when (home) {
+            is Resource.Success -> {
+                val continuation = home.data?.first
+                _continuation.value = continuation
+                _homeItemList.value = home.data?.second ?: listOf()
+                _homeBackground.value = home.data?.third
+                shownHomeParams = params
+                // A token can only come from the network. Without one this may be the cached copy, and the
+                // fresh feed is still on its way: hold paging (LOADING) until the flow ends.
+                _homeListState.value = if (continuation.isNullOrEmpty()) ListState.LOADING else ListState.IDLE
+            }
+
+            is Resource.Error -> {
+                // The network failed. A feed for this chip already on screen (from the cache or an earlier load)
+                // stays; otherwise the screen falls back to the offline state as before.
+                val keep = _homeItemList.value.isNotEmpty() && shownHomeParams == params
+                if (!keep) {
+                    _continuation.value = null
+                    _homeItemList.value = home.data?.second ?: listOf()
+                    if (_homeItemList.value.isNotEmpty()) shownHomeParams = params
+                }
+                _homeListState.value = ListState.PAGINATION_EXHAUST
+                Logger.w("Error", "getHomeItemList: ${home.message}")
+                home.message?.let { showSnackBarErrorState.emit(it) }
+            }
+        }
+        if (dataStoreManager.cookie.first() != "") {
+            _accountInfo.value =
+                Pair(
+                    dataStoreManager.getString("AccountName").first(),
+                    dataStoreManager.getString("AccountThumbUrl").first(),
+                )
+        }
+        loading.value = false
     }
 
     /** A shelf's "Play all": YouTube's own finite queue of that shelf's songs. */
