@@ -5,6 +5,7 @@ import androidx.compose.animation.core.AnimationVector4D
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -61,12 +62,18 @@ private fun Int.toKhzLabel(): String {
  * Everything a Now Playing content layer reads. The shell ([com.maxrave.simpmusic.ui.screen.player.NowPlayingScreenContent])
  * owns the ViewModel collection, palette animation, sheets/dialogs and gesture state machines;
  * a content composable only renders from this snapshot.
+ *
+ * The values that move while a track plays — the position ([timelineState], every 50 ms), the
+ * seek bar ([sliderValue]) and the inline lyric line ([currentLyricLineIndex]) — are NOT copied in.
+ * They are read through their State holders at the getter, so a read lands in the composable that
+ * actually draws the value and only that scope recomposes. Copied in as plain values, the shell had
+ * to read them itself, and every tick rebuilt this object and recomposed the whole player.
  */
 @Stable
 class NowPlayingContentState(
     val screenData: NowPlayingScreenData,
     val controllerState: ControlState,
-    val timelineState: TimeLine,
+    private val timelineSource: State<TimeLine>,
     val timelineFlow: StateFlow<TimeLine>,
     val shouldShowVideo: Boolean,
     val isUserLoggedIn: Boolean,
@@ -79,9 +86,8 @@ class NowPlayingContentState(
     val endColor: Animatable<Color, AnimationVector4D>,
     val spotShadowColor: Color,
     val gradientOffset: GradientOffset,
-    val sliderTrackColor: Color,
-    val sliderValue: Float,
-    val currentLyricLineIndex: Int,
+    private val sliderValueSource: State<Float>,
+    private val currentLyricLineIndexSource: State<Int>,
     val shouldShowToolbar: Boolean,
     val isInPipMode: Boolean,
     val mainScrollState: ScrollState,
@@ -99,7 +105,15 @@ class NowPlayingContentState(
      * its video frame from this one value, so a frame and the spacer that measures it cannot drift.
      */
     val videoAspectRatio: Float = 16f / 9,
-)
+) {
+    val timelineState: TimeLine get() = timelineSource.value
+
+    /** The seek bar's position on the 0..100 scale: the player's, or the finger's while scrubbing. */
+    val sliderValue: Float get() = sliderValueSource.value
+
+    /** Index of the synced lyric line being heard, the offset already applied; -1 when there is none. */
+    val currentLyricLineIndex: Int get() = currentLyricLineIndexSource.value
+}
 
 /**
  * Everything a Now Playing content layer can do. All callbacks land in the shell, which owns

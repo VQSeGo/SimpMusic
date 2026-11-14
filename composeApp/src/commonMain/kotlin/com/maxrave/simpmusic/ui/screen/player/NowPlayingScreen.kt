@@ -4,14 +4,8 @@ package com.maxrave.simpmusic.ui.screen.player
 
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -70,7 +64,6 @@ import com.maxrave.simpmusic.extension.GradientOffset
 import com.maxrave.simpmusic.extension.KeepScreenOn
 import com.maxrave.simpmusic.extension.getColorFromPalette
 import com.maxrave.simpmusic.extension.getScreenSizeInfo
-import com.maxrave.simpmusic.extension.hsvToColor
 import com.maxrave.simpmusic.extension.rememberIsInPipMode
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.AddLyricsSheet
@@ -180,7 +173,10 @@ fun NowPlayingScreenContent(
     // ViewModel State
     val controllerState by sharedViewModel.controllerState.collectAsStateWithLifecycle()
     val screenDataState by sharedViewModel.nowPlayingScreenData.collectAsStateWithLifecycle()
-    val timelineState by sharedViewModel.timeline.collectAsStateWithLifecycle()
+    // Held as the State, never read here: the position ticks every 50 ms, and a read in this
+    // function recomposed the whole player on every tick. The content reads it where it draws it
+    // (NowPlayingContentState.timelineState); the effects below read it through snapshotFlow.
+    val timeline = sharedViewModel.timeline.collectAsStateWithLifecycle()
     // Audio-delay correction, read here and applied ONLY to the lyric line below. The seek bar and
     // the elapsed-time readout keep the raw position: they report where the player is, while a
     // lyric reports what the ear is hearing, and those two are what the offset separates.
@@ -432,14 +428,14 @@ fun NowPlayingScreenContent(
         mutableStateOf(Color.White)
     }
 
-    LaunchedEffect(screenDataState) {
-        Logger.d(TAG) { "ScreenDataState: ${Logger.clip(screenDataState)}" }
-    }
-
     // Palette generation lives in its own NEVER-restarting effect. Keyed on screenDataState it
     // was cancelled mid-generate every time ANOTHER field of the data class arrived (lyrics,
     // songInfo), and kmpalette parks on Loading when generate() is cancelled — palette
     // stays null, startColor stays black, and the M3E style falls back to the app seed.
+    LaunchedEffect(screenDataState) {
+        Logger.d(TAG) { "ScreenDataState: ${Logger.clip(screenDataState)}" }
+    }
+
     LaunchedEffect(Unit) {
         snapshotFlow { screenDataState.bitmap }
             .filterNotNull()
@@ -468,79 +464,64 @@ fun NowPlayingScreenContent(
     var isSliding by rememberSaveable {
         mutableStateOf(false)
     }
-    var sliderValue by rememberSaveable {
-        mutableFloatStateOf(0f)
-    }
-    LaunchedEffect(key1 = timelineState, key2 = isSliding) {
-        if (!isSliding) {
-            sliderValue =
-                if (timelineState.total > 0L) {
-                    timelineState.current.toFloat() * 100 / timelineState.total.toFloat()
-                } else {
-                    0f
-                }
+    // The State itself goes to the content (see `timeline` above); the delegate is for the writes.
+    val sliderValueState =
+        rememberSaveable {
+            mutableFloatStateOf(0f)
+        }
+    var sliderValue by sliderValueState
+    LaunchedEffect(Unit) {
+        snapshotFlow { timeline.value to isSliding }.collect { (timelineState, sliding) ->
+            if (!sliding) {
+                sliderValue =
+                    if (timelineState.total > 0L) {
+                        timelineState.current.toFloat() * 100 / timelineState.total.toFloat()
+                    } else {
+                        0f
+                    }
+            }
         }
     }
 
-    // Crossfade: RGB rainbow color cycling when transitioning between tracks
-    val infiniteTransition = rememberInfiniteTransition(label = "crossfadeRainbow")
-    val rainbowHue by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec =
-            infiniteRepeatable(
-                animation = tween(1000, easing = LinearEasing),
-                repeatMode = RepeatMode.Restart,
-            ),
-        label = "rainbowHue",
-    )
-    val rainbowColor = hsvToColor(rainbowHue, 1f, 1f)
-    val sliderTrackColor by animateColorAsState(
-        targetValue = if (timelineState.isCrossfading) rainbowColor else Color.White,
-        animationSpec = tween(300),
-        label = "sliderCrossfadeColor",
-    )
+    val currentLyricLineIndexState =
+        rememberSaveable {
+            mutableIntStateOf(-1)
+        }
+    var currentLyricLineIndex by currentLyricLineIndexState
 
-    var currentLyricLineIndex by rememberSaveable {
-        mutableIntStateOf(-1)
-    }
-
-    // Current lyric line, for the inline line under the artwork
-    LaunchedEffect(timelineState, screenDataState.lyricsData?.lyrics, lyricsOffsetMs) {
+    // Current lyric line, for the inline line under the artwork. Keyed on the offset as well so
+    // dragging the setting while paused still moves the line.
+    LaunchedEffect(screenDataState.lyricsData?.lyrics, lyricsOffsetMs) {
         val lyrics = screenDataState.lyricsData?.lyrics
         if (lyrics == null || lyrics.syncType == "UNSYNCED" || lyrics.syncType == null) {
             currentLyricLineIndex = -1
             return@LaunchedEffect
         }
         val lines = lyrics.lines ?: return@LaunchedEffect
-        val translatedLines =
-            screenDataState.lyricsData
-                ?.translatedLyrics
-                ?.first
-                ?.lines
-        // What the ear is hearing right now, which is what a lyric answers to. Keyed on the offset
-        // as well so dragging the setting while paused still moves the line.
-        val nowMs = timelineState.current - lyricsOffsetMs
-        if (nowMs > 0L) {
-            lines.indices.forEach { i ->
-                val startTimeMs = lines[i].startTimeMs.toLongOrNull() ?: 0L
-                val endTimeMs =
-                    if (i < lines.size - 1) {
-                        lines[i + 1].startTimeMs.toLongOrNull() ?: 0L
-                    } else {
-                        startTimeMs + 60000
+        snapshotFlow { timeline.value.current }.collect { current ->
+            // What the ear is hearing right now, which is what a lyric answers to.
+            val nowMs = current - lyricsOffsetMs
+            if (nowMs > 0L) {
+                lines.indices.forEach { i ->
+                    val startTimeMs = lines[i].startTimeMs.toLongOrNull() ?: 0L
+                    val endTimeMs =
+                        if (i < lines.size - 1) {
+                            lines[i + 1].startTimeMs.toLongOrNull() ?: 0L
+                        } else {
+                            startTimeMs + 60000
+                        }
+                    if (nowMs in startTimeMs..endTimeMs) {
+                        currentLyricLineIndex = i
                     }
-                if (nowMs in startTimeMs..endTimeMs) {
-                    currentLyricLineIndex = i
                 }
-            }
-            if (lines.isNotEmpty() &&
-                nowMs in 0..(lines.getOrNull(0)?.startTimeMs?.toLongOrNull() ?: 0L)
-            ) {
+                if (lines.isNotEmpty() &&
+                    nowMs in 0..(lines.getOrNull(0)?.startTimeMs?.toLongOrNull() ?: 0L)
+                ) {
+                    currentLyricLineIndex = -1
+                }
+            } else {
                 currentLyricLineIndex = -1
             }
-        } else {
-            currentLyricLineIndex = -1
         }
     }
 
@@ -551,7 +532,7 @@ fun NowPlayingScreenContent(
         NowPlayingContentState(
             screenData = screenDataState,
             controllerState = controllerState,
-            timelineState = timelineState,
+            timelineSource = timeline,
             timelineFlow = sharedViewModel.timeline,
             shouldShowVideo = shouldShowVideo,
             isUserLoggedIn = isUserLoggedIn,
@@ -564,9 +545,8 @@ fun NowPlayingScreenContent(
             endColor = endColor,
             spotShadowColor = spotShadowColor,
             gradientOffset = gradientOffset,
-            sliderTrackColor = sliderTrackColor,
-            sliderValue = sliderValue,
-            currentLyricLineIndex = currentLyricLineIndex,
+            sliderValueSource = sliderValueState,
+            currentLyricLineIndexSource = currentLyricLineIndexState,
             shouldShowToolbar = shouldShowToolbar,
             isInPipMode = isInPipMode,
             mainScrollState = mainScrollState,

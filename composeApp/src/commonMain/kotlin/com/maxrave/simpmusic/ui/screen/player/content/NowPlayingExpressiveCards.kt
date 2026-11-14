@@ -52,6 +52,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -756,6 +757,8 @@ internal fun ExpressiveCollapsedToolbar(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val localDensity = LocalDensity.current
+    // Derived: the position under it ticks every 50 ms, and only the flag is drawn here.
+    val loading by remember(state) { derivedStateOf { state.timelineState.loading } }
     AnimatedVisibility(
         visible = state.shouldShowToolbar && state.isExpanded,
         enter = fadeIn() + slideInVertically(),
@@ -852,7 +855,7 @@ internal fun ExpressiveCollapsedToolbar(
                         actions.onUIEvent(UIEvent.ToggleLike)
                     }
                     Spacer(modifier = Modifier.width(15.dp))
-                    Crossfade(targetState = state.timelineState.loading, label = "") {
+                    Crossfade(targetState = loading, label = "") {
                         if (it) {
                             Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
                                 CircularProgressIndicator(

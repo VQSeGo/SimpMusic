@@ -428,43 +428,7 @@ private fun NowPlayingM3ExpressiveLayout(
                                         middleLayoutPaddingDp.dp,
                                     ).fillMaxWidth(),
                         ) {
-                            val inlineLyrics = state.screenData.lyricsData?.lyrics
-                            val hasSyncedLyrics =
-                                inlineLyrics != null &&
-                                    inlineLyrics.syncType != null &&
-                                    inlineLyrics.syncType != "UNSYNCED" &&
-                                    inlineLyrics.lines != null
-                            val currentLyricLineText =
-                                if (!hasSyncedLyrics || state.currentLyricLineIndex < 0) {
-                                    ""
-                                } else {
-                                    inlineLyrics
-                                        ?.lines
-                                        ?.getOrNull(state.currentLyricLineIndex)
-                                        ?.words
-                                        ?.stripRichSyncTimestamps()
-                                        .orEmpty()
-                                }
-                            Crossfade(
-                                targetState = currentLyricLineText,
-                                animationSpec = tween(durationMillis = 300),
-                                label = "inlineLyricLineExpressive",
-                            ) { lineText ->
-                                LyricText(
-                                    text = lineText,
-                                    style = typo().labelSmall,
-                                    color = Color.White,
-                                    maxLines = 1,
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 20.dp)
-                                            .basicMarquee(
-                                                iterations = Int.MAX_VALUE,
-                                                animationMode = MarqueeAnimationMode.Immediately,
-                                            ).focusable(),
-                                )
-                            }
+                            ExpressiveInlineLyricLine(state)
                         }
 
                         // === 6. Info block ===
@@ -505,6 +469,51 @@ private fun NowPlayingM3ExpressiveLayout(
         }
         // === 8. Collapsed sticky toolbar ===
         ExpressiveCollapsedToolbar(state = state, actions = actions)
+    }
+}
+
+/**
+ * The synced line being sung, under the artwork. Its own scope: the line changes every few seconds,
+ * and read inline the change recomposed the whole layout around it.
+ */
+@Composable
+private fun ExpressiveInlineLyricLine(state: NowPlayingContentState) {
+    val inlineLyrics = state.screenData.lyricsData?.lyrics
+    val hasSyncedLyrics =
+        inlineLyrics != null &&
+            inlineLyrics.syncType != null &&
+            inlineLyrics.syncType != "UNSYNCED" &&
+            inlineLyrics.lines != null
+    val currentLyricLineText =
+        if (!hasSyncedLyrics || state.currentLyricLineIndex < 0) {
+            ""
+        } else {
+            inlineLyrics
+                ?.lines
+                ?.getOrNull(state.currentLyricLineIndex)
+                ?.words
+                ?.stripRichSyncTimestamps()
+                .orEmpty()
+        }
+    Crossfade(
+        targetState = currentLyricLineText,
+        animationSpec = tween(durationMillis = 300),
+        label = "inlineLyricLineExpressive",
+    ) { lineText ->
+        LyricText(
+            text = lineText,
+            style = typo().labelSmall,
+            color = Color.White,
+            maxLines = 1,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .basicMarquee(
+                        iterations = Int.MAX_VALUE,
+                        animationMode = MarqueeAnimationMode.Immediately,
+                    ).focusable(),
+        )
     }
 }
 
@@ -627,12 +636,11 @@ internal fun ColumnScope.ExpressivePlaybackControls(
         WavySeekBar(
             progressFraction = state.sliderValue / 100f,
             isPlaying = state.controllerState.isPlaying,
-            // Classic swaps the slider color to the rainbow while
-            // crossfading (state.sliderTrackColor); tonal primary
-            // otherwise.
+            // The rainbow while crossfading (crossfadeRainbowColor);
+            // tonal primary otherwise.
             activeColor =
                 if (state.timelineState.isCrossfading) {
-                    state.sliderTrackColor
+                    crossfadeRainbowColor()
                 } else {
                     colorScheme.primary
                 },
