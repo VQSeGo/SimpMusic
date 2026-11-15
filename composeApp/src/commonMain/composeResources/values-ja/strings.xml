@@ -487,8 +487,6 @@
     <string name="data_sync_id_retrieved">DataSyncId 取得</string>
     <string name="retrieve_youtube_data">YouTubeデータ取得</string>
     <string name="no_results_found">何も見つかりませんでした</string>
-    <string name="favorite_podcasts">お気に入りのポッドキャスト</string>
-    <string name="no_favorite_podcasts">お気に入りのポッドキャストなし</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Spotifyクッキーのsp_dc引数</string>
     <string name="your_youtube_cookie">YouTubeクッキー</string>
     <string name="your_discord_token">あなたのDiscordトークン</string>

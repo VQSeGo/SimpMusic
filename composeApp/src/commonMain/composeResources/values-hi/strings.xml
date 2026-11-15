@@ -380,8 +380,6 @@
     <string name="data_sync_id_retrieved">DataSyncId प्राप्त की गयी</string>
     <string name="retrieve_youtube_data">यूट्यूब डेटा पुनर्प्राप्त करें</string>
     <string name="no_results_found">कोई परिणाम नहीं मिला</string>
-    <string name="favorite_podcasts">पसंदीदा पॉडकास्ट</string>
-    <string name="no_favorite_podcasts">कोई पसंदीदा पॉडकास्ट नहीं</string>
     <string name="your_sp_dc_param_of_spotify_cookie">आपकी स्पॉटिफाए कुकी का sp_dc पैरामीटर</string>
     <string name="your_youtube_cookie">आपकी यूट्यूब कुकी</string>
     <string name="can_not_be_empty">खाली नहीं हो सकता</string>

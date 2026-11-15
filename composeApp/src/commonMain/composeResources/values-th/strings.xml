@@ -408,8 +408,6 @@
     <string name="data_sync_id_retrieved">DataSyncId ถูกดึงมาแล้ว</string>
     <string name="retrieve_youtube_data">ดึงข้อมูลจาก YouTube</string>
     <string name="no_results_found">ไม่พบผลลัพธ์</string>
-    <string name="favorite_podcasts">พอดแคสต์ที่ชื่นชอบ</string>
-    <string name="no_favorite_podcasts">ยังไม่มีพอดแคสต์ที่คุณชื่นชอบ</string>
     <string name="your_sp_dc_param_of_spotify_cookie">พารามิเตอร์ sp_dc จาก cookie ของ Spotify</string>
     <string name="your_youtube_cookie">Cookie YouTube ของคุณ</string>
     <string name="your_discord_token">Token Discord ของคุณ</string>

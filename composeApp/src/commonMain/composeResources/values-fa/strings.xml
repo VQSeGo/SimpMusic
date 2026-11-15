@@ -385,8 +385,6 @@
     <string name="data_sync_id_retrieved">DataSyncId بازیابی شد</string>
     <string name="retrieve_youtube_data">بازیابی اطلاعات یوتیوب</string>
     <string name="no_results_found">نتیجه ای پیدا نشد</string>
-    <string name="favorite_podcasts">پادکست‌های مورد علاقه</string>
-    <string name="no_favorite_podcasts">پادکست مورد علاقه‌ای وجود ندارد</string>
     <string name="your_sp_dc_param_of_spotify_cookie">پارامتر sp_dc شما از کوکی Spotify</string>
     <string name="your_youtube_cookie">کوکی یوتیوب شما</string>
     <string name="your_discord_token">توکن دیسکورد شما</string>

@@ -465,8 +465,6 @@
     <string name="data_sync_id_retrieved">DataSyncId retrieved</string>
     <string name="retrieve_youtube_data">Retrieve YouTube Data</string>
     <string name="no_results_found">Ne results found</string>
-    <string name="favorite_podcasts">Omiljeno Podcasts</string>
-    <string name="no_favorite_podcasts">Ne favorite podcasts</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Your sp_dc param of Spotify cookie</string>
     <string name="your_youtube_cookie">Your YouTube Cookie</string>
     <string name="your_discord_token">Your Discord token</string>

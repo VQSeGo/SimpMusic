@@ -31,7 +31,6 @@ import com.maxrave.domain.data.entities.AlbumEntity
 import com.maxrave.domain.data.entities.ArtistEntity
 import com.maxrave.domain.data.entities.LocalPlaylistEntity
 import com.maxrave.domain.data.entities.PlaylistEntity
-import com.maxrave.domain.data.entities.PodcastsEntity
 import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.data.model.searchResult.playlists.PlaylistsResult
 import com.maxrave.domain.data.type.LibraryType
@@ -44,7 +43,6 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.LocalPlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
-import com.maxrave.simpmusic.ui.navigation.destination.list.PodcastDestination
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.LibraryViewModel
 import com.maxrave.simpmusic.viewModel.SharedViewModel
@@ -202,14 +200,6 @@ fun LibraryItem(
                                                                 ),
                                                             )
                                                         }
-
-                                                        is PodcastsEntity -> {
-                                                            navController.navigate(
-                                                                PodcastDestination(
-                                                                    podcastId = item.podcastId,
-                                                                ),
-                                                            )
-                                                        }
                                                     }
                                                 },
                                             )
@@ -255,14 +245,6 @@ fun LibraryItem(
                                                         navController.navigate(
                                                             PlaylistDestination(
                                                                 item.id,
-                                                            ),
-                                                        )
-                                                    }
-
-                                                    is PodcastsEntity -> {
-                                                        navController.navigate(
-                                                            PodcastDestination(
-                                                                podcastId = item.podcastId,
                                                             ),
                                                         )
                                                     }
@@ -316,8 +298,6 @@ sealed class LibraryItemType {
     data object FavoritePlaylist : LibraryItemType()
 
     data object DownloadedPlaylist : LibraryItemType()
-
-    data object FavoritePodcasts : LibraryItemType()
 
     data class RecentlyAdded(
         val playingVideoId: String,

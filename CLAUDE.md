@@ -158,6 +158,18 @@
   на `simpmusic.org/tools`, диалог прогресса, `ImportViewModel`, `ImportRepository` / `ImportRepositoryImpl`, модели `ImportData`,
   `readPickedFile` на обеих платформах, `insertLocalPlaylistWithTracks` в DAO, девять строк `import_*`). Сохранение и восстановление
   резервной копии (`restore_your_data`, `restoreNative`, `filePickerResult`) остались.
+  Также: подкасты (экран `PodcastScreen`, `PodcastViewModel`, `PodcastEpisodeItem`, `PodcastDestination` и его запись в
+  `ListScreenGraph`, `PodcastRepository` / `PodcastRepositoryImpl`, `PodcastBrowse` и разборщики `parsePodcast*`, фильтр
+  «Подкасты» в поиске (`SearchType.PODCASTS`, `searchPodcast`, `getSearchDataPodcast`, `YouTube.SearchFilter.FILTER_PODCAST`,
+  `SearchResult.listPodcast`, `PodcastItem`), чип «Любимые подкасты» в библиотеке (`LibraryChipType.FAVORITE_PODCAST`,
+  `LibraryItemType.FavoritePodcasts`) и подкасты в боковой панели десктопа (`LibrarySidebarKind.PODCAST`), полка подкастов в
+  чартах (`Chart.podcasts`, `ChartPodcasts`), карточка подкаста в `HomeItem`, `PAGE_TYPE_PODCAST`; строки `podcast`, `podcasts`,
+  `favorite_podcasts`, `no_favorite_podcasts`). Подкасты отбрасываются в общих разборщиках: `parseMixedContent` (главная и её
+  файл-кэш: карточки-шоу `isPodcast`, строки-эпизоды `musicMultiRowListItemRenderer`, полка, где остались одни подкасты,
+  убирается целиком), `parseChart` и страницы «Ещё» в `YouTube.kt` (`isPodcast`). `PodcastsEntity` и `EpisodeEntity`, таблицы
+  `podcast_table` / `podcast_episode_table` и их методы в `DatabaseDao` остаются в базе без кода, который в них пишет и читает
+  (`deleteUnfavoritedPodcasts` по-прежнему чистит старые строки). Эпизод подкаста, открытый по ссылке или из очереди, играет как
+  обычное видео. Описания «видео вместо аудио» и «язык аудиодорожки» больше не упоминают подкасты (en, ru).
 - Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки

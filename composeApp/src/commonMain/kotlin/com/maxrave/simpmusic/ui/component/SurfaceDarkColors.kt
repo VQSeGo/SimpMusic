@@ -12,7 +12,7 @@ import com.maxrave.simpmusic.ui.theme.LocalForceDarkText
  *
  * Compose renders sheets/dialogs in a Popup that keeps the parent composition's CompositionLocals, so
  * [LocalForceDarkText] flows in from the caller: opened from a force-dark screen (Artist/Album/Playlist/
- * LocalPlaylist/NowPlaying/FullscreenPlayer/Podcast) it stays the original dark look; opened from a
+ * LocalPlaylist/NowPlaying/FullscreenPlayer) it stays the original dark look; opened from a
  * normal screen it follows the app theme (light on a light screen).
  *
  * Keep `Color.Transparent` and `scrimColor = Color.Black.copy(...)` as-is — the scrim is a dim over the

@@ -44,7 +44,6 @@ import androidx.navigation.NavController
 import com.maxrave.domain.data.entities.AlbumEntity
 import com.maxrave.domain.data.entities.LocalPlaylistEntity
 import com.maxrave.domain.data.entities.PlaylistEntity
-import com.maxrave.domain.data.entities.PodcastsEntity
 import com.maxrave.domain.data.model.searchResult.playlists.PlaylistsResult
 import com.maxrave.domain.data.type.ChartItem
 import com.maxrave.domain.data.type.MonthlyRecapItem
@@ -58,7 +57,6 @@ import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.LocalPlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
-import com.maxrave.simpmusic.ui.navigation.destination.list.PodcastDestination
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
 import com.maxrave.simpmusic.ui.theme.seed
@@ -268,14 +266,6 @@ internal inline fun <reified T> GridLibraryPlaylist(
                                         navController.navigate(
                                             PlaylistDestination(
                                                 item.id,
-                                            ),
-                                        )
-                                    }
-
-                                    is PodcastsEntity -> {
-                                        navController.navigate(
-                                            PodcastDestination(
-                                                podcastId = item.podcastId,
                                             ),
                                         )
                                     }

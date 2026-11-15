@@ -391,8 +391,6 @@
     <string name="data_sync_id_retrieved">检索到数据同步</string>
     <string name="retrieve_youtube_data">获取 YouTube 数据</string>
     <string name="no_results_found">未找到结果</string>
-    <string name="favorite_podcasts">最喜爱的播客</string>
-    <string name="no_favorite_podcasts">没有最喜爱的播客</string>
     <string name="your_sp_dc_param_of_spotify_cookie">您的 Spotify Cookie 中的 sp_dc 参数</string>
     <string name="your_youtube_cookie">您的 YouTube Cookie</string>
     <string name="your_discord_token">您的 Discord 令牌</string>

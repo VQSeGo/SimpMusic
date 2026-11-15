@@ -396,8 +396,6 @@
     <string name="data_sync_id_retrieved">DatanSyncId di peroleh kembali</string>
     <string name="retrieve_youtube_data">Peroleh kembali data YouTube</string>
     <string name="no_results_found">Hasil tidak ditemukan</string>
-    <string name="favorite_podcasts">Podcast favorit</string>
-    <string name="no_favorite_podcasts">Tidak ada podcast favorit</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Parameter sp_dc cookie Spotify Anda</string>
     <string name="your_youtube_cookie">Cookie YouTube Anda</string>
     <string name="your_discord_token">Token Discord Anda</string>

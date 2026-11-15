@@ -99,8 +99,8 @@ private val CardHorizontalPadding = 20.dp
 private val MoodCellWidth = 170.dp
 
 /**
- * The page a home section's "More" endpoint opens when YouTube names no album, playlist, artist or
- * podcast behind it. Every shelf is flattened into justified rows — each card keeps its own shape
+ * The page a home section's "More" endpoint opens when YouTube names no album, playlist or
+ * artist behind it. Every shelf is flattened into justified rows — each card keeps its own shape
  * (16:9 video, square otherwise), every thumbnail in a row is the same height, and the number of
  * cards per row follows the shapes in it — drawn with Home's own cards, so an item opens and plays
  * exactly as it does on Home. The glow and the bar are Mix for you's.

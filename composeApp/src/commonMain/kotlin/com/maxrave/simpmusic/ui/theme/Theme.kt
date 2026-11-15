@@ -218,7 +218,7 @@ private val SoftRippleConfiguration =
     )
 
 /**
- * Wraps immersive screens — artist, album, playlist, local playlist, podcast and the players — which
+ * Wraps immersive screens — artist, album, playlist, local playlist and the players — which
  * always draw over dark artwork and must therefore render dark even on the light theme.
  *
  * [LocalForceDarkText] alone is not enough: it only recolors text through [typo]. Icons, buttons and

@@ -136,7 +136,6 @@ import com.maxrave.simpmusic.ui.navigation.destination.home.MoodDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
-import com.maxrave.simpmusic.ui.navigation.destination.list.PodcastDestination
 import com.maxrave.simpmusic.ui.navigation.destination.search.SearchDestination
 import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 import com.maxrave.simpmusic.ui.theme.typo
@@ -164,7 +163,6 @@ import simpmusic.composeapp.generated.resources.everything_you_need
 import simpmusic.composeapp.generated.resources.in_search
 import simpmusic.composeapp.generated.resources.no_results_found
 import simpmusic.composeapp.generated.resources.playlists
-import simpmusic.composeapp.generated.resources.podcasts
 import simpmusic.composeapp.generated.resources.retry
 import simpmusic.composeapp.generated.resources.search_for
 import simpmusic.composeapp.generated.resources.search_for_songs_artists_albums_playlists_and_more
@@ -247,7 +245,6 @@ fun SearchScreen(
     val albumString = stringResource(Res.string.albums).lowercase()
     val playlistString = stringResource(Res.string.playlists).lowercase()
     val videoString = stringResource(Res.string.videos).lowercase()
-    val podcastString = stringResource(Res.string.podcasts).lowercase()
 
     // Animated Placeholder
     val placeholderTexts =
@@ -258,7 +255,6 @@ fun SearchScreen(
                 "$searchForString $albumString...",
                 "$searchForString $playlistString...",
                 "$searchForString $videoString...",
-                "$searchForString $podcastString...",
             )
         }
 
@@ -472,7 +468,6 @@ fun SearchScreen(
                                                     SearchType.ARTISTS -> searchViewModel.searchArtists(suggestion)
                                                     SearchType.PLAYLISTS -> searchViewModel.searchPlaylists(suggestion)
                                                     SearchType.FEATURED_PLAYLISTS -> searchViewModel.searchFeaturedPlaylist(suggestion)
-                                                    SearchType.PODCASTS -> searchViewModel.searchPodcast(suggestion)
                                                 }
                                             },
                                         ).padding(horizontal = 12.dp, vertical = 2.dp)
@@ -559,7 +554,6 @@ fun SearchScreen(
                                                     SearchType.ARTISTS -> searchViewModel.searchArtists(historyItem)
                                                     SearchType.PLAYLISTS -> searchViewModel.searchPlaylists(historyItem)
                                                     SearchType.FEATURED_PLAYLISTS -> searchViewModel.searchFeaturedPlaylist(historyItem)
-                                                    SearchType.PODCASTS -> searchViewModel.searchPodcast(historyItem)
                                                 }
                                             }.padding(horizontal = 12.dp),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -716,7 +710,6 @@ fun SearchScreen(
                                         SearchType.ARTISTS -> searchViewModel.searchArtists(query)
                                         SearchType.PLAYLISTS -> searchViewModel.searchPlaylists(query)
                                         SearchType.FEATURED_PLAYLISTS -> searchViewModel.searchFeaturedPlaylist(query)
-                                        SearchType.PODCASTS -> searchViewModel.searchPodcast(query)
                                     }
                                 }
                             },
@@ -769,7 +762,6 @@ fun SearchScreen(
                                                     SearchType.ARTISTS -> searchScreenState.searchArtistsResult
                                                     SearchType.PLAYLISTS -> searchScreenState.searchPlaylistsResult
                                                     SearchType.FEATURED_PLAYLISTS -> searchScreenState.searchFeaturedPlaylistsResult
-                                                    SearchType.PODCASTS -> searchScreenState.searchPodcastsResult
                                                 }
 
                                             Crossfade(targetState = currentResults.isNotEmpty()) {
@@ -894,19 +886,11 @@ fun SearchScreen(
                                                                     PlaylistFullWidthItems(
                                                                         data = result,
                                                                         onClickListener = {
-                                                                            if (result.resultType == "Podcast") {
-                                                                                navController.navigate(
-                                                                                    PodcastDestination(
-                                                                                        result.browseId,
-                                                                                    ),
-                                                                                )
-                                                                            } else {
-                                                                                navController.navigate(
-                                                                                    PlaylistDestination(
-                                                                                        result.browseId,
-                                                                                    ),
-                                                                                )
-                                                                            }
+                                                                            navController.navigate(
+                                                                                PlaylistDestination(
+                                                                                    result.browseId,
+                                                                                ),
+                                                                            )
                                                                         },
                                                                     )
                                                                 }
@@ -1060,7 +1044,6 @@ fun SearchScreen(
                                 SearchType.ARTISTS -> searchViewModel.searchArtists(query)
                                 SearchType.PLAYLISTS -> searchViewModel.searchPlaylists(query)
                                 SearchType.FEATURED_PLAYLISTS -> searchViewModel.searchFeaturedPlaylist(query)
-                                SearchType.PODCASTS -> searchViewModel.searchPodcast(query)
                             }
                         }
                     },

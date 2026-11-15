@@ -481,8 +481,6 @@
     <string name="data_sync_id_retrieved">Отримано DataSyncId</string>
     <string name="retrieve_youtube_data">Отримати дані YouTube</string>
     <string name="no_results_found">Результатів не знайдено</string>
-    <string name="favorite_podcasts">Улюблені подкасти</string>
-    <string name="no_favorite_podcasts">Немає улюблених подкастів</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Ваш sp_dc параметр з Spotify cookie</string>
     <string name="your_youtube_cookie">Ваш YouTube cookie</string>
     <string name="your_discord_token">Ваш Discord токен</string>

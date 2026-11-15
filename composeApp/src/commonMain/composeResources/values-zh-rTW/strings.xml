@@ -474,8 +474,6 @@
     <string name="data_sync_id_retrieved">已經搜尋DataSyncId</string>
     <string name="retrieve_youtube_data">搜尋YouTube資料</string>
     <string name="no_results_found">這裏什麽都沒有呢</string>
-    <string name="favorite_podcasts">我的最愛 Podcast</string>
-    <string name="no_favorite_podcasts">沒有收藏的 Podcast</string>
     <string name="your_sp_dc_param_of_spotify_cookie">您的 Spotify Cookie 的 sp_dc 參數</string>
     <string name="your_youtube_cookie">您的 YouTube Cookie</string>
     <string name="your_discord_token">你的 Discord token</string>

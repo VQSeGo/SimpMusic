@@ -19,7 +19,6 @@ import com.maxrave.simpmusic.viewModel.MoodViewModel
 import com.maxrave.simpmusic.viewModel.MoreAlbumsViewModel
 import com.maxrave.simpmusic.viewModel.NowPlayingBottomSheetViewModel
 import com.maxrave.simpmusic.viewModel.PlaylistViewModel
-import com.maxrave.simpmusic.viewModel.PodcastViewModel
 import com.maxrave.simpmusic.viewModel.SearchViewModel
 import com.maxrave.simpmusic.viewModel.AutoEqViewModel
 import com.maxrave.simpmusic.viewModel.SettingsViewModel
@@ -74,7 +73,6 @@ val viewModelModule =
         }
         viewModel {
             LibraryViewModel(
-                get(),
                 get(),
                 get(),
                 get(),
@@ -143,11 +141,6 @@ val viewModelModule =
             )
         }
         viewModel {
-            PodcastViewModel(
-                get(),
-            )
-        }
-        viewModel {
             MoreAlbumsViewModel(
                 get(),
             )
@@ -159,7 +152,6 @@ val viewModelModule =
         }
         viewModel {
             LibrarySidebarViewModel(
-                get(),
                 get(),
                 get(),
                 get(),

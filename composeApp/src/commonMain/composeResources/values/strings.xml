@@ -282,11 +282,10 @@
     <string name="issue_tracker">Issue Tracker</string>
     <string name="copyright" translatable="false">©2023-%1$s Tuan Minh Nguyen Duc (maxrave-dev)</string>
     <string name="featured_playlists">Featured Playlists</string>
-    <string name="podcasts" translatable="false">Podcasts</string>
     <string name="featured_inArtist">Featured on</string>
     <string name="audio_quality">Audio quality</string>
     <string name="play_video_for_video_track_instead_of_audio_only">Play video for video track instead of audio only</string>
-    <string name="such_as_music_video_lyrics_video_podcasts_and_more">Such as Music Video, Lyrics Video, Podcasts, and more</string>
+    <string name="such_as_music_video_lyrics_video_podcasts_and_more">Such as Music Video, Lyrics Video, and more</string>
     <string name="radio_audio_only">Play audio version instead of MV in radio</string>
     <string name="radio_audio_only_description">Play the audio version instead of the music video when there is one, and skip remixes and mashups that only exist as videos. Playlists and albums are not affected</string>
     <string name="video_quality">Video Quality</string>
@@ -518,8 +517,6 @@
     <string name="data_sync_id_retrieved">DataSyncId retrieved</string>
     <string name="retrieve_youtube_data">Retrieve YouTube Data</string>
     <string name="no_results_found">No results found</string>
-    <string name="favorite_podcasts">Favorite Podcasts</string>
-    <string name="no_favorite_podcasts">No favorite podcasts</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Your sp_dc param of Spotify cookie</string>
     <string name="your_youtube_cookie">Your YouTube Cookie</string>
     <string name="your_discord_token">Your Discord token</string>
@@ -551,7 +548,7 @@
     <string name="youtube_subtitle_language">YouTube Subtitle Translation Language</string>
     <string name="youtube_subtitle_language_message">Type language code (Eg: en) (2 letters). This is the preferred translation language for YouTube subtitles.</string>
     <string name="preferred_audio_language">Preferred audio language</string>
-    <string name="preferred_audio_language_message">Some videos, mostly podcasts, come with several audio tracks in different languages. Type a language code (Eg: vi) (2 letters) to play that track when it exists. Leave it empty to always play the original audio.</string>
+    <string name="preferred_audio_language_message">Some videos come with several audio tracks in different languages. Type a language code (Eg: vi) (2 letters) to play that track when it exists. Leave it empty to always play the original audio.</string>
     <string name="original_audio">Original audio</string>
     <string name="simpmusic_lyrics">SimpMusic Lyrics</string>
     <string name="lyrics_provider_simpmusic">Lyrics provided by SimpMusic Lyrics</string>
@@ -905,7 +902,6 @@
     <string name="create_room_live">Your room is live</string>
     <string name="create_new_queue_and_play">Create a new queue and add to play</string>
     <string name="artist">Artist</string>
-    <string name="podcast">Podcast</string>
     <string name="recents">Recents</string>
     <string name="alphabetical">Alphabetical</string>
     <string name="search_in_your_library">Search in Your library</string>

@@ -490,8 +490,6 @@
     <string name="data_sync_id_retrieved">DataSyncId har hämtats</string>
     <string name="retrieve_youtube_data">Hämta YouTube-data</string>
     <string name="no_results_found">Inga resultat hittades</string>
-    <string name="favorite_podcasts">Favoritpoddar</string>
-    <string name="no_favorite_podcasts">Inga favoritpoddar</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Ditt sp_dc-värde från Spotify-cookien</string>
     <string name="your_youtube_cookie">Din YouTube-cookie</string>
     <string name="your_discord_token">Din Discord-token</string>

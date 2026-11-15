@@ -100,13 +100,11 @@ import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.chart
 import simpmusic.composeapp.generated.resources.downloaded_playlists
 import simpmusic.composeapp.generated.resources.favorite_playlists
-import simpmusic.composeapp.generated.resources.favorite_podcasts
 import simpmusic.composeapp.generated.resources.library
 import simpmusic.composeapp.generated.resources.mix_for_you
 import simpmusic.composeapp.generated.resources.no_YouTube_playlists
 import simpmusic.composeapp.generated.resources.no_charts_found
 import simpmusic.composeapp.generated.resources.no_favorite_playlists
-import simpmusic.composeapp.generated.resources.no_favorite_podcasts
 import simpmusic.composeapp.generated.resources.no_playlists_added
 import simpmusic.composeapp.generated.resources.no_playlists_downloaded
 import simpmusic.composeapp.generated.resources.simpmusic_charts
@@ -136,7 +134,6 @@ fun LibraryScreen(
     val yourLocalPlaylist by viewModel.yourLocalPlaylist.collectAsStateWithLifecycle()
     val favoritePlaylist by viewModel.favoritePlaylist.collectAsStateWithLifecycle()
     val downloadedPlaylist by viewModel.downloadedPlaylist.collectAsStateWithLifecycle()
-    val favoritePodcasts by viewModel.favoritePodcasts.collectAsStateWithLifecycle()
     val chartPlaylists by viewModel.chartPlaylists.collectAsStateWithLifecycle()
     val recentlyAdded by viewModel.recentlyAdded.collectAsStateWithLifecycle()
     val libraryOverview by viewModel.libraryOverview.collectAsStateWithLifecycle()
@@ -203,10 +200,6 @@ fun LibraryScreen(
 
             LibraryChipType.DOWNLOADED_PLAYLIST -> {
                 viewModel.getDownloadedPlaylist()
-            }
-
-            LibraryChipType.FAVORITE_PODCAST -> {
-                viewModel.getFavoritePodcasts()
             }
 
             LibraryChipType.CHART -> {
@@ -346,18 +339,6 @@ fun LibraryScreen(
                 }
             }
 
-            LibraryChipType.FAVORITE_PODCAST -> {
-                GridLibraryPlaylist(
-                    navController,
-                    innerPadding.copy(top = topAppBarHeight),
-                    favoritePodcasts,
-                    emptyText = Res.string.no_favorite_podcasts,
-                    onScrolling = onScrolling,
-                ) {
-                    viewModel.getFavoritePodcasts()
-                }
-            }
-
             LibraryChipType.CHART -> {
                 GridLibraryPlaylist(
                     navController,
@@ -491,7 +472,6 @@ fun LibraryScreen(
                             LibraryChipType.LOCAL_PLAYLIST -> stringResource(Res.string.your_playlists)
                             LibraryChipType.FAVORITE_PLAYLIST -> stringResource(Res.string.favorite_playlists)
                             LibraryChipType.DOWNLOADED_PLAYLIST -> stringResource(Res.string.downloaded_playlists)
-                            LibraryChipType.FAVORITE_PODCAST -> stringResource(Res.string.favorite_podcasts)
                             LibraryChipType.CHART -> stringResource(Res.string.simpmusic_charts)
                             LibraryChipType.WRAPPED -> stringResource(Res.string.wrapped)
                         },

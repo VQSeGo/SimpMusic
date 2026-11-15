@@ -34,7 +34,6 @@ import simpmusic.composeapp.generated.resources.all
 import simpmusic.composeapp.generated.resources.artists
 import simpmusic.composeapp.generated.resources.featured_playlists
 import simpmusic.composeapp.generated.resources.playlists
-import simpmusic.composeapp.generated.resources.podcasts
 import simpmusic.composeapp.generated.resources.songs
 import simpmusic.composeapp.generated.resources.videos
 
@@ -48,7 +47,6 @@ data class SearchScreenState(
     val searchArtistsResult: List<ArtistsResult> = emptyList(),
     val searchPlaylistsResult: List<PlaylistsResult> = emptyList(),
     val searchFeaturedPlaylistsResult: List<PlaylistsResult> = emptyList(),
-    val searchPodcastsResult: List<PlaylistsResult> = emptyList(),
     val suggestQueries: List<String> = emptyList(),
     val suggestYTItems: List<SearchResultType> = emptyList(),
 )
@@ -62,7 +60,6 @@ enum class SearchType {
     ARTISTS,
     PLAYLISTS,
     FEATURED_PLAYLISTS,
-    PODCASTS,
 }
 
 fun SearchType.toStringRes(): StringResource =
@@ -74,7 +71,6 @@ fun SearchType.toStringRes(): StringResource =
         SearchType.ARTISTS -> Res.string.artists
         SearchType.PLAYLISTS -> Res.string.playlists
         SearchType.FEATURED_PLAYLISTS -> Res.string.featured_playlists
-        SearchType.PODCASTS -> Res.string.podcasts
     }
 
 // UI state cho tìm kiếm
@@ -218,7 +214,6 @@ class SearchViewModel(
             var artist = ArrayList<ArtistsResult>()
             var playlist = ArrayList<PlaylistsResult>()
             var featuredPlaylist = ArrayList<PlaylistsResult>()
-            var podcast = ArrayList<PlaylistsResult>()
             val temp: ArrayList<SearchResultType> = ArrayList()
 
             val job1 =
@@ -277,22 +272,12 @@ class SearchViewModel(
                         }
                     }
                 }
-            val job7 =
-                launch {
-                    searchRepository.getSearchDataPodcast(query).collect { values ->
-                        when (values) {
-                            is Resource.Success -> values.data?.let { podcast = it }
-                            is Resource.Error -> {}
-                        }
-                    }
-                }
             job1.join()
             job2.join()
             job3.join()
             job4.join()
             job5.join()
             job6.join()
-            job7.join()
 
             try {
                 if (artist.size >= 3) {
@@ -304,7 +289,6 @@ class SearchViewModel(
                     temp.addAll(album)
                     temp.addAll(playlist)
                     temp.addAll(featuredPlaylist)
-                    temp.addAll(podcast)
                 } else {
                     temp.addAll(artist)
                     temp.addAll(song)
@@ -312,7 +296,6 @@ class SearchViewModel(
                     temp.addAll(album)
                     temp.addAll(playlist)
                     temp.addAll(featuredPlaylist)
-                    temp.addAll(podcast)
                 }
 
                 _searchScreenState.update { state ->
@@ -325,7 +308,6 @@ class SearchViewModel(
                         searchPlaylistsResult = playlist,
                         searchVideosResult = video,
                         searchFeaturedPlaylistsResult = featuredPlaylist,
-                        searchPodcastsResult = podcast,
                     )
                 }
                 _searchScreenUIState.value = SearchScreenUIState.Success
@@ -396,31 +378,6 @@ class SearchViewModel(
                                 state.copy(
                                     searchType = SearchType.FEATURED_PLAYLISTS,
                                     searchFeaturedPlaylistsResult = featuredPlaylistList,
-                                )
-                            }
-                        }
-                        _searchScreenUIState.value = SearchScreenUIState.Success
-                    }
-
-                    is Resource.Error -> {
-                        _searchScreenUIState.value = SearchScreenUIState.Error
-                    }
-                }
-            }
-        }
-    }
-
-    fun searchPodcast(query: String) {
-        _searchScreenUIState.value = SearchScreenUIState.Loading
-        viewModelScope.launch {
-            searchRepository.getSearchDataPodcast(query).collect { values ->
-                when (values) {
-                    is Resource.Success -> {
-                        values.data?.let { podcastList ->
-                            _searchScreenState.update { state ->
-                                state.copy(
-                                    searchType = SearchType.PODCASTS,
-                                    searchPodcastsResult = podcastList,
                                 )
                             }
                         }

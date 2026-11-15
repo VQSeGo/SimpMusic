@@ -22,7 +22,6 @@ import com.maxrave.domain.repository.CacheRepository
 import com.maxrave.domain.repository.CommonRepository
 import com.maxrave.domain.repository.LocalPlaylistRepository
 import com.maxrave.domain.repository.PlaylistRepository
-import com.maxrave.domain.repository.PodcastRepository
 import com.maxrave.domain.repository.SongRepository
 import com.maxrave.domain.utils.LocalResource
 import com.maxrave.domain.utils.Resource
@@ -65,7 +64,6 @@ class LibraryViewModel(
     private val playlistRepository: PlaylistRepository,
     private val localPlaylistRepository: LocalPlaylistRepository,
     private val albumRepository: AlbumRepository,
-    private val podcastRepository: PodcastRepository,
     private val cacheRepository: CacheRepository,
 ) : BaseViewModel() {
     private val _currentScreen: MutableStateFlow<LibraryChipType> = MutableStateFlow(LibraryChipType.YOUR_LIBRARY)
@@ -92,10 +90,6 @@ class LibraryViewModel(
     private val _favoritePlaylist: MutableStateFlow<LocalResource<List<PlaylistType>>> =
         MutableStateFlow(LocalResource.Loading())
     val favoritePlaylist: StateFlow<LocalResource<List<PlaylistType>>> get() = _favoritePlaylist.asStateFlow()
-
-    private val _favoritePodcasts: MutableStateFlow<LocalResource<List<PlaylistType>>> =
-        MutableStateFlow(LocalResource.Loading())
-    val favoritePodcasts: StateFlow<LocalResource<List<PlaylistType>>> get() = _favoritePodcasts.asStateFlow()
 
     private val _downloadedPlaylist: MutableStateFlow<LocalResource<List<PlaylistType>>> =
         MutableStateFlow(LocalResource.Loading())
@@ -262,15 +256,6 @@ class LibraryViewModel(
                         )
                     _favoritePlaylist.value = LocalResource.Success(sortedList)
                 }
-            }
-        }
-    }
-
-    fun getFavoritePodcasts() {
-        viewModelScope.launch {
-            podcastRepository.getFavoritePodcasts().collectLatest { podcasts ->
-                val sortedList = podcasts.sortedByDescending { it.favoriteTime }
-                _favoritePodcasts.value = LocalResource.Success(sortedList)
             }
         }
     }

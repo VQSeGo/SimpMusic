@@ -127,8 +127,6 @@ import simpmusic.composeapp.generated.resources.liked_songs_count
 import simpmusic.composeapp.generated.resources.most_played
 import simpmusic.composeapp.generated.resources.playlist
 import simpmusic.composeapp.generated.resources.playlists
-import simpmusic.composeapp.generated.resources.podcast
-import simpmusic.composeapp.generated.resources.podcasts
 import simpmusic.composeapp.generated.resources.recents
 import simpmusic.composeapp.generated.resources.search_in_your_library
 import simpmusic.composeapp.generated.resources.settings
@@ -388,7 +386,6 @@ private fun LibrarySidebarKind.chipLabel(): StringResource =
         LibrarySidebarKind.PLAYLIST -> Res.string.playlists
         LibrarySidebarKind.ARTIST -> Res.string.artists
         LibrarySidebarKind.ALBUM -> Res.string.albums
-        LibrarySidebarKind.PODCAST -> Res.string.podcasts
     }
 
 @Composable
@@ -399,7 +396,6 @@ private fun LibrarySidebarItem.subtitleText(): String {
                 LibrarySidebarKind.PLAYLIST -> Res.string.playlist
                 LibrarySidebarKind.ARTIST -> Res.string.artist
                 LibrarySidebarKind.ALBUM -> Res.string.album
-                LibrarySidebarKind.PODCAST -> Res.string.podcast
             },
         )
     val detail =

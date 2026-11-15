@@ -66,7 +66,6 @@ import com.maxrave.domain.data.entities.ArtistEntity
 import com.maxrave.domain.data.entities.DownloadState
 import com.maxrave.domain.data.entities.LocalPlaylistEntity
 import com.maxrave.domain.data.entities.PlaylistEntity
-import com.maxrave.domain.data.entities.PodcastsEntity
 import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.searchResult.albums.AlbumsResult
@@ -100,7 +99,6 @@ import simpmusic.composeapp.generated.resources.album
 import simpmusic.composeapp.generated.resources.artists
 import simpmusic.composeapp.generated.resources.play_next
 import simpmusic.composeapp.generated.resources.playlist
-import simpmusic.composeapp.generated.resources.podcasts
 import simpmusic.composeapp.generated.resources.radio
 import simpmusic.composeapp.generated.resources.you
 import kotlin.math.roundToInt
@@ -547,7 +545,6 @@ fun PlaylistFullWidthItems(
                 PlaylistType.Type.RADIO -> stringResource(Res.string.radio)
                 PlaylistType.Type.LOCAL -> stringResource(Res.string.playlist)
                 PlaylistType.Type.ALBUM -> stringResource(Res.string.album)
-                PlaylistType.Type.PODCAST -> stringResource(Res.string.podcasts)
             }
         when (data) {
             is AlbumEntity -> {
@@ -583,13 +580,6 @@ fun PlaylistFullWidthItems(
                 thumb = data.thumbnails.lastOrNull()?.url ?: ""
                 secondSubtitle = data.artists.toListName().connectArtists()
                 thirdRowSubtitle = data.year
-            }
-
-            is PodcastsEntity -> {
-                title = data.title
-                thumb = data.thumbnail ?: ""
-                secondSubtitle = data.authorName
-                thirdRowSubtitle = data.description
             }
         }
         Row(

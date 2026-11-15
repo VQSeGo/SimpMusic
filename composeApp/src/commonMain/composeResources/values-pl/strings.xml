@@ -437,8 +437,6 @@
     <string name="data_sync_id_retrieved">DataSyncId pobrane</string>
     <string name="retrieve_youtube_data">Pobierz dane z YouTube</string>
     <string name="no_results_found">Nie znaleziono wyników</string>
-    <string name="favorite_podcasts">Ulubione podcasty</string>
-    <string name="no_favorite_podcasts">Brak ulubionych podcastów</string>
     <string name="your_sp_dc_param_of_spotify_cookie">Twój parametr sp_dc plików cookie Spotify</string>
     <string name="your_youtube_cookie">Twoje pliki cookie YouTube</string>
     <string name="your_discord_token">Twój token Discord</string>

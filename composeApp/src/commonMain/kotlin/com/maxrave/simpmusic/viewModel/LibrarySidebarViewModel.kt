@@ -9,12 +9,10 @@ import com.maxrave.domain.repository.ArtistRepository
 import com.maxrave.domain.repository.CommonRepository
 import com.maxrave.domain.repository.LocalPlaylistRepository
 import com.maxrave.domain.repository.PlaylistRepository
-import com.maxrave.domain.repository.PodcastRepository
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.LocalPlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
-import com.maxrave.simpmusic.ui.navigation.destination.list.PodcastDestination
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,8 +28,8 @@ import kotlinx.datetime.LocalDateTime
 
 /**
  * Feeds the Desktop sidebar: the pinned collections, everything else the user keeps (local and
- * saved playlists, saved albums, followed artists, favourite podcasts) as one list, which queue is
- * playing, and whether the sidebar is folded. The five library sources are one-shot reads, not
+ * saved playlists, saved albums, followed artists) as one list, which queue is
+ * playing, and whether the sidebar is folded. The four library sources are one-shot reads, not
  * observed queries, so the list is read again on [refresh].
  */
 class LibrarySidebarViewModel(
@@ -41,7 +39,6 @@ class LibrarySidebarViewModel(
     playlistRepository: PlaylistRepository,
     albumRepository: AlbumRepository,
     artistRepository: ArtistRepository,
-    podcastRepository: PodcastRepository,
 ) : BaseViewModel() {
     val overview: StateFlow<LibraryOverview?> =
         commonRepository
@@ -59,8 +56,7 @@ class LibrarySidebarViewModel(
                     playlistRepository.getLikedPlaylists(),
                     albumRepository.getLikedAlbums(),
                     artistRepository.getFollowedArtists(),
-                    podcastRepository.getFavoritePodcasts(),
-                ) { local, playlists, albums, artists, podcasts ->
+                ) { local, playlists, albums, artists ->
                     local.map {
                         LibrarySidebarItem(
                             key = "local_${it.id}",
@@ -109,18 +105,6 @@ class LibrarySidebarViewModel(
                                 destination = ArtistDestination(it.channelId),
                                 queueId = null,
                             )
-                        } +
-                        podcasts.map {
-                            LibrarySidebarItem(
-                                key = "podcast_${it.podcastId}",
-                                kind = LibrarySidebarKind.PODCAST,
-                                title = it.title,
-                                subtitle = it.authorName,
-                                thumbnail = it.thumbnail,
-                                addedAt = it.favoriteTime ?: it.inLibrary,
-                                destination = PodcastDestination(it.podcastId),
-                                queueId = it.podcastId,
-                            )
                         }
                 }
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -152,13 +136,13 @@ class LibrarySidebarViewModel(
     }
 }
 
-enum class LibrarySidebarKind { PLAYLIST, ARTIST, ALBUM, PODCAST }
+enum class LibrarySidebarKind { PLAYLIST, ARTIST, ALBUM }
 
 data class LibrarySidebarItem(
     val key: String,
     val kind: LibrarySidebarKind,
     val title: String,
-    // The playlist's author, the album's artists or the podcast's host; null where the kind says enough.
+    // The playlist's author or the album's artists; null where the kind says enough.
     val subtitle: String?,
     val thumbnail: String?,
     val addedAt: LocalDateTime,

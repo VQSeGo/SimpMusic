@@ -80,7 +80,6 @@ import com.maxrave.common.Config
 import com.maxrave.domain.data.entities.AlbumEntity
 import com.maxrave.domain.data.entities.LocalPlaylistEntity
 import com.maxrave.domain.data.entities.PlaylistEntity
-import com.maxrave.domain.data.entities.PodcastsEntity
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.browse.artist.ResultAlbum
 import com.maxrave.domain.data.model.browse.artist.ResultPlaylist
@@ -114,7 +113,6 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.BrowseDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
-import com.maxrave.simpmusic.ui.navigation.destination.list.PodcastDestination
 import com.maxrave.simpmusic.ui.icon.PlayArrow
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.theme.LocalForceDarkText
@@ -356,14 +354,6 @@ fun HomeContentCard(
                     ),
                 )
             }, data = temp, fillMaxWidth = fillMaxWidth)
-        } else if (browseId.startsWith("MPSP")) {
-            HomeItemContentPlaylist(onClick = {
-                navController.navigate(
-                    PodcastDestination(
-                        podcastId = browseId,
-                    ),
-                )
-            }, data = temp, fillMaxWidth = fillMaxWidth, onPlay = temp.hoverPlay(viewModel))
         } else {
             HomeItemContentPlaylist(onClick = {
                 navController.navigate(
@@ -395,7 +385,7 @@ fun HomeContentCard(
 /**
  * The card's hover play button. A song or video plays exactly as a tap on the card does, so every
  * one of them gets it. A playlist or album plays what YouTube's own play button points at, straight
- * from Home; a playlist card that came without one still plays by its id. Artists and podcasts,
+ * from Home; a playlist card that came without one still plays by its id. Artists,
  * which have nothing to play, get no button.
  */
 private fun Content.hoverPlay(viewModel: BaseViewModel): (() -> Unit)? {
@@ -511,7 +501,7 @@ internal fun Content.playRadio(viewModel: BaseViewModel) {
 
 /**
  * Opens what a section's "More" endpoint points to. YouTube names the page type on the endpoint, so
- * an album, playlist, artist or podcast opens its own screen; an unnamed one (`FEmusic_*`) is a
+ * an album, playlist or artist opens its own screen; an unnamed one (`FEmusic_*`) is a
  * generic shelf page.
  */
 fun NavController.navigateToMoreEndpoint(
@@ -529,10 +519,6 @@ fun NavController.navigateToMoreEndpoint(
 
         MoreEndpoint.PAGE_TYPE_ARTIST, MoreEndpoint.PAGE_TYPE_USER_CHANNEL -> {
             navigate(ArtistDestination(channelId = endpoint.browseId))
-        }
-
-        MoreEndpoint.PAGE_TYPE_PODCAST -> {
-            navigate(PodcastDestination(podcastId = endpoint.browseId))
         }
 
         else -> {
@@ -589,7 +575,6 @@ fun HomeItemContentPlaylist(
                     is ResultSingle -> data.thumbnails.lastOrNull()?.url
                     is ResultAlbum -> data.thumbnails.lastOrNull()?.url
                     is ResultPlaylist -> data.thumbnails.lastOrNull()?.url
-                    is PodcastsEntity -> data.thumbnail
                     is AlbumsResult -> data.thumbnails.lastOrNull()?.url
                     // A recap owns no artwork; it borrows the month's own top song's, resolved
                     // where the recap itself is (LibraryViewModel.getMonthlyRecaps).
@@ -700,7 +685,6 @@ fun HomeItemContentPlaylist(
                         is ResultSingle -> data.title
                         is ResultAlbum -> data.title
                         is ResultPlaylist -> data.title
-                        is PodcastsEntity -> data.title
                         is AlbumsResult -> data.title
                         is MonthlyRecapItem -> data.title
                         else -> ""
@@ -772,10 +756,6 @@ fun HomeItemContentPlaylist(
 
                         is ResultPlaylist -> {
                             data.author
-                        }
-
-                        is PodcastsEntity -> {
-                            data.authorName
                         }
 
                         is MonthlyRecapItem -> {
@@ -1387,9 +1367,6 @@ fun ItemArtistChart(
     onClick: () -> Unit,
     data: ItemArtist,
     widthDp: Dp,
-    // The chart's podcast rows reuse this row: a square cover, and the author shown as-is.
-    thumbnailShape: Shape = CircleShape,
-    subtitle: String? = null,
 ) {
     Box(
         Modifier
@@ -1436,7 +1413,7 @@ fun ItemArtistChart(
                     Modifier
                         .align(Alignment.CenterVertically)
                         .size(60.dp)
-                        .clip(thumbnailShape),
+                        .clip(CircleShape),
             )
             Column(
                 Modifier
@@ -1455,7 +1432,7 @@ fun ItemArtistChart(
                 )
                 Text(
                     text =
-                        subtitle ?: if (data.subscribers.contains(
+                        if (data.subscribers.contains(
                                 stringResource(Res.string.subscribers).replace("%1\$s ", ""),
                             )
                         ) {
