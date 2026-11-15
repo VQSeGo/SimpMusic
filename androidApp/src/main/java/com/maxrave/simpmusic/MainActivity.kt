@@ -182,12 +182,13 @@ class MainActivity : AppCompatActivity() {
                 ),
         )
         viewModel.checkIsRestoring()
-        // The release-notification and blog RSS workers are gone. Builds installed over an older one still
-        // have them queued in WorkManager, and they would fail on the missing classes, so cancel them.
+        // The release-notification, blog RSS and auto-backup workers are gone. Builds installed over an older one
+        // still have them queued in WorkManager, and they would fail on the missing classes, so cancel them.
         // cancelUniqueWork on a name that is not queued does nothing, so this is safe to run every launch.
         WorkManager.getInstance(this).apply {
             cancelUniqueWork("Artist Worker")
             cancelUniqueWork("Blog RSS Worker")
+            cancelUniqueWork("AutoBackupWorker")
         }
 
         if (!EasyPermissions.hasPermissions(this, Manifest.permission.POST_NOTIFICATIONS)) {

@@ -170,6 +170,13 @@
   `podcast_table` / `podcast_episode_table` и их методы в `DatabaseDao` остаются в базе без кода, который в них пишет и читает
   (`deleteUnfavoritedPodcasts` по-прежнему чистит старые строки). Эпизод подкаста, открытый по ссылке или из очереди, играет как
   обычное видео. Описания «видео вместо аудио» и «язык аудиодорожки» больше не упоминают подкасты (en, ru).
+  Также: автоматические резервные копии (`AutoBackupScheduler` и `AutoBackupWorker` в `androidApp/.../service/backup`, запуск из
+  `SimpMusicApplication`, четыре настройки в группе «Резервная копия» (авто-копия, частота, сколько хранить, время последней),
+  их состояние и методы в `SettingsViewModel`, ключи DataStore `auto_backup_enabled`, `auto_backup_frequency`,
+  `auto_backup_max_files`, `auto_backup_last_time`, константы `AUTO_BACKUP_FREQUENCY_*`; строки `auto_backup*`, `backup_frequency`,
+  `keep_backups*`, `last_backup`, `daily`, `weekly`, `monthly`, `never`). `MainActivity` при запуске отменяет у сборок, установленных
+  поверх старой, и задание `AutoBackupWorker`. Ручное сохранение и восстановление, переключатель «Резервная копия скачанного»
+  (`backup_downloaded`) остались.
 - Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки

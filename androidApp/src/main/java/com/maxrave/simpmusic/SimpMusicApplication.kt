@@ -14,21 +14,14 @@ import coil3.SingletonImageLoader
 import coil3.annotation.ExperimentalCoilApi
 import com.maxrave.common.AppIdentity
 import com.maxrave.data.di.loader.loadAllModules
-import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Startup
 import com.maxrave.simpmusic.di.viewModelModule
-import com.maxrave.simpmusic.service.backup.AutoBackupScheduler
 import com.maxrave.simpmusic.utils.AppImageLoader
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import multiplatform.network.cmptoast.AppContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
@@ -41,10 +34,6 @@ class SimpMusicApplication :
     Application(),
     KoinComponent,
     SingletonImageLoader.Factory {
-
-    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    private val dataStoreManager: DataStoreManager by inject()
-    private lateinit var autoBackupScheduler: AutoBackupScheduler
 
     override fun onCreate() {
         super.onCreate()
@@ -82,12 +71,6 @@ class SimpMusicApplication :
 
         // initialize WorkManager
         WorkManager.initialize(this, workConfig)
-
-        // Initialize and start AutoBackupScheduler
-        autoBackupScheduler = AutoBackupScheduler(this, dataStoreManager)
-        applicationScope.launch {
-            autoBackupScheduler.observeAndSchedule()
-        }
 
         CaocConfig.Builder
             .create()

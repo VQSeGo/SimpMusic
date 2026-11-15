@@ -176,8 +176,6 @@ import simpmusic.composeapp.generated.resources.audio_delay
 import simpmusic.composeapp.generated.resources.audio_delay_description
 import simpmusic.composeapp.generated.resources.audio_reverb
 import simpmusic.composeapp.generated.resources.audio_reverb_description
-import simpmusic.composeapp.generated.resources.auto_backup
-import simpmusic.composeapp.generated.resources.auto_backup_description
 import simpmusic.composeapp.generated.resources.auto_check_for_update
 import simpmusic.composeapp.generated.resources.auto_check_for_update_description
 import simpmusic.composeapp.generated.resources.auto_download_liked_songs
@@ -186,7 +184,6 @@ import simpmusic.composeapp.generated.resources.backup
 import simpmusic.composeapp.generated.resources.based_on_simpmusic
 import simpmusic.composeapp.generated.resources.backup_downloaded
 import simpmusic.composeapp.generated.resources.backup_downloaded_description
-import simpmusic.composeapp.generated.resources.backup_frequency
 import simpmusic.composeapp.generated.resources.balance_media_loudness
 import simpmusic.composeapp.generated.resources.better_lyrics
 import simpmusic.composeapp.generated.resources.cancel
@@ -209,7 +206,6 @@ import simpmusic.composeapp.generated.resources.crossfade_duration
 import simpmusic.composeapp.generated.resources.crossfade_skip_album
 import simpmusic.composeapp.generated.resources.crossfade_skip_album_description
 import simpmusic.composeapp.generated.resources.custom_color
-import simpmusic.composeapp.generated.resources.daily
 import simpmusic.composeapp.generated.resources.database
 import simpmusic.composeapp.generated.resources.description_and_licenses
 import simpmusic.composeapp.generated.resources.discord_integration
@@ -232,14 +228,11 @@ import simpmusic.composeapp.generated.resources.intro_login_to_spotify
 import simpmusic.composeapp.generated.resources.invalid_host
 import simpmusic.composeapp.generated.resources.invalid_language_code
 import simpmusic.composeapp.generated.resources.invalid_port
-import simpmusic.composeapp.generated.resources.keep_backups
-import simpmusic.composeapp.generated.resources.keep_backups_format
 import simpmusic.composeapp.generated.resources.keep_your_youtube_playlist_offline
 import simpmusic.composeapp.generated.resources.keep_your_youtube_playlist_offline_description
 import simpmusic.composeapp.generated.resources.kill_service_on_exit
 import simpmusic.composeapp.generated.resources.kill_service_on_exit_description
 import simpmusic.composeapp.generated.resources.language
-import simpmusic.composeapp.generated.resources.last_backup
 import simpmusic.composeapp.generated.resources.last_checked_at
 import simpmusic.composeapp.generated.resources.limit_player_cache
 import simpmusic.composeapp.generated.resources.listening_history
@@ -277,8 +270,6 @@ import simpmusic.composeapp.generated.resources.romanization_serbian
 import simpmusic.composeapp.generated.resources.romanization_ukrainian
 import simpmusic.composeapp.generated.resources.main_lyrics_provider
 import simpmusic.composeapp.generated.resources.manage_your_youtube_accounts
-import simpmusic.composeapp.generated.resources.monthly
-import simpmusic.composeapp.generated.resources.never
 import simpmusic.composeapp.generated.resources.no_account
 import simpmusic.composeapp.generated.resources.normalize_volume
 import simpmusic.composeapp.generated.resources.open_system_equalizer
@@ -351,7 +342,6 @@ import simpmusic.composeapp.generated.resources.version_format
 import simpmusic.composeapp.generated.resources.video_download_quality
 import simpmusic.composeapp.generated.resources.video_quality
 import simpmusic.composeapp.generated.resources.warning
-import simpmusic.composeapp.generated.resources.weekly
 import simpmusic.composeapp.generated.resources.youtube_account
 import simpmusic.composeapp.generated.resources.youtube_subtitle_language
 import simpmusic.composeapp.generated.resources.youtube_subtitle_language_message
@@ -452,10 +442,6 @@ fun SettingScreen(
     val autoCheckUpdate by viewModel.autoCheckUpdate.collectAsStateWithLifecycle()
     val translationLanguage by viewModel.translationLanguage.collectAsStateWithLifecycle()
     val backupDownloaded by viewModel.backupDownloaded.collectAsStateWithLifecycle()
-    val autoBackupEnabled by viewModel.autoBackupEnabled.collectAsStateWithLifecycle()
-    val autoBackupFrequency by viewModel.autoBackupFrequency.collectAsStateWithLifecycle()
-    val autoBackupMaxFiles by viewModel.autoBackupMaxFiles.collectAsStateWithLifecycle()
-    val autoBackupLastTime by viewModel.autoBackupLastTime.collectAsStateWithLifecycle()
     val enableLiquidGlass by viewModel.enableLiquidGlass.collectAsStateWithLifecycle()
     val themeMode by sharedViewModel.getThemeMode().collectAsStateWithLifecycle(DataStoreManager.THEME_MODE_DARK)
     val themeColorSource by sharedViewModel.getThemeColorSource().collectAsStateWithLifecycle(DataStoreManager.THEME_COLOR_DEFAULT)
@@ -1877,113 +1863,6 @@ fun SettingScreen(
                     subtitle = stringResource(Res.string.backup_downloaded_description),
                     switch = (backupDownloaded to { viewModel.setBackupDownloaded(it) }),
                 )
-                // Auto Backup (Android only)
-                if (getPlatform() == Platform.Android) {
-                    SettingItem(
-                        title = stringResource(Res.string.auto_backup),
-                        subtitle = stringResource(Res.string.auto_backup_description),
-                        switch = (autoBackupEnabled to { viewModel.setAutoBackupEnabled(it) }),
-                    )
-                    AnimatedVisibility(visible = autoBackupEnabled) {
-                        Column {
-                            SettingItem(
-                                title = stringResource(Res.string.backup_frequency),
-                                subtitle =
-                                    when (autoBackupFrequency) {
-                                        DataStoreManager.AUTO_BACKUP_FREQUENCY_DAILY -> stringResource(Res.string.daily)
-                                        DataStoreManager.AUTO_BACKUP_FREQUENCY_WEEKLY -> stringResource(Res.string.weekly)
-                                        DataStoreManager.AUTO_BACKUP_FREQUENCY_MONTHLY -> stringResource(Res.string.monthly)
-                                        else -> stringResource(Res.string.daily)
-                                    },
-                                onClick = {
-                                    viewModel.setAlertData(
-                                        SettingAlertState(
-                                            title = runBlocking { getString(Res.string.backup_frequency) },
-                                            selectOne =
-                                                SettingAlertState.SelectData(
-                                                    listSelect =
-                                                        listOf(
-                                                            (autoBackupFrequency == DataStoreManager.AUTO_BACKUP_FREQUENCY_DAILY) to
-                                                                runBlocking { getString(Res.string.daily) },
-                                                            (autoBackupFrequency == DataStoreManager.AUTO_BACKUP_FREQUENCY_WEEKLY) to
-                                                                runBlocking { getString(Res.string.weekly) },
-                                                            (autoBackupFrequency == DataStoreManager.AUTO_BACKUP_FREQUENCY_MONTHLY) to
-                                                                runBlocking { getString(Res.string.monthly) },
-                                                        ),
-                                                ),
-                                            confirm =
-                                                runBlocking { getString(Res.string.change) } to { state ->
-                                                    val frequency =
-                                                        when (state.selectOne?.getSelected()) {
-                                                            runBlocking {
-                                                                getString(
-                                                                    Res.string.daily,
-                                                                )
-                                                            },
-                                                            -> DataStoreManager.AUTO_BACKUP_FREQUENCY_DAILY
-                                                            runBlocking {
-                                                                getString(
-                                                                    Res.string.weekly,
-                                                                )
-                                                            },
-                                                            -> DataStoreManager.AUTO_BACKUP_FREQUENCY_WEEKLY
-                                                            runBlocking {
-                                                                getString(
-                                                                    Res.string.monthly,
-                                                                )
-                                                            },
-                                                            -> DataStoreManager.AUTO_BACKUP_FREQUENCY_MONTHLY
-                                                            else -> DataStoreManager.AUTO_BACKUP_FREQUENCY_DAILY
-                                                        }
-                                                    viewModel.setAutoBackupFrequency(frequency)
-                                                },
-                                            dismiss = runBlocking { getString(Res.string.cancel) },
-                                        ),
-                                    )
-                                },
-                            )
-                            SettingItem(
-                                title = stringResource(Res.string.keep_backups),
-                                subtitle = stringResource(Res.string.keep_backups_format, "$autoBackupMaxFiles"),
-                                onClick = {
-                                    viewModel.setAlertData(
-                                        SettingAlertState(
-                                            title = runBlocking { getString(Res.string.keep_backups) },
-                                            selectOne =
-                                                SettingAlertState.SelectData(
-                                                    listSelect =
-                                                        listOf(
-                                                            (autoBackupMaxFiles == 3) to "3",
-                                                            (autoBackupMaxFiles == 5) to "5",
-                                                            (autoBackupMaxFiles == 10) to "10",
-                                                            (autoBackupMaxFiles == 15) to "15",
-                                                        ),
-                                                ),
-                                            confirm =
-                                                runBlocking { getString(Res.string.change) } to { state ->
-                                                    val maxFiles = state.selectOne?.getSelected()?.toIntOrNull() ?: 5
-                                                    viewModel.setAutoBackupMaxFiles(maxFiles)
-                                                },
-                                            dismiss = runBlocking { getString(Res.string.cancel) },
-                                        ),
-                                    )
-                                },
-                            )
-                            SettingItem(
-                                title = stringResource(Res.string.last_backup),
-                                subtitle =
-                                    if (autoBackupLastTime == 0L) {
-                                        stringResource(Res.string.never)
-                                    } else {
-                                        DateTimeFormatter
-                                            .ofPattern("yyyy-MM-dd HH:mm:ss")
-                                            .withZone(ZoneId.systemDefault())
-                                            .format(Instant.ofEpochMilli(autoBackupLastTime))
-                                    },
-                            )
-                        }
-                    }
-                }
                 SettingItem(
                     title = stringResource(Res.string.backup),
                     subtitle = stringResource(Res.string.save_all_your_playlist_data),

@@ -438,17 +438,6 @@
     <string name="restore_in_progress">Geri yükleme devam ediyor</string>
     <string name="backup_downloaded">İndirilen verileri yedekleyin</string>
     <string name="backup_downloaded_description">İndirilen tüm şarkıların verilerini yedekleyin</string>
-    <string name="auto_backup">Otomatik yedekleme</string>
-    <string name="auto_backup_description">Verilerinizi otomatik olarak Downloads/SimpMusic klasörüne yedekleyin</string>
-    <string name="daily">Günlük</string>
-    <string name="weekly">Haftalık</string>
-    <string name="monthly">Aylık</string>
-    <string name="keep_backups">Yedekleri sakla</string>
-    <string name="keep_backups_format">Son %1$s yedeklerini sakla</string>
-    <string name="last_backup">Son yedekleme</string>
-    <string name="never">Asla</string>
-    <string name="auto_backup_success">Otomatik yedekleme başarıyla tamamlandı</string>
-    <string name="auto_backup_failed">Otomatik yedekleme başarısız oldu</string>
     <string name="no_playlist_found">Yerel çalma listesi bulunamadı, lütfen önce bir tane oluşturun</string>
     <string name="list_all_cookies_of_this_page">Bu sayfadaki tüm çerezleri listele</string>
     <string name="copied_to_clipboard">Panoya kopyalandı</string>
