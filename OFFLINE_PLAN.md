@@ -1114,3 +1114,22 @@ restored=<bool>`, `resolve warm-up brave <мс> (player code …, extraction …
   состояния, а не каждый новый объект `Success`), гонка двух альбомов подряд (каждый deep link открывает свой экран со
   своей ViewModel; защита — отмена загрузки и проверка id перед записью), радио-плейлисты (код не менялся), основной телефон.
 - Сохранённая копия при замене не обновляется в базе (как и раньше: обновляются дата и песни, а не список треков записи).
+
+**Экстракторы из оригинала (2026-11-15, ПК, `hotRunJvm`; Android собран `:androidApp:assembleRelease`, не запускался).**
+Оригинал в `44c197e1` поднял `brave-newpipe` 105aad96c7 → 991b158fee (NewPipe Extractor v0.27.1: разбор n-sig,
+версия клиента из service worker, внешний интерпретатор JS) и `pipepipe` 27aac1e14e → bba8d84453 (в том числе «hardcoded
+client version check writes to an immutable header map», «local decoder cannot resolve the player hash», плагины, Bandcamp
+вынесен). Других правок под них ни в `upstream/dev`, ни в `core` `upstream/multiplatform` нет (`service/kotlinYtmusicScraper`
+после `514216c` не менялся). Наш код компилируется без изменений (`ServiceList.YouTube.tokens`, `YoutubeApiDecoder.setLocalDecoder`
+на месте). Перед каждым прогоном ключ `brave_pipe_first` в `settings.preferences_pb` ставился в `FALSE`, чтобы первый трек
+прошёл всю цепочку; ссылка — `simpmusic://watch?v=…` через `/tmp/simpmusic_pending_deeplink.txt` и файл
+`/tmp/com.maxrave.simpmusic.MainKt.restore_request` (то же, что делает второй экземпляр), дальше `playerctl next`.
+
+- До (CAQRQXJ2zUs + предзагрузка SyAy4tSLB4E): `head itag=134 code=403` / `250 code=403` / `136 code=403`, обе ступени отказ
+  (`pipepipe-local` 8016, `pipepipe-remote` 6120), `brave` 6395 (холодный), `extract` 22280, `sound` 24674. Дальше
+  `brave-first` 1345–1821, `extract` 3376 / 4277 / 4634.
+- После (kJQP7kiw5Fk + F6tJ4cYdAcE, DiItGE3eAyQ): то же, все шесть HEAD по ссылкам PipePipe `403` (itag 134, 136, 137, 250),
+  `pipepipe-local` 2897–10398, `pipepipe-remote` 2752–5257, `brave` 1749–5930, `extract` 10693 у первого трека (BravePipe
+  уже прогрет предзагрузкой), `sound` 14463. Дальше `brave-first` 1344–1589, `extract` 2951 / 4155 / 4704.
+- Итог: новые версии `403` у PipePipe не лечат, время до ссылки в пределах разброса. Окно «BravePipe первым» нужно как
+  раньше. Не проверено: Android на устройстве, видео-режим, прямые эфиры.
