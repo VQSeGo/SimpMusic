@@ -38,8 +38,10 @@
 - Из `core` берём отдельные коммиты, только слой YouTube: `service/kotlinYtmusicScraper` (`cipher`, `extractor`, `visitor data`,
   `authuser`) и получение потока. Без них однажды пропадёт звук. Остальное не трогаем.
 - Смотрим туда по поводу: перестало играть, слетел вход, пустая главная. Сначала проверяем, не починили ли это у них.
-- В `core` есть remote `upstream` (локальный, только чтение): `git -C core fetch upstream multiplatform`, затем
-  `git -C core log <наша база>..upstream/multiplatform -- service/kotlinYtmusicScraper` и `git cherry-pick <коммит>`.
+- Что нового у них: `scripts/upstream-news.sh` (сам добавит remote `upstream` только для чтения в оба репозитория, скачает и
+  покажет коммиты после отметок в `docs/upstream-reviewed.txt`, отдельно — критичные: скрейпер, поток, версии экстракторов
+  `brave-newpipe` / `pipepipe` в `libs.versions.toml`). После разбора `scripts/upstream-news.sh --mark` и коммит отметок.
+  Перенос из `core`: `git -C core cherry-pick <коммит>`; из основного репозитория — вручную, он слишком разошёлся.
 
 ## Сборка и запуск (Linux)
 
