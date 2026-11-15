@@ -355,10 +355,14 @@ tasks.register("packageConveyorAppImage") {
                 .dir("tmp")
                 .get()
                 .asFile
-                .resolve("appimagetool-x86_64.AppImage")
+                .resolve("appimagetool-continuous-x86_64.AppImage")
+        // AppImage/appimagetool, not the abandoned AppImageKit one (which only knows gzip and xz).
+        // It embeds the static type2-runtime, so the AppImage itself no longer needs libfuse2
+        // on the user's system. The cache file name differs from the old tool's on purpose,
+        // so a build/tmp left over from before does not keep using the old binary.
         if (!appimagetool.exists()) {
             downloadFile(
-                "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage",
+                "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage",
                 appimagetool,
             )
         }
@@ -467,6 +471,11 @@ tasks.register("packageConveyorAppImage") {
         val process =
             ProcessBuilder(
                 appimagetool.canonicalPath,
+                // zstd instead of gzip: the image is mounted fresh on every launch and every jar
+                // read goes through squashfuse decompression; measured in OPTIMIZATION_PLAN.md
+                // (task 8a). zstd is also the new tool's default, stated here so it cannot drift.
+                "--comp",
+                "zstd",
                 "$appName.AppDir",
                 outputAppImage.name,
             ).directory(appDir.parentFile)
