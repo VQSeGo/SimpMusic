@@ -16,7 +16,6 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -135,8 +135,10 @@ fun SongFullWidthItems(
     val coroutineScope = rememberCoroutineScope()
     val density = LocalDensity.current
     val songRepository: SongRepository = koinInject<SongRepository>()
-    val storedSong by songRepository
-        .getSongAsFlow(songEntity?.videoId ?: track?.videoId ?: "")
+    val storedVideoId = songEntity?.videoId ?: track?.videoId ?: ""
+    // Remembered per id: a flow built in the body is a new instance on every recomposition, so
+    // collectAsState dropped its collector and ran the Room query again each time the row recomposed.
+    val storedSong by remember(storedVideoId) { songRepository.getSongAsFlow(storedVideoId) }
         .collectAsState(initial = null)
     val downloadState = storedSong?.downloadState ?: DownloadState.STATE_NOT_DOWNLOADED
     // The list's own model says what its source said; the stored row adds what playback learned
@@ -144,13 +146,18 @@ fun SongFullWidthItems(
     val isLive = track?.isLive == true || songEntity?.isLive == true || storedSong?.isLive == true
     val offsetX = remember { Animatable(initialValue = 0f) }
     var heightDp by remember { mutableStateOf(0.dp) }
+    // Read through derived states: reading offsetX.value here recomposed the whole row on every
+    // frame of a swipe. The hint exists only while the row is pulled aside, so a resting row in a
+    // scrolling list does not carry a Crossfade of nothing.
+    val isSwiping by remember { derivedStateOf { offsetX.value > 0f } }
+    val showsAddToQueue by remember { derivedStateOf { offsetX.value >= maxOffset / 2 } }
 
     Box(
         modifier =
         modifier,
     ) {
-        Crossfade(
-            offsetX.value >= maxOffset / 2,
+        if (isSwiping) Crossfade(
+            showsAddToQueue,
         ) { shouldShowAddToQueue ->
             if (shouldShowAddToQueue) {
                 // Where Add to queue is blocked the swipe plays the song next instead
@@ -198,7 +205,8 @@ fun SongFullWidthItems(
                     ).animateContentSize()
                     // Keyed on selectionMode so the swipe detector is torn down when selection
                     // starts — keyed on Unit it would keep running with the stale flag captured.
-                    .pointerInput(selectionMode) {
+                    // isPlaying likewise: a list keeps the row when its track starts or stops.
+                    .pointerInput(selectionMode, isPlaying) {
                         if (!isPlaying && onAddToQueue != null && !selectionMode) {
                             detectHorizontalDragGestures(
                                 onHorizontalDrag = { change, dragAmount ->
@@ -223,9 +231,10 @@ fun SongFullWidthItems(
                                 },
                             )
                         }
-                    }.onGloballyPositioned { coordinates ->
+                    }.onSizeChanged { size ->
+                        // Size only: a position callback fired for every row on every scrolled frame.
                         with(density) {
-                            heightDp = coordinates.size.height.toDp()
+                            heightDp = size.height.toDp()
                         }
                     },
         ) {
@@ -278,6 +287,7 @@ fun SongFullWidthItems(
                             )
                         } else if (index == null) {
                             val thumb = track?.thumbnails?.lastOrNull()?.url ?: songEntity?.thumbnails
+                            val holder = rememberHolderPainter()
                             AsyncImage(
                                 model =
                                     ImageRequest
@@ -287,8 +297,8 @@ fun SongFullWidthItems(
                                         .diskCacheKey(thumb)
                                         .crossfade(true)
                                         .build(),
-                                placeholder = rememberHolderPainter(),
-                                error = rememberHolderPainter(),
+                                placeholder = holder,
+                                error = holder,
                                 contentDescription = null,
                                 contentScale = ContentScale.FillWidth,
                                 modifier =
@@ -325,7 +335,7 @@ fun SongFullWidthItems(
                                 .basicMarquee(
                                     iterations = Int.MAX_VALUE,
                                     animationMode = MarqueeAnimationMode.Immediately,
-                                ).focusable(),
+                                ),
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         AnimatedVisibility(
@@ -376,7 +386,7 @@ fun SongFullWidthItems(
                                     .basicMarquee(
                                         iterations = Int.MAX_VALUE,
                                         animationMode = MarqueeAnimationMode.Immediately,
-                                    ).focusable(),
+                                    ),
                         )
                     }
                 }
@@ -480,7 +490,7 @@ fun SuggestItems(
                             .basicMarquee(
                                 iterations = Int.MAX_VALUE,
                                 animationMode = MarqueeAnimationMode.Immediately,
-                            ).focusable(),
+                            ),
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (track.isLive) LiveBadge(modifier = Modifier.padding(end = 6.dp))
@@ -499,7 +509,7 @@ fun SuggestItems(
                                 .basicMarquee(
                                     iterations = Int.MAX_VALUE,
                                     animationMode = MarqueeAnimationMode.Immediately,
-                                ).focusable(),
+                                ),
                     )
                 }
             }
@@ -627,7 +637,7 @@ fun PlaylistFullWidthItems(
                             .basicMarquee(
                                 iterations = Int.MAX_VALUE,
                                 animationMode = MarqueeAnimationMode.Immediately,
-                            ).focusable(),
+                            ),
                 )
 
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -654,7 +664,7 @@ fun PlaylistFullWidthItems(
                                 .basicMarquee(
                                     iterations = Int.MAX_VALUE,
                                     animationMode = MarqueeAnimationMode.Immediately,
-                                ).focusable(),
+                                ),
                     )
                 }
 
@@ -671,7 +681,7 @@ fun PlaylistFullWidthItems(
                                 .basicMarquee(
                                     iterations = Int.MAX_VALUE,
                                     animationMode = MarqueeAnimationMode.Immediately,
-                                ).focusable(),
+                                ),
                     )
                 }
             }
@@ -749,7 +759,7 @@ fun ArtistFullWidthItems(
                             .basicMarquee(
                                 iterations = Int.MAX_VALUE,
                                 animationMode = MarqueeAnimationMode.Immediately,
-                            ).focusable(),
+                            ),
                 )
 
                 Text(
@@ -764,7 +774,7 @@ fun ArtistFullWidthItems(
                             .basicMarquee(
                                 iterations = Int.MAX_VALUE,
                                 animationMode = MarqueeAnimationMode.Immediately,
-                            ).focusable(),
+                            ),
                 )
             }
             if (rightView != null) {
