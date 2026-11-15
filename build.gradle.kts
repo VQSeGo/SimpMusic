@@ -55,4 +55,11 @@ subprojects {
             force("com.github.TeamNewPipe:nanojson:c7a6c1c08d16b6d5ecded34758e6415e07be2166")
         }
     }
+
+    // kotaml (LRCLIB Lyricsfile parser) is a fork of kaml and keeps the com.charleskorn.kaml package.
+    // ktor-openapi-schema still drags in kaml itself, so the APK would carry every class twice
+    // (checkReleaseDuplicateClasses fails). Nothing here needs the original, the fork replaces it.
+    configurations.all {
+        exclude(group = "com.charleskorn.kaml", module = "kaml")
+    }
 }
