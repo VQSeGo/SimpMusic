@@ -479,7 +479,13 @@ tasks.register("packageConveyorAppImage") {
                 "$appName.AppDir",
                 outputAppImage.name,
             ).directory(appDir.parentFile)
-                .apply { environment()["ARCH"] = "x86_64" }
+                .apply {
+                    environment()["ARCH"] = "x86_64"
+                    // appimagetool is itself an AppImage. On CI let its type2-runtime unpack itself
+                    // instead of mounting through FUSE, so the runner needs neither fusermount3 nor
+                    // /dev/fuse. Not locally: it leaves an unpacked copy under /tmp.
+                    if (System.getenv("CI") == "true") environment()["APPIMAGE_EXTRACT_AND_RUN"] = "1"
+                }
                 .inheritIO()
                 .start()
 
