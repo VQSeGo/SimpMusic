@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
 import com.maxrave.simpmusic.ui.icon.Add
 import com.maxrave.simpmusic.ui.icon.Remove
 import com.maxrave.simpmusic.ui.icon.RestartAlt
@@ -87,15 +86,13 @@ fun LyricsOffsetBar(
 
 /**
  * Opens [LyricsOffsetBar] to the left of [button], for pages whose lyrics have no header to put a
- * button in. The page draws [button] itself, in its own style; [backdrop] puts the bar on glass for a
- * glass page, and null leaves it on the flat fill of the Apple Music tab's round buttons.
+ * button in. The page draws [button] itself, in its own style; the bar sits on the same translucent pill.
  * [onInteraction] lets a page that hides its controls on a timer count these taps.
  */
 @Composable
 fun LyricsOffsetFloatingControl(
     offsetMs: Int,
     onOffsetChange: (Int) -> Unit,
-    backdrop: PlatformBackdrop?,
     modifier: Modifier = Modifier,
     onInteraction: () -> Unit = {},
     button: @Composable (onClick: () -> Unit) -> Unit,
@@ -107,26 +104,16 @@ fun LyricsOffsetFloatingControl(
     }
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         AnimatedVisibility(visible = open) {
-            if (backdrop != null) {
-                // The fullscreen page's own glass pill: 48dp, 24dp corners, static like its volume pill.
-                LiquidGlassContainer(
-                    backdrop = backdrop,
-                    modifier = Modifier.padding(end = 8.dp).height(48.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    interactive = false,
-                ) {
-                    LyricsOffsetBar(
-                        offsetMs = offsetMs,
-                        onOffsetChange = onBarChange,
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        containerColor = Color.Transparent,
-                    )
-                }
-            } else {
+            // The fullscreen page's own pill: 48dp, 24dp corners, like its volume pill.
+            TranslucentContainer(
+                modifier = Modifier.padding(end = 8.dp).height(48.dp),
+                shape = RoundedCornerShape(24.dp),
+            ) {
                 LyricsOffsetBar(
                     offsetMs = offsetMs,
                     onOffsetChange = onBarChange,
-                    modifier = Modifier.padding(end = 8.dp),
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    containerColor = Color.Transparent,
                 )
             }
         }

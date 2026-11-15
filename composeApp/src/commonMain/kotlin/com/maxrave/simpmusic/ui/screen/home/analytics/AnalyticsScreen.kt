@@ -64,7 +64,6 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.kmpalette.rememberPaletteState
-import com.kyant.backdrop.highlight.Highlight
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.maxrave.common.Config
@@ -81,9 +80,6 @@ import com.maxrave.domain.utils.LocalResource
 import com.maxrave.domain.utils.connectArtists
 import com.maxrave.domain.utils.toArrayListTrack
 import com.maxrave.domain.utils.toTrack
-import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.expect.ui.toImageBitmap
 import com.maxrave.simpmusic.extension.getScreenSizeInfo
 import com.maxrave.simpmusic.extension.getStringBlocking
@@ -94,12 +90,12 @@ import com.maxrave.simpmusic.ui.component.CenterLoadingBox
 import com.maxrave.simpmusic.ui.component.EndOfPage
 import com.maxrave.simpmusic.ui.component.FiveImagesComponent
 import com.maxrave.simpmusic.ui.component.ImageData
-import com.maxrave.simpmusic.ui.component.LiquidGlassIconButton
+import com.maxrave.simpmusic.ui.component.TranslucentIconButton
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.SectionHeaderButton
 import com.maxrave.simpmusic.ui.component.SongFullWidthItems
 import com.maxrave.simpmusic.ui.component.WrappedEntryCard
-import com.maxrave.simpmusic.ui.component.liquidGlass
+import com.maxrave.simpmusic.ui.component.translucentSurface
 import com.maxrave.simpmusic.ui.component.selection.SelectedSongsBottomSheet
 import com.maxrave.simpmusic.ui.component.selection.SongSelectionTopAppBar
 import com.maxrave.simpmusic.ui.component.selection.rememberSongSelectionState
@@ -159,7 +155,7 @@ private val CONTENT_INSET = 24.dp
 /** The wider window follows the Apple Music headers, which sit at 32dp. */
 private val LANDSCAPE_GUTTER = 32.dp
 
-/** Status-bar inset + `top = 16.dp` + the 48.dp glass buttons + 16.dp of air below them. */
+/** Status-bar inset + `top = 16.dp` + the 48.dp buttons + 16.dp of air below them. */
 private val TOP_STRIP = 80.dp
 
 /** Between two sections. Tighter spacing inside one is 16dp; nothing else is used. */
@@ -288,11 +284,6 @@ fun AnalyticsScreen(
         )
     }
 
-    // The glass buttons refract whatever the list has drawn, so the LIST is the backdrop source
-    // and the buttons are its SIBLINGS. Nesting them inside the source is the render-feedback
-    // loop that kills the RuntimeShader — see the note in AlbumScreen.
-    val headerBackdrop = rememberBackdrop(Color.Black)
-
     Box(
         modifier =
             Modifier
@@ -302,8 +293,7 @@ fun AnalyticsScreen(
         LazyColumn(
             modifier =
                 Modifier
-                    .fillMaxSize()
-                    .layerBackdrop(headerBackdrop),
+                    .fillMaxSize(),
             // A LazyColumn puts NOTHING between its items. The old screen hid that by giving every
             // section header its own `.padding(top = 12.dp)`; the shared SectionHeader dropped it,
             // and every section went flush against the one above.
@@ -458,13 +448,9 @@ fun AnalyticsScreen(
         // window edge; its like/more pill sits at the header's own 32dp gutter.
         val backGutter = if (isPortrait) 12.dp else 24.dp
         val pillGutter = if (isPortrait) 16.dp else LANDSCAPE_GUTTER
-        LiquidGlassIconButton(
-            backdrop = headerBackdrop,
+        TranslucentIconButton(
             imageVector = SimpIcons.ArrowBackIosNew,
             shape = RoundedCornerShape(24.dp),
-            // A 48dp circle catches only a short arc of the default directional sweep and reads
-            // as rimless; 1.dp is the smallest step that stays visible without looking a border.
-            highlight = Highlight(width = 1.dp),
             modifier =
                 Modifier
                     .align(Alignment.TopStart)
@@ -487,10 +473,8 @@ fun AnalyticsScreen(
         ) {
             if (receiptReady) {
                 val receiptLabel = stringResource(Res.string.receipt_open)
-                LiquidGlassIconButton(
-                    backdrop = headerBackdrop,
+                TranslucentIconButton(
                     imageVector = SimpIcons.ReceiptLong,
-                    highlight = Highlight(width = 1.dp),
                     modifier = Modifier.size(48.dp).semantics { contentDescription = receiptLabel },
                 ) {
                     showReceipt = true
@@ -498,7 +482,6 @@ fun AnalyticsScreen(
             }
             DayRangePill(
                 uiState = uiState,
-                backdrop = headerBackdrop,
                 onPick = { analyticsViewModel.setDayRange(it) },
             )
         }
@@ -515,13 +498,12 @@ fun AnalyticsScreen(
 }
 
 /**
- * The day-range picker: still a [DropdownMenu], only its trigger is now a glass pill that says
+ * The day-range picker: still a [DropdownMenu], only its trigger is now a translucent pill that says
  * which range is showing rather than a calendar icon with "7d" printed inside it at 8sp.
  */
 @Composable
 private fun DayRangePill(
     uiState: AnalyticsUiState,
-    backdrop: PlatformBackdrop,
     onPick: (AnalyticsUiState.DayRange) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -540,7 +522,7 @@ private fun DayRangePill(
             modifier =
                 Modifier
                     .height(48.dp)
-                    .liquidGlass(backdrop, RoundedCornerShape(24.dp), highlight = Highlight(width = 1.dp))
+                    .translucentSurface(RoundedCornerShape(24.dp))
                     .clip(RoundedCornerShape(24.dp))
                     .clickable { expanded = true }
                     .padding(horizontal = 18.dp),
@@ -646,7 +628,7 @@ private fun EmptyPeriodHeader(
                     // top = 16.dp with a 48.dp height, so anything starting above 64.dp lands
                     // underneath them. LandscapeHeader reserves the same 16 + 48 + 16 = 80.dp; the
                     // artwork branch never showed the collision because a header image is what the
-                    // glass buttons are meant to float over — a line of text is not.
+                    // buttons are meant to float over — a line of text is not.
                     top = TOP_STRIP,
                     // Deliberately NOT headerHeight. There is no artwork to fill it, so reserving
                     // 40% of the window for a one-line message left a dead band under the arrows.
@@ -781,7 +763,7 @@ private fun LandscapeHeader(
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(horizontal = LANDSCAPE_GUTTER, vertical = 16.dp),
     ) {
-        // Reserves the strip the sibling glass buttons are drawn over — back and the day-range
+        // Reserves the strip the sibling buttons are drawn over — back and the day-range
         // pill get their own top row, then the artwork sits beside the text column.
         Spacer(Modifier.height(48.dp))
         Spacer(Modifier.height(16.dp))

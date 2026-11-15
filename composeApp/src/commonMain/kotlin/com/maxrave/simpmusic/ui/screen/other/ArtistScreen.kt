@@ -80,7 +80,6 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.kyant.backdrop.highlight.Highlight
 import com.maxrave.common.Config
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.home.Content
@@ -89,8 +88,6 @@ import com.maxrave.domain.mediaservice.handler.PlaylistType
 import com.maxrave.domain.mediaservice.handler.QueueData
 import com.maxrave.domain.utils.toSongEntity
 import com.maxrave.simpmusic.expect.shareUrl
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.expect.ui.toImageBitmap
 import com.maxrave.simpmusic.extension.artworkScrimBrush
 import com.maxrave.simpmusic.extension.barBlurStyle
@@ -109,10 +106,10 @@ import com.maxrave.simpmusic.ui.component.EndOfPage
 import com.maxrave.simpmusic.ui.component.HomeItemArtist
 import com.maxrave.simpmusic.ui.component.HomeItemContentPlaylist
 import com.maxrave.simpmusic.ui.component.HomeItemVideo
-import com.maxrave.simpmusic.ui.component.LiquidGlassIconButton
+import com.maxrave.simpmusic.ui.component.TranslucentIconButton
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.SongFullWidthItems
-import com.maxrave.simpmusic.ui.component.liquidGlass
+import com.maxrave.simpmusic.ui.component.translucentSurface
 import com.maxrave.simpmusic.ui.component.selection.SelectedSongsBottomSheet
 import com.maxrave.simpmusic.ui.component.selection.SongSelectionState
 import com.maxrave.simpmusic.ui.component.selection.SongSelectionTopAppBar
@@ -267,9 +264,6 @@ fun ArtistScreen(
                                 verticalArrangement = Arrangement.spacedBy((-36).dp),
                             ) {
                                 // Edge-to-edge artwork.
-                                // Glass back button MUST be a sibling of the backdrop source
-                                // (not a child) to avoid render feedback loop / RuntimeShader crash.
-                                val artworkBackdrop = rememberBackdrop(Color.Black)
                                 // Portrait fills a SQUARE frame, so the URL is clamped to a square
                                 // size there (logic from commit 5e596c5b). Landscape keeps YouTube's
                                 // own wide banner (e.g. w2880-h1200) instead: squaring the source
@@ -296,8 +290,8 @@ fun ArtistScreen(
                                                 },
                                             ),
                                 ) {
-                                    // Inner Box — backdrop SOURCE (artwork + overlays, NO glass)
-                                    Box(modifier = Modifier.fillMaxSize().clipToBounds().layerBackdrop(artworkBackdrop)) {
+                                    // Inner Box — artwork + overlays
+                                    Box(modifier = Modifier.fillMaxSize().clipToBounds()) {
                                         // Media layer (artwork).
                                         Box(modifier = Modifier.fillMaxSize()) {
                                             AsyncImage(
@@ -419,14 +413,10 @@ fun ArtistScreen(
                                             }
                                         }
                                     }
-                                    // Back button — liquid glass, sibling of the backdrop source.
-                                    LiquidGlassIconButton(
-                                        backdrop = artworkBackdrop,
+                                    // Back button
+                                    TranslucentIconButton(
                                         imageVector = SimpIcons.ArrowBackIosNew,
                                         shape = RoundedCornerShape(24.dp),
-                                        // Matching the other three headers: the pill-style directional rim, thickened
-                                        // from the 0.5.dp default so it stays visible around a 48dp circle.
-                                        highlight = Highlight(width = 1.dp),
                                         modifier =
                                             Modifier
                                                 .align(Alignment.TopStart)
@@ -437,7 +427,7 @@ fun ArtistScreen(
                                         navController.navigateUp()
                                     }
                                     // Top-right pill mirroring the back button, shaped like the
-                                    // Playlist header's. A sibling of the backdrop source, like the back button.
+                                    // Playlist header's.
                                     Row(
                                         modifier =
                                             Modifier
@@ -445,7 +435,7 @@ fun ArtistScreen(
                                                 .padding(12.dp)
                                                 .windowInsetsPadding(WindowInsets.statusBars)
                                                 .height(48.dp)
-                                                .liquidGlass(artworkBackdrop, RoundedCornerShape(24.dp)),
+                                                .translucentSurface(RoundedCornerShape(24.dp)),
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         IconButton(

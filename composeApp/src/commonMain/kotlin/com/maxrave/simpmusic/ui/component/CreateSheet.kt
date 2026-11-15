@@ -45,14 +45,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.kyant.backdrop.highlight.Highlight
 import com.maxrave.domain.repository.ListenTogetherRepository
-import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
 import com.maxrave.simpmusic.ui.icon.Groups
 import com.maxrave.simpmusic.ui.icon.PlaylistAdd
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.ListenTogetherDestination
-import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.SharedViewModel
 import kotlinx.coroutines.launch
@@ -69,36 +66,15 @@ import simpmusic.composeapp.generated.resources.local_playlist
 import simpmusic.composeapp.generated.resources.playlist_name
 import simpmusic.composeapp.generated.resources.playlist_name_cannot_be_empty
 
-/**
- * The button in the Home top bar: Settings on a phone, Reload on Desktop. With liquid glass on it is
- * a glass circle; [backdrop] must be a sibling of this, never an ancestor.
- */
+/** The button in the Home top bar: Settings on a phone, Reload on Desktop. */
 @Composable
 fun HomeBarButton(
     icon: ImageVector,
     description: String,
-    backdrop: PlatformBackdrop,
     onClick: () -> Unit,
 ) {
-    val button: @Composable () -> Unit = {
-        IconButton(onClick = onClick, modifier = Modifier.size(44.dp)) {
-            Icon(icon, contentDescription = description, tint = MaterialTheme.colorScheme.onBackground)
-        }
-    }
-    if (LocalLiquidGlassEnabled.current) {
-        Row(
-            modifier =
-                Modifier
-                    // 44dp, the Home avatar's size: Apple sizes a bar's avatar and glass buttons alike.
-                    .height(44.dp)
-                    // Alone it is a small circle, which the directional default rim misses.
-                    .liquidGlass(backdrop, RoundedCornerShape(24.dp), highlight = Highlight(width = 1.dp)),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            button()
-        }
-    } else {
-        button()
+    IconButton(onClick = onClick, modifier = Modifier.size(44.dp)) {
+        Icon(icon, contentDescription = description, tint = MaterialTheme.colorScheme.onBackground)
     }
 }
 

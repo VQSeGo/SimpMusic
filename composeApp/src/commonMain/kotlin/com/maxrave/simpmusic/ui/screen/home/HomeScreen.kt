@@ -121,8 +121,6 @@ import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.Startup
 import com.maxrave.simpmusic.expect.openUrl
 import com.maxrave.simpmusic.expect.ui.HorizontalScrollBar
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.expect.ui.rememberReportFullyDrawn
 import com.maxrave.simpmusic.extension.angledGradientBackground
 import com.maxrave.simpmusic.extension.artworkScrimBrush
@@ -163,7 +161,6 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.LoginDestination
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
-import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 import com.maxrave.simpmusic.ui.theme.desktopPanelDark
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.utils.VersionManager
@@ -351,9 +348,6 @@ fun HomeScreen(
     }
     val hazeState =
         rememberHazeState()
-    // The floating chip row refracts the page scrolling under it, so the page is the glass source and
-    // the row its sibling (nesting the row inside the source is the RuntimeShader feedback loop).
-    val chipBackdrop = rememberBackdrop(MaterialTheme.colorScheme.background)
 
     LaunchedEffect(scrollState) {
         snapshotFlow { scrollState.firstVisibleItemIndex }
@@ -491,7 +485,6 @@ fun HomeScreen(
         TouchPullToRefreshBox(
             modifier =
                 Modifier
-                    .then(if (LocalLiquidGlassEnabled.current) Modifier.layerBackdrop(chipBackdrop) else Modifier)
                     .hazeSource(hazeState),
             state = pullToRefreshState,
             onRefresh = onRefresh,
@@ -835,9 +828,9 @@ fun HomeScreen(
                 val chipTailFade by animateFloatAsState(if (chipRowState.canScrollForward) 1f else 0f)
                 val barButton: @Composable () -> Unit = {
                     if (isDesktop) {
-                        HomeBarButton(SimpIcons.Refresh, stringResource(Res.string.reload), chipBackdrop, onRefresh)
+                        HomeBarButton(SimpIcons.Refresh, stringResource(Res.string.reload), onRefresh)
                     } else {
-                        HomeBarButton(SimpIcons.Settings, stringResource(Res.string.settings), chipBackdrop) {
+                        HomeBarButton(SimpIcons.Settings, stringResource(Res.string.settings)) {
                             navController.navigate(SettingsDestination)
                         }
                     }
@@ -875,7 +868,6 @@ fun HomeScreen(
                                     isAnimated = loading,
                                     isSelected = params == null && !moodExpanded,
                                     text = stringResource(Res.string.all),
-                                    backdrop = chipBackdrop,
                                 ) {
                                     moodExpanded = false
                                     viewModel.setParams(null)
@@ -891,7 +883,6 @@ fun HomeScreen(
                                         viewModel.setParams(homeMoods[index].second)
                                     },
                                     isAnimated = loading,
-                                    backdrop = chipBackdrop,
                                 )
                             }
                             if (!barButtonPinned) {

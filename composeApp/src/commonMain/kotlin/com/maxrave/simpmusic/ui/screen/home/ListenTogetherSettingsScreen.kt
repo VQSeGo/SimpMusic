@@ -46,13 +46,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.extension.angledGradientBackground
 import com.maxrave.simpmusic.extension.artworkScrimBrush
 import com.maxrave.simpmusic.extension.rgbFactor
 import com.maxrave.simpmusic.ui.component.EndOfPage
-import com.maxrave.simpmusic.ui.component.LiquidGlassIconButton
+import com.maxrave.simpmusic.ui.component.TranslucentIconButton
 import com.maxrave.simpmusic.ui.icon.ArrowBackIosNew
 import com.maxrave.simpmusic.ui.icon.Check
 import com.maxrave.simpmusic.ui.icon.SimpIcons
@@ -99,16 +97,12 @@ fun ListenTogetherSettingsScreen(
 
     var draftUrl by remember(serverUrl) { mutableStateOf(serverUrl) }
 
-    val backdrop = rememberBackdrop(MaterialTheme.colorScheme.background)
-
     // See ListenTogetherScreen: measure the space actually given, not the window.
     BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         val contentWidth = minOf(maxWidth.value, CONTENT_MAX_WIDTH_DP.toFloat()).dp
 
-        // The same ambient ground as the main Listen Together page — theme-primary glow painted
-        // inside the backdrop source, so the glass back button has something to refract. See the
-        // long note there for why the source is a matchParentSize sibling and the button must
-        // stay outside it.
+        // The same ambient ground as the main Listen Together page — theme-primary glow on a
+        // matchParentSize sibling, with the back button outside it.
         val bg = MaterialTheme.colorScheme.background
         val glow =
             if (bg.luminance() > 0.5f) {
@@ -116,7 +110,7 @@ fun ListenTogetherSettingsScreen(
             } else {
                 MaterialTheme.colorScheme.primary.rgbFactor(0.3f)
             }
-        Box(Modifier.matchParentSize().layerBackdrop(backdrop)) {
+        Box(Modifier.matchParentSize()) {
             Box(Modifier.matchParentSize().background(bg))
             Box(
                 Modifier
@@ -284,9 +278,8 @@ fun ListenTogetherSettingsScreen(
         }
 
         // Floats over the strip the header row reserves — a sibling of both the scroll column and
-        // the backdrop source, exactly the arrangement the main Listen Together page uses.
-        LiquidGlassIconButton(
-            backdrop = backdrop,
+        // the ground, exactly the arrangement the main Listen Together page uses.
+        TranslucentIconButton(
             imageVector = SimpIcons.ArrowBackIosNew,
             tint = MaterialTheme.colorScheme.onSurface,
             shape = RoundedCornerShape(24.dp),

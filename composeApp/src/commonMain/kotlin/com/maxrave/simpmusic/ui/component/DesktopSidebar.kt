@@ -72,11 +72,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
-import com.kyant.backdrop.highlight.Highlight
 import com.maxrave.domain.data.model.library.LibraryCollectionPreview
-import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.extension.barBlurStyle
 import com.maxrave.simpmusic.extension.mouseDragScroll
 import com.maxrave.simpmusic.ui.icon.Add
@@ -95,7 +91,6 @@ import com.maxrave.simpmusic.ui.navigation.destination.home.SettingsDestination
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
 import com.maxrave.simpmusic.ui.screen.home.chipStripEdgeFades
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
-import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.LibrarySidebarItem
 import com.maxrave.simpmusic.viewModel.LibrarySidebarKind
@@ -230,9 +225,6 @@ fun DesktopSidebar(
     CreateDialogs(visible = showCreate, onDismiss = { showCreate = false }, navController = navController)
 
     val width by animateDpAsState(if (collapsed) SidebarCollapsedWidth else SidebarExpandedWidth, label = "sidebarWidth")
-    // What the glass controls refract: the panel's own colour, recorded by a box that is their sibling,
-    // never their parent (nesting them inside the source is the RuntimeShader feedback loop).
-    val backdrop = rememberBackdrop(containerColor)
     val listState = rememberLazyListState()
     val hazeState = rememberHazeState()
     // The list runs the panel's full height, under the navigation and the library header that float
@@ -251,8 +243,6 @@ fun DesktopSidebar(
             .clip(RoundedCornerShape(12.dp))
             .background(containerColor),
     ) {
-        // Off, the controls draw flat and nothing reads the recording.
-        if (LocalLiquidGlassEnabled.current) Box(Modifier.matchParentSize().layerBackdrop(backdrop))
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxSize().hazeSource(hazeState),
@@ -318,7 +308,6 @@ fun DesktopSidebar(
             ) {
                 navScreens.forEach { screen ->
                     SidebarNavRow(
-                        backdrop = backdrop,
                         label = stringResource(screen.title),
                         selected = selectedIndex == screen.ordinal,
                         collapsed = collapsed,
@@ -329,7 +318,6 @@ fun DesktopSidebar(
                 // Not tabs: they open over the back stack, so they light up from the destination
                 // the nav controller is on rather than from selectedIndex.
                 SidebarNavRow(
-                    backdrop = backdrop,
                     label = stringResource(Res.string.settings),
                     selected = currentBackStackEntry?.destination?.hierarchy?.any { it.hasRoute(SettingsDestination::class) } == true,
                     collapsed = collapsed,
@@ -341,7 +329,6 @@ fun DesktopSidebar(
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
                 )
                 LibraryHeader(
-                    backdrop = backdrop,
                     selected = selectedIndex == BottomNavScreen.Library.ordinal,
                     collapsed = collapsed,
                     onOpenLibrary = { selectTab(BottomNavScreen.Library) },
@@ -355,14 +342,12 @@ fun DesktopSidebar(
                     // Chips only when there is a choice: an empty row would leave a gap for nothing.
                     if (kinds.isNotEmpty()) {
                         LibraryFilterRow(
-                            backdrop = backdrop,
                             kinds = kinds,
                             filter = filter,
                             onFilterChange = { filter = it },
                         )
                     }
                     LibraryToolsRow(
-                        backdrop = backdrop,
                         query = query,
                         onQueryChange = { query = it },
                         alphabetical = alphabetical,
@@ -408,7 +393,6 @@ private fun LibrarySidebarItem.subtitleText(): String {
 
 @Composable
 private fun SidebarNavRow(
-    backdrop: PlatformBackdrop,
     label: String,
     selected: Boolean,
     collapsed: Boolean,
@@ -420,7 +404,7 @@ private fun SidebarNavRow(
         Modifier
             .padding(horizontal = if (collapsed) 12.dp else 8.dp)
             .then(if (collapsed) Modifier.size(48.dp) else Modifier.fillMaxWidth().height(48.dp))
-            .then(if (selected) Modifier.liquidGlass(backdrop, RoundedCornerShape(24.dp), highlight = SidebarGlassRim) else Modifier)
+            .then(if (selected) Modifier.translucentSurface(RoundedCornerShape(24.dp)) else Modifier)
             .clip(RoundedCornerShape(24.dp))
             .clickable(onClick = onClick)
             .padding(horizontal = if (collapsed) 0.dp else 12.dp),
@@ -436,7 +420,6 @@ private fun SidebarNavRow(
 
 @Composable
 private fun LibraryHeader(
-    backdrop: PlatformBackdrop,
     selected: Boolean,
     collapsed: Boolean,
     onOpenLibrary: () -> Unit,
@@ -445,7 +428,7 @@ private fun LibraryHeader(
 ) {
     if (collapsed) {
         Box(Modifier.fillMaxWidth().height(48.dp), contentAlignment = Alignment.Center) {
-            SidebarGlassButton(backdrop, SimpIcons.LeftPanelOpen, stringResource(Res.string.expand_your_library), onToggle)
+            SidebarRoundButton(SimpIcons.LeftPanelOpen, stringResource(Res.string.expand_your_library), onToggle)
         }
         return
     }
@@ -455,7 +438,7 @@ private fun LibraryHeader(
             .padding(horizontal = 8.dp)
             .fillMaxWidth()
             .height(48.dp)
-            .then(if (selected) Modifier.liquidGlass(backdrop, RoundedCornerShape(24.dp), highlight = SidebarGlassRim) else Modifier)
+            .then(if (selected) Modifier.translucentSurface(RoundedCornerShape(24.dp)) else Modifier)
             .clip(RoundedCornerShape(24.dp))
             .clickable(onClick = onOpenLibrary)
             .padding(start = 12.dp, end = 6.dp),
@@ -476,8 +459,8 @@ private fun LibraryHeader(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f).padding(start = 8.dp),
         )
-        SidebarGlassButton(backdrop, SimpIcons.Add, stringResource(Res.string.create), onCreate)
-        SidebarGlassButton(backdrop, SimpIcons.LeftPanelClose, stringResource(Res.string.collapse_your_library), onToggle)
+        SidebarRoundButton(SimpIcons.Add, stringResource(Res.string.create), onCreate)
+        SidebarRoundButton(SimpIcons.LeftPanelClose, stringResource(Res.string.collapse_your_library), onToggle)
     }
 }
 
@@ -498,30 +481,22 @@ private fun SidebarIconButton(
     }
 }
 
-// The 1dp uniform rim every small glass control in the app carries; the default rim lights one side
-// only and does not show on anything this small.
-private val SidebarGlassRim = Highlight(width = 1.dp)
-
 @Composable
-private fun SidebarGlassButton(
-    backdrop: PlatformBackdrop,
+private fun SidebarRoundButton(
     icon: ImageVector,
     contentDescription: String,
     onClick: () -> Unit,
 ) {
-    LiquidGlassIconButton(
-        backdrop = backdrop,
+    TranslucentIconButton(
         imageVector = icon,
         modifier = Modifier.size(36.dp).semantics { this.contentDescription = contentDescription },
         tint = MaterialTheme.colorScheme.onSurface,
-        highlight = SidebarGlassRim,
         onClick = onClick,
     )
 }
 
 @Composable
 private fun LibrarySearchField(
-    backdrop: PlatformBackdrop,
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -530,7 +505,7 @@ private fun LibrarySearchField(
     Row(
         modifier
             .height(36.dp)
-            .liquidGlass(backdrop, RoundedCornerShape(18.dp), interactive = false, highlight = SidebarGlassRim)
+            .translucentSurface(RoundedCornerShape(18.dp))
             .padding(start = 12.dp, end = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -566,7 +541,6 @@ private fun LibrarySearchField(
 /** The kind chips, scrolling between faded ends. */
 @Composable
 private fun LibraryFilterRow(
-    backdrop: PlatformBackdrop,
     kinds: List<LibrarySidebarKind>,
     filter: LibrarySidebarKind?,
     onFilterChange: (LibrarySidebarKind?) -> Unit,
@@ -588,7 +562,6 @@ private fun LibraryFilterRow(
             Chip(
                 isSelected = filter == kind,
                 text = stringResource(kind.chipLabel()),
-                backdrop = backdrop,
                 compact = true,
                 onClick = { onFilterChange(if (filter == kind) null else kind) },
             )
@@ -599,7 +572,6 @@ private fun LibraryFilterRow(
 /** Search across the row, with the sort button under the collapse button. */
 @Composable
 private fun LibraryToolsRow(
-    backdrop: PlatformBackdrop,
     query: String,
     onQueryChange: (String) -> Unit,
     alphabetical: Boolean,
@@ -613,10 +585,9 @@ private fun LibraryToolsRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        LibrarySearchField(backdrop, query, onQueryChange, Modifier.weight(1f))
+        LibrarySearchField(query, onQueryChange, Modifier.weight(1f))
         Box {
-            SidebarGlassButton(
-                backdrop,
+            SidebarRoundButton(
                 SimpIcons.FormatListBulleted,
                 stringResource(if (alphabetical) Res.string.alphabetical else Res.string.recents),
             ) { sortMenu = true }

@@ -51,25 +51,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.kmpalette.loader.rememberNetworkLoader
 import com.kmpalette.rememberDominantColorState
-import com.kyant.backdrop.highlight.Highlight
 import com.materialkolor.PaletteStyle
 import com.materialkolor.rememberDynamicColorScheme
 import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.expect.saveImageToDevice
 import com.maxrave.simpmusic.expect.shareImage
-import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.expect.ui.rememberSaveImagePermission
 import com.maxrave.simpmusic.expect.ui.toPngByteArray
 import com.maxrave.simpmusic.extension.LeftToRight
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.CenterLoadingBox
-import com.maxrave.simpmusic.ui.component.LiquidGlassIconButton
+import com.maxrave.simpmusic.ui.component.TranslucentIconButton
 import com.maxrave.simpmusic.ui.component.capture.CaptureController
 import com.maxrave.simpmusic.ui.component.capture.capturable
 import com.maxrave.simpmusic.ui.component.capture.rememberCaptureController
-import com.maxrave.simpmusic.ui.component.liquidGlass
+import com.maxrave.simpmusic.ui.component.translucentSurface
 import com.maxrave.simpmusic.ui.icon.Close
 import com.maxrave.simpmusic.ui.icon.Share
 import com.maxrave.simpmusic.ui.icon.SimpIcons
@@ -256,13 +252,6 @@ private fun WrappedReel(
     val captureController = rememberCaptureController()
     val share = rememberWrappedShare(wrapped, captureController) { busy = it }
 
-    // What the close button and the share pill refract. The SOURCE is the card layer below; the
-    // two glass surfaces are its SIBLINGS, never its children — nesting a glass surface inside the
-    // layer it samples is the render-feedback loop that kills the RuntimeShader. The ground colour
-    // is handed to the backdrop itself rather than painted into the source, so the chrome still has
-    // something to refract over the header strip, which no card reaches.
-    val backdrop = rememberBackdrop(MaterialTheme.colorScheme.background)
-
     /**
      * The one way the reel moves. Past the last card is not a page — it is the end of the story,
      * and the reel closes rather than sitting on a card with nothing after it.
@@ -322,9 +311,9 @@ private fun WrappedReel(
                     )
                 },
     ) {
-        // Everything the glass samples. matchParentSize, so it takes part in no measurement and the
-        // chrome above it is laid out against the reel's own bounds.
-        Box(modifier = Modifier.matchParentSize().layerBackdrop(backdrop)) {
+        // The cards. matchParentSize, so it takes part in no measurement and the chrome above it is
+        // laid out against the reel's own bounds.
+        Box(modifier = Modifier.matchParentSize()) {
             // Only the header is subtracted here. The footer band is subtracted inside each page
             // instead, because the share card is the one card that needs it back — and taking it
             // off the pager's own box would resize every page the moment the pager decided card 10
@@ -384,7 +373,6 @@ private fun WrappedReel(
             cardCount = cards.size,
             currentCard = page,
             progress = { progress },
-            backdrop = backdrop,
             onClose = onClose,
             modifier = Modifier.align(Alignment.TopCenter),
         )
@@ -395,7 +383,6 @@ private fun WrappedReel(
             // there rather than offering a third button and a hint to tap past the thing the user
             // was just invited to act on.
             showActions = !isShareCard,
-            backdrop = backdrop,
             onShare = share.onShare,
             modifier = Modifier.align(Alignment.BottomCenter),
         )
@@ -460,7 +447,6 @@ private fun WrappedHeader(
     cardCount: Int,
     currentCard: Int,
     progress: () -> Float,
-    backdrop: PlatformBackdrop,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -517,13 +503,9 @@ private fun WrappedHeader(
                 text = stringResource(Res.string.wrapped_year, year.toString()),
                 modifier = Modifier.weight(1f),
             )
-            LiquidGlassIconButton(
-                backdrop = backdrop,
+            TranslucentIconButton(
                 imageVector = SimpIcons.Close,
                 tint = MaterialTheme.colorScheme.onSurface,
-                // Round buttons need the rim named: Highlight's default is a DIRECTIONAL sweep that
-                // an elongated pill catches along its long edge and a circle barely catches at all.
-                highlight = Highlight(width = WrappedTokens.GlassRimWidth),
                 modifier = Modifier.size(CLOSE_BUTTON_SIZE),
                 onClick = onClose,
             )
@@ -536,7 +518,6 @@ private fun WrappedHeader(
 private fun WrappedFooter(
     isFirstCard: Boolean,
     showActions: Boolean,
-    backdrop: PlatformBackdrop,
     onShare: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -562,15 +543,13 @@ private fun WrappedFooter(
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.weight(1f),
         )
-        // The same glass pill the Analytics day-range trigger is: liquidGlass for the surface, then
-        // clip + clickable so the ripple and the hit target follow the same shape. Highlight is left
-        // at its directional default here — an elongated pill is exactly the geometry that catches
-        // the sweep along its long edge, which is what makes it read as glass rather than as a rim.
+        // The same translucent pill the Analytics day-range trigger is: translucentSurface for the
+        // surface, then clip + clickable so the ripple and the hit target follow the same shape.
         Row(
             modifier =
                 Modifier
                     .height(SHARE_PILL_HEIGHT)
-                    .liquidGlass(backdrop, RoundedCornerShape(SHARE_PILL_HEIGHT / 2))
+                    .translucentSurface(RoundedCornerShape(SHARE_PILL_HEIGHT / 2))
                     .clip(RoundedCornerShape(SHARE_PILL_HEIGHT / 2))
                     .clickable(onClick = onShare)
                     .padding(horizontal = 18.dp),
@@ -675,7 +654,7 @@ private val SCRIM_HEIGHT = 118.dp
  *
  * 12 + 3 + 9 + 48 is exactly [WrappedTokens.HeaderHeight], which the card slot is also offset by —
  * a taller close button here would be clipped rather than pushing the cards down. 48dp is the size
- * the app's other glass buttons are, and is not free to change: the icon button inside expands to
+ * the app's other floating round buttons are, and is not free to change: the icon button inside expands to
  * the platform minimum touch target, so a smaller container crops its own ripple.
  */
 private val SEGMENT_TOP_INSET = 12.dp

@@ -103,8 +103,6 @@ import com.maxrave.domain.utils.toSongEntity
 import com.maxrave.domain.utils.toTrack
 import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.expect.ui.PlatformBackHandler
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.extension.getScreenSizeInfo
 import com.maxrave.simpmusic.extension.ultraThinBarStyle
 import com.maxrave.simpmusic.getPlatform
@@ -137,7 +135,6 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.search.SearchDestination
-import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.SearchScreenUIState
 import com.maxrave.simpmusic.viewModel.SearchType
@@ -215,9 +212,6 @@ fun SearchScreen(
     val moodGridColumns = if (isMobilePortrait) 2 else 4
 
     val hazeState = rememberHazeState()
-    // The floating chip row refracts the page scrolling under it, so the page is the glass source and
-    // the row its sibling (nesting the row inside the source is the RuntimeShader feedback loop).
-    val chipBackdrop = rememberBackdrop(MaterialTheme.colorScheme.background)
     val suggestionsState = rememberLazyListState()
     val historyState = rememberLazyListState()
     val moodGridState = rememberLazyGridState()
@@ -394,7 +388,7 @@ fun SearchScreen(
         // equal to the bar's measured height to keep its first item clear of it.
         Crossfade(
             targetState = searchUIType,
-            modifier = Modifier.fillMaxSize().then(if (LocalLiquidGlassEnabled.current) Modifier.layerBackdrop(chipBackdrop) else Modifier).hazeSource(hazeState),
+            modifier = Modifier.fillMaxSize().hazeSource(hazeState),
         ) {
             when (it) {
                 SearchUIType.SEARCH_SUGGESTIONS -> {
@@ -1152,7 +1146,6 @@ fun SearchScreen(
                                 isAnimated = uiState is SearchScreenUIState.Loading,
                                 isSelected = isSelected,
                                 text = stringResource(id.toStringRes()),
-                                backdrop = chipBackdrop,
                             ) {
                                 searchViewModel.setSearchType(id)
                             }

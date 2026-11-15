@@ -58,8 +58,6 @@ import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.utils.LocalResource
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.extension.copy
 import com.maxrave.simpmusic.extension.isScrollingUp
 import com.maxrave.simpmusic.extension.ultraThinBarStyle
@@ -83,7 +81,6 @@ import com.maxrave.simpmusic.ui.icon.PeopleAlt
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.ListenTogetherDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.SettingsDestination
-import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.LibraryViewModel
 import com.maxrave.simpmusic.viewModel.SharedViewModel
@@ -214,11 +211,8 @@ fun LibraryScreen(
         }
     }
 
-    // The floating chip row refracts the page scrolling under it, so the page is the glass source and
-    // the row its sibling (nesting the row inside the source is the RuntimeShader feedback loop).
-    val chipBackdrop = rememberBackdrop(MaterialTheme.colorScheme.background)
     Crossfade(
-        modifier = Modifier.then(if (LocalLiquidGlassEnabled.current) Modifier.layerBackdrop(chipBackdrop) else Modifier).hazeSource(hazeState),
+        modifier = Modifier.hazeSource(hazeState),
         targetState = currentFilter,
     ) { filter ->
         when (filter) {
@@ -475,7 +469,6 @@ fun LibraryScreen(
                             LibraryChipType.CHART -> stringResource(Res.string.simpmusic_charts)
                             LibraryChipType.WRAPPED -> stringResource(Res.string.wrapped)
                         },
-                    backdrop = chipBackdrop,
                 ) {
                     viewModel.setCurrentScreen(type)
                 }

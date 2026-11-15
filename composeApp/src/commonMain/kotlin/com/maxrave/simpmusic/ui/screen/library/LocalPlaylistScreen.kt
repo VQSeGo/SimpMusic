@@ -107,7 +107,6 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.toBitmap
-import com.kyant.backdrop.highlight.Highlight
 import com.kmpalette.rememberPaletteState
 import com.maxrave.common.LOCAL_PLAYLIST_ID
 import com.maxrave.domain.data.entities.DownloadState
@@ -118,8 +117,6 @@ import com.maxrave.domain.utils.FilterState
 import com.maxrave.domain.utils.toTrack
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.expect.ui.toImageBitmap
 import com.maxrave.simpmusic.extension.artworkScrimBrush
 import com.maxrave.simpmusic.extension.displayNameRes
@@ -134,7 +131,7 @@ import com.maxrave.simpmusic.ui.component.CenterLoadingBox
 import com.maxrave.simpmusic.ui.component.rememberSurfaceDarkColors
 import com.maxrave.simpmusic.ui.component.DraggableItem
 import com.maxrave.simpmusic.ui.component.EndOfPage
-import com.maxrave.simpmusic.ui.component.LiquidGlassIconButton
+import com.maxrave.simpmusic.ui.component.TranslucentIconButton
 import com.maxrave.simpmusic.ui.component.LoadingDialog
 import com.maxrave.simpmusic.ui.component.LocalPlaylistBottomSheet
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
@@ -146,7 +143,7 @@ import com.maxrave.simpmusic.ui.component.selection.SongSelectionTopAppBar
 import com.maxrave.simpmusic.ui.component.selection.rememberSongSelectionState
 import com.maxrave.simpmusic.ui.component.SortPlaylistBottomSheet
 import com.maxrave.simpmusic.ui.component.SuggestItems
-import com.maxrave.simpmusic.ui.component.liquidGlass
+import com.maxrave.simpmusic.ui.component.translucentSurface
 import com.maxrave.simpmusic.ui.component.painterPlaylistThumbnail
 import com.maxrave.simpmusic.ui.component.playlistTitleGradient
 import com.maxrave.simpmusic.ui.component.rememberDragDropState
@@ -519,18 +516,15 @@ fun LocalPlaylistScreen(
                         horizontalAlignment = Alignment.Start,
                     ) {
                         if (isPortrait) {
-                            // Apple Music-style: edge-to-edge artwork + liquid glass buttons.
-                            // Glass buttons MUST be siblings of the backdrop source (not children)
-                            // to avoid render feedback loop / RuntimeShader crash.
-                            val artworkBackdrop = rememberBackdrop(Color.Black)
+                            // Apple Music-style: edge-to-edge artwork + translucent buttons.
                             Box(
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
                                         .height((screenInfo.hDP / 2).dp),
                             ) {
-                                // Inner Box — backdrop SOURCE (artwork + overlays only, NO glass)
-                                Box(modifier = Modifier.fillMaxSize().layerBackdrop(artworkBackdrop)) {
+                                // Inner Box — artwork + overlays
+                                Box(modifier = Modifier.fillMaxSize()) {
                                     AsyncImage(
                                         model =
                                             ImageRequest
@@ -613,7 +607,7 @@ fun LocalPlaylistScreen(
                                         )
                                     }
                                 }
-                                // Back button + right pill (More only) overlays — liquid glass, siblings of source
+                                // Back button + right pill (More only) overlays
                                 Row(
                                     modifier =
                                         Modifier
@@ -623,8 +617,7 @@ fun LocalPlaylistScreen(
                                             .windowInsetsPadding(WindowInsets.statusBars),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    LiquidGlassIconButton(
-                                        backdrop = artworkBackdrop,
+                                    TranslucentIconButton(
                                         imageVector = SimpIcons.ArrowBackIosNew,
                                         modifier =
                                             Modifier
@@ -637,7 +630,7 @@ fun LocalPlaylistScreen(
                                         modifier =
                                             Modifier
                                                 .height(48.dp)
-                                                .liquidGlass(artworkBackdrop, RoundedCornerShape(24.dp)),
+                                                .translucentSurface(RoundedCornerShape(24.dp)),
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         // AI Suggest — only when synced with YouTube
@@ -707,22 +700,16 @@ fun LocalPlaylistScreen(
                             // Apple Music desktop header: back and the overlay actions on their own
                             // top row, then a square artwork with the text column and the action
                             // cluster laid out beside it rather than under it.
-                            // Built exactly like the portrait branch, which renders correctly on both
-                            // platforms: the backdrop SOURCE is the content column — artwork included,
-                            // so the recorded layer holds something to refract — and the glass buttons
-                            // are SIBLINGS placed with align(), never children of the source (that
-                            // nesting is the render-feedback loop that kills the RuntimeShader).
-                            val headerBackdrop = rememberBackdrop(mutedPaletteBg)
+                            // The buttons are siblings of the content column, placed over its top strip with align().
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 Column(
                                     modifier =
                                         Modifier
                                             .fillMaxWidth()
-                                            .layerBackdrop(headerBackdrop)
                                             .windowInsetsPadding(WindowInsets.statusBars)
                                             .padding(horizontal = 32.dp, vertical = 16.dp),
                                 ) {
-                                    // Reserves the strip the sibling glass buttons are drawn over.
+                                    // Reserves the strip the sibling buttons are drawn over.
                                     Spacer(modifier = Modifier.height(48.dp))
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Row(
@@ -941,17 +928,11 @@ fun LocalPlaylistScreen(
                                         }
                                     }
                                 }
-                                // Glass overlays — siblings of the source, over the strip the column reserved.
+                                // Overlays — siblings of the column, over the strip it reserved.
                                 Box(Modifier.padding(start = 12.dp)) {
-                                    LiquidGlassIconButton(
-                                        backdrop = headerBackdrop,
+                                    TranslucentIconButton(
                                         imageVector = SimpIcons.ArrowBackIosNew,
                                         shape = RoundedCornerShape(24.dp),
-                                        // Same directional style as the like/⋯ pill, a touch thicker. The default
-                                        // width of 0.5.dp becomes a ~2px stroke (HighlightModifier: ceil(width.toPx()) * 2),
-                                        // which reads along the pill's long edge but vanishes around a 48dp circle. 1.dp
-                                        // is the smallest step up that stays visible without looking like a border.
-                                        highlight = Highlight(width = 1.dp),
                                         modifier =
                                             Modifier
                                                 .align(Alignment.TopStart)
@@ -969,7 +950,7 @@ fun LocalPlaylistScreen(
                                             .windowInsetsPadding(WindowInsets.statusBars)
                                             .padding(end = 32.dp, top = 16.dp)
                                             .height(48.dp)
-                                            .liquidGlass(headerBackdrop, RoundedCornerShape(24.dp)),
+                                            .translucentSurface(RoundedCornerShape(24.dp)),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     // AI Suggest — only when synced with YouTube

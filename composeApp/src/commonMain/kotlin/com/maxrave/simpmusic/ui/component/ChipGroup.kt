@@ -1,7 +1,6 @@
 package com.maxrave.simpmusic.ui.component
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -32,39 +31,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kyant.backdrop.highlight.Highlight
 import com.materialkolor.hct.Hct
 import com.materialkolor.ktx.toColor
 import com.materialkolor.ktx.toHct
-import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
-import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 
 @Composable
 fun Chip(
     isAnimated: Boolean = false,
     isSelected: Boolean = false,
     text: String,
-    // A row floating over scrolling content (Home, Library, Search) passes the backdrop its content
-    // records into, and its unselected chips turn to liquid glass while the setting is on. The selected
-    // chip stays a solid `primary` fill, as in Spotify's row. Chips on a flat card or sheet pass
-    // nothing: glass over a flat surface reads as a mere border.
-    backdrop: PlatformBackdrop? = null,
     // A smaller chip for dense panels such as the Desktop sidebar: 28dp tall with a 12sp label.
     compact: Boolean = false,
     onClick: () -> Unit,
 ) {
-    val glassOn = LocalLiquidGlassEnabled.current
-    val glassBackdrop = backdrop?.takeIf { glassOn && !isSelected }
     ChipFrame(isAnimated = isAnimated && isSelected) {
         ChipBody(
             text = text,
             selected = isSelected,
-            // The 1dp uniform rim every small glass control here carries: the default rim lights one
-            // side only, which on a chip this small does not show at all.
-            modifier = if (glassBackdrop != null) Modifier.liquidGlass(glassBackdrop, highlight = Highlight(width = 1.dp)) else Modifier,
             // outlineVariant, per M3's Aug 2024 chip update: a softer stroke than outline.
-            // Glass draws its own rim, so the outline goes.
-            borderColor = if (glassBackdrop != null) Color.Transparent else MaterialTheme.colorScheme.outlineVariant,
+            borderColor = MaterialTheme.colorScheme.outlineVariant,
             onClick = onClick,
             compact = compact,
         )
@@ -88,7 +73,6 @@ fun ExpandableChip(
     onExpandedChange: (Boolean) -> Unit,
     onSelect: (Int) -> Unit,
     isAnimated: Boolean = false,
-    backdrop: PlatformBackdrop? = null,
 ) {
     val picked = selectedIndex?.let(options::getOrNull)
     // The folded label is still on screen while it shrinks away after the pick is cleared (All), so it
@@ -103,38 +87,21 @@ fun ExpandableChip(
     val folded = !expanded && picked != null
     val active = expanded || picked != null
     val colorScheme = MaterialTheme.colorScheme
-    val glassOn = LocalLiquidGlassEnabled.current
-    val glassBackdrop = backdrop?.takeIf { glassOn }
     // A darker shade of primary: the same hue and chroma, 20 tones lower. Mixing primary with black
     // instead only greys it out, which reads as faded rather than darker.
     val primaryHct = colorScheme.primary.toHct()
     val foldedFill = Hct.from(primaryHct.hue, primaryHct.chroma, (primaryHct.tone - 20).coerceAtLeast(0.0)).toColor()
     val fill by animateColorAsState(if (folded) foldedFill else Color.Transparent)
-    // Glass draws its own rim; without it the pill is outlined like an unselected chip until it folds.
-    val outline by animateColorAsState(
-        if (glassBackdrop == null && !folded) colorScheme.outlineVariant else Color.Transparent,
-    )
-    // Folded, the pill is a selected chip, and a selected chip has no rim (the All chip beside it has
-    // none). The rim is drawn over the content, so the solid fill cannot hide it; it fades out instead.
-    val rim by animateFloatAsState(if (folded) 0f else 1f)
+    // The pill is outlined like an unselected chip until it folds: a selected chip has no rim.
+    val outline by animateColorAsState(if (!folded) colorScheme.outlineVariant else Color.Transparent)
     val headFill by animateColorAsState(if (active) colorScheme.primary else Color.Transparent)
     val headLabel by animateColorAsState(if (active) colorScheme.onPrimary else colorScheme.onSurfaceVariant)
     ChipFrame(isAnimated = isAnimated && picked != null) {
         Row(
             modifier =
                 Modifier
-                    .then(
-                        if (glassBackdrop != null) {
-                            // The press swell is sized for a chip, so only the closed chip keeps it.
-                            Modifier.liquidGlass(
-                                glassBackdrop,
-                                interactive = !active,
-                                highlight = Highlight(width = 1.dp, alpha = rim),
-                            )
-                        } else {
-                            Modifier.clip(CircleShape)
-                        },
-                    ).background(fill, CircleShape)
+                    .clip(CircleShape)
+                    .background(fill, CircleShape)
                     .border(1.dp, outline, CircleShape),
             verticalAlignment = Alignment.CenterVertically,
         ) {

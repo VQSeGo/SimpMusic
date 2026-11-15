@@ -78,14 +78,11 @@ import com.maxrave.domain.data.model.listentogether.RoomJoinRequest
 import com.maxrave.domain.data.model.listentogether.RoomMember
 import com.maxrave.domain.data.model.listentogether.RoomSuggestion
 import com.maxrave.simpmusic.expect.shareUrl
-import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.extension.angledGradientBackground
 import com.maxrave.simpmusic.extension.artworkScrimBrush
 import com.maxrave.simpmusic.extension.rgbFactor
 import com.maxrave.simpmusic.ui.component.EndOfPage
-import com.maxrave.simpmusic.ui.component.LiquidGlassIconButton
+import com.maxrave.simpmusic.ui.component.TranslucentIconButton
 import com.maxrave.simpmusic.ui.icon.ArrowBackIosNew
 import com.maxrave.simpmusic.ui.icon.ArrowForwardIos
 import com.maxrave.simpmusic.ui.icon.Check
@@ -140,7 +137,7 @@ import simpmusic.composeapp.generated.resources.settings
  * Listen Together.
  *
  * Colour, type and surface all come from the app's own system — `MaterialTheme.colorScheme`,
- * `typo()`, the colour scheme, and the liquid-glass treatment the Analytics screen uses — rather than a
+ * `typo()`, the colour scheme, and the translucent floating buttons the Analytics screen uses — rather than a
  * palette of hard-coded hexes. The first version of this screen invented its own #0F1319 dark and
  * its own accent, which is precisely why it read as pasted in from somewhere else.
  */
@@ -186,11 +183,6 @@ fun ListenTogetherScreen(
     val clipboard = LocalClipboardManager.current
     var managing by remember { mutableStateOf<RoomMember?>(null) }
 
-    // The back button refracts whatever the page has drawn, so the CONTENT is the backdrop source
-    // and the button is its SIBLING — the same arrangement Album/Playlist/Analytics use. Nesting the
-    // button inside the source is the render-feedback loop that kills the RuntimeShader.
-    val backdrop = rememberBackdrop(MaterialTheme.colorScheme.background)
-
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
     ) {
@@ -209,9 +201,7 @@ fun ListenTogetherScreen(
         // Home's ambient top glow, tinted from the THEME rather than artwork — this page has none.
         // Same recipe as HomeScreen's first item: an angled two-stop gradient with a scrim easing
         // its tail into the background so there is no seam. Static, since the theme colour does not
-        // move. Drawn first, so both layout branches scroll over it; deliberately NOT inside the
-        // glass backdrop source — the back button is a sibling of that source and nesting order is
-        // what keeps the RuntimeShader from feeding back into itself.
+        // move. Drawn first, so both layout branches scroll over it.
         val bg = MaterialTheme.colorScheme.background
         val glow =
             if (bg.luminance() > 0.5f) {
@@ -219,13 +209,9 @@ fun ListenTogetherScreen(
             } else {
                 MaterialTheme.colorScheme.primary.rgbFactor(0.3f)
             }
-        // The backdrop SOURCE is this ground box — page colour plus the glow — not the content
-        // columns: glass shows whatever its source recorded, and with the source on the (mostly
-        // transparent) content the back button rendered as a solid black coin over a tinted page.
-        // Same arrangement as AlbumScreen's landscape header: a matchParentSize sibling that takes
-        // part in no measurement, with the button kept OUTSIDE it — nesting the button inside the
-        // source is the render-feedback loop that kills the RuntimeShader.
-        Box(Modifier.matchParentSize().layerBackdrop(backdrop)) {
+        // The ground — page colour plus the glow: a matchParentSize sibling that takes part in no
+        // measurement.
+        Box(Modifier.matchParentSize()) {
             Box(Modifier.matchParentSize().background(bg))
             Box(
                 Modifier
@@ -300,7 +286,7 @@ fun ListenTogetherScreen(
             }
         }
 
-        BackButton(backdrop) { navController.navigateUp() }
+        BackButton { navController.navigateUp() }
     }
 
     managing?.let { member ->
@@ -444,19 +430,15 @@ private val BACK_BUTTON_STRIP = 56.dp
 
 @Composable
 private fun BoxScope.BackButton(
-    backdrop: PlatformBackdrop,
     onBack: () -> Unit,
 ) {
-    // Glass, like every other back button in the app. It only works as an OVERLAY: in the scrolling
-    // column it used to sit in, what is behind it is the flat page background, and glass with
-    // nothing to refract renders as a grey coin. Floating it over the content gives it the page to
-    // refract — and keeps it reachable once the page has scrolled, which the in-flow one did not.
-    LiquidGlassIconButton(
-        backdrop = backdrop,
+    // Translucent, like every other back button in the app, and floating over the content so it
+    // stays reachable once the page has scrolled, which the in-flow one did not.
+    TranslucentIconButton(
         imageVector = SimpIcons.ArrowBackIosNew,
         // NOT the default Color.White: every other caller sits on a ForceDark screen, but this page
-        // follows the theme — at light theme a white glyph sits on light glass (or on the light
-        // fallback pill) and disappears. onSurface flips with the scheme.
+        // follows the theme — at light theme a white glyph sits on the light pill and disappears.
+        // onSurface flips with the scheme.
         tint = MaterialTheme.colorScheme.onSurface,
         shape = RoundedCornerShape(24.dp),
         modifier =
