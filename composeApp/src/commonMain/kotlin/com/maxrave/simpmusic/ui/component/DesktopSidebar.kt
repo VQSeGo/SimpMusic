@@ -78,6 +78,7 @@ import com.maxrave.simpmusic.extension.mouseDragScroll
 import com.maxrave.simpmusic.ui.icon.Add
 import com.maxrave.simpmusic.ui.icon.Close
 import com.maxrave.simpmusic.ui.icon.FormatListBulleted
+import com.maxrave.simpmusic.ui.icon.History
 import com.maxrave.simpmusic.ui.icon.LeftPanelClose
 import com.maxrave.simpmusic.ui.icon.LeftPanelOpen
 import com.maxrave.simpmusic.ui.icon.LibraryMusic
@@ -119,6 +120,7 @@ import simpmusic.composeapp.generated.resources.downloaded
 import simpmusic.composeapp.generated.resources.expand_your_library
 import simpmusic.composeapp.generated.resources.liked_music
 import simpmusic.composeapp.generated.resources.liked_songs_count
+import simpmusic.composeapp.generated.resources.cached
 import simpmusic.composeapp.generated.resources.most_played
 import simpmusic.composeapp.generated.resources.playlist
 import simpmusic.composeapp.generated.resources.playlists
@@ -165,12 +167,17 @@ fun DesktopSidebar(
             selectedIndex = BottomNavScreen.Home.ordinal
         }
     }
+    // A row whose screen is already open (or further down the stack) goes back to it instead of stacking
+    // another copy: five clicks on Settings used to mean five entry animations and five Esc presses.
+    val openOnce: (Any) -> Unit = { destination ->
+        if (!navController.popBackStack(destination, inclusive = false)) navController.navigate(destination)
+    }
     val selectTab: (BottomNavScreen) -> Unit = { screen ->
         if (selectedIndex == screen.ordinal) {
             if (currentBackStackEntry?.destination?.hierarchy?.any { it.hasRoute(screen.destination::class) } == true) {
                 reloadDestinationIfNeeded(screen.destination::class)
             } else {
-                navController.navigate(screen.destination)
+                openOnce(screen.destination)
             }
         } else {
             selectedIndex = screen.ordinal
@@ -184,10 +191,20 @@ fun DesktopSidebar(
         }
     }
 
+    val onSettings = currentBackStackEntry?.destination?.hierarchy?.any { it.hasRoute(SettingsDestination::class) } == true
+    // The highlighted tab follows the back stack, so Esc back to Home lights Home again.
+    LaunchedEffect(currentBackStackEntry) {
+        val hierarchy = currentBackStackEntry?.destination?.hierarchy ?: return@LaunchedEffect
+        (navScreens + BottomNavScreen.Library)
+            .firstOrNull { screen -> hierarchy.any { it.hasRoute(screen.destination::class) } }
+            ?.let { selectedIndex = it.ordinal }
+    }
+
     // The library sources are one-shot reads, not observed queries, so the list is read again whenever
     // the user moves between screens, which is where a like, follow or new playlist happens.
     LaunchedEffect(currentBackStackEntry?.id) { viewModel.refresh() }
     val collapsed by viewModel.collapsed.collectAsStateWithLifecycle()
+    val cachedPreview by viewModel.cachedPreview.collectAsStateWithLifecycle()
     val overview by viewModel.overview.collectAsStateWithLifecycle()
     val libraryItems by viewModel.items.collectAsStateWithLifecycle()
     val playingQueueId by viewModel.playingQueueId.collectAsStateWithLifecycle()
@@ -218,6 +235,10 @@ fun DesktopSidebar(
             },
             PinnedCollection(Res.string.most_played, LibraryDynamicPlaylistType.MostPlayed, overview?.mostPlayed) {
                 Icon(SimpIcons.TrendingUp, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            },
+            // The listening cache (~/.simpmusic/cache): tracks played to the end and not downloaded.
+            PinnedCollection(Res.string.cached, LibraryDynamicPlaylistType.Cached, cachedPreview) {
+                Icon(SimpIcons.History, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             },
         ).filter { filter == null || filter == LibrarySidebarKind.PLAYLIST }
     val pinnedTitles = pinned.map { stringResource(it.title) }
@@ -259,7 +280,7 @@ fun DesktopSidebar(
                             pinned = true,
                             playing = false,
                             collapsed = collapsed,
-                            onClick = { navController.navigate(LibraryDynamicPlaylistDestination(type = collection.type.toStringParams())) },
+                            onClick = { openOnce(LibraryDynamicPlaylistDestination(type = collection.type.toStringParams())) },
                         ) {
                             Box(
                                 Modifier
@@ -279,7 +300,7 @@ fun DesktopSidebar(
                     pinned = false,
                     playing = item.queueId != null && item.queueId.removePrefix("VL") == playingQueueId,
                     collapsed = collapsed,
-                    onClick = { navController.navigate(item.destination) },
+                    onClick = { openOnce(item.destination) },
                 ) {
                     SidebarCover(item)
                 }
@@ -309,7 +330,8 @@ fun DesktopSidebar(
                 navScreens.forEach { screen ->
                     SidebarNavRow(
                         label = stringResource(screen.title),
-                        selected = selectedIndex == screen.ordinal,
+                        // Settings opens over a tab; only one row is lit at a time.
+                        selected = selectedIndex == screen.ordinal && !onSettings,
                         collapsed = collapsed,
                         onClick = { selectTab(screen) },
                         icon = screen.icon,
@@ -319,9 +341,9 @@ fun DesktopSidebar(
                 // the nav controller is on rather than from selectedIndex.
                 SidebarNavRow(
                     label = stringResource(Res.string.settings),
-                    selected = currentBackStackEntry?.destination?.hierarchy?.any { it.hasRoute(SettingsDestination::class) } == true,
+                    selected = onSettings,
                     collapsed = collapsed,
-                    onClick = { navController.navigate(SettingsDestination) },
+                    onClick = { openOnce(SettingsDestination) },
                     icon = { Icon(SimpIcons.Settings, contentDescription = null) },
                 )
                 HorizontalDivider(
@@ -329,7 +351,7 @@ fun DesktopSidebar(
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
                 )
                 LibraryHeader(
-                    selected = selectedIndex == BottomNavScreen.Library.ordinal,
+                    selected = selectedIndex == BottomNavScreen.Library.ordinal && !onSettings,
                     collapsed = collapsed,
                     onOpenLibrary = { selectTab(BottomNavScreen.Library) },
                     onToggle = {
