@@ -250,10 +250,6 @@ afterEvaluate {
         // Marks a dev run, so the app reads remote-config-dev.json instead of the one real users get.
         systemProperty("simpmusic.dev", "true")
 
-        // Skiko's frame counter: prints "[timestamp] FPS avg (min-max)" to the console every 2 s.
-        // Temporary, to measure what liquid glass costs per frame on Desktop.
-        systemProperty("skiko.fps.enabled", "true")
-
         // Pass the bundled natives path to the runtime for `./gradlew desktopApp:run`.
         val osArch = System.getProperty("os.arch").lowercase()
         val osSubDir =
