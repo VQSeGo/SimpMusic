@@ -403,11 +403,6 @@
     <string name="lyrics_offset_message">Förskjut varje textrad med detta antal millisekunder. Använd ett positivt tal när ljudet hörs senare än texten visas, vilket är vanligt med Bluetooth-hörlurar, och ett negativt tal för att visa texten tidigare.</string>
     <string name="lyrics_offset_value">%1$s ms</string>
     <string name="lyrics_offset_invalid">Ange ett helt antal millisekunder</string>
-    <string name="lyrics_romanization">Translitterering av låttexter</string>
-    <string name="lyrics_romanization_description">Visa låttexter med latinska bokstäver för de språk du väljer</string>
-    <string name="romanization_japanese_dict_downloading">Hämtar den japanska ordlistan…</string>
-    <string name="romanization_japanese_dict_ready">Den japanska ordlistan har hämtats</string>
-    <string name="romanization_japanese_dict_failed">Det gick inte att hämta den japanska ordlistan. Kontrollera anslutningen och välj japanska igen för att försöka på nytt.</string>
     <string name="theme_color">Temafärg</string>
     <string name="theme_color_default">Standard</string>
     <string name="theme_color_wallpaper">Bakgrundsbild</string>

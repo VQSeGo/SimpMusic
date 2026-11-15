@@ -378,11 +378,6 @@
     <string name="lyrics_offset_message">Shift every lyric line by this many milliseconds. Use a positive number when you hear the audio later than you see it, which is what Bluetooth headphones do, and a negative number to make the lyrics appear earlier.</string>
     <string name="lyrics_offset_value">%1$s ms</string>
     <string name="lyrics_offset_invalid">Enter a whole number of milliseconds</string>
-    <string name="lyrics_romanization">Tekst pjesme romanization</string>
-    <string name="lyrics_romanization_description">Prikaži lyrics in Latin script for the languages you pick</string>
-    <string name="romanization_japanese_dict_downloading">Preuzimanje the Japanese dictionary…</string>
-    <string name="romanization_japanese_dict_ready">Japanese dictionary downloaded</string>
-    <string name="romanization_japanese_dict_failed">Couldn't download the Japanese dictionary. Check your connection and select Japanese again to retry.</string>
     <string name="theme_color">Theme color</string>
     <string name="theme_color_default">Zadano</string>
     <string name="theme_color_wallpaper">Wallpaper</string>

@@ -21,7 +21,7 @@ internal fun rememberLyricLayoutDirection(text: String): LayoutDirection =
 
 /**
  * A lyric and its subtitles share an edge, while each text keeps its own reading direction.
- * [alignmentText] is the original lyric when rendering a translation or romanization.
+ * [alignmentText] is the original lyric when rendering a translation.
  */
 @Composable
 internal fun LyricText(

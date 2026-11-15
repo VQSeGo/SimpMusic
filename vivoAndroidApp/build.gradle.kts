@@ -134,10 +134,6 @@ android {
             )
         resources {
             excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
-            // Same reasons as androidApp: kuromoji's duplicate META-INF docs, and its dictionary is
-            // downloaded on demand instead of shipped.
-            excludes += "META-INF/*.md"
-            excludes += "com/atilika/kuromoji/ipadic/*.bin"
         }
     }
 }

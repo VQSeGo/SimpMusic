@@ -408,11 +408,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nBuild with ❤️ and 
     <string name="lyrics_offset_message">הזז כל שורה במילים במספר הזה של מילישניות. השתמש במספר חיובי כשאתה שומע את האודיו מאוחר יותר ממה שאתה רואה אותו, שזה מה שאוזניות Bluetooth עושות, ובמספר שלילי כדי שהמילים יופיעו מוקדם יותר.</string>
     <string name="lyrics_offset_value">%1$s מילישניות</string>
     <string name="lyrics_offset_invalid">הזן מספר שלם של מילישניות</string>
-    <string name="lyrics_romanization">רומניזציה של מילים</string>
-    <string name="lyrics_romanization_description">הצג מילים בכתב לטיני עבור השפות שתבחר</string>
-    <string name="romanization_japanese_dict_downloading">מוריד את המילון היפני…</string>
-    <string name="romanization_japanese_dict_ready">המילון היפני הורד בהצלחה</string>
-    <string name="romanization_japanese_dict_failed">לא ניתן היה להוריד את המילון היפני. בדוק את החיבור ובחר יפנית שוב כדי לנסות.</string>
     <string name="theme_color">צבע ערכת נושא</string>
     <string name="theme_color_default">ברירת מחדל</string>
     <string name="theme_color_wallpaper">טפט</string>

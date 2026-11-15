@@ -11,7 +11,6 @@ import com.maxrave.common.SELECTED_LANGUAGE
 import com.maxrave.common.VIDEO_QUALITY
 import com.maxrave.domain.data.entities.DownloadState
 import com.maxrave.domain.data.entities.GoogleAccountEntity
-import com.maxrave.domain.data.model.lyrics.RomanizationDictionaryState
 import com.maxrave.domain.data.player.ReverbPreset
 import com.maxrave.domain.extension.toNetScapeString
 import com.maxrave.domain.manager.DataStoreManager
@@ -22,7 +21,6 @@ import com.maxrave.domain.repository.AccountRepository
 import com.maxrave.domain.repository.CacheRepository
 import com.maxrave.domain.repository.DiscordRepository
 import com.maxrave.domain.repository.CommonRepository
-import com.maxrave.domain.repository.LyricsRomanizerRepository
 import com.maxrave.domain.repository.SongRepository
 import com.maxrave.domain.utils.LocalResource
 import com.maxrave.logger.LogLevel
@@ -63,8 +61,6 @@ import simpmusic.composeapp.generated.resources.error
 import simpmusic.composeapp.generated.resources.log_out_confirm_message
 import simpmusic.composeapp.generated.resources.restore_failed
 import simpmusic.composeapp.generated.resources.restore_in_progress
-import simpmusic.composeapp.generated.resources.romanization_japanese_dict_failed
-import simpmusic.composeapp.generated.resources.romanization_japanese_dict_ready
 import simpmusic.composeapp.generated.resources.smart_downloads_downloading
 import simpmusic.composeapp.generated.resources.smart_downloads_waiting_for_wifi
 import simpmusic.composeapp.generated.resources.warning
@@ -77,15 +73,10 @@ class SettingsViewModel(
     private val songRepository: SongRepository,
     private val accountRepository: AccountRepository,
     private val cacheRepository: CacheRepository,
-    private val lyricsRomanizerRepository: LyricsRomanizerRepository,
     private val discordRepository: DiscordRepository,
 ) : BaseViewModel() {
     private val databasePath: String? = commonRepository.getDatabasePath()
     private val downloadUtils: DownloadHandler by inject()
-
-    /** READY everywhere the dictionary is bundled (Desktop), so only Android ever leaves it. */
-    val japaneseDictionaryState: StateFlow<RomanizationDictionaryState> =
-        lyricsRomanizerRepository.japaneseDictionaryState
 
     private var _location: MutableStateFlow<String?> = MutableStateFlow(null)
     val location: StateFlow<String?> = _location
@@ -724,42 +715,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             dataStoreManager.setLyricsProvider(provider)
             getLyricsProvider()
-        }
-    }
-
-    private var japaneseDictionaryWaiter: Job? = null
-
-    /**
-     * Fetches the Japanese romanization dictionary if this platform needs one and does not have
-     * it yet. Called from the settings screen every time a saved selection includes Japanese, so
-     * a FAILED attempt is retried by simply confirming the dialog again; READY makes this a no-op.
-     * A download already running — the repository starts one by itself when it finds Japanese
-     * selected and the pack missing — is joined rather than skipped, so its outcome still gets a
-     * toast. Progress and outcome live in [japaneseDictionaryState], which the romanization row's
-     * subtitle watches. The download runs in the repository's own scope, so leaving Settings
-     * mid-way only loses the toast below, not the download.
-     */
-    fun downloadJapaneseDictionaryIfNeeded() {
-        if (japaneseDictionaryState.value == RomanizationDictionaryState.READY) return
-        // Saving the dialog again mid-download (say, to add Korean) would otherwise queue a
-        // second waiter and show the same toast twice. Checked against DOWNLOADING as well: a
-        // waiter outlives its download by the moment it takes to show the toast, and a save in
-        // that moment, after a failure, is a real retry.
-        if (japaneseDictionaryWaiter?.isActive == true &&
-            japaneseDictionaryState.value == RomanizationDictionaryState.DOWNLOADING
-        ) {
-            return
-        }
-        japaneseDictionaryWaiter = viewModelScope.launch {
-            // The state the download settled on, as the repository saw it end. Reading
-            // japaneseDictionaryState back afterwards could already show the next attempt.
-            when (lyricsRomanizerRepository.downloadJapaneseDictionary()) {
-                RomanizationDictionaryState.READY ->
-                    makeToast(getString(Res.string.romanization_japanese_dict_ready))
-                RomanizationDictionaryState.FAILED ->
-                    makeToast(getString(Res.string.romanization_japanese_dict_failed))
-                else -> {}
-            }
         }
     }
 

@@ -35,6 +35,8 @@ import com.maxrave.simpmusic.di.viewModelModule
 import com.maxrave.simpmusic.utils.ComposeResUtils
 import com.maxrave.simpmusic.utils.VersionManager
 import com.maxrave.simpmusic.viewModel.SharedViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
@@ -43,6 +45,7 @@ import org.koin.core.context.unloadKoinModules
 import org.koin.dsl.module
 import org.simpmusic.crashlytics.pushPlayerError
 import pub.devrel.easypermissions.EasyPermissions
+import java.io.File
 import java.util.Locale
 
 @Suppress("DEPRECATION")
@@ -82,6 +85,27 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         if (shouldUnbind) {
             unbindService(serviceConnection)
+        }
+    }
+
+    /**
+     * Romanization of lyrics is gone. Builds that had it switched on downloaded a ~13 MB Japanese
+     * dictionary into `filesDir/kuromoji-ipadic` (plus a `.staging` directory and a `.tar.gz.part`
+     * file while a download was in flight). Delete whatever is left, once, in the background.
+     * A missing path is simply skipped, so this is safe to run on every launch.
+     */
+    private fun removeRomanizationDictionary() {
+        val filesDir = applicationContext.filesDir
+        CoroutineScope(Dispatchers.IO).launch {
+            runCatching {
+                listOf("kuromoji-ipadic", "kuromoji-ipadic.staging", "kuromoji-ipadic.tar.gz.part").forEach { name ->
+                    val target = File(filesDir, name)
+                    if (target.exists()) {
+                        val removed = target.deleteRecursively()
+                        Logger.i("MainActivity", "Removed old romanization dictionary $name: $removed")
+                    }
+                }
+            }.onFailure { Logger.w("MainActivity", "Could not remove the old romanization dictionary: ${it.message}") }
         }
     }
 
@@ -190,6 +214,7 @@ class MainActivity : AppCompatActivity() {
             cancelUniqueWork("Blog RSS Worker")
             cancelUniqueWork("AutoBackupWorker")
         }
+        removeRomanizationDictionary()
 
         if (!EasyPermissions.hasPermissions(this, Manifest.permission.POST_NOTIFICATIONS)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

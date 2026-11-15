@@ -394,11 +394,6 @@
     <string name="lyrics_offset_message">Пересунути кожну лінію тексту протягом мілісекунд. Використовуйте додатне число, коли чуєте звук пізніше, ніж видно, це те, що роблять Bluetooth навушники, і від'ємне число, що показує тексти пісень раніше.</string>
     <string name="lyrics_offset_value">%1$s мс</string>
     <string name="lyrics_offset_invalid">Введіть повну кількість мілісекунд</string>
-    <string name="lyrics_romanization">Романізація текстів пісень</string>
-    <string name="lyrics_romanization_description">Показати тексти пісень латинського скрипту для вибраних мов</string>
-    <string name="romanization_japanese_dict_downloading">Завантаження японського словника…</string>
-    <string name="romanization_japanese_dict_ready">Японський словник завантажено</string>
-    <string name="romanization_japanese_dict_failed">Не вдалося завантажити японський словник. Перевірте ваше з'єднання та виберіть японську знову щоб спробувати знову.</string>
     <string name="theme_color">Колір теми</string>
     <string name="theme_color_default">Стандартний</string>
     <string name="theme_color_wallpaper">Шпалери</string>

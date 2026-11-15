@@ -132,10 +132,6 @@ internal val AppleMusicWrappedLineSpacing = 2.dp
 // translation still reads as secondary to the line it translates.
 internal val AppleMusicTranslatedColor = Color.White.copy(alpha = 0.78f)
 
-// A shade under the translation's: on a line carrying original + reading + translation, the
-// reading is the one you stop needing once you know the song, so it recedes first.
-internal val AppleMusicRomanizedColor = Color.White.copy(alpha = 0.62f)
-
 // The line NOT being sung is grey, full stop — white at reduced opacity is still white on a dark
 // page, which is why every line looked equally lit no matter how the alpha was tuned. This is the
 // single biggest signal separating the sung line from the rest; blur and opacity only refine it.
@@ -244,10 +240,6 @@ fun AppleMusicLyricsLineItem(
     originalWords: String,
     translatedWords: String?,
     isCurrent: Boolean,
-    // Sits between the original and the translation. Shares the sub-line type scale with the
-    // translation, since both are secondary to the lyric itself and a second size at this scale
-    // would just look like a mistake.
-    romanizedWords: String? = null,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -262,22 +254,6 @@ fun AppleMusicLyricsLineItem(
                     lineHeight = AppleMusicLyricLineHeight,
                 ),
         )
-        if (romanizedWords != null) {
-            Spacer(modifier = Modifier.height(AppleMusicMainToSubGap))
-            LyricText(
-                text = romanizedWords,
-                alignmentText = originalWords,
-                modifier = Modifier.fillMaxWidth(),
-                style =
-                    typo().bodyMedium.copy(
-                        fontSize = AppleMusicSubLineFontSize,
-                        lineHeight = AppleMusicSubLineHeight,
-                    ),
-                // Follows the line's own state exactly as the translation does: readable white-ish
-                // on the sung line, the same grey as the lyric everywhere else.
-                color = if (isCurrent) AppleMusicRomanizedColor else AppleMusicInactiveLineColor,
-            )
-        }
         if (translatedWords != null) {
             Spacer(modifier = Modifier.height(AppleMusicMainToSubGap))
             LyricText(

@@ -389,11 +389,6 @@
     <string name="lyrics_style">Stile testi</string>
     <string name="lyrics_style_classic">Classico</string>
     <string name="lyrics_offset_value">%1$s ms</string>
-    <string name="lyrics_romanization">Romanizzazione testi</string>
-    <string name="lyrics_romanization_description">Mostra i testi in caratteri latini per le lingue che scegli</string>
-    <string name="romanization_japanese_dict_downloading">Scaricamento del dizionario giapponese in corso…</string>
-    <string name="romanization_japanese_dict_ready">Dizionario giapponese scaricato</string>
-    <string name="romanization_japanese_dict_failed">Impossibile scaricare il dizionario giapponese. Controlla la tua connessione e seleziona di nuovo il giapponese per riprovare.</string>
     <string name="theme_color">Colore del tema</string>
     <string name="theme_color_default">Predefinito</string>
     <string name="theme_color_wallpaper">Sfondo</string>

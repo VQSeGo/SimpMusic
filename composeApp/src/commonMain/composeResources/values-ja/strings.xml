@@ -400,11 +400,6 @@
     <string name="lyrics_offset_message">各歌詞行をこのミリ秒数だけずらします。Bluetoothヘッドホンのように、音声が歌詞よりも遅れて表示される場合はプラスを、歌詞が早く表示される場合はマイナスを使用してください。</string>
     <string name="lyrics_offset_value">%1$s ミリ秒</string>
     <string name="lyrics_offset_invalid">ミリ秒単位の整数を入力してください</string>
-    <string name="lyrics_romanization">歌詞にローマ字を追加</string>
-    <string name="lyrics_romanization_description">選択した言語のラテン文字で歌詞を表示</string>
-    <string name="romanization_japanese_dict_downloading">日本語辞書をダウンロードしています…</string>
-    <string name="romanization_japanese_dict_ready">日本語辞書をダウンロードしました</string>
-    <string name="romanization_japanese_dict_failed">日本語辞書をダウンロードできませんでした。接続を確認して日本語を再試行してください。</string>
     <string name="theme_color">テーマカラー</string>
     <string name="theme_color_default">デフォルト</string>
     <string name="theme_color_wallpaper">壁紙</string>

@@ -33,7 +33,6 @@ import com.maxrave.domain.extension.decodeHtmlEntities
 import com.maxrave.domain.extension.isVideo
 import com.maxrave.domain.extension.toGenericMediaItem
 import com.maxrave.domain.manager.DataStoreManager
-import com.maxrave.domain.data.model.lyrics.RomanizationLanguage
 import com.maxrave.domain.manager.DataStoreManager.Values.TRUE
 import com.maxrave.domain.mediaservice.handler.ControlState
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
@@ -1482,17 +1481,6 @@ class SharedViewModel(
     fun setLyricsStyle(style: String) {
         viewModelScope.launch {
             dataStoreManager.setLyricsStyle(style)
-        }
-    }
-
-    fun getRomanizationLanguages() = dataStoreManager.romanizationLanguages
-
-    fun setRomanizationLanguages(languages: Set<RomanizationLanguage>) {
-        viewModelScope.launch {
-            // Sorted by name so the stored string is stable: an unsorted Set writes a different
-            // value for the same selection depending on iteration order, which makes the DataStore
-            // flow emit on a change that did not happen.
-            dataStoreManager.setRomanizationLanguages(languages.map { it.name }.sorted().joinToString(","))
         }
     }
 

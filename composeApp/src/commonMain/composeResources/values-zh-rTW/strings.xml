@@ -387,11 +387,6 @@
     <string name="lyrics_offset_message">將每行歌詞的顯示時間偏移這麼多毫秒。如果音訊先於畫面顯示出現（例如藍牙耳機），則使用正數；反之，如果歌詞提前出現，則使用負數。</string>
     <string name="lyrics_offset_value">%1$s ms</string>
     <string name="lyrics_offset_invalid">輸入一個整數，代表多少毫秒</string>
-    <string name="lyrics_romanization">羅馬化歌詞</string>
-    <string name="lyrics_romanization_description">將您所選擇語言的歌詞以拉丁字母轉寫</string>
-    <string name="romanization_japanese_dict_downloading">正在下載日語字典......</string>
-    <string name="romanization_japanese_dict_ready">日語字典已經下載完成</string>
-    <string name="romanization_japanese_dict_failed">無法下載日語字典。請檢察您的網路連線並再次選擇日語以重試。</string>
     <string name="theme_color">主題顏色</string>
     <string name="theme_color_default">預設</string>
     <string name="theme_color_wallpaper">跟隨桌布</string>

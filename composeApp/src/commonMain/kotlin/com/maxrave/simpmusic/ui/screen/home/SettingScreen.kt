@@ -94,8 +94,6 @@ import com.maxrave.common.SUPPORTED_LANGUAGE
 import com.maxrave.common.SUPPORTED_LOCATION
 import com.maxrave.common.VIDEO_QUALITY
 import com.maxrave.domain.extension.now
-import com.maxrave.domain.data.model.lyrics.RomanizationDictionaryState
-import com.maxrave.domain.data.model.lyrics.RomanizationLanguage
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.manager.DataStoreManager.Values.TRUE
 import com.maxrave.domain.utils.LocalResource
@@ -252,22 +250,6 @@ import simpmusic.composeapp.generated.resources.login_sync_desktop_title
 import simpmusic.composeapp.generated.resources.login_sync_section
 import simpmusic.composeapp.generated.resources.lrclib
 import simpmusic.composeapp.generated.resources.lyrics
-import simpmusic.composeapp.generated.resources.lyrics_romanization
-import simpmusic.composeapp.generated.resources.lyrics_romanization_description
-import simpmusic.composeapp.generated.resources.romanization_belarusian
-import simpmusic.composeapp.generated.resources.romanization_bulgarian
-import simpmusic.composeapp.generated.resources.romanization_chinese
-import simpmusic.composeapp.generated.resources.romanization_hindi
-import simpmusic.composeapp.generated.resources.romanization_japanese
-import simpmusic.composeapp.generated.resources.romanization_japanese_dict_downloading
-import simpmusic.composeapp.generated.resources.romanization_japanese_dict_failed
-import simpmusic.composeapp.generated.resources.romanization_korean
-import simpmusic.composeapp.generated.resources.romanization_kyrgyz
-import simpmusic.composeapp.generated.resources.romanization_macedonian
-import simpmusic.composeapp.generated.resources.romanization_punjabi
-import simpmusic.composeapp.generated.resources.romanization_russian
-import simpmusic.composeapp.generated.resources.romanization_serbian
-import simpmusic.composeapp.generated.resources.romanization_ukrainian
 import simpmusic.composeapp.generated.resources.main_lyrics_provider
 import simpmusic.composeapp.generated.resources.manage_your_youtube_accounts
 import simpmusic.composeapp.generated.resources.no_account
@@ -446,8 +428,6 @@ fun SettingScreen(
     val themeMode by sharedViewModel.getThemeMode().collectAsStateWithLifecycle(DataStoreManager.THEME_MODE_DARK)
     val themeColorSource by sharedViewModel.getThemeColorSource().collectAsStateWithLifecycle(DataStoreManager.THEME_COLOR_DEFAULT)
     val customThemeColorHex by sharedViewModel.getCustomThemeColor().collectAsStateWithLifecycle(DataStoreManager.DEFAULT_THEME_COLOR_HEX)
-    val romanizationStored by sharedViewModel.getRomanizationLanguages().collectAsStateWithLifecycle("")
-    val japaneseDictionaryState by viewModel.japaneseDictionaryState.collectAsStateWithLifecycle()
     var showColorPickerDialog by rememberSaveable { mutableStateOf(false) }
     val discordLoggedIn by viewModel.discordLoggedIn.collectAsStateWithLifecycle()
     val loggedIn by viewModel.loggedIn.collectAsStateWithLifecycle()
@@ -605,84 +585,6 @@ fun SettingScreen(
                                             val selected = state.selectOne?.getSelected()
                                             themeModeLabels.firstOrNull { it.second == selected }?.first?.let {
                                                 sharedViewModel.setThemeMode(it)
-                                            }
-                                        },
-                                    dismiss = runBlocking { getString(Res.string.cancel) },
-                                ),
-                            )
-                        },
-                    )
-                    // Not gated on Android 12: this changes
-                    // what the words SAY, not how they are drawn, so it applies to every style on
-                    // every version. Sits next to them because a user looking for "something about
-                    // lyrics" looks in one place.
-                    val romanizationLabels =
-                        listOf(
-                            RomanizationLanguage.JAPANESE to stringResource(Res.string.romanization_japanese),
-                            RomanizationLanguage.KOREAN to stringResource(Res.string.romanization_korean),
-                            RomanizationLanguage.CHINESE to stringResource(Res.string.romanization_chinese),
-                            RomanizationLanguage.HINDI to stringResource(Res.string.romanization_hindi),
-                            RomanizationLanguage.PUNJABI to stringResource(Res.string.romanization_punjabi),
-                            RomanizationLanguage.RUSSIAN to stringResource(Res.string.romanization_russian),
-                            RomanizationLanguage.UKRAINIAN to stringResource(Res.string.romanization_ukrainian),
-                            RomanizationLanguage.SERBIAN to stringResource(Res.string.romanization_serbian),
-                            RomanizationLanguage.BULGARIAN to stringResource(Res.string.romanization_bulgarian),
-                            RomanizationLanguage.BELARUSIAN to stringResource(Res.string.romanization_belarusian),
-                            RomanizationLanguage.KYRGYZ to stringResource(Res.string.romanization_kyrgyz),
-                            RomanizationLanguage.MACEDONIAN to stringResource(Res.string.romanization_macedonian),
-                        )
-                    val romanizationSelected = RomanizationLanguage.parse(romanizationStored)
-                    SettingItem(
-                        title = stringResource(Res.string.lyrics_romanization),
-                        // Two different jobs for one line. Off, the row has to explain what the
-                        // feature IS — nobody guesses "romanization" from the title alone. On, the only
-                        // question worth answering at a glance is which of the twelve are picked, and
-                        // the explanation has served its purpose.
-                        subtitle =
-                            if (romanizationSelected.isEmpty()) {
-                                stringResource(Res.string.lyrics_romanization_description)
-                            } else {
-                                val selectedNames =
-                                    romanizationLabels.filter { it.first in romanizationSelected }.joinToString(", ") { it.second }
-                                // Japanese is the one language with a dictionary pack to fetch; while
-                                // that is in flight — or has failed — the row says so, instead of
-                                // listing Japanese as if it were already live.
-                                when {
-                                    RomanizationLanguage.JAPANESE !in romanizationSelected -> selectedNames
-                                    japaneseDictionaryState == RomanizationDictionaryState.DOWNLOADING ->
-                                        "$selectedNames — ${stringResource(Res.string.romanization_japanese_dict_downloading)}"
-                                    japaneseDictionaryState == RomanizationDictionaryState.FAILED ->
-                                        "$selectedNames — ${stringResource(Res.string.romanization_japanese_dict_failed)}"
-                                    else -> selectedNames
-                                }
-                            },
-                        onClick = {
-                            viewModel.setAlertData(
-                                SettingAlertState(
-                                    title = runBlocking { getString(Res.string.lyrics_romanization) },
-                                    // NO `message` here, deliberately. The dialog picks its body with
-                                    // an if/else-if chain that tests `message` FIRST, and that branch
-                                    // renders only the text and an optional textField — a multipleSelect
-                                    // passed alongside it is never reached, so the dialog came up with
-                                    // the description and no languages at all.
-                                    multipleSelect =
-                                        SettingAlertState.SelectData(
-                                            listSelect =
-                                                romanizationLabels.map { (language, label) ->
-                                                    (language in romanizationSelected) to label
-                                                },
-                                        ),
-                                    confirm =
-                                        runBlocking { getString(Res.string.save) } to { state ->
-                                            val chosen = state.multipleSelect?.getListSelected().orEmpty()
-                                            val languages =
-                                                romanizationLabels.filter { it.second in chosen }.map { it.first }.toSet()
-                                            sharedViewModel.setRomanizationLanguages(languages)
-                                            // Japanese needs its dictionary pack on disk. A no-op when
-                                            // it is already there (or bundled, as on Desktop) — and the
-                                            // retry after a FAILED attempt is simply confirming again.
-                                            if (RomanizationLanguage.JAPANESE in languages) {
-                                                viewModel.downloadJapaneseDictionaryIfNeeded()
                                             }
                                         },
                                     dismiss = runBlocking { getString(Res.string.cancel) },

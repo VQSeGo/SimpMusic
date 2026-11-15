@@ -384,11 +384,6 @@
     <string name="lyrics_offset">Retraso en las letras</string>
     <string name="lyrics_offset_value">%1$s ms</string>
     <string name="lyrics_offset_invalid">Introduce un número entero de milisegundos</string>
-    <string name="lyrics_romanization">Romanización de letras</string>
-    <string name="lyrics_romanization_description">Muestra las letras en abecedario latín para los idiomas que elijas</string>
-    <string name="romanization_japanese_dict_downloading">Descargando el diccionario japonés…</string>
-    <string name="romanization_japanese_dict_ready">Diccionario japonés descargado</string>
-    <string name="romanization_japanese_dict_failed">No se pudo descargar el diccionario japonés. Comprueba tu conexión y selecciona el japonés de nuevo para volver a intentarlo.</string>
     <string name="theme_color">Color de tema</string>
     <string name="theme_color_default">Predeterminado</string>
     <string name="theme_color_wallpaper">Fondo de pantalla</string>

@@ -403,11 +403,6 @@
     <string name="lyrics_offset_message">Verschiebe jede Textzeile um diese Anzahl an Millisekunden. Verwende eine positive Zahl, wenn du den Ton später hörst, als du ihn siehst – wie es bei Bluetooth-Kopfhörern der Fall ist –, und eine negative Zahl, damit der Text früher erscheint.</string>
     <string name="lyrics_offset_value">%1$s ms</string>
     <string name="lyrics_offset_invalid">Geben Sie eine ganze Zahl in Millisekunden ein</string>
-    <string name="lyrics_romanization">Songtext-Romanisierung</string>
-    <string name="lyrics_romanization_description">Songtexte in lateinischer Schrift für die von dir ausgewählten Sprachen anzeigen</string>
-    <string name="romanization_japanese_dict_downloading">Das japanische Wörterbuch wird heruntergeladen…</string>
-    <string name="romanization_japanese_dict_ready">Japanisches Wörterbuch heruntergeladen</string>
-    <string name="romanization_japanese_dict_failed">Das japanische Wörterbuch konnte nicht heruntergeladen werden. Überprüfen Sie Ihre Internetverbindung und wählen Sie „Japanisch“ erneut aus, um es noch einmal zu versuchen.</string>
     <string name="theme_color">Design-Farbe</string>
     <string name="theme_color_default">Standard</string>
     <string name="theme_color_wallpaper">Wallpaper</string>

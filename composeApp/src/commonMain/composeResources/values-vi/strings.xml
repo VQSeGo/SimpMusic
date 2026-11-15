@@ -400,11 +400,6 @@
     <string name="lyrics_offset_message">Dịch chuyển từng dòng lời bài hát trong nhiều mili giây. Sử dụng số dương khi bạn nghe âm thanh muộn hơn thời gian bạn nhìn thấy, đó là chức năng của tai nghe Bluetooth và số âm để làm cho lời bài hát xuất hiện sớm hơn.</string>
     <string name="lyrics_offset_value">%1$s milli-giây</string>
     <string name="lyrics_offset_invalid">Nhập toàn bộ số mili giây</string>
-    <string name="lyrics_romanization">La tinh hóa lời bài hát</string>
-    <string name="lyrics_romanization_description">Hiển thị lời bài hát bằng chữ Latinh cho ngôn ngữ bạn chọn</string>
-    <string name="romanization_japanese_dict_downloading">Đang tải từ điển tiếng Nhật xuống…</string>
-    <string name="romanization_japanese_dict_ready">Từ điển tiếng Nhật đã tải xuống</string>
-    <string name="romanization_japanese_dict_failed">Không thể tải xuống từ điển tiếng Nhật. Hãy kiểm tra kết nối của bạn và chọn lại tiếng Nhật để thử lại.</string>
     <string name="theme_color">Màu chủ đề</string>
     <string name="theme_color_default">Mặc định</string>
     <string name="theme_color_wallpaper">Hình nền</string>

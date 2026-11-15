@@ -403,11 +403,6 @@
     <string name="lyrics_offset_message">Décalez chaque ligne des paroles de ce nombre de millisecondes. Utilisez un nombre positif lorsque vous entendez le son après l'avoir vu, comme c'est le cas avec les écouteurs Bluetooth, et un nombre négatif pour que les paroles s'affichent plus tôt.</string>
     <string name="lyrics_offset_value">%1$s ms</string>
     <string name="lyrics_offset_invalid">Saisissez un nombre entier exprimé en millisecondes</string>
-    <string name="lyrics_romanization">Transcription des paroles</string>
-    <string name="lyrics_romanization_description">Affichez les paroles en caractères latins pour les langues que vous sélectionnez</string>
-    <string name="romanization_japanese_dict_downloading">Téléchargement du dictionnaire japonais…</string>
-    <string name="romanization_japanese_dict_ready">Dictionnaire japonais téléchargé</string>
-    <string name="romanization_japanese_dict_failed">Impossible de télécharger le dictionnaire japonais. Vérifiez votre connexion et sélectionnez à nouveau « japonais » pour réessayer.</string>
     <string name="theme_color">Couleur du thème</string>
     <string name="theme_color_default">Par défaut</string>
     <string name="theme_color_wallpaper">Fond d'écran</string>
