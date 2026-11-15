@@ -177,6 +177,12 @@
   `keep_backups*`, `last_backup`, `daily`, `weekly`, `monthly`, `never`). `MainActivity` при запуске отменяет у сборок, установленных
   поверх старой, и задание `AutoBackupWorker`. Ручное сохранение и восстановление, переключатель «Резервная копия скачанного»
   (`backup_downloaded`) остались.
+  Также: романизация текстов (запись латиницей под оригиналом и настройка «Романизация текстов» с выбором из двенадцати языков;
+  `LyricsRomanizerRepository` / `Impl`, `RomanizationLanguage`, `RomanizationDictionaryState`, каталог `romanization` в
+  `core/service/lyricsService` во всех наборах исходников, словари Kuromoji и pinyin4j в `build.gradle.kts` и `libs.versions.toml`,
+  исключения kuromoji в `packaging` `androidApp` и `vivoAndroidApp`, строка романизации в `LyricsLineItem` / `RichSyncLyricsLineItem` /
+  `AppleMusicLyricsLineItem`, ключ DataStore `romanization_languages`, строки `*romanization*`). Скачанный на Android словарь
+  (`filesDir/kuromoji-ipadic`, `.staging`, `.tar.gz.part`) удаляется один раз при запуске в `MainActivity.removeRomanizationDictionary`.
 - Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки
