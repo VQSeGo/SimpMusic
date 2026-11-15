@@ -32,7 +32,7 @@ import kotlin.math.sin
  * past Compose into skiko — which pinned the whole project to a single skiko release, because skiko
  * broke binary compatibility three times running (0.148.1 deleted `GradientStyle`, 0.148.2 made
  * `Matrix33` a value class, 0.150.1 added a parameter to `Image.encodeToData`) while haze,
- * kyant/backdrop and composenativetray each need a different side of those lines.
+ * kyant/backdrop (since removed) and composenativetray each needed a different side of those lines.
  *
  * Both are TRANSCRIBED from the JSON keyframes rather than reinvented — every constant below is a
  * number read out of the source file, and each indicator draws in that file's own coordinate space

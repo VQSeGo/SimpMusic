@@ -532,8 +532,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nBuild with ❤️ and 
     <string name="no_playlist_found">לא נמצאו פלייליסטים מקומיים, אנא צור אחד קודם</string>
     <string name="list_all_cookies_of_this_page">פרט את כל העוגיות של דף זה</string>
     <string name="copied_to_clipboard">הועתק ללוח</string>
-    <string name="enable_liquid_glass_effect">הפעל זכוכית נוזלית (בטא)</string>
-    <string name="enable_liquid_glass_effect_description">הפעל את אפקט הזכוכית הנוזלית של iOS בחלק מהמקומות (נדרש Android 13 ומעלה)</string>
     <string name="your_library">הספרייה שלך</string>
     <string name="play_explicit_content">נגן תוכן מפורש</string>
     <string name="play_explicit_content_description">הפעל כדי לנגן תוכן מפורש</string>

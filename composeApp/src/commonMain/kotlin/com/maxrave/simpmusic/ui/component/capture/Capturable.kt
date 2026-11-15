@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
  * https://github.com/PatilShreyas/Capturable) rather than taken as a dependency. The library
  * publishes a single `.aar` with four Android-only variants and no KMP metadata, so Gradle cannot
  * resolve it for the `jvm()` target — but its code never touches an Android API. Everything below
- * is `androidx.compose.ui.graphics.layer`, which this project already runs from commonMain (see
- * `LiquidGlassContainer`), so the same source compiles for Android and Desktop alike.
+ * is `androidx.compose.ui.graphics.layer`, which runs from commonMain, so the same source
+ * compiles for Android and Desktop alike.
  *
  * The one Android import in the original sits on a KDoc reference to `Bitmap.Config`, left behind
  * when v3.0.0 dropped the `BitmapConfig` parameter. It is dead there and absent here.

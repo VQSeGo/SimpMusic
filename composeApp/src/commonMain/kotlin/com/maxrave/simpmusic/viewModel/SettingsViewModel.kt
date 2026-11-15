@@ -152,9 +152,6 @@ class SettingsViewModel(
     private var _backupDownloaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val backupDownloaded: StateFlow<Boolean> = _backupDownloaded
 
-    private var _enableLiquidGlass: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val enableLiquidGlass: StateFlow<Boolean> = _enableLiquidGlass
-
     private val _explicitContentEnabled = MutableStateFlow(false)
     val explicitContentEnabled: StateFlow<Boolean> = _explicitContentEnabled
 
@@ -234,7 +231,6 @@ class SettingsViewModel(
         getAutoDownloadLikedSongs()
         getSmartDownloads()
         getBackupDownloaded()
-        getEnableLiquidGlass()
         getExplicitContentEnabled()
         getDiscordLoggedIn()
         getDiscordRichPresenceEnabled()
@@ -487,21 +483,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             dataStoreManager.setExplicitContentEnabled(enabled)
             getExplicitContentEnabled()
-        }
-    }
-
-    private fun getEnableLiquidGlass() {
-        viewModelScope.launch {
-            dataStoreManager.enableLiquidGlass.collect { enableLiquidGlass ->
-                _enableLiquidGlass.value = enableLiquidGlass == DataStoreManager.TRUE
-            }
-        }
-    }
-
-    fun setEnableLiquidGlass(enableLiquidGlass: Boolean) {
-        viewModelScope.launch {
-            dataStoreManager.setEnableLiquidGlass(enableLiquidGlass)
-            getEnableLiquidGlass()
         }
     }
 
