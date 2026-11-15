@@ -71,11 +71,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.request.crossfade
 import com.materialkolor.PaletteStyle
-import com.materialkolor.ktx.themeColorOrNull
 import com.materialkolor.rememberDynamicColorScheme
 import com.maxrave.domain.mediaservice.handler.RepeatState
 import com.maxrave.simpmusic.Platform
-import com.maxrave.simpmusic.expect.ui.toReadableBitmap
 import com.maxrave.simpmusic.extension.LeftToRight
 import com.maxrave.simpmusic.extension.elapsedLabel
 import com.maxrave.simpmusic.extension.formatDuration
@@ -149,18 +147,20 @@ internal fun NowPlayingExpressiveTheme(
     // stray hue the Vibrant style below blows up into a colour the cover does not have (a pink
     // sleeve came out green). The app seed stands in until it resolves, and for a colourless cover.
     val artwork = state.screenData.bitmap
+    // Usually known before the player opens (worked out from the mini player's artwork), so the
+    // scheme starts in the cover's colours; it used to start in the app seed and fade over 800ms.
+    val knownSeed = state.artworkSeed
     // A track change clears the bitmap, and a track from the same album never refills it: the cover
     // URL is unchanged, so the image does not load again. Holding the last seed through that gap
     // keeps the album's colour instead of dropping to the app seed.
-    val artworkSeed by produceState<Color?>(initialValue = null, artwork) {
-        if (artwork != null) {
-            value =
-                withContext(Dispatchers.Default) {
-                    runCatching { artwork.toReadableBitmap(SEED_SAMPLE_PX, SEED_SAMPLE_PX).themeColorOrNull() }.getOrNull()
-                }
+    val artworkSeed by produceState(initialValue = knownSeed, artwork, knownSeed) {
+        if (knownSeed != null) {
+            value = knownSeed
+        } else if (artwork != null) {
+            value = withContext(Dispatchers.Default) { artwork.artworkSeedColor() }
         }
     }
-    val seedColor = artworkSeed ?: seed
+    val seedColor = knownSeed ?: artworkSeed ?: seed
     // Track changes must GLIDE between palettes: the shell's startColor spring is quick, and a
     // whole tonal scheme snapping at once reads as a flash. 800ms matches the palette crossfade
     // feel of the other immersive screens.
@@ -180,10 +180,6 @@ internal fun NowPlayingExpressiveTheme(
         content()
     }
 }
-
-// The artwork is scored at this size: the seed depends on which colours cover the sleeve and how
-// strongly, which a full-resolution read would only make slower to find.
-private const val SEED_SAMPLE_PX = 112
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -105,6 +105,8 @@ class NowPlayingContentState(
      * its video frame from this one value, so a frame and the spacer that measures it cannot drift.
      */
     val videoAspectRatio: Float = 16f / 9,
+    /** This track's artwork seed when it is already known (see SharedViewModel.artworkSeed). */
+    val artworkSeed: Color? = null,
 ) {
     val timelineState: TimeLine get() = timelineSource.value
 

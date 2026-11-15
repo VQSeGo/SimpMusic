@@ -54,6 +54,7 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.kmpalette.rememberPaletteState
+import com.maxrave.common.MERGING_DATA_TYPE
 import com.maxrave.common.Config.MAIN_PLAYER
 import com.maxrave.domain.mediaservice.handler.MediaPlayerHandler
 import com.maxrave.logger.Logger
@@ -194,6 +195,9 @@ fun NowPlayingScreenContent(
     // Artwork Pager state — Spotify-style horizontal swipe between queue tracks.
     // Controller layout below the pager stays fixed.
     val nowPlayingState by sharedViewModel.nowPlayingState.collectAsStateWithLifecycle()
+    val artworkSeed by sharedViewModel.artworkSeed.collectAsStateWithLifecycle()
+    // The bare videoId: a video's queue item carries a prefix that the mini player's song row does not.
+    val artworkSeedKey = nowPlayingState?.mediaItem?.mediaId?.removePrefix(MERGING_DATA_TYPE.VIDEO)
     val queueDataState by sharedViewModel.getQueueDataState().collectAsStateWithLifecycle()
     val artworkQueue by remember {
         derivedStateOf { queueDataState?.data?.listTracks ?: emptyList() }
@@ -555,6 +559,7 @@ fun NowPlayingScreenContent(
             audioQualityLabel = formatState.toAudioQualityLabel(),
             lyricsOffsetMs = lyricsOffsetMs.toLong(),
             videoAspectRatio = rememberVideoAspectRatio(MAIN_PLAYER) ?: 16f / 9,
+            artworkSeed = artworkSeed?.takeIf { it.first == artworkSeedKey }?.second,
         )
     val actions =
         NowPlayingContentActions(
@@ -562,7 +567,10 @@ fun NowPlayingScreenContent(
             onSeekToQueueIndex = { index ->
                 mediaPlayerHandler.playMediaItemInMediaSource(index)
             },
-            onArtworkBitmap = { sharedViewModel.setBitmap(it) },
+            onArtworkBitmap = {
+                sharedViewModel.setBitmap(it)
+                sharedViewModel.offerArtworkForSeed(artworkSeedKey, it)
+            },
             onSliderChange = { newValue ->
                 isSliding = true
                 sliderValue = newValue

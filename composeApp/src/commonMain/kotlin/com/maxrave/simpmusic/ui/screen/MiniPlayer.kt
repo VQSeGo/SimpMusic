@@ -112,6 +112,7 @@ import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.data.model.streams.TimeLine
 import com.maxrave.domain.utils.connectArtists
 import com.maxrave.logger.Logger
+import com.maxrave.simpmusic.expect.ui.toImageBitmap
 import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.expect.toggleMiniPlayer
 import com.maxrave.simpmusic.extension.LeftToRight
@@ -397,6 +398,11 @@ fun MiniPlayer(
                                     placeholder = rememberHolderPainter(),
                                     error = rememberHolderPainter(),
                                     contentDescription = null,
+                                    // The player's colours come from this artwork, worked out while the
+                                    // player is still closed so that it opens in them.
+                                    onSuccess = { result ->
+                                        sharedViewModel.offerArtworkForSeed(songEntity?.videoId, result.result.image.toImageBitmap())
+                                    },
                                     // Crop in the circle: FillWidth would leave bands around a 16:9 video thumbnail.
                                     contentScale = ContentScale.Crop,
                                     modifier =

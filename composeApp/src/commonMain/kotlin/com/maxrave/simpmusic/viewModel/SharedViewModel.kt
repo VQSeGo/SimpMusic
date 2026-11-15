@@ -1,6 +1,7 @@
 package com.maxrave.simpmusic.viewModel
 
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import com.maxrave.common.Config
 import com.maxrave.common.Config.ALBUM_CLICK
@@ -76,6 +77,7 @@ import com.maxrave.simpmusic.ui.screen.player.albumIdOf
 import com.maxrave.simpmusic.utils.VersionManager
 import com.maxrave.simpmusic.utils.pickUpdateDownloadUrl
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
+import com.maxrave.simpmusic.ui.screen.player.content.artworkSeedColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -1544,6 +1546,36 @@ class SharedViewModel(
         _nowPlayingScreenData.update {
             it.copy(bitmap = bitmap)
         }
+    }
+
+    /**
+     * The Now Playing colour scheme's seed for a track, as (videoId, colour). Worked out from the first
+     * artwork that loads for it — on Android usually the mini player's, long before the player opens —
+     * and kept for the track, so opening the player starts in the cover's colours instead of fading in
+     * from the app colour, and the bigger artwork that loads later does not shift them.
+     */
+    private val _artworkSeed = MutableStateFlow<Pair<String, Color>?>(null)
+    val artworkSeed: StateFlow<Pair<String, Color>?> = _artworkSeed.asStateFlow()
+    private var artworkSeedJob: Job? = null
+    private var artworkSeedFor: String? = null
+
+    fun offerArtworkForSeed(
+        videoId: String?,
+        bitmap: ImageBitmap,
+    ) {
+        if (videoId == null || videoId == artworkSeedFor) return
+        artworkSeedFor = videoId
+        artworkSeedJob?.cancel()
+        artworkSeedJob =
+            viewModelScope.launch(Dispatchers.Default) {
+                val seed = bitmap.artworkSeedColor()
+                if (seed == null) {
+                    // A colourless cover: let the player's own artwork try.
+                    artworkSeedFor = null
+                    return@launch
+                }
+                _artworkSeed.value = videoId to seed
+            }
     }
 
     fun shouldStopMusicService(): Boolean = runBlocking { dataStoreManager.killServiceOnExit.first() == TRUE }
