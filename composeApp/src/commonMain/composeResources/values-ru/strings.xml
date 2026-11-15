@@ -132,6 +132,8 @@
     <string name="downloaded_cache">Скачанный кэш</string>
     <string name="cached">Закэшировано</string>
     <string name="remove_from_cache">Удалить из кэша</string>
+    <string name="remove_download">Удалить загрузку</string>
+    <string name="cancel_download">Отменить загрузку</string>
     <string name="thumbnail_cache">Кэш миниатюры</string>
     <string name="backup">Резервное копирование</string>
     <string name="backup_your_data">Резервная копия ваших данных</string>
