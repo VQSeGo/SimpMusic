@@ -153,9 +153,10 @@ class LibraryDynamicPlaylistViewModel(
 
     private fun getDownloadedSong() {
         viewModelScope.launch {
-            songRepository.getDownloadedSongs().collectLatest { downloadedSong ->
+            // Observed: a download removed from a song's menu (another view model) leaves the list too.
+            songRepository.observeDownloadedSongs().collectLatest { downloadedSong ->
                 _listDownloadedSong.value =
-                    (downloadedSong ?: emptyList()).sortedByDescending {
+                    downloadedSong.sortedByDescending {
                         it.downloadedAt ?: REMOVED_SONG_DATE_TIME
                     }
             }
