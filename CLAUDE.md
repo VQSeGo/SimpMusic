@@ -193,7 +193,6 @@
   (`TranslucentSurface.kt`, `surfaceContainerHighest` 80 %), чипы с обводкой, плоский мини-плеер. Нижняя панель Android теперь
   `FoldingBottomNavigationBar` (бывшая `LiquidGlassAppBottomNavigationBar`, только плоский вариант). Haze (размытие шапок, листов,
   боковой панели) не тронут.
-- Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки
 
