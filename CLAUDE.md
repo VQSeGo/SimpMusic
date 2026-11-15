@@ -183,6 +183,16 @@
   исключения kuromoji в `packaging` `androidApp` и `vivoAndroidApp`, строка романизации в `LyricsLineItem` / `RichSyncLyricsLineItem` /
   `AppleMusicLyricsLineItem`, ключ DataStore `romanization_languages`, строки `*romanization*`). Скачанный на Android словарь
   (`filesDir/kuromoji-ipadic`, `.staging`, `.tar.gz.part`) удаляется один раз при запуске в `MainActivity.removeRomanizationDictionary`.
+  Также: эффект «жидкое стекло» (настройка «Включить эффект жидкого стекла» в группе «Интерфейс», `LocalLiquidGlassEnabled` и
+  параметр `AppTheme`, ключ DataStore `liquid_glass`, строки `enable_liquid_glass_effect*`; `LiquidGlassContainer.kt` с
+  `Modifier.liquidGlass`, `LiquidGlassIconButton`, `GlassInteraction`, `drawInteractiveGlass`; `expect/ui/LiquidGlass.kt` с
+  `PlatformBackdrop`, `rememberBackdrop`, `layerBackdrop`; `GlassLuminance.kt`; стеклянная панель вкладок
+  `LiquidGlassTabBar.android.kt` и круглая кнопка поиска; зависимости `io.github.kyant0:backdrop` и `:shapes` и их правило ProGuard;
+  параметры `backdrop` у `Chip`, `ExpandableChip`, `HomeBarButton`, `MiniPlayer`, `LyricsOffsetFloatingControl`). Везде оставлен вид
+  «выключено»: плавающие кнопки и пилюли на `translucentSurface` / `TranslucentIconButton` / `TranslucentContainer`
+  (`TranslucentSurface.kt`, `surfaceContainerHighest` 80 %), чипы с обводкой, плоский мини-плеер. Нижняя панель Android теперь
+  `FoldingBottomNavigationBar` (бывшая `LiquidGlassAppBottomNavigationBar`, только плоский вариант). Haze (размытие шапок, листов,
+  боковой панели) не тронут.
 - Ещё не сделано: редизайн настроек.
 
 ## Приёмы и ловушки
