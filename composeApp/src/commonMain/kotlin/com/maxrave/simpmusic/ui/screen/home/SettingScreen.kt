@@ -174,6 +174,9 @@ import simpmusic.composeapp.generated.resources.audio_delay
 import simpmusic.composeapp.generated.resources.audio_delay_description
 import simpmusic.composeapp.generated.resources.audio_reverb
 import simpmusic.composeapp.generated.resources.audio_reverb_description
+import simpmusic.composeapp.generated.resources.audio_eight_d
+import simpmusic.composeapp.generated.resources.audio_eight_d_description
+import simpmusic.composeapp.generated.resources.eight_d_unavailable
 import simpmusic.composeapp.generated.resources.auto_check_for_update
 import simpmusic.composeapp.generated.resources.auto_check_for_update_description
 import simpmusic.composeapp.generated.resources.auto_download_liked_songs
@@ -432,6 +435,8 @@ fun SettingScreen(
     val equalizerType by viewModel.equalizerType.collectAsStateWithLifecycle()
     val delayEnabled by viewModel.delayEnabled.collectAsStateWithLifecycle()
     val reverbEnabled by viewModel.reverbEnabled.collectAsStateWithLifecycle()
+    val eightDEnabled by viewModel.eightDEnabled.collectAsStateWithLifecycle()
+    val eightDAvailable by viewModel.eightDAvailable.collectAsStateWithLifecycle()
     val richPresenceEnabled by viewModel.richPresenceEnabled.collectAsStateWithLifecycle()
 
     val crossfadeEnabled by viewModel.crossfadeEnabled.collectAsStateWithLifecycle()
@@ -1184,6 +1189,21 @@ fun SettingScreen(
                 // Same again: the room and the wet level outlive the switch.
                 AnimatedVisibility(visible = reverbEnabled) {
                     ReverbSection()
+                }
+                SettingItem(
+                    title = stringResource(Res.string.audio_eight_d),
+                    subtitle =
+                        when {
+                            !eightDAvailable -> stringResource(Res.string.eight_d_unavailable)
+                            else -> stringResource(Res.string.audio_eight_d_description)
+                        },
+                    smallSubtitle = true,
+                    switch = (eightDEnabled to viewModel::setEightDEnabled),
+                    // A saved on-state may still be switched off when the native filter is absent.
+                    isEnable = eightDAvailable || eightDEnabled,
+                )
+                AnimatedVisibility(visible = eightDEnabled && eightDAvailable) {
+                    EightDSection()
                 }
                 SettingItem(
                     title = stringResource(Res.string.save_playback_state),

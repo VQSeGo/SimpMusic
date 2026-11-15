@@ -330,6 +330,14 @@
     <string name="audio_delay_description">Добавляет эффект эхо</string>
     <string name="audio_reverb">Реверб</string>
     <string name="audio_reverb_description">Имитирует нахождение в помещении, например в комнате, в коридоре</string>
+    <string name="audio_eight_d">8D-звук</string>
+    <string name="audio_eight_d_description">Звук вращается по кругу в стерео. Лучше всего в наушниках.</string>
+    <string name="eight_d_direction">Направление вращения</string>
+    <string name="eight_d_left_to_right">Слева направо</string>
+    <string name="eight_d_right_to_left">Справа налево</string>
+    <string name="eight_d_period">Время одного оборота</string>
+    <string name="eight_d_seconds_unit">с</string>
+    <string name="eight_d_unavailable">8D недоступен в этом аудиодвижке</string>
     <string name="effect_time">Длительность</string>
     <string name="effect_feedback">Фидбек</string>
     <string name="effect_mix">Микс</string>

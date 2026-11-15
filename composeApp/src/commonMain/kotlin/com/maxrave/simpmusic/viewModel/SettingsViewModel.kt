@@ -11,6 +11,8 @@ import com.maxrave.common.SELECTED_LANGUAGE
 import com.maxrave.common.VIDEO_QUALITY
 import com.maxrave.domain.data.entities.DownloadState
 import com.maxrave.domain.data.entities.GoogleAccountEntity
+import com.maxrave.domain.data.player.EightDDirection
+import com.maxrave.domain.data.player.EightDEffect
 import com.maxrave.domain.data.player.ReverbPreset
 import com.maxrave.domain.extension.toNetScapeString
 import com.maxrave.domain.manager.DataStoreManager
@@ -77,6 +79,8 @@ class SettingsViewModel(
 ) : BaseViewModel() {
     private val databasePath: String? = commonRepository.getDatabasePath()
     private val downloadUtils: DownloadHandler by inject()
+
+    val eightDAvailable: StateFlow<Boolean> get() = mediaPlayerHandler.player.eightDAvailable
 
     private var _location: MutableStateFlow<String?> = MutableStateFlow(null)
     val location: StateFlow<String?> = _location
@@ -1384,6 +1388,12 @@ class SettingsViewModel(
     }
 
     private var _delayEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _eightDEnabled = MutableStateFlow(false)
+    val eightDEnabled: StateFlow<Boolean> = _eightDEnabled
+    private val _eightDDirection = MutableStateFlow(EightDDirection.LEFT_TO_RIGHT)
+    val eightDDirection: StateFlow<EightDDirection> = _eightDDirection
+    private val _eightDPeriodSeconds = MutableStateFlow(EightDEffect.DEFAULT_PERIOD_SECONDS)
+    val eightDPeriodSeconds: StateFlow<Float> = _eightDPeriodSeconds
     val delayEnabled: StateFlow<Boolean> = _delayEnabled
 
     private var _delayTimeMs: MutableStateFlow<Int> = MutableStateFlow(DEFAULT_DELAY_TIME_MS)
@@ -1432,7 +1442,23 @@ class SettingsViewModel(
                 }
             }
             launch { dataStoreManager.reverbMix.collect { _reverbMix.emit(it) } }
+            launch { dataStoreManager.eightDEnabled.collect { _eightDEnabled.value = it == DataStoreManager.TRUE } }
+            launch { dataStoreManager.eightDDirection.collect { _eightDDirection.value = EightDDirection.fromStored(it) } }
+            launch { dataStoreManager.eightDPeriodSeconds.collect { _eightDPeriodSeconds.value = EightDEffect.normalizePeriod(it) } }
         }
+    }
+
+    fun setEightDEnabled(enabled: Boolean) {
+        if (enabled && !eightDAvailable.value) return
+        viewModelScope.launch { dataStoreManager.setEightDEnabled(enabled) }
+    }
+
+    fun setEightDDirection(direction: EightDDirection) {
+        viewModelScope.launch { dataStoreManager.setEightDDirection(direction) }
+    }
+
+    fun setEightDPeriodSeconds(seconds: Float) {
+        viewModelScope.launch { dataStoreManager.setEightDPeriodSeconds(seconds) }
     }
 
     fun setDelayEnabled(enabled: Boolean) {
