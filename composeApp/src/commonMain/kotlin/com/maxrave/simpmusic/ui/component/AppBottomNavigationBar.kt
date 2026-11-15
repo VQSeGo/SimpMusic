@@ -52,11 +52,10 @@ import kotlin.math.roundToInt
 import kotlin.reflect.KClass
 
 /**
- * The phone bottom bar with liquid glass OFF: the same floating capsule-and-FAB form as the glass
- * bar, drawn flat. One capsule of tabs (Search stays out — it is the round button beside it, the
- * same split the glass bar makes), a sliding rounded indicator instead of the frosted blob, solid
- * theme surfaces instead of refraction. Geometry mirrors the glass bar so switching the setting
- * changes the material, not the layout: 96dp tab cap, 64dp bar, 56dp indicator and FAB.
+ * The unfolding bottom bar for a narrow Desktop window: the same floating capsule-and-FAB form as
+ * the phone's [FoldingBottomNavigationBar]. One capsule of tabs (Search stays out — it is the round
+ * button beside it), a sliding rounded indicator, solid theme surfaces: 96dp tab cap, 64dp bar,
+ * 56dp indicator and FAB.
  */
 @Composable
 fun AppBottomNavigationBar(
@@ -127,7 +126,7 @@ fun AppBottomNavigationBar(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        // One centred cluster — capsule, gap, FAB — exactly like the glass bar: fill = false keeps
+        // One centred cluster — capsule, gap, FAB — exactly like the phone bar: fill = false keeps
         // the capsule at its measured width, so the leftover goes around the cluster instead of
         // wedging itself between the capsule and the search button.
         horizontalArrangement = Arrangement.Center,
@@ -155,7 +154,7 @@ fun AppBottomNavigationBar(
 }
 
 /**
- * The flat capsule of tabs. Like the glass tab bar it can be handed any width from the folded
+ * The flat capsule of tabs. It can be handed any width from the folded
  * [CollapsedBarSize] circle up to its full width: the surface follows that width, the tabs keep
  * their full-width layout and are uncovered from the start edge, and folded it shows
  * [collapsedContent] instead.
@@ -224,7 +223,7 @@ internal fun FlatTabBar(
                         },
                 contentAlignment = Alignment.CenterStart,
             ) {
-                // The sliding indicator — the flat stand-in for the glass bar's frosted blob. Hidden
+                // The sliding indicator. Hidden
                 // while Search (a non-capsule tab) is the selection, so nothing sits half-lit.
                 if (activePosition >= 0) {
                     Box(
@@ -311,15 +310,12 @@ internal fun FlatSearchButton(
     }
 }
 
-// Mirrors the glass tab bar's geometry (TabWidth/BarHeight/BlobHeight/BarInset in
-// LiquidGlassTabBar.android.kt) so the two bars are one form in two materials.
 private val FlatTabWidth = 96.dp
-private val FlatBarHeight = 64.dp
+internal val FlatBarHeight = 64.dp
 private val FlatIndicatorHeight = 56.dp
 private val CapsuleInset = 6.dp
 
-// Every tab the same width, capped so two tabs on a wide screen do not stretch into slabs — the
-// same budget rule as the glass tab bar.
+// Every tab the same width, capped so two tabs on a wide screen do not stretch into slabs.
 private fun flatTabWidth(
     tabsCount: Int,
     availableWidth: Dp,
@@ -331,8 +327,8 @@ internal fun flatTabBarWidth(
     availableWidth: Dp,
 ): Dp = flatTabWidth(tabsCount, availableWidth) * tabsCount + CapsuleInset * 2
 
-// The phone bar folds into one circle at its start edge (LiquidGlassAppBottomNavigationBar). Both
-// tab bars accept any width between this and their full width and fold by it.
+// The phone bar folds into one circle at its start edge (FoldingBottomNavigationBar). The tab bar
+// accepts any width between this and its full width and folds by it.
 internal val CollapsedBarSize = 48.dp
 
 // 0 at the folded circle, 1 at [fullWidth], read off the width the bar was actually handed.

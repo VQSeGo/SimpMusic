@@ -70,13 +70,11 @@ import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.expect.Orientation
 import com.maxrave.simpmusic.expect.currentOrientation
 import com.maxrave.simpmusic.expect.openUrl
-import com.maxrave.simpmusic.expect.ui.layerBackdrop
-import com.maxrave.simpmusic.expect.ui.rememberBackdrop
 import com.maxrave.simpmusic.extension.copy
 import com.maxrave.simpmusic.ui.component.AppBottomNavigationBar
 import com.maxrave.simpmusic.ui.component.AppNavigationRail
 import com.maxrave.simpmusic.ui.component.DesktopSidebar
-import com.maxrave.simpmusic.ui.component.LiquidGlassAppBottomNavigationBar
+import com.maxrave.simpmusic.ui.component.FoldingBottomNavigationBar
 import com.maxrave.simpmusic.ui.icon.ArrowForwardIos
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.AnalyticsDestination
@@ -158,7 +156,6 @@ fun App(
     val intent by viewModel.intent.collectAsStateWithLifecycle()
     val showNotificationPermissionDialog by viewModel.showNotificationPermissionDialog.collectAsStateWithLifecycle()
 
-    val isLiquidGlassEnabled by viewModel.getEnableLiquidGlass().collectAsStateWithLifecycle(DataStoreManager.FALSE)
     // Analytics only makes sense with local tracking on, so its tab follows that setting.
     val isLocalTrackingEnabled by viewModel.getLocalTrackingEnabled().collectAsStateWithLifecycle(DataStoreManager.FALSE)
     val analyticsTabEnabled by viewModel.analyticsTabEnabled.collectAsStateWithLifecycle(true)
@@ -459,8 +456,6 @@ fun App(
         themeMode = themeMode,
         themeColorSource = themeColorSource,
         customThemeColor = parseThemeColorHex(customThemeColorHex),
-        // The setting governs Desktop too, the same as Android: off, every glass surface draws flat.
-        liquidGlassEnabled = isLiquidGlassEnabled == TRUE,
     ) {
         // Read inside AppTheme so MaterialTheme reflects the resolved scheme.
         val isLightScheme = MaterialTheme.colorScheme.background.luminance() > 0.5f
@@ -471,11 +466,6 @@ fun App(
         val desktopWindow = if (isLightScheme) desktopWindowLight else desktopWindowDark
         val desktopPanel =
             if (isLightScheme) MaterialTheme.colorScheme.surfaceContainer else desktopPanelDark
-
-        // Backdrop base must match the page, so glass over an empty area reads as the page itself.
-        // On Desktop the page is the panel: its colour is painted outside the recorded layer, and
-        // colorScheme.background carries the seed's hue, which the glass's saturation boost brings out.
-        val backdrop = rememberBackdrop(if (isDesktopShell) desktopPanel else MaterialTheme.colorScheme.background)
         Scaffold(
             containerColor =
                 if (isDesktopShell) desktopWindow else MaterialTheme.colorScheme.background,
@@ -486,12 +476,12 @@ fun App(
                         enter = fadeIn() + slideInHorizontally(),
                         exit = fadeOut(),
                     ) {
-                        // On Android both materials go through the folding bar, which draws the mini
-                        // player itself. Desktop keeps the always-open flat bar under its own one.
-                        val useFoldingBar = getPlatform() == Platform.Android || isLiquidGlassEnabled == TRUE
+                        // Android goes through the folding bar, which draws the mini player itself.
+                        // Desktop keeps the always-open flat bar under its own one.
+                        val useFoldingBar = getPlatform() == Platform.Android
                         Column {
                             AnimatedVisibility(
-                                isShowMiniPlayer && !useFoldingBar && isLiquidGlassEnabled == DataStoreManager.FALSE,
+                                isShowMiniPlayer && !useFoldingBar,
                                 enter = fadeIn() + slideInHorizontally(),
                                 exit = fadeOut(),
                             ) {
@@ -506,7 +496,6 @@ fun App(
                                         ).padding(
                                             bottom = 4.dp,
                                         ),
-                                    backdrop = backdrop,
                                     navController = navController,
                                     onClick = {
                                         isShowNowPlaylistScreen = true
@@ -518,15 +507,13 @@ fun App(
                                 )
                             }
                             if (useFoldingBar) {
-                                LiquidGlassAppBottomNavigationBar(
+                                FoldingBottomNavigationBar(
                                     navController = navController,
-                                    backdrop = backdrop,
                                     viewModel = viewModel,
                                     onOpenNowPlaying = { isShowNowPlaylistScreen = true },
                                     isScrolledToTop = isScrolledToTop,
                                     showAnalyticsTab = showAnalyticsTab,
                                     showMixForYouTab = showMixForYouTab,
-                                    liquidGlass = isLiquidGlassEnabled == TRUE,
                                     miniPlayerCovered = isShowNowPlaylistScreen,
                                 ) { klass ->
                                     viewModel.reloadDestination(klass)
@@ -547,14 +534,7 @@ fun App(
             content = { innerPadding ->
                 Box(
                     Modifier
-                        .fillMaxSize()
-                        .then(
-                            if (isLiquidGlassEnabled == TRUE && !isTablet) {
-                                Modifier.layerBackdrop(backdrop)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                        .fillMaxSize(),
                 ) {
                     val tabletMiniPlayer: @Composable (Modifier) -> Unit = { modifier ->
                         androidx.compose.animation.AnimatedVisibility(
@@ -566,8 +546,8 @@ fun App(
                             MiniPlayer(
                                 if (getPlatform() == Platform.Android) {
                                     Modifier
-                                        // Glass keeps its 52dp card; the flat one is 56dp.
-                                        .height(if (isLiquidGlassEnabled == TRUE) 56.dp else 60.dp)
+                                        // A 56dp card + the 4dp gap below.
+                                        .height(60.dp)
                                         .fillMaxWidth(0.8f)
                                         .padding(
                                             horizontal = 12.dp,
@@ -577,8 +557,7 @@ fun App(
                                 } else {
                                     // Floating capsule, Apple Music style: a fixed size so it never
                                     // stretches to the window width, and no haze at all — the capsule
-                                    // paints its own liquid glass. Layering haze underneath blurs the
-                                    // same pixels twice and reads as a dark smear, not glass.
+                                    // paints its own opaque surface; haze under it reads as a dark smear.
                                     // padding BEFORE height: the other way round the bottom margin
                                     // eats into the 72dp and the capsule ends up 52dp tall.
                                     // 60dp is the floor for this layout: the content row is centred
@@ -591,7 +570,6 @@ fun App(
                                         .padding(bottom = 20.dp)
                                         .height(60.dp)
                                 },
-                                backdrop = backdrop,
                                 navController = navController,
                                 onClick = {
                                     isShowNowPlaylistScreen = true
@@ -613,8 +591,7 @@ fun App(
                     ) {
                         // Everything left of Now Playing. On Desktop the capsule player sits on the centre of
                         // this whole area, sidebar included, so it lives here rather than in the content panel,
-                        // which is both narrower than the capsule and clipped; and the area is what its glass
-                        // records, so the part over the sidebar refracts the sidebar instead of nothing.
+                        // which is both narrower than the capsule and clipped.
                         Box(
                             Modifier
                                 .weight(1f)
@@ -665,15 +642,7 @@ fun App(
                                     Box(
                                         Modifier
                                             .fillMaxSize()
-                                            .then(
-                                                // Tablets record the capsule's source here; Desktop records it on
-                                                // the Row above, which takes in the sidebar as well.
-                                                if (isLiquidGlassEnabled == TRUE && !isDesktopShell && isTablet && !isInFullscreen) {
-                                                    Modifier.layerBackdrop(backdrop)
-                                                } else {
-                                                    Modifier
-                                                },
-                                            ).hazeSource(hazeState),
+                                            .hazeSource(hazeState),
                                     ) {
                                         AppNavigationGraph(
                                             innerPadding = innerPadding,

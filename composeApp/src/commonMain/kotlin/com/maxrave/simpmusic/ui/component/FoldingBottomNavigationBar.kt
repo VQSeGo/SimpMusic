@@ -3,7 +3,6 @@ package com.maxrave.simpmusic.ui.component
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
 import com.maxrave.simpmusic.ui.icon.AutoGraph
 import com.maxrave.simpmusic.ui.icon.Home
 import com.maxrave.simpmusic.ui.icon.LibraryMusic
@@ -25,18 +24,20 @@ import simpmusic.composeapp.generated.resources.mix
 import simpmusic.composeapp.generated.resources.search
 import kotlin.reflect.KClass
 
+/**
+ * The phone's bottom bar: a capsule of tabs plus a separate Search button, which folds into one
+ * circle at its start edge while the page scrolls and carries the mini player above it (or beside
+ * the folded circle). Android only; Desktop has no bottom bar.
+ */
 @Composable
-expect fun LiquidGlassAppBottomNavigationBar(
+expect fun FoldingBottomNavigationBar(
     startDestination: Any = HomeDestination,
     navController: NavController,
-    backdrop: PlatformBackdrop,
     viewModel: SharedViewModel,
     isScrolledToTop: Boolean = false,
     showAnalyticsTab: Boolean = false,
     showMixForYouTab: Boolean = false,
     onOpenNowPlaying: () -> Unit = {},
-    // False draws the same folding bar in the flat material (liquid glass turned off).
-    liquidGlass: Boolean = true,
     // The Now Playing sheet covers the bar: the mini player stops its per-frame work (see MiniPlayer's isCovered).
     miniPlayerCovered: Boolean = false,
     reloadDestinationIfNeeded: (KClass<*>) -> Unit = { _ -> },
