@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -60,6 +61,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -258,11 +260,14 @@ fun PlaylistScreen(
         }
     }
 
-    val playingTrack by sharedViewModel.nowPlayingState
-        .mapLatest {
-            it?.songEntity
-        }.collectAsState(initial = null)
-    val isPlaying by sharedViewModel.controllerState.map { it.isPlaying }.collectAsState(initial = false)
+    // Remembered: a flow built in the body is new on every recomposition of the screen, and
+    // collectAsState restarted its collector each time.
+    val playingTrack by remember(sharedViewModel) {
+        sharedViewModel.nowPlayingState.mapLatest { it?.songEntity }
+    }.collectAsState(initial = null)
+    val isPlaying by remember(sharedViewModel) {
+        sharedViewModel.controllerState.map { it.isPlaying }
+    }.collectAsState(initial = false)
 
     var currentItem by remember {
         mutableStateOf<Track?>(null)
@@ -282,12 +287,18 @@ fun PlaylistScreen(
             ),
         )
     }
-    val onItemMoreClick: (videoId: String) -> Unit = { videoId ->
-        currentItem = tracks.firstOrNull { it.videoId == videoId }
-        if (currentItem != null) {
-            itemBottomSheetShow = true
+    // One instance for the screen's lifetime, reading the newest list when tapped. Capturing
+    // `tracks` made it a new lambda with every page of the mix, and every visible row with it.
+    val latestTracks by rememberUpdatedState(tracks)
+    val onItemMoreClick: (videoId: String) -> Unit =
+        remember {
+            { videoId ->
+                currentItem = latestTracks.firstOrNull { it.videoId == videoId }
+                if (currentItem != null) {
+                    itemBottomSheetShow = true
+                }
+            }
         }
-    }
     val onPlaylistMoreClick: () -> Unit = {
         playlistBottomSheetShow = true
     }
@@ -1038,63 +1049,41 @@ fun PlaylistScreen(
                             )
                         }
                     }
-                    items(count = filteredTrack.size, key = { index ->
-                        val item = filteredTrack.getOrNull(index)
-                        (item?.videoId ?: "") + "item_$index"
-                    }) { index ->
-                        val item = filteredTrack.getOrNull(index)
-                        if (item != null) {
-                            Column(modifier = Modifier.animateItem()) {
-                                if (playingTrack?.videoId == item.videoId && isPlaying) {
-                                    SongFullWidthItems(
-                                        forceDark = true,
-                                        isPlaying = true,
-                                        track = item,
-                                        onMoreClickListener = { onItemMoreClick(it) },
-                                        onClickListener = {
-                                            Logger.w("PlaylistScreen", "index: $index")
-                                            onPlaylistItemClick(it)
-                                        },
-                                        onAddToQueue = {
-                                            sharedViewModel.addListToQueue(
-                                                arrayListOf(item),
-                                            )
-                                        },
-                                        selectionMode = selectionState.isActive,
-                                        isSelected = selectionState.isSelected(item.videoId),
-                                        onLongClick = { selectionState.start(it) },
-                                        onSelectToggle = { selectionState.toggle(it) },
-                                        modifier = Modifier,
+                    // The row gets its track as a parameter: an index lambda that looked it up in
+                    // the list captured the list itself, so each loaded page (a mix pages in for as
+                    // long as it is scrolled) recomposed every visible row in full.
+                    val lastTrackIndex = filteredTrack.lastIndex
+                    itemsIndexed(
+                        items = filteredTrack,
+                        key = { index, item -> item.videoId + "item_$index" },
+                        contentType = { _, _ -> "track" },
+                    ) { index, item ->
+                        Column(modifier = Modifier.animateItem()) {
+                            // One call for both states, so the row keeps its state and the artwork
+                            // crossfades to the playing indicator instead of the row being rebuilt.
+                            SongFullWidthItems(
+                                forceDark = true,
+                                isPlaying = isPlaying && playingTrack?.videoId == item.videoId,
+                                track = item,
+                                onMoreClickListener = onItemMoreClick,
+                                onClickListener = onPlaylistItemClick,
+                                onAddToQueue = {
+                                    sharedViewModel.addListToQueue(
+                                        arrayListOf(item),
                                     )
-                                } else {
-                                    SongFullWidthItems(
-                                        forceDark = true,
-                                        isPlaying = false,
-                                        track = item,
-                                        onMoreClickListener = { onItemMoreClick(it) },
-                                        onClickListener = {
-                                            Logger.w("PlaylistScreen", "index: $index")
-                                            onPlaylistItemClick(it)
-                                        },
-                                        onAddToQueue = {
-                                            sharedViewModel.addListToQueue(
-                                                arrayListOf(item),
-                                            )
-                                        },
-                                        selectionMode = selectionState.isActive,
-                                        isSelected = selectionState.isSelected(item.videoId),
-                                        onLongClick = { selectionState.start(it) },
-                                        onSelectToggle = { selectionState.toggle(it) },
-                                        modifier = Modifier,
-                                    )
-                                }
-                                if (index < filteredTrack.size - 1) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(start = 72.dp, end = 16.dp),
-                                        thickness = 0.5.dp,
-                                        color = Color.White.copy(alpha = 0.12f),
-                                    )
-                                }
+                                },
+                                selectionMode = selectionState.isActive,
+                                isSelected = selectionState.isSelected(item.videoId),
+                                onLongClick = { selectionState.start(it) },
+                                onSelectToggle = { selectionState.toggle(it) },
+                                modifier = Modifier,
+                            )
+                            if (index < lastTrackIndex) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(start = 72.dp, end = 16.dp),
+                                    thickness = 0.5.dp,
+                                    color = Color.White.copy(alpha = 0.12f),
+                                )
                             }
                         }
                     }
