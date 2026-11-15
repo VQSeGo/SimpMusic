@@ -2,13 +2,16 @@ package com.maxrave.simpmusic.viewModel
 
 import androidx.lifecycle.viewModelScope
 import com.maxrave.common.LOCAL_PLAYLIST_ID
+import com.maxrave.domain.data.model.library.LibraryCollectionPreview
 import com.maxrave.domain.data.model.library.LibraryOverview
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.domain.repository.AlbumRepository
 import com.maxrave.domain.repository.ArtistRepository
+import com.maxrave.domain.repository.CacheRepository
 import com.maxrave.domain.repository.CommonRepository
 import com.maxrave.domain.repository.LocalPlaylistRepository
 import com.maxrave.domain.repository.PlaylistRepository
+import com.maxrave.domain.repository.SongRepository
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.LocalPlaylistDestination
@@ -18,6 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -39,6 +43,8 @@ class LibrarySidebarViewModel(
     playlistRepository: PlaylistRepository,
     albumRepository: AlbumRepository,
     artistRepository: ArtistRepository,
+    private val cacheRepository: CacheRepository,
+    private val songRepository: SongRepository,
 ) : BaseViewModel() {
     val overview: StateFlow<LibraryOverview?> =
         commonRepository
@@ -46,6 +52,10 @@ class LibrarySidebarViewModel(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     private val refreshes = MutableStateFlow(0)
+
+    /** The Cached row's count and artwork: the player cache is no table to observe, so it is read on [refresh]. */
+    private val _cachedPreview = MutableStateFlow<LibraryCollectionPreview?>(null)
+    val cachedPreview: StateFlow<LibraryCollectionPreview?> = _cachedPreview.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val items: StateFlow<List<LibrarySidebarItem>> =
@@ -123,6 +133,10 @@ class LibrarySidebarViewModel(
 
     fun refresh() {
         refreshes.update { it + 1 }
+        viewModelScope.launch {
+            val songs = loadCachedSongs(cacheRepository, songRepository)
+            _cachedPreview.value = LibraryCollectionPreview(songs.size, songs.mapNotNull { it.thumbnails }.take(3))
+        }
     }
 
     fun setCollapsed(collapsed: Boolean) {
