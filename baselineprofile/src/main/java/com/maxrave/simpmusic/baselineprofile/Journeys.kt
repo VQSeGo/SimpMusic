@@ -4,6 +4,7 @@ import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
+import androidx.test.uiautomator.StaleObjectException
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
 import java.util.regex.Pattern
@@ -44,16 +45,8 @@ fun MacrobenchmarkScope.dismissSignInDialog() {
 /** The home feed: waits for the guest feed to load and scrolls it down and back up. */
 fun MacrobenchmarkScope.scrollHome() {
     device.wait(Until.hasObject(By.text(PLAY_ALL)), TIMEOUT)
-    val feed = device.findObject(By.scrollable(true)) ?: return
-    feed.setGestureMargin(device.displayWidth / 5)
-    repeat(2) {
-        feed.fling(Direction.DOWN)
-        device.waitForIdle()
-    }
-    repeat(2) {
-        feed.fling(Direction.UP)
-        device.waitForIdle()
-    }
+    repeat(2) { flingScrollable(Direction.DOWN) }
+    repeat(2) { flingScrollable(Direction.UP) }
 }
 
 /** Starts Quick picks with "Play all" unless something already plays, and returns the mini player. */
@@ -95,13 +88,22 @@ fun MacrobenchmarkScope.openLibrary() {
     device.wait(Until.findObject(By.text(LIBRARY)), TIMEOUT)?.click() ?: return
     device.waitForIdle()
     Thread.sleep(1_500)
-    device.findObject(By.scrollable(true))?.let { list ->
-        list.setGestureMargin(device.displayWidth / 5)
-        list.fling(Direction.DOWN)
-        device.waitForIdle()
-        list.fling(Direction.UP)
-        device.waitForIdle()
+    // The list node is replaced while it scrolls (the bottom bar folds), so look it up again for
+    // every fling instead of holding a UiObject2 that goes stale.
+    for (direction in listOf(Direction.DOWN, Direction.UP)) {
+        flingScrollable(direction)
     }
     device.findObject(By.text(HOME))?.click()
+    device.waitForIdle()
+}
+
+private fun MacrobenchmarkScope.flingScrollable(direction: Direction) {
+    try {
+        val list = device.findObject(By.scrollable(true)) ?: return
+        list.setGestureMargin(device.displayWidth / 5)
+        list.fling(direction)
+    } catch (_: StaleObjectException) {
+        // The node was swapped mid-gesture; the profile only needs the scroll code to run.
+    }
     device.waitForIdle()
 }
