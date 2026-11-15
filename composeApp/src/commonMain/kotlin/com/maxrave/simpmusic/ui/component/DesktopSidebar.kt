@@ -169,8 +169,15 @@ fun DesktopSidebar(
     }
     // A row whose screen is already open (or further down the stack) goes back to it instead of stacking
     // another copy: five clicks on Settings used to mean five entry animations and five Esc presses.
+    // popBackStack(inclusive = false) answers false both when the screen is missing and when it is already on top
+    // (nothing to pop), so the stack is checked first: the screen on top stays put.
     val openOnce: (Any) -> Unit = { destination ->
-        if (!navController.popBackStack(destination, inclusive = false)) navController.navigate(destination)
+        val entry = runCatching { navController.getBackStackEntry(destination) }.getOrNull()
+        when {
+            entry == null -> navController.navigate(destination)
+            entry.id == navController.currentBackStackEntry?.id -> Unit
+            else -> navController.popBackStack(destination, inclusive = false)
+        }
     }
     val selectTab: (BottomNavScreen) -> Unit = { screen ->
         if (selectedIndex == screen.ordinal) {
