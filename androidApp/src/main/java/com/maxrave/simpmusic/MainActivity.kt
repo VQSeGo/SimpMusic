@@ -14,6 +14,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.contentcapture.ContentCaptureManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.net.toUri
@@ -124,6 +126,12 @@ class MainActivity : AppCompatActivity() {
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Where the system collects screen content (the main phone's ROM does), Compose walks the whole
+        // semantics tree on the main thread after every layout change. Scrolling a long playlist that
+        // cost 3-12 ms per frame, 13-15 % of the main thread, and was the largest single cause of
+        // dropped frames. Nothing in a music player needs it.
+        @OptIn(ExperimentalComposeUiApi::class)
+        ContentCaptureManager.isEnabled = false
         loadKoinModules(
             module {
                 single<AppCompatActivity> { this@MainActivity }
