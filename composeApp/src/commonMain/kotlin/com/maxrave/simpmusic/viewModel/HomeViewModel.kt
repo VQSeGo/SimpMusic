@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,6 +33,8 @@ import simpmusic.composeapp.generated.resources.music_video
 import simpmusic.composeapp.generated.resources.new_release
 import simpmusic.composeapp.generated.resources.song
 import simpmusic.composeapp.generated.resources.view_count
+
+private const val QUIET_REFRESH_RETRY_MS = 30_000L
 
 class HomeViewModel(
     private val dataStoreManager: DataStoreManager,
@@ -53,6 +56,11 @@ class HomeViewModel(
     val accountInfo: StateFlow<Pair<String?, String?>?> = _accountInfo
 
     private var homeJob: Job? = null
+
+    // The feed on screen is the saved copy (or nothing) because the last load found no network: refreshed
+    // by itself when the network is back ([quietRefreshHome]). False after a load the network answered.
+    private var homeStale = false
+    private var quietRefreshJob: Job? = null
 
     // The mood chip the feed on screen was loaded for; meaningful only while the list is not empty.
     private var shownHomeParams: String? = null
@@ -94,6 +102,15 @@ class HomeViewModel(
     val homeBackground: StateFlow<String?> = _homeBackground
 
     init {
+        // The signal covers Android (the device reports its links) and any answer after a lost request;
+        // the timer covers the rest (the desktop has no signal, a link that is up but not yet carrying).
+        viewModelScope.launch { homeRepository.networkRestored.collect { quietRefreshHome("network back") } }
+        viewModelScope.launch {
+            while (true) {
+                delay(QUIET_REFRESH_RETRY_MS)
+                quietRefreshHome("timer")
+            }
+        }
         viewModelScope.launch {
             if (dataStoreManager.cookie.first().isEmpty() &&
                 dataStoreManager.shouldShowLogInRequiredAlert.first() == TRUE
@@ -183,6 +200,8 @@ class HomeViewModel(
             loading.value = true
         }
         _homeListState.value = ListState.LOADING
+        homeStale = false
+        quietRefreshJob?.cancel()
         homeJob?.cancel()
         homeJob =
             viewModelScope.launch {
@@ -255,6 +274,7 @@ class HomeViewModel(
                     if (_homeItemList.value.isNotEmpty()) shownHomeParams = params
                 }
                 _homeListState.value = ListState.PAGINATION_EXHAUST
+                homeStale = true
                 Logger.w("Error", "getHomeItemList: ${home.message}")
                 // One message per failed refresh, and only when a feed stays on screen: with nothing to show
                 // the screen itself says "Can't connect", and the same words as a toast would be noise.
@@ -271,6 +291,58 @@ class HomeViewModel(
                 )
         }
         loading.value = false
+    }
+
+    /**
+     * Reloads Home without a word when it shows the saved copy for want of a network and a try may now
+     * get through: no shimmer, no toast, nothing when it fails again (the next signal or tick tries
+     * again). The fresh feed replaces the list where it stands. Skipped while a load of its own runs.
+     */
+    private fun quietRefreshHome(reason: String) {
+        if (!homeStale || homeJob?.isActive == true || quietRefreshJob?.isActive == true) return
+        val params = _params.value
+        Logger.i("Offline", "home quiet refresh ($reason)")
+        quietRefreshJob =
+            viewModelScope.launch {
+                val fresh =
+                    homeRepository
+                        .getHomeData(params, getString(Res.string.view_count), getString(Res.string.song), useCache = false)
+                        .firstOrNull { it is Resource.Success }
+                        ?.data
+                if (fresh == null || fresh.second.isEmpty()) return@launch
+                if (_params.value != params || homeJob?.isActive == true) return@launch
+                homeStale = false
+                _continuation.value = fresh.first
+                _homeItemList.value = fresh.second
+                _homeBackground.value = fresh.third
+                shownHomeParams = params
+                _homeListState.value = if (fresh.first.isNullOrEmpty()) ListState.PAGINATION_EXHAUST else ListState.IDLE
+                loading.value = false
+                Logger.i("Offline", "home quiet refresh done: ${fresh.second.size} shelves")
+                // The shelves beside the feed missed the network as well: only an answer replaces what is shown.
+                launch {
+                    (homeRepository.getMoodAndMomentsData().firstOrNull { it is Resource.Success } as? Resource.Success)
+                        ?.data
+                        ?.let { _exploreMoodItem.value = it }
+                }
+                launch {
+                    val chartKey = dataStoreManager.chartKey.first()
+                    (homeRepository.getChartData(chartKey).firstOrNull { it is Resource.Success } as? Resource.Success)
+                        ?.data
+                        ?.let {
+                            _chart.value = it
+                            regionCodeChart.value = chartKey
+                            loadingChart.value = false
+                        }
+                }
+                launch {
+                    val shelf =
+                        homeRepository
+                            .getNewRelease(getString(Res.string.new_release), getString(Res.string.music_video))
+                            .firstOrNull { it is Resource.Success }
+                    (shelf as? Resource.Success)?.data?.let { _newRelease.value = it }
+                }
+            }
     }
 
     /** A shelf's "Play all": YouTube's own finite queue of that shelf's songs. */
