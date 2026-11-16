@@ -510,6 +510,9 @@ class SharedViewModel(
                 )
                 loadMediaItemFromTrack(track, SONG_CLICK)
             } else {
+                // The stream resolves while the metadata page loads (2.5 s on the phone, 2026-11-16):
+                // the player asks only once the page is in, and then joins this request.
+                streamRepository.prefetchStream(videoId)
                 streamRepository.getFullMetadata(videoId).collectLatest { response ->
                     val track = response.data
                     when (response) {
