@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -184,6 +185,11 @@ internal fun FlatTabBar(
     // The tab under the indicator lights up as it is dragged across.
     val activePosition = dragPosition?.roundToInt() ?: selectedPosition
     val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
+    // The drag below runs in a pointerInput coroutine that is only restarted when its keys change,
+    // so it would keep the selection and callback it was launched with: a swipe back to the tab that
+    // was selected at launch (Home) would then look like "already selected" and do nothing.
+    val currentSelectedIndex by rememberUpdatedState(selectedIndex)
+    val currentOnTabSelected by rememberUpdatedState(onTabSelected)
     Box(
         modifier =
             modifier
@@ -213,7 +219,7 @@ internal fun FlatTabBar(
                                 onDragEnd = {
                                     val target = dragPosition?.roundToInt()?.let(tabs::get)
                                     dragPosition = null
-                                    if (target != null && target.ordinal != selectedIndex) onTabSelected(target)
+                                    if (target != null && target.ordinal != currentSelectedIndex) currentOnTabSelected(target)
                                 },
                                 onDragCancel = { dragPosition = null },
                             ) { change, _ ->
