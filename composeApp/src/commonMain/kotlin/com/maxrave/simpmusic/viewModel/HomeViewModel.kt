@@ -13,6 +13,7 @@ import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Startup
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.home_refresh_failed
 import simpmusic.composeapp.generated.resources.music_video
 import simpmusic.composeapp.generated.resources.new_release
 import simpmusic.composeapp.generated.resources.song
@@ -55,7 +57,10 @@ class HomeViewModel(
     // The mood chip the feed on screen was loaded for; meaningful only while the list is not empty.
     private var shownHomeParams: String? = null
 
-    val showSnackBarErrorState = MutableSharedFlow<String>()
+    // Holds one message for the screen to show (a toast on both platforms). Never suspends the loader:
+    // with no listener (the screen is not composed) the message is dropped, a newer one replaces an unshown one.
+    val showSnackBarErrorState =
+        MutableSharedFlow<String>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     private val _chart: MutableStateFlow<Chart?> = MutableStateFlow(null)
     val chart: StateFlow<Chart?> = _chart
@@ -251,7 +256,11 @@ class HomeViewModel(
                 }
                 _homeListState.value = ListState.PAGINATION_EXHAUST
                 Logger.w("Error", "getHomeItemList: ${home.message}")
-                home.message?.let { showSnackBarErrorState.emit(it) }
+                // One message per failed refresh, and only when a feed stays on screen: with nothing to show
+                // the screen itself says "Can't connect", and the same words as a toast would be noise.
+                if (_homeItemList.value.isNotEmpty()) {
+                    showSnackBarErrorState.emit(getString(Res.string.home_refresh_failed))
+                }
             }
         }
         if (dataStoreManager.cookie.first() != "") {
@@ -298,7 +307,7 @@ class HomeViewModel(
                             is Resource.Error -> {
                                 _continuation.value = null
                                 Logger.w(tag, "getContinueHomeItem: ${home.message}")
-                                showSnackBarErrorState.emit(home.message ?: "Unknown error")
+                                showSnackBarErrorState.emit(getString(Res.string.home_refresh_failed))
                                 _homeListState.value = ListState.PAGINATION_EXHAUST
                             }
                         }

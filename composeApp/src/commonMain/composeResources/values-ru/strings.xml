@@ -642,6 +642,7 @@
     <string name="synced_playlist_cannot_change_order">Порядок синхронизированного плейлиста невозможно изменить</string>
     <string name="home_offline_title">Ошибка подключения</string>
     <string name="home_offline_subtitle">Проверьте подключение к Интернету и повторите попытку, или прослушивайте скачанную музыку.</string>
+    <string name="home_refresh_failed">Не удалось обновить главную. Проверьте подключение к Интернету.</string>
     <string name="listen_to_downloaded">Слушать скачанную музыку</string>
     <string name="playing_on_device">Воспроизводится на %1$s</string>
     <string name="audio_output">Вывод звука</string>

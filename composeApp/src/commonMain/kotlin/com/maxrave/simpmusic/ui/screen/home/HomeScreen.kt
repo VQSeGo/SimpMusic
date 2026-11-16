@@ -380,6 +380,10 @@ fun HomeScreen(
     // Once per process: the first time Home has real content on screen.
     val reportFullyDrawn = rememberReportFullyDrawn()
     val homeShown = !loading && homeData.isNotEmpty()
+    // Failed refresh or page: the feed on screen stays, so say why nothing new came.
+    LaunchedEffect(viewModel) {
+        viewModel.showSnackBarErrorState.collect { message -> viewModel.makeToast(message) }
+    }
     LaunchedEffect(homeShown) {
         if (homeShown && Startup.markOnce("home-shown")) {
             reportFullyDrawn()
