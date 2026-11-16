@@ -10,10 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
@@ -201,9 +202,19 @@ fun Modifier.appleMusicLyricFocus(
 
     // alpha BEFORE blur: blurring an already-faded line keeps the two effects independent, whereas
     // fading a blurred layer washes the blur out into a flat smear.
+    //
+    // ModulateAlpha, not the default: with the default every dimmed line was an offscreen layer of
+    // its own (four full-width ones a frame on the phone's lyrics page, redrawn on every frame the
+    // page's gradient moves), only to be faded as one. A dimmed line is plain text or a single
+    // blurred layer, neither of which overlaps itself, so fading each drawing gives the same pixels
+    // without the extra pass. The one line that does overlap, the sung one with its bloom under the
+    // ink, is opaque but for the 400 ms it takes to come up. Read in the layer block, the fade
+    // recomposes nothing.
     return this
-        .alpha(lineAlpha)
-        .then(
+        .graphicsLayer {
+            alpha = lineAlpha
+            compositingStrategy = CompositingStrategy.ModulateAlpha
+        }.then(
             if (blurRadius > 0.dp) {
                 // Unbounded, NOT the default, on Android. blur(radius) alone uses
                 // BlurredEdgeTreatment.Rectangle, which clips the blur to the line's own bounds —
