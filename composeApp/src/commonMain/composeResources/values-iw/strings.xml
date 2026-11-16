@@ -220,7 +220,6 @@
     <string name="update_playlist">עדכן פלייליסט מיוטיוב מיוזיק</string>
     <string name="backup_create_success">גיבוי יוצר הצלחה</string>
     <string name="backup_create_failed">יצירת הגיבוי נכשלה</string>
-    <string name="main_lyrics_provider">ספק מילים ראשי</string>
     <string name="translation_language">שפת התרגום</string>
     <string name="follow_app_language">עקוב אחר שפת האפליקציה</string>
     <string name="email">אימייל</string>
@@ -280,8 +279,6 @@ SimpMusic תמיד בחינם וללא פרסומות\n\nBuild with ❤️ and C
     <string name="spotify">ספוטיפיי</string>
     <string name="log_in_to_spotify">התחבר לספוטיפיי</string>
     <string name="intro_login_to_spotify">התחבר לספוטיפיי מילים, קנבס ועוד</string>
-    <string name="enable_spotify_lyrics">אפשר ספוטיפיי מילים</string>
-    <string name="spotify_lyrícs_info">עוד מילים ללא תרגום</string>
     <string name="spotify_lyrics_provider">מילים מסופקות על ידי ספוטיפיי</string>
     <string name="offline_mode">מצב לא מקוון</string>
     <string name="added_to_youtube_liked">נוסף ליוטיוב 'אהבתי'</string>

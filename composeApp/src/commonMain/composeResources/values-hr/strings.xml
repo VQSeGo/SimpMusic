@@ -230,7 +230,6 @@
     <string name="update_playlist">Update playlist from YouTube Music</string>
     <string name="backup_create_success">Natragup create success</string>
     <string name="backup_create_failed">Natragup create failed</string>
-    <string name="main_lyrics_provider">Main Tekst pjesme Provider</string>
     <string name="translation_language">Translation Jezik</string>
     <string name="follow_app_language">Prati app language</string>
     <string name="email">E-pošta</string>
@@ -339,8 +338,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Log in to Spotify</string>
     <string name="intro_login_to_spotify">Log in for Spotify Tekst pjesme, Canvas and more</string>
-    <string name="enable_spotify_lyrics">Omogući Spotify Tekst pjesme</string>
-    <string name="spotify_lyrícs_info">Više lyrics without translation</string>
     <string name="spotify_lyrics_provider">Tekst pjesme provided by Spotify</string>
     <string name="offline_mode">Offline mode</string>
     <string name="added_to_youtube_liked">Dodajed to YouTube Sviđa mi se</string>

@@ -220,7 +220,6 @@
     <string name="update_playlist">Perbarui playlist dari YouTube Music</string>
     <string name="backup_create_success">Cadangan berhasil dibuat</string>
     <string name="backup_create_failed">Gagal membuat pencadangan</string>
-    <string name="main_lyrics_provider">Penyedia Lirik Utama</string>
     <string name="translation_language">Bahasa Terjemahan</string>
     <string name="follow_app_language">Mengikuti bahasa aplikasi</string>
     <string name="email">Email</string>
@@ -275,8 +274,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Masuk ke Spotify</string>
     <string name="intro_login_to_spotify">Masuk untuk Lirik Spotify, Kanvas DLL</string>
-    <string name="enable_spotify_lyrics">Aktifkan Lirik Spotify</string>
-    <string name="spotify_lyrícs_info">Lirik lainnya tanpa terjemahan</string>
     <string name="spotify_lyrics_provider">Lirik yang disediakan oleh Spotify</string>
     <string name="offline_mode">Mode Offline</string>
     <string name="added_to_youtube_liked">Ditambahkan ke YouTube Disukai</string>

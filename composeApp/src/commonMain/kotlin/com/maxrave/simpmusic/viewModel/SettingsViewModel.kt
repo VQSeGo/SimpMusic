@@ -28,6 +28,8 @@ import com.maxrave.domain.utils.LocalResource
 import com.maxrave.logger.LogLevel
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.expect.isOnUnmeteredNetwork
+import com.maxrave.simpmusic.utils.LyricsSourceEntry
+import com.maxrave.simpmusic.utils.LyricsSourceQueue
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -36,6 +38,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -43,6 +46,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -98,8 +102,11 @@ class SettingsViewModel(
     val lastCheckForUpdate: StateFlow<String?> = _lastCheckForUpdate
     private var _sendBackToGoogle: MutableStateFlow<String?> = MutableStateFlow(null)
     val sendBackToGoogle: StateFlow<String?> = _sendBackToGoogle
-    private var _mainLyricsProvider: MutableStateFlow<String?> = MutableStateFlow(null)
-    val mainLyricsProvider: StateFlow<String?> = _mainLyricsProvider
+    /** The lyrics sources in the order they are asked, each on or off; empty until read. */
+    val lyricsSources: StateFlow<List<LyricsSourceEntry>> =
+        LyricsSourceQueue
+            .flow(dataStoreManager)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     private var _translationLanguage: MutableStateFlow<String?> = MutableStateFlow(null)
     val translationLanguage: StateFlow<String?> = _translationLanguage
@@ -217,13 +224,11 @@ class SettingsViewModel(
         getLastCheckForUpdate()
         getTranslationLanguage()
         getYoutubeSubtitleLanguage()
-        getLyricsProvider()
         getUseTranslation()
         getPlayVideoInsteadOfAudio()
         getRadioAudioOnly()
         getVideoQuality()
         getSpotifyLogIn()
-        getSpotifyLyrics()
         getEqualizer()
         getAudioEffects()
         getUsingProxy()
@@ -688,18 +693,9 @@ class SettingsViewModel(
         }
     }
 
-    fun getLyricsProvider() {
+    fun saveLyricsSources(entries: List<LyricsSourceEntry>) {
         viewModelScope.launch {
-            dataStoreManager.lyricsProvider.collect { mainLyricsProvider ->
-                _mainLyricsProvider.emit(mainLyricsProvider)
-            }
-        }
-    }
-
-    fun setLyricsProvider(provider: String) {
-        viewModelScope.launch {
-            dataStoreManager.setLyricsProvider(provider)
-            getLyricsProvider()
+            LyricsSourceQueue.save(dataStoreManager, entries)
         }
     }
 
@@ -1254,13 +1250,9 @@ class SettingsViewModel(
             _spotifyLogIn.emit(loggedIn)
             if (!loggedIn) {
                 dataStoreManager.setSpdc("")
-                // Logging out of Spotify must also tear down everything gated behind it. Otherwise the
-                // lyrics flag stays stuck ON with no way to switch them off (the toggles grey out
-                // when logged out) and stale tokens linger — issue #2064, same family as Discord #2157.
-                dataStoreManager.setSpotifyLyrics(false)
-                if (dataStoreManager.lyricsProvider.first() == DataStoreManager.SPOTIFY) {
-                    dataStoreManager.setLyricsProvider(DataStoreManager.SIMPMUSIC)
-                }
+                // Logging out of Spotify must also tear down everything gated behind it, or stale
+                // tokens linger — issue #2064, same family as Discord #2157. Spotify keeps its place
+                // and switch in the lyrics source queue: the queue skips it until the next login.
                 dataStoreManager.setSpotifyClientToken("")
                 dataStoreManager.setSpotifyClientTokenExpires(0)
                 dataStoreManager.setSpotifyPersonalToken("")
@@ -1507,28 +1499,6 @@ class SettingsViewModel(
             dataStoreManager.setDelayTimeMs(timeMs)
             dataStoreManager.setDelayFeedback(feedback)
             dataStoreManager.setDelayMix(mix)
-        }
-    }
-
-    private var _spotifyLyrics: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val spotifyLyrics: StateFlow<Boolean> = _spotifyLyrics
-
-    fun getSpotifyLyrics() {
-        viewModelScope.launch {
-            dataStoreManager.spotifyLyrics.collect {
-                if (it == DataStoreManager.TRUE) {
-                    _spotifyLyrics.emit(true)
-                } else {
-                    _spotifyLyrics.emit(false)
-                }
-            }
-        }
-    }
-
-    fun setSpotifyLyrics(loggedIn: Boolean) {
-        viewModelScope.launch {
-            dataStoreManager.setSpotifyLyrics(loggedIn)
-            getSpotifyLyrics()
         }
     }
 

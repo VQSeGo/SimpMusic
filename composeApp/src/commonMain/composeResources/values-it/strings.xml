@@ -248,7 +248,6 @@
     <string name="update_playlist">Aggiorna la playlist da YouTube Music</string>
     <string name="backup_create_success">Copia di sicurezza creata con successo</string>
     <string name="backup_create_failed">Duplicazione non riuscita</string>
-    <string name="main_lyrics_provider">Fornitore principale di testi</string>
     <string name="translation_language">Lingua di traduzione</string>
     <string name="follow_app_language">Segui la lingua dell'applicazione</string>
     <string name="email">Posta elettronica</string>
@@ -351,8 +350,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Accedi con Spotify</string>
     <string name="intro_login_to_spotify">Accedi per i testi, i Canvas e altro ancora da Spotify</string>
-    <string name="enable_spotify_lyrics">Abilita testi da Spotify</string>
-    <string name="spotify_lyrícs_info">Più testi senza traduzione</string>
     <string name="spotify_lyrics_provider">Testi forniti da Spotify</string>
     <string name="offline_mode">Modalità disconnessa</string>
     <string name="added_to_youtube_liked">Aggiunto ai mi piace di YouTube</string>

@@ -241,7 +241,6 @@
     <string name="update_playlist">Оновити плейлист з YouTube Music</string>
     <string name="backup_create_success">Успішно створено резервну копію</string>
     <string name="backup_create_failed">Не вдалося створити резервну копію</string>
-    <string name="main_lyrics_provider">Основне джерело текстів</string>
     <string name="translation_language">Мова перекладу</string>
     <string name="follow_app_language">Дотримуватись мови програми</string>
     <string name="email">Адреса електронної пошти</string>
@@ -355,8 +354,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Увійти в Spotify</string>
     <string name="intro_login_to_spotify">Увійдіть для Spotify Lyrics, Canvas та інше</string>
-    <string name="enable_spotify_lyrics">Увімкнути Spotify Lyrics</string>
-    <string name="spotify_lyrícs_info">Більше текстів пісень без перекладу</string>
     <string name="spotify_lyrics_provider">Тексти пісень надані Spotify</string>
     <string name="offline_mode">Автономний режим</string>
     <string name="added_to_youtube_liked">Додано у вподобані на YouTube</string>

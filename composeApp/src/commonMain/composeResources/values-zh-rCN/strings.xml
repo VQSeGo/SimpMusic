@@ -225,7 +225,6 @@
     <string name="update_playlist">从 YouTube Music 更新歌单</string>
     <string name="backup_create_success">备份创建成功</string>
     <string name="backup_create_failed">备份创建失败</string>
-    <string name="main_lyrics_provider">主歌词提供商</string>
     <string name="translation_language">翻译语言</string>
     <string name="follow_app_language">跟随应用语言</string>
     <string name="email">邮箱</string>
@@ -285,8 +284,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">登录Spotify</string>
     <string name="intro_login_to_spotify">登录以获取 Spotify Lyrics, Canvas 及更多</string>
-    <string name="enable_spotify_lyrics">启用 Spotify 歌词</string>
-    <string name="spotify_lyrícs_info">更多没有翻译的歌词</string>
     <string name="spotify_lyrics_provider">由 Spotify 提供的歌词</string>
     <string name="offline_mode">离线模式</string>
     <string name="added_to_youtube_liked">添加到 YouTube 赞过</string>

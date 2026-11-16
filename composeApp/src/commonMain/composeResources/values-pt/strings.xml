@@ -225,7 +225,6 @@
     <string name="update_playlist">Atualizar playlist do YouTube Music</string>
     <string name="backup_create_success">Backup criado com sucesso</string>
     <string name="backup_create_failed">Falha ao criar backup</string>
-    <string name="main_lyrics_provider">Provedor principal de letras</string>
     <string name="translation_language">Translation Language</string>
     <string name="follow_app_language">Siga o idioma do aplicativo</string>
     <string name="email">Email</string>
@@ -288,8 +287,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Entrar no Spotify</string>
     <string name="intro_login_to_spotify">Fazer login em Spotify Lyrics, Canvas e muito mais</string>
-    <string name="enable_spotify_lyrics">Habilitar letras do Spotify</string>
-    <string name="spotify_lyrícs_info">More lyrics without translation</string>
     <string name="spotify_lyrics_provider">Letras fornecidas pela Lrclib</string>
     <string name="offline_mode">Modo offline</string>
     <string name="added_to_youtube_liked">Adicionado aos "Curtidos" do YouTube</string>

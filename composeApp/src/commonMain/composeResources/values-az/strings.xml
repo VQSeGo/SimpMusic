@@ -215,7 +215,6 @@
     <string name="update_playlist">YouTube Music-dən Pleylisti Yenilə</string>
     <string name="backup_create_success">Nüsxə uğurla yaradıldı</string>
     <string name="backup_create_failed">Nüsxə yaratmaq alınmadı</string>
-    <string name="main_lyrics_provider">Əsas Lirika Təminatçısı</string>
     <string name="translation_language">Tərcümə Dili</string>
     <string name="follow_app_language">Tətbiq dilin icra et</string>
     <string name="email">E-Poçt</string>
@@ -270,8 +269,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Spotify-a daxil olun</string>
     <string name="intro_login_to_spotify">Spotify Lirika, Canvas və daha çoxu üçün daxil olun</string>
-    <string name="enable_spotify_lyrics">Spotify Lirikasını Aktivləşdir</string>
-    <string name="spotify_lyrícs_info">Tərcüməsiz daha çox lirika</string>
     <string name="spotify_lyrics_provider">Lirika Spotify tərəfindən təmin edilib</string>
     <string name="offline_mode">Oflayn rejim</string>
     <string name="added_to_youtube_liked">YouTube Bəyənməyə Əlavə Edildi</string>

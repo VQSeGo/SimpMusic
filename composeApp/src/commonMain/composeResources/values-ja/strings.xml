@@ -246,7 +246,6 @@
     <string name="update_playlist">YouTubeミュージックから再生リストを更新</string>
     <string name="backup_create_success">バックアップの作成に成功しました</string>
     <string name="backup_create_failed">バックアップの作成に失敗しました</string>
-    <string name="main_lyrics_provider">メインにする歌詞の提供元</string>
     <string name="translation_language">翻訳言語</string>
     <string name="follow_app_language">アプリの言語に従う</string>
     <string name="email">メールアドレス</string>
@@ -358,8 +357,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Spotify にログインする</string>
     <string name="intro_login_to_spotify">Spotifyにログインして、歌詞やCanvasなどを取得する</string>
-    <string name="enable_spotify_lyrics">Spotifyの歌詞を有効化</string>
-    <string name="spotify_lyrícs_info">翻訳機能なしで歌詞を表示</string>
     <string name="spotify_lyrics_provider">歌詞の提供元 Spotify</string>
     <string name="offline_mode">オフラインモード</string>
     <string name="added_to_youtube_liked">YouTubeの高評価に追加しました</string>

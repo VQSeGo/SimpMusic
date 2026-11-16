@@ -230,7 +230,6 @@
     <string name="update_playlist">به‌روزرسانی فهرست پخش از یوتیوب موزیک</string>
     <string name="backup_create_success">ایجاد پشتیبان با موفقیت انجام شد</string>
     <string name="backup_create_failed">ایجاد پشتیبان ناموفق بود</string>
-    <string name="main_lyrics_provider">تأمین‌کننده اصلی متن ترانه</string>
     <string name="translation_language">زبان ترجمه</string>
     <string name="follow_app_language">پیروی از زبان برنامه</string>
     <string name="email">رایانامه</string>
@@ -293,8 +292,6 @@
     <string name="spotify">اسپاتیفای</string>
     <string name="log_in_to_spotify">وارد اسپاتیفای شوید</string>
     <string name="intro_login_to_spotify">وارد شوید برای متن ترانه‌های اسپاتیفای، بوم و بیشتر</string>
-    <string name="enable_spotify_lyrics">به‌کارگیری متن ترانه اسپاتیفای</string>
-    <string name="spotify_lyrícs_info">متن‌های بیشتری بدون ترجمه</string>
     <string name="spotify_lyrics_provider">متن ترانه ارائه شده توسط اسپاتیفای</string>
     <string name="offline_mode">حالت آفلاین</string>
     <string name="added_to_youtube_liked">به فهرست پسندیده‌های یوتیوب افزوده شد</string>

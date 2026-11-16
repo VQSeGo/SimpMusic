@@ -225,7 +225,6 @@
     <string name="update_playlist">YouTube Music에서 재생목록 업데이트</string>
     <string name="backup_create_success">백업 생성 성공</string>
     <string name="backup_create_failed">백업 생성 실패</string>
-    <string name="main_lyrics_provider">주 가사 제공자</string>
     <string name="translation_language">번역 언어</string>
     <string name="follow_app_language">앱 언어 따름</string>
     <string name="email">이메일</string>
@@ -290,8 +289,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Spotify에 로그인</string>
     <string name="intro_login_to_spotify">로그인하여 Spotify 가사, 캔버스 등 이용</string>
-    <string name="enable_spotify_lyrics">Spotify 가사 켜기</string>
-    <string name="spotify_lyrícs_info">번역 없이 더 많은 가사 제공</string>
     <string name="spotify_lyrics_provider">Spotify에서 제공된 가사</string>
     <string name="offline_mode">오프라인 모드</string>
     <string name="added_to_youtube_liked">YouTube 좋아요 표시한 항목에 추가 완료</string>

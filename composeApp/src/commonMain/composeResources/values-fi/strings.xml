@@ -215,7 +215,6 @@
     <string name="update_playlist">Päivitä soittolista YouTube Musicista</string>
     <string name="backup_create_success">Varmuuskopioinnin luonti onnistui</string>
     <string name="backup_create_failed">Varmuuskopioinnin luonti epäonnistui</string>
-    <string name="main_lyrics_provider">Ensisijainen sanoituspalvelu</string>
     <string name="translation_language">Käännöksen kieli</string>
     <string name="follow_app_language">Sama kuin sovelluksen kieli</string>
     <string name="email">Sähköposti</string>

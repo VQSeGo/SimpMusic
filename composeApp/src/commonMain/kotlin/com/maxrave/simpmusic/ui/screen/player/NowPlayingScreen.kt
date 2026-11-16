@@ -738,7 +738,7 @@ fun NowPlayingScreenContent(
             // Info is out of the player's button row, so the menu carries it.
             onShowInfo = { showInfoBottomSheet = true },
             setSleepTimerEnable = true,
-            changeMainLyricsProviderEnable = true,
+            changeLyricsSourcesEnable = true,
             // Offered only once every provider and the offline cache came back empty for this song.
             onAddLyrics =
                 nowPlayingState

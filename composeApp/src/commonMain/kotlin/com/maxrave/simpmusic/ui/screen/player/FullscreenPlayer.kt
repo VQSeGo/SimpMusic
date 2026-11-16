@@ -763,7 +763,7 @@ fun FullscreenPlayer(
                     onDismiss = { showBottom = false },
                     navController = navController,
                     setSleepTimerEnable = true,
-                    changeMainLyricsProviderEnable = true,
+                    changeLyricsSourcesEnable = true,
                     song = null,
                     // Offered only once every provider and the offline cache came back empty for this song.
                     onAddLyrics =

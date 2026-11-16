@@ -236,7 +236,6 @@
     <string name="update_playlist">Actualizar lista de reproducción desde YouTube Music</string>
     <string name="backup_create_success">Copia de seguridad creada con éxito</string>
     <string name="backup_create_failed">Error al crear copia de seguridad</string>
-    <string name="main_lyrics_provider">Proveedor principal de letras</string>
     <string name="translation_language">Idioma de la traducción</string>
     <string name="follow_app_language">Usar el idioma de la aplicación</string>
     <string name="email">Correo electrónico</string>
@@ -346,8 +345,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Iniciar sesión en Spotify</string>
     <string name="intro_login_to_spotify">Inicia sesión para Letras de Spotify, lienzo y más</string>
-    <string name="enable_spotify_lyrics">Activar Letras de Spotify</string>
-    <string name="spotify_lyrícs_info">Más letras sin traducción</string>
     <string name="spotify_lyrics_provider">Letras proporcionadas por Spotify</string>
     <string name="offline_mode">Modo sin conexión</string>
     <string name="added_to_youtube_liked">Añadido a YouTube me gustó</string>

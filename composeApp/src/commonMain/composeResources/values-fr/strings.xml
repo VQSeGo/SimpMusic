@@ -248,7 +248,6 @@
     <string name="update_playlist">Mettre à jour la playlist depuis YouTube Music</string>
     <string name="backup_create_success">Sauvegarde réalisée avec succès</string>
     <string name="backup_create_failed">Échec de la création de la sauvegarde</string>
-    <string name="main_lyrics_provider">Fournisseur principal de paroles</string>
     <string name="translation_language">Langue de traduction</string>
     <string name="follow_app_language">Suivre la langue de l'application</string>
     <string name="email">E-mail</string>
@@ -361,8 +360,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Se connecter à Spotify</string>
     <string name="intro_login_to_spotify">Connectez-vous pour des paroles Spotify, Canvas, et plus encore !</string>
-    <string name="enable_spotify_lyrics">Activer les paroles Spotify</string>
-    <string name="spotify_lyrícs_info">Plus de paroles sans traduction</string>
     <string name="spotify_lyrics_provider">Paroles fournies par Spotify</string>
     <string name="offline_mode">Mode hors-ligne</string>
     <string name="added_to_youtube_liked">Ajouté aux favoris YouTube</string>

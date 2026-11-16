@@ -10,11 +10,6 @@ import com.maxrave.domain.data.model.searchResult.songs.Album
 import com.maxrave.domain.data.model.searchResult.songs.Artist
 import com.maxrave.domain.data.model.streams.YouTubeWatchEndpoint
 import com.maxrave.domain.manager.DataStoreManager
-import com.maxrave.domain.manager.DataStoreManager.Values.BETTER_LYRICS
-import com.maxrave.domain.manager.DataStoreManager.Values.LRCLIB
-import com.maxrave.domain.manager.DataStoreManager.Values.SIMPMUSIC
-import com.maxrave.domain.manager.DataStoreManager.Values.SPOTIFY
-import com.maxrave.domain.manager.DataStoreManager.Values.YOUTUBE
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.mediaservice.handler.PlaylistType
 import com.maxrave.domain.mediaservice.handler.QueueData
@@ -27,8 +22,9 @@ import com.maxrave.domain.utils.collectLatestResource
 import com.maxrave.domain.utils.collectResource
 import com.maxrave.domain.utils.isLive
 import com.maxrave.domain.utils.toTrack
-import com.maxrave.logger.LogLevel
 import com.maxrave.simpmusic.expect.shareUrl
+import com.maxrave.simpmusic.utils.LyricsSourceEntry
+import com.maxrave.simpmusic.utils.LyricsSourceQueue
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +62,6 @@ class NowPlayingBottomSheetViewModel(
             NowPlayingBottomSheetUIState(
                 listLocalPlaylist = emptyList(),
                 listYouTubePlaylist = emptyList(),
-                mainLyricsProvider = SIMPMUSIC,
                 sleepTimer =
                     SleepTimerState(
                         false,
@@ -111,41 +106,17 @@ class NowPlayingBottomSheetViewModel(
                         _uiState.update { it.copy(spotifyLoggedIn = spdc.isNotEmpty()) }
                     }
                 }
-            val mainLyricsProviderJob =
+            val lyricsSourcesJob =
                 launch {
-                    dataStoreManager.lyricsProvider.collectLatest { lyricsProvider ->
-                        when (lyricsProvider) {
-                            SIMPMUSIC -> {
-                                _uiState.update { it.copy(mainLyricsProvider = SIMPMUSIC) }
-                            }
-
-                            YOUTUBE -> {
-                                _uiState.update { it.copy(mainLyricsProvider = YOUTUBE) }
-                            }
-
-                            LRCLIB -> {
-                                _uiState.update { it.copy(mainLyricsProvider = LRCLIB) }
-                            }
-
-                            BETTER_LYRICS -> {
-                                _uiState.update { it.copy(mainLyricsProvider = BETTER_LYRICS) }
-                            }
-
-                            SPOTIFY -> {
-                                _uiState.update { it.copy(mainLyricsProvider = SPOTIFY) }
-                            }
-
-                            else -> {
-                                log("Unknown lyrics provider", LogLevel.ERROR)
-                            }
-                        }
+                    LyricsSourceQueue.flow(dataStoreManager).collectLatest { sources ->
+                        _uiState.update { it.copy(lyricsSources = sources) }
                     }
                 }
             sleepTimerJob.join()
             listLocalPlaylistJob.join()
             listYouTubePlaylistJob.join()
             spotifyLogInJob.join()
-            mainLyricsProviderJob.join()
+            lyricsSourcesJob.join()
         }
     }
 
@@ -353,12 +324,8 @@ class NowPlayingBottomSheetViewModel(
                     makeToast(getString(Res.string.added_to_queue))
                 }
 
-                is NowPlayingBottomSheetUIEvent.ChangeLyricsProvider -> {
-                    if (listOf(SIMPMUSIC, YOUTUBE, LRCLIB, BETTER_LYRICS, SPOTIFY).contains(ev.lyricsProvider)) {
-                        dataStoreManager.setLyricsProvider(ev.lyricsProvider)
-                    } else {
-                        return@launch
-                    }
+                is NowPlayingBottomSheetUIEvent.SaveLyricsSources -> {
+                    LyricsSourceQueue.save(dataStoreManager, ev.sources)
                 }
 
                 is NowPlayingBottomSheetUIEvent.SetSleepTimer -> {
@@ -426,7 +393,8 @@ data class NowPlayingBottomSheetUIState(
     val songUIState: SongUIState = SongUIState(),
     val listLocalPlaylist: List<LocalPlaylistEntity>,
     val listYouTubePlaylist: List<PlaylistsResult>,
-    val mainLyricsProvider: String,
+    /** The lyrics source queue; empty until read. */
+    val lyricsSources: List<LyricsSourceEntry> = emptyList(),
     val spotifyLoggedIn: Boolean = false,
     val sleepTimer: SleepTimerState,
 ) {
@@ -464,8 +432,8 @@ sealed class NowPlayingBottomSheetUIEvent {
 
     data object AddToQueue : NowPlayingBottomSheetUIEvent()
 
-    data class ChangeLyricsProvider(
-        val lyricsProvider: String,
+    data class SaveLyricsSources(
+        val sources: List<LyricsSourceEntry>,
     ) : NowPlayingBottomSheetUIEvent()
 
     data class SetSleepTimer(

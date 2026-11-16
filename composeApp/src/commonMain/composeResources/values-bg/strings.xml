@@ -224,7 +224,6 @@
     <string name="update_playlist">Обновяване на плейлист от YouTube Music</string>
     <string name="backup_create_success">Създаването на резервно копие е успешно</string>
     <string name="backup_create_failed">Създаването на резервно копие е неуспешно</string>
-    <string name="main_lyrics_provider">Основен доставчик на текстове</string>
     <string name="translation_language">Език на превода</string>
     <string name="follow_app_language">Следвай езика на приложението</string>
     <string name="email">Имейл</string>
@@ -285,8 +284,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Вход в Spotify</string>
     <string name="intro_login_to_spotify">Вход за Spotify Lyrics, Canvas и още</string>
-    <string name="enable_spotify_lyrics">Включи Spotify Lyrics</string>
-    <string name="spotify_lyrícs_info">Повече текстове без превод</string>
     <string name="spotify_lyrics_provider">Текст предоставен от Spotify</string>
     <string name="offline_mode">Режим офлайн</string>
     <string name="added_to_youtube_liked">Добавено в YouTube харесани</string>

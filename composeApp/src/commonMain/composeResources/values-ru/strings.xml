@@ -256,7 +256,10 @@
     <string name="update_playlist">Обновить плейлист из YouTube Music</string>
     <string name="backup_create_success">Резервное копирование создает успех</string>
     <string name="backup_create_failed">Не удалось создать резервную копию</string>
-    <string name="main_lyrics_provider">Главный поставщик текстов</string>
+    <string name="lyrics_sources">Источники текстов</string>
+    <string name="lyrics_sources_description">Спрашиваются сверху вниз, пока у одного не найдётся текст. Синхронизированный текст ниже по списку берётся вместо простого. Перетащите строку, чтобы переместить её (на телефоне сначала нажмите и удерживайте).</string>
+    <string name="lyrics_sources_all_off">Все источники выключены</string>
+    <string name="lyrics_source_needs_spotify_login">Пропускается, пока не выполнен вход в Spotify</string>
     <string name="translation_language">Язык перевода</string>
     <string name="follow_app_language">Следуйте языку приложения</string>
     <string name="email">Электронная почта</string>
@@ -379,8 +382,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Войти в Spotify</string>
     <string name="intro_login_to_spotify">Войдите для Spotify Lyrics</string>
-    <string name="enable_spotify_lyrics">Включить тексты песен Spotify</string>
-    <string name="spotify_lyrícs_info">Больше текстов песен без перевода</string>
     <string name="spotify_lyrics_provider">Текст предоставлен Spotify</string>
     <string name="offline_mode">Офлайн режим</string>
     <string name="added_to_youtube_liked">Добавлено в лайки YouTube</string>

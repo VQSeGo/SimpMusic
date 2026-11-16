@@ -225,7 +225,6 @@
     <string name="update_playlist">Update playlist from YouTube Music</string>
     <string name="backup_create_success">Backup create success</string>
     <string name="backup_create_failed">Backup create success</string>
-    <string name="main_lyrics_provider">Main Lyrics Provider</string>
     <string name="translation_language">Translation Language</string>
     <string name="follow_app_language">Follow app language</string>
     <string name="email">Correu electrònic</string>
@@ -286,8 +285,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Inicieu sessió a Spotify</string>
     <string name="intro_login_to_spotify">Inicieu la sessió per a Spotify Lyrics, Canvas i molt més</string>
-    <string name="enable_spotify_lyrics">Activa les lletres de Spotify</string>
-    <string name="spotify_lyrícs_info">Més lletres sense traducció</string>
     <string name="spotify_lyrics_provider">Lyrics proporcionada per Spotify</string>
     <string name="offline_mode">Mode fora de línia</string>
     <string name="added_to_youtube_liked">S'ha afegit a YouTube M'agrada</string>

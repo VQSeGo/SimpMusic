@@ -228,7 +228,6 @@
     <string name="update_playlist">यूट्यूब म्यूजिक से प्लेलिस्ट अपडेट करें</string>
     <string name="backup_create_success">बैकअप सफलतापूर्वक बनाया गया</string>
     <string name="backup_create_failed">बैकअप बनाने में विफल</string>
-    <string name="main_lyrics_provider">मुख्य गीत प्रदाता</string>
     <string name="translation_language">अनुवाद भाषा</string>
     <string name="follow_app_language">ऐप भाषा का अनुसरण करें</string>
     <string name="email">ईमेल</string>
@@ -288,8 +287,6 @@
     <string name="spotify">स्पॉटिफाए</string>
     <string name="log_in_to_spotify">Spotify में लॉग इन करें</string>
     <string name="intro_login_to_spotify">Spotify लिरिक्स, कैनवास और बहुत कुछ के लिए लॉग इन करें</string>
-    <string name="enable_spotify_lyrics">Spotify लिरिक्स सक्षम करें</string>
-    <string name="spotify_lyrícs_info">बिना अनुवाद के अधिक गीत</string>
     <string name="spotify_lyrics_provider">गीत Spotify द्वारा प्रदान किए गए</string>
     <string name="offline_mode">ऑफ़लाइन मोड</string>
     <string name="added_to_youtube_liked">YouTube पसंदीदा में जोड़ा गया</string>

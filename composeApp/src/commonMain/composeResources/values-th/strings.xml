@@ -225,7 +225,6 @@
     <string name="update_playlist">อัปเดตเพลย์ลิสต์จาก YouTube Music</string>
     <string name="backup_create_success">การสำรองข้อมูลสำเร็จ</string>
     <string name="backup_create_failed">การสร้างข้อมูลสำรองล้มเหลว</string>
-    <string name="main_lyrics_provider">ผู้ให้บริการเนื้อเพลงหลัก</string>
     <string name="translation_language">แปลภาษา</string>
     <string name="follow_app_language">ทำตามภาษาของแอป</string>
     <string name="email">อีเมล</string>
@@ -302,8 +301,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">เข้าสู่ระบบ Spotify</string>
     <string name="intro_login_to_spotify">เข้าสู่ระบบ Spotify Lyrics, Canvas และอื่นๆ</string>
-    <string name="enable_spotify_lyrics">เปิดใช้งานเนื้อเพลงของ Spotify</string>
-    <string name="spotify_lyrícs_info">เนื้อเพลงเพิ่มเติมแบบไม่มีคำแปล</string>
     <string name="spotify_lyrics_provider">เนื้อเพลงโดย Spotify</string>
     <string name="offline_mode">โหมดออฟไลน์</string>
     <string name="added_to_youtube_liked">เพิ่มถูกใจไปยัง YouTube แล้ว</string>

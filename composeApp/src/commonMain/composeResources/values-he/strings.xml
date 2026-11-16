@@ -251,7 +251,6 @@
     <string name="update_playlist">עדכן פלייליסט מ-YouTube Music</string>
     <string name="backup_create_success">הגיבוי נוצר בהצלחה</string>
     <string name="backup_create_failed">יצירת הגיבוי נכשלה</string>
-    <string name="main_lyrics_provider">ספק מילים ראשי</string>
     <string name="translation_language">שפת התרגום</string>
     <string name="follow_app_language">עקוב אחר שפת האפליקציה</string>
     <string name="email">דוא"ל</string>
@@ -366,8 +365,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nBuild with ❤️ and 
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">התחבר ל-Spotify</string>
     <string name="intro_login_to_spotify">התחבר ל-Spotify מילים, קנבס ועוד</string>
-    <string name="enable_spotify_lyrics">הפעל מילים מ-Spotify</string>
-    <string name="spotify_lyrícs_info">עוד מילים ללא תרגום</string>
     <string name="spotify_lyrics_provider">מילים מסופקות על ידי Spotify</string>
     <string name="offline_mode">מצב לא מקוון</string>
     <string name="added_to_youtube_liked">נוסף לרשימת התכנים שאהבת ב-YouTube</string>

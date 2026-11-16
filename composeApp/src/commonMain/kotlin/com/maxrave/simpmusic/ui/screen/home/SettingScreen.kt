@@ -114,6 +114,8 @@ import com.maxrave.simpmusic.ui.component.AmbientThemeGlow
 import com.maxrave.simpmusic.ui.component.CenterLoadingBox
 import com.maxrave.simpmusic.ui.component.EndOfPage
 import com.maxrave.simpmusic.ui.component.LoadingDialog
+import com.maxrave.simpmusic.ui.component.LyricsSourcesDialog
+import com.maxrave.simpmusic.ui.component.lyricsSourcesSummary
 import com.maxrave.simpmusic.ui.component.RippleIconButton
 import com.maxrave.simpmusic.ui.component.SettingGroup
 import com.maxrave.simpmusic.ui.component.SettingItem
@@ -186,7 +188,6 @@ import simpmusic.composeapp.generated.resources.based_on_simpmusic
 import simpmusic.composeapp.generated.resources.backup_downloaded
 import simpmusic.composeapp.generated.resources.backup_downloaded_description
 import simpmusic.composeapp.generated.resources.balance_media_loudness
-import simpmusic.composeapp.generated.resources.better_lyrics
 import simpmusic.composeapp.generated.resources.cancel
 import simpmusic.composeapp.generated.resources.change
 import simpmusic.composeapp.generated.resources.change_language_warning
@@ -213,7 +214,6 @@ import simpmusic.composeapp.generated.resources.discord_integration
 import simpmusic.composeapp.generated.resources.download_quality
 import simpmusic.composeapp.generated.resources.downloaded_cache
 import simpmusic.composeapp.generated.resources.enable_rich_presence
-import simpmusic.composeapp.generated.resources.enable_spotify_lyrics
 import simpmusic.composeapp.generated.resources.equalizer
 import simpmusic.composeapp.generated.resources.equalizer_description
 import simpmusic.composeapp.generated.resources.equalizer_type
@@ -249,9 +249,8 @@ import simpmusic.composeapp.generated.resources.login_sync_android_title
 import simpmusic.composeapp.generated.resources.login_sync_desktop_description
 import simpmusic.composeapp.generated.resources.login_sync_desktop_title
 import simpmusic.composeapp.generated.resources.login_sync_section
-import simpmusic.composeapp.generated.resources.lrclib
 import simpmusic.composeapp.generated.resources.lyrics
-import simpmusic.composeapp.generated.resources.main_lyrics_provider
+import simpmusic.composeapp.generated.resources.lyrics_sources
 import simpmusic.composeapp.generated.resources.manage_your_youtube_accounts
 import simpmusic.composeapp.generated.resources.no_account
 import simpmusic.composeapp.generated.resources.normalize_volume
@@ -291,7 +290,6 @@ import simpmusic.composeapp.generated.resources.settings
 import simpmusic.composeapp.generated.resources.show_analytics_tab
 import simpmusic.composeapp.generated.resources.show_analytics_tab_description
 import simpmusic.composeapp.generated.resources.signed_in
-import simpmusic.composeapp.generated.resources.simpmusic_lyrics
 import simpmusic.composeapp.generated.resources.skip_no_music_part
 import simpmusic.composeapp.generated.resources.skip_silent
 import simpmusic.composeapp.generated.resources.smart_downloads
@@ -301,7 +299,6 @@ import simpmusic.composeapp.generated.resources.smart_downloads_size
 import simpmusic.composeapp.generated.resources.smart_downloads_size_value
 import simpmusic.composeapp.generated.resources.socks
 import simpmusic.composeapp.generated.resources.spotify
-import simpmusic.composeapp.generated.resources.spotify_lyrícs_info
 import simpmusic.composeapp.generated.resources.storage
 import simpmusic.composeapp.generated.resources.such_as_music_video_lyrics_video_podcasts_and_more
 import simpmusic.composeapp.generated.resources.theme
@@ -316,7 +313,6 @@ import simpmusic.composeapp.generated.resources.third_party_libraries
 import simpmusic.composeapp.generated.resources.thumbnail_cache
 import simpmusic.composeapp.generated.resources.translation_language
 import simpmusic.composeapp.generated.resources.translation_language_message
-import simpmusic.composeapp.generated.resources.unknown
 import simpmusic.composeapp.generated.resources.upload_your_listening_history_to_youtube_music_server_it_will_make_yt_music_recommendation_system_better_working_only_if_logged_in
 import simpmusic.composeapp.generated.resources.use_your_system_equalizer
 import simpmusic.composeapp.generated.resources.user_interface
@@ -328,7 +324,6 @@ import simpmusic.composeapp.generated.resources.warning
 import simpmusic.composeapp.generated.resources.youtube_account
 import simpmusic.composeapp.generated.resources.youtube_subtitle_language
 import simpmusic.composeapp.generated.resources.youtube_subtitle_language_message
-import simpmusic.composeapp.generated.resources.youtube_transcript
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -404,11 +399,10 @@ fun SettingScreen(
     val skipSilent by remember { viewModel.skipSilent.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
     val savePlaybackState by remember { viewModel.savedPlaybackState.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
     val killServiceOnExit by remember { viewModel.killServiceOnExit.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = true)
-    val mainLyricsProvider by viewModel.mainLyricsProvider.collectAsStateWithLifecycle()
+    val lyricsSources by viewModel.lyricsSources.collectAsStateWithLifecycle()
     val youtubeSubtitleLanguage by viewModel.youtubeSubtitleLanguage.collectAsStateWithLifecycle()
     val preferredAudioLanguage by viewModel.preferredAudioLanguage.collectAsStateWithLifecycle()
     val spotifyLoggedIn by viewModel.spotifyLogIn.collectAsStateWithLifecycle()
-    val spotifyLyrics by viewModel.spotifyLyrics.collectAsStateWithLifecycle()
     val playerCache by viewModel.cacheSize.collectAsStateWithLifecycle()
     val downloadedCache by viewModel.downloadedCacheSize.collectAsStateWithLifecycle()
     val thumbnailCache by viewModel.thumbCacheSize.collectAsStateWithLifecycle()
@@ -472,6 +466,7 @@ fun SettingScreen(
     var showLoginSyncDialog by rememberSaveable {
         mutableStateOf(false)
     }
+    var showLyricsSourcesDialog by rememberSaveable { mutableStateOf(false) }
     var showThirdPartyLibraries by rememberSaveable {
         mutableStateOf(false)
     }
@@ -1322,58 +1317,9 @@ fun SettingScreen(
         item(key = "lyrics") {
             SettingGroup(title = stringResource(Res.string.lyrics)) {
                 SettingItem(
-                    title = stringResource(Res.string.main_lyrics_provider),
-                    subtitle =
-                        when (mainLyricsProvider) {
-                            DataStoreManager.SIMPMUSIC -> stringResource(Res.string.simpmusic_lyrics)
-                            DataStoreManager.YOUTUBE -> stringResource(Res.string.youtube_transcript)
-                            DataStoreManager.LRCLIB -> stringResource(Res.string.lrclib)
-                            DataStoreManager.BETTER_LYRICS -> stringResource(Res.string.better_lyrics)
-                            DataStoreManager.SPOTIFY -> stringResource(Res.string.spotify)
-                            else -> stringResource(Res.string.unknown)
-                        },
-                    onClick = {
-                        viewModel.setAlertData(
-                            SettingAlertState(
-                                title = runBlocking { getString(Res.string.main_lyrics_provider) },
-                                selectOne =
-                                    SettingAlertState.SelectData(
-                                        listSelect =
-                                            listOf(
-                                                (mainLyricsProvider == DataStoreManager.SIMPMUSIC) to
-                                                    runBlocking { getString(Res.string.simpmusic_lyrics) },
-                                                (mainLyricsProvider == DataStoreManager.YOUTUBE) to
-                                                    runBlocking { getString(Res.string.youtube_transcript) },
-                                                (mainLyricsProvider == DataStoreManager.LRCLIB) to runBlocking { getString(Res.string.lrclib) },
-                                                (mainLyricsProvider == DataStoreManager.BETTER_LYRICS) to
-                                                    runBlocking { getString(Res.string.better_lyrics) },
-                                            ) +
-                                                if (spotifyLoggedIn) {
-                                                    listOf(
-                                                        (mainLyricsProvider == DataStoreManager.SPOTIFY) to
-                                                            runBlocking { getString(Res.string.spotify) },
-                                                    )
-                                                } else {
-                                                    emptyList()
-                                                },
-                                    ),
-                                confirm =
-                                    runBlocking { getString(Res.string.change) } to { state ->
-                                        viewModel.setLyricsProvider(
-                                            when (state.selectOne?.getSelected()) {
-                                                runBlocking { getString(Res.string.simpmusic_lyrics) } -> DataStoreManager.SIMPMUSIC
-                                                runBlocking { getString(Res.string.youtube_transcript) } -> DataStoreManager.YOUTUBE
-                                                runBlocking { getString(Res.string.lrclib) } -> DataStoreManager.LRCLIB
-                                                runBlocking { getString(Res.string.better_lyrics) } -> DataStoreManager.BETTER_LYRICS
-                                                runBlocking { getString(Res.string.spotify) } -> DataStoreManager.SPOTIFY
-                                                else -> DataStoreManager.SIMPMUSIC
-                                            },
-                                        )
-                                    },
-                                dismiss = runBlocking { getString(Res.string.cancel) },
-                            ),
-                        )
-                    },
+                    title = stringResource(Res.string.lyrics_sources),
+                    subtitle = lyricsSourcesSummary(lyricsSources),
+                    onClick = { if (lyricsSources.isNotEmpty()) showLyricsSourcesDialog = true },
                 )
 
                 SettingItem(
@@ -1457,12 +1403,6 @@ fun SettingScreen(
                             navController.navigate(SpotifyLoginDestination)
                         }
                     },
-                )
-                SettingItem(
-                    title = stringResource(Res.string.enable_spotify_lyrics),
-                    subtitle = stringResource(Res.string.spotify_lyrícs_info),
-                    switch = (spotifyLyrics to { viewModel.setSpotifyLyrics(it) }),
-                    isEnable = spotifyLoggedIn,
                 )
             }
         }
@@ -2323,6 +2263,15 @@ fun SettingScreen(
                     Text(text = alertState.dismiss)
                 }
             },
+        )
+    }
+
+    if (showLyricsSourcesDialog && lyricsSources.isNotEmpty()) {
+        LyricsSourcesDialog(
+            sources = lyricsSources,
+            spotifyLoggedIn = spotifyLoggedIn,
+            onSave = viewModel::saveLyricsSources,
+            onDismiss = { showLyricsSourcesDialog = false },
         )
     }
 

@@ -67,7 +67,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -208,7 +207,6 @@ import simpmusic.composeapp.generated.resources.add_to_queue_disabled_radio
 import simpmusic.composeapp.generated.resources.album
 import simpmusic.composeapp.generated.resources.artists
 import simpmusic.composeapp.generated.resources.baseline_favorite_24
-import simpmusic.composeapp.generated.resources.better_lyrics
 import simpmusic.composeapp.generated.resources.bitrate
 import simpmusic.composeapp.generated.resources.can_not_be_empty
 import simpmusic.composeapp.generated.resources.cancel
@@ -243,8 +241,7 @@ import simpmusic.composeapp.generated.resources.like
 import simpmusic.composeapp.generated.resources.like_and_dislike
 import simpmusic.composeapp.generated.resources.liked
 import simpmusic.composeapp.generated.resources.list_all_cookies_of_this_page
-import simpmusic.composeapp.generated.resources.lrclib
-import simpmusic.composeapp.generated.resources.main_lyrics_provider
+import simpmusic.composeapp.generated.resources.lyrics_sources
 import simpmusic.composeapp.generated.resources.merging_audio_and_video
 import simpmusic.composeapp.generated.resources.mime_type
 import simpmusic.composeapp.generated.resources.move_down
@@ -276,7 +273,6 @@ import simpmusic.composeapp.generated.resources.search
 import simpmusic.composeapp.generated.resources.set
 import simpmusic.composeapp.generated.resources.share
 import simpmusic.composeapp.generated.resources.share_url
-import simpmusic.composeapp.generated.resources.simpmusic_lyrics
 import simpmusic.composeapp.generated.resources.sleep_minutes
 import simpmusic.composeapp.generated.resources.sleep_timer
 import simpmusic.composeapp.generated.resources.sleep_timer_end_of_song
@@ -284,7 +280,6 @@ import simpmusic.composeapp.generated.resources.sleep_timer_off
 import simpmusic.composeapp.generated.resources.sleep_timer_set_error
 import simpmusic.composeapp.generated.resources.sleep_timer_warning
 import simpmusic.composeapp.generated.resources.sort_by
-import simpmusic.composeapp.generated.resources.spotify
 import simpmusic.composeapp.generated.resources.start_radio
 import simpmusic.composeapp.generated.resources.sync
 import simpmusic.composeapp.generated.resources.sync_first
@@ -301,7 +296,6 @@ import simpmusic.composeapp.generated.resources.your_playlists
 import simpmusic.composeapp.generated.resources.your_sp_dc_param_of_spotify_cookie
 import simpmusic.composeapp.generated.resources.your_youtube_cookie
 import simpmusic.composeapp.generated.resources.your_youtube_playlists
-import simpmusic.composeapp.generated.resources.youtube_transcript
 import simpmusic.composeapp.generated.resources.youtube_url
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1280,13 +1274,13 @@ fun NowPlayingBottomSheet(
     song: SongEntity?,
     viewModel: NowPlayingBottomSheetViewModel = koinViewModel(),
     setSleepTimerEnable: Boolean = false,
-    changeMainLyricsProviderEnable: Boolean = false,
+    changeLyricsSourcesEnable: Boolean = false,
     onNavigateToOtherScreen: () -> Unit = {},
     onDelete: (() -> Unit)? = null,
     onLibraryDelete: (() -> Unit)? = null,
     /** Set when opened from the "Cached" list: adds a row that drops the song from the player cache. */
     onRemoveFromCache: (() -> Unit)? = null,
-    /** Set while the song playing has no lyrics: adds Add lyrics under Main Lyrics Provider. */
+    /** Set while the song playing has no lyrics: adds Add lyrics under Lyrics sources. */
     onAddLyrics: (() -> Unit)? = null,
     /** Set when opened from a queue row: adds that row's move and delete actions at the top. */
     queuePosition: QueuePosition? = null,
@@ -1317,7 +1311,7 @@ fun NowPlayingBottomSheet(
 
     var addToAPlaylist by remember { mutableStateOf(false) }
     var artist by remember { mutableStateOf(false) }
-    var mainLyricsProvider by remember { mutableStateOf(false) }
+    var lyricsSources by remember { mutableStateOf(false) }
     var sleepTimer by remember { mutableStateOf(false) }
     var sleepTimerWarning by remember { mutableStateOf(false) }
     var isBottomSheetVisible by rememberSaveable { mutableStateOf(false) }
@@ -1419,121 +1413,13 @@ fun NowPlayingBottomSheet(
         )
     }
 
-    if (mainLyricsProvider) {
-        var selected by remember {
-            mutableIntStateOf(
-                when (uiState.mainLyricsProvider) {
-                    DataStoreManager.SIMPMUSIC -> 0
-                    DataStoreManager.LRCLIB -> 1
-                    DataStoreManager.YOUTUBE -> 2
-                    DataStoreManager.BETTER_LYRICS -> 3
-                    DataStoreManager.SPOTIFY -> 4
-                    else -> 0
-                },
-            )
-        }
-
-        AlertDialog(
-            onDismissRequest = { mainLyricsProvider = false },
+    if (lyricsSources && uiState.lyricsSources.isNotEmpty()) {
+        LyricsSourcesDialog(
+            sources = uiState.lyricsSources,
+            spotifyLoggedIn = uiState.spotifyLoggedIn,
+            onSave = { viewModel.onUIEvent(NowPlayingBottomSheetUIEvent.SaveLyricsSources(it)) },
+            onDismiss = { lyricsSources = false },
             containerColor = rememberSurfaceDarkColors().container,
-            title = {
-                Text(
-                    text = stringResource(Res.string.main_lyrics_provider),
-                    style = typo().titleMedium,
-                )
-            },
-            text = {
-                Column {
-                    Row(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 4.dp)
-                                .fillMaxWidth()
-                                .clickable { selected = 0 },
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        RadioButton(selected = selected == 0, onClick = { selected = 0 })
-                        Spacer(modifier = Modifier.size(10.dp))
-                        Text(text = stringResource(Res.string.simpmusic_lyrics), style = typo().labelSmall)
-                    }
-                    Row(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 4.dp)
-                                .fillMaxWidth()
-                                .clickable { selected = 1 },
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        RadioButton(selected = selected == 1, onClick = { selected = 1 })
-                        Spacer(modifier = Modifier.size(10.dp))
-                        Text(text = stringResource(Res.string.lrclib), style = typo().labelSmall)
-                    }
-                    Row(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 4.dp)
-                                .fillMaxWidth()
-                                .clickable { selected = 2 },
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        RadioButton(selected = selected == 2, onClick = { selected = 2 })
-                        Spacer(modifier = Modifier.size(10.dp))
-                        Text(text = stringResource(Res.string.youtube_transcript), style = typo().labelSmall)
-                    }
-                    Row(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 4.dp)
-                                .fillMaxWidth()
-                                .clickable { selected = 3 },
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        RadioButton(selected = selected == 3, onClick = { selected = 3 })
-                        Spacer(modifier = Modifier.size(10.dp))
-                        Text(text = stringResource(Res.string.better_lyrics), style = typo().labelSmall)
-                    }
-                    if (uiState.spotifyLoggedIn) {
-                        Row(
-                            modifier =
-                                Modifier
-                                    .padding(horizontal = 4.dp)
-                                    .fillMaxWidth()
-                                    .clickable { selected = 4 },
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            RadioButton(selected = selected == 4, onClick = { selected = 4 })
-                            Spacer(modifier = Modifier.size(10.dp))
-                            Text(text = stringResource(Res.string.spotify), style = typo().labelSmall)
-                        }
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.onUIEvent(
-                            NowPlayingBottomSheetUIEvent.ChangeLyricsProvider(
-                                when (selected) {
-                                    0 -> DataStoreManager.SIMPMUSIC
-                                    1 -> DataStoreManager.LRCLIB
-                                    2 -> DataStoreManager.YOUTUBE
-                                    3 -> DataStoreManager.BETTER_LYRICS
-                                    4 -> DataStoreManager.SPOTIFY
-                                    else -> DataStoreManager.SIMPMUSIC
-                                },
-                            ),
-                        )
-                        mainLyricsProvider = false
-                    },
-                ) {
-                    Text(text = stringResource(Res.string.yes), style = typo().labelSmall)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { mainLyricsProvider = false }) {
-                    Text(text = stringResource(Res.string.cancel), style = typo().labelSmall)
-                }
-            },
         )
     }
 
@@ -1811,13 +1697,13 @@ fun NowPlayingBottomSheet(
                         )
                         hideModalBottomSheet()
                     }
-                    Crossfade(targetState = changeMainLyricsProviderEnable) {
+                    Crossfade(targetState = changeLyricsSourcesEnable) {
                         if (it) {
                             ActionButton(
                                 icon = SimpIcons.Lyrics,
-                                text = Res.string.main_lyrics_provider,
+                                text = Res.string.lyrics_sources,
                             ) {
-                                mainLyricsProvider = true
+                                lyricsSources = true
                             }
                         }
                     }

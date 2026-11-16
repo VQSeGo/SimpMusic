@@ -248,7 +248,6 @@
     <string name="update_playlist">Uppdatera spellistan från YouTube Music</string>
     <string name="backup_create_success">Säkerhetskopian har skapats</string>
     <string name="backup_create_failed">Det gick inte att skapa säkerhetskopian</string>
-    <string name="main_lyrics_provider">Primär leverantör av låttexter</string>
     <string name="translation_language">Översättningsspråk</string>
     <string name="follow_app_language">Använd appens språk</string>
     <string name="email">E-post</string>
@@ -361,8 +360,6 @@
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Logga in på Spotify</string>
     <string name="intro_login_to_spotify">Logga in för att få Spotifys låttexter, Canvas med mera</string>
-    <string name="enable_spotify_lyrics">Aktivera Spotifys låttexter</string>
-    <string name="spotify_lyrícs_info">Fler låttexter utan översättning</string>
     <string name="spotify_lyrics_provider">Låttexter tillhandahålls av Spotify</string>
     <string name="offline_mode">Offlineläge</string>
     <string name="added_to_youtube_liked">Har lagts till bland gillade låtar på YouTube</string>

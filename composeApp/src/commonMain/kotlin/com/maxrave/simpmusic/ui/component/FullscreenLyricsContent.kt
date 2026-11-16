@@ -725,7 +725,7 @@ fun FullscreenLyricsContent(
             },
             song = null,
             setSleepTimerEnable = true,
-            changeMainLyricsProviderEnable = true,
+            changeLyricsSourcesEnable = true,
             onShowInfo = { showInfoBottomSheet = true },
         )
     }
