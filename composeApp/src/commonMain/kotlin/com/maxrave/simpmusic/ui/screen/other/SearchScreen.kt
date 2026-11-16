@@ -278,6 +278,20 @@ fun SearchScreen(
         showBottomSheet = true
     }
 
+    // On Android a rotation makes the activity again, and with it the search ViewModel: the saved
+    // query and chip come back but the results do not, so a screen that was showing results would
+    // read "no results found". Searching the saved query again brings them back. Declared before the
+    // effects below, which may clear isSearchSubmitted.
+    var lastSearchType by rememberSaveable { mutableStateOf(SearchType.ALL) }
+    LaunchedEffect(Unit) {
+        if (isSearchSubmitted && searchText.isNotBlank() && uiState is SearchScreenUIState.Empty) {
+            searchViewModel.restoreSearch(searchText.trim(), lastSearchType)
+        }
+    }
+    LaunchedEffect(searchScreenState.searchType, uiState) {
+        if (uiState is SearchScreenUIState.Success) lastSearchType = searchScreenState.searchType
+    }
+
     LaunchedEffect(searchText) {
         if (isFocused) {
             isSearchSubmitted = false

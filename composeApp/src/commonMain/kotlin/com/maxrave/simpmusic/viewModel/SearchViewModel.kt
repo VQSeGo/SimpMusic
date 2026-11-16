@@ -18,6 +18,7 @@ import com.maxrave.domain.utils.toQueryList
 import com.maxrave.logger.LogLevel
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -205,9 +206,9 @@ class SearchViewModel(
         }
     }
 
-    fun searchAll(query: String) {
+    fun searchAll(query: String): Job {
         _searchScreenUIState.value = SearchScreenUIState.Loading
-        viewModelScope.launch {
+        return viewModelScope.launch {
             var song = ArrayList<SongsResult>()
             val video = ArrayList<VideosResult>()
             var album = ArrayList<AlbumsResult>()
@@ -464,6 +465,22 @@ class SearchViewModel(
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Gets back the results this screen was showing after the ViewModel was made again (the Android
+     * activity re-creates the ViewModel module on every rotation, so the results are gone while the
+     * screen's saved query and chip survive). One search for everything — the chips filter its
+     * lists — and then the chip, which a finished [searchAll] resets to "all".
+     */
+    fun restoreSearch(
+        query: String,
+        searchType: SearchType,
+    ) {
+        viewModelScope.launch {
+            searchAll(query).join()
+            setSearchType(searchType)
         }
     }
 
