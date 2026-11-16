@@ -47,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
@@ -597,7 +598,11 @@ fun LyricsView(
                                     RichSyncLyricsLineItem(
                                         parsedLine = parsedLine,
                                         translatedWords = translatedWords,
-                                        currentTimeMs = current.current - lyricsOffsetMs,
+                                        // Only the sung line follows the position. Read for every row,
+                                        // it recomposed every visible line, and restarted each one's
+                                        // playhead, on every 50 ms tick; a line that is not being sung
+                                        // never looks at the time (see rememberSmoothPlayhead).
+                                        currentTimeMs = if (index == currentLineIndex) current.current - lyricsOffsetMs else 0L,
                                         isCurrent = index == currentLineIndex,
                                         customFontSize = if (appleStyle) AppleMusicLyricFontSize else null,
                                         glow = if (appleStyle && index == currentLineIndex) AppleMusicActiveLineGlow else null,
@@ -841,7 +846,10 @@ private fun rememberSmoothPlayhead(
     rawMs: Long,
     enabled: Boolean,
 ): State<Long> {
-    val playhead = remember { mutableLongStateOf(rawMs) }
+    // Keyed on [enabled]: a line that becomes the sung one starts from the position it was handed in
+    // that same composition. A line that is not sung is handed no real position at all (LyricsView
+    // passes it a constant), so a playhead carried over from that time would start the words wrong.
+    val playhead = remember(enabled) { mutableLongStateOf(rawMs) }
     LaunchedEffect(rawMs, enabled) {
         if (!enabled) {
             playhead.longValue = rawMs
@@ -850,11 +858,15 @@ private fun rememberSmoothPlayhead(
         // Keyed on rawMs, so the next real tick cancels this loop and restarts it from the truth —
         // the interpolation can accumulate error for at most one tick before being corrected.
         var baseNanos = -1L
-        while (true) {
+        var settled = false
+        // Stops once it has run one tick ahead, where it would only write the same value on every
+        // frame (and keep asking for frames) until the next tick — for good while paused.
+        while (!settled) {
             withInfiniteAnimationFrameNanos { frameNanos ->
                 if (baseNanos < 0L) baseNanos = frameNanos
                 val elapsedMs = (frameNanos - baseNanos) / 1_000_000L
                 playhead.longValue = rawMs + elapsedMs.coerceIn(0L, PLAYHEAD_TICK_MS)
+                settled = elapsedMs >= PLAYHEAD_TICK_MS
             }
         }
     }
@@ -940,7 +952,6 @@ fun RichSyncLyricsLineItem(
                         wordIndex = index,
                         wordStartTimeMs = wordTiming.startTimeMs,
                         wordEndTimeMs = wordEndTimeMs,
-                        currentTimeMs = currentTimeMs,
                         playheadMs = playhead,
                         isActive = isCurrent && index == currentWordIndex,
                         isPast = isCurrent && index < currentWordIndex,
@@ -976,10 +987,11 @@ private fun AnimatedWord(
     wordIndex: Int,
     wordStartTimeMs: Long,
     wordEndTimeMs: Long,
-    currentTimeMs: Long,
-    // The frame-interpolated playhead, taken as State and read ONLY inside the effect below. Taking
-    // it as a plain Long would recompose every word in the line on every frame; a State read from a
-    // suspend body is not a composition read at all.
+    // The frame-interpolated playhead, taken as State and read ONLY inside the effect below and,
+    // unobserved, where the wipe is created. Taking it as a plain Long would recompose every word in
+    // the line on every frame; a State read from a suspend body is not a composition read at all.
+    // The raw position is not taken either: it changed on every tick, and every word of the sung
+    // line recomposed with it although only the wipe's starting point ever used it.
     playheadMs: State<Long>,
     isActive: Boolean,
     isPast: Boolean,
@@ -1023,8 +1035,9 @@ private fun AnimatedWord(
     val wordDurationMs = (wordEndTimeMs - wordStartTimeMs).coerceAtLeast(1L)
     val anim =
         remember(wordStartTimeMs, wordEndTimeMs) {
+            val nowMs = Snapshot.withoutReadObservation { playheadMs.value }
             val initial =
-                ((currentTimeMs - wordStartTimeMs).toFloat() / wordDurationMs.toFloat())
+                ((nowMs - wordStartTimeMs).toFloat() / wordDurationMs.toFloat())
                     .coerceIn(0f, 1f)
             androidx.compose.animation.core.Animatable(initial)
         }
