@@ -1,5 +1,6 @@
 package com.maxrave.simpmusic.ui.component
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -8,7 +9,9 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -21,6 +24,11 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.maxrave.domain.mediaservice.handler.MediaPlayerHandler
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import org.koin.compose.koinInject
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -62,17 +70,23 @@ fun AudioPlayingIndicator(
     modifier: Modifier = Modifier,
     color: Color = AudioIndicatorCyan,
 ) {
-    val transition = rememberInfiniteTransition(label = "audioPlaying")
-    val phase by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec =
-            infiniteRepeatable(
-                animation = tween(durationMillis = AUDIO_CYCLE_MS, easing = LinearEasing),
-                repeatMode = RepeatMode.Restart,
-            ),
-        label = "phase",
-    )
+    // The bars dance only while playback plays, and stand still where they are on pause. On an
+    // endless transition they danced through a pause too, so a list or an open queue sheet showing
+    // the playing row was redrawn on every frame for as long as it stayed open on a paused track.
+    val mediaPlayerHandler = koinInject<MediaPlayerHandler>()
+    val playing by remember(mediaPlayerHandler) {
+        mediaPlayerHandler.controlState.map { it.isPlaying }.distinctUntilChanged()
+    }.collectAsStateWithLifecycle(initialValue = mediaPlayerHandler.controlState.value.isPlaying)
+    val phase = remember { Animatable(0f) }
+    LaunchedEffect(playing) {
+        if (!playing) return@LaunchedEffect
+        while (true) {
+            // The rest of the loop first, so a resumed indicator carries on from where it stopped.
+            val remainingMs = ((1f - phase.value) * AUDIO_CYCLE_MS).toInt().coerceAtLeast(1)
+            phase.animateTo(1f, tween(durationMillis = remainingMs, easing = LinearEasing))
+            phase.snapTo(0f)
+        }
+    }
 
     Canvas(modifier = modifier) {
         val scale = minOf(size.width / AUDIO_COMP_WIDTH, size.height / AUDIO_COMP_HEIGHT)
@@ -83,7 +97,8 @@ fun AudioPlayingIndicator(
         val capRadius = strokeWidth / 2f
 
         AUDIO_BAR_X.forEachIndexed { bar, barX ->
-            val height = audioBarHeight(bar, phase) * scale
+            // Read here, at draw time: the loop redraws the bars and recomposes nothing.
+            val height = audioBarHeight(bar, phase.value) * scale
             // Round caps extend half a stroke past each end, so the drawn segment is the bar minus
             // its two caps — otherwise every bar renders one full stroke width too tall.
             val half = (height / 2f - capRadius).coerceAtLeast(0f)
