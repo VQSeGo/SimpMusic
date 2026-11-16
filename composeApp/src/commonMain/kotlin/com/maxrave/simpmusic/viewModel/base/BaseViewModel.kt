@@ -71,6 +71,17 @@ abstract class BaseViewModel :
         log("ViewModel cleared")
     }
 
+    /**
+     * Ends this instance's collectors. For a view model registered as a Koin `single`, which nothing
+     * ever clears: when the Android activity was recreated (a language change, a rotation) the module
+     * was unloaded and the next instance built while this one's `viewModelScope` kept running, and every
+     * track got one more lyrics chain per recreation. The module calls this from `onClose`.
+     */
+    fun release() {
+        log("ViewModel released")
+        viewModelScope.cancel()
+    }
+
     init {
         getNowPlayingVideoId()
     }

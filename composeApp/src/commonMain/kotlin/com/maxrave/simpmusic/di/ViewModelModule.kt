@@ -27,7 +27,10 @@ import com.maxrave.simpmusic.viewModel.SongSelectionViewModel
 import com.maxrave.simpmusic.viewModel.WrappedViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import org.koin.dsl.onClose
 
+// The two singles are released when the module is unloaded (MainActivity does that on every activity
+// recreation); without it the old instance's collectors outlive it, one more lyrics chain per recreation.
 val viewModelModule =
     module {
         single {
@@ -45,14 +48,14 @@ val viewModelModule =
                 get(),
                 get(),
             )
-        }
+        } onClose { it?.release() }
         single {
             SearchViewModel(
                 get(),
                 get(),
                 get(),
             )
-        }
+        } onClose { it?.release() }
         viewModel {
             SongSelectionViewModel(
                 get(),
