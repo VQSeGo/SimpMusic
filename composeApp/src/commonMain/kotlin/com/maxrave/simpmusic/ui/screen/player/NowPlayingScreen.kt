@@ -59,6 +59,7 @@ import com.maxrave.common.Config.MAIN_PLAYER
 import com.maxrave.domain.mediaservice.handler.MediaPlayerHandler
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
+import com.maxrave.simpmusic.expect.ui.SkipDrawingHostWhile
 import com.maxrave.simpmusic.expect.ui.rememberVideoAspectRatio
 import com.maxrave.simpmusic.extension.GradientAngle
 import com.maxrave.simpmusic.extension.GradientOffset
@@ -379,6 +380,10 @@ fun NowPlayingScreenContent(
     var showFullscreenLyrics by rememberSaveable {
         mutableStateOf(false)
     }
+    // Android: the fullscreen lyrics sheet, fully open, hides this whole window, which then stops
+    // drawing (see FullscreenLyricsSheet's onCoversWindowChange) and shows again as soon as it moves.
+    var lyricsPageCoversPlayer by remember { mutableStateOf(false) }
+    SkipDrawingHostWhile(lyricsPageCoversPlayer)
     val fullscreenLyricsRequested by sharedViewModel.fullscreenLyricsRequest.collectAsStateWithLifecycle()
     LaunchedEffect(fullscreenLyricsRequested) {
         if (fullscreenLyricsRequested) {
@@ -715,6 +720,7 @@ fun NowPlayingScreenContent(
                 color = startColor.value,
                 state = state,
                 actions = actions,
+                onCoversWindowChange = { lyricsPageCoversPlayer = it },
             ) {
                 showFullscreenLyrics = false
             }
