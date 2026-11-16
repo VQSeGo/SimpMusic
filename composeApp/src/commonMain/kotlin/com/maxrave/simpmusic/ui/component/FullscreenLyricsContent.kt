@@ -65,6 +65,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -1078,9 +1079,10 @@ internal fun AnimatedLyricsGradientBackground(
 
     // Dynamic gradient animation - MULTIPLE DIRECTIONS
     // Replaces the previous `while(true) { delay(16) }` loop with a Compose
-    // infinite transition.
+    // infinite transition. Held as States and read only in the draw lambda below: read here, the
+    // values recomposed this whole background on every frame for as long as the page was open.
     val gradientTransition = rememberInfiniteTransition(label = "lyricsGradient")
-    val animatedAngle by gradientTransition.animateFloat(
+    val animatedAngle = gradientTransition.animateFloat(
         initialValue = -45f,
         targetValue = 45f,
         animationSpec =
@@ -1090,7 +1092,7 @@ internal fun AnimatedLyricsGradientBackground(
             ),
         label = "lyricsGradientAngle",
     )
-    val animatedOffsetX by gradientTransition.animateFloat(
+    val animatedOffsetX = gradientTransition.animateFloat(
         initialValue = -1500f,
         targetValue = 1500f,
         animationSpec =
@@ -1100,7 +1102,7 @@ internal fun AnimatedLyricsGradientBackground(
             ),
         label = "lyricsGradientOffsetX",
     )
-    val animatedOffsetY by gradientTransition.animateFloat(
+    val animatedOffsetY = gradientTransition.animateFloat(
         initialValue = -1000f,
         targetValue = 1000f,
         animationSpec =
@@ -1110,10 +1112,6 @@ internal fun AnimatedLyricsGradientBackground(
             ),
         label = "lyricsGradientOffsetY",
     )
-    val gradientAngle = animatedAngle
-    val gradientOffsetX = animatedOffsetX
-    val gradientOffsetY = animatedOffsetY
-
     // Smooth color animation based on lyrics color
     LaunchedEffect(color) {
         launch {
@@ -1146,27 +1144,32 @@ internal fun AnimatedLyricsGradientBackground(
         modifier =
             modifier
                 .fillMaxSize()
-                .background(
-                    Brush.linearGradient(
-                        colors =
-                            listOf(
-                                startColor.value,
-                                midColor1.value,
-                                midColor2.value,
-                                endColor.value.copy(alpha = 0.9f),
-                                endColor.value,
-                            ),
-                        start =
-                            Offset(
-                                x = gradientOffsetX + (cos(gradientAngle * PI.toFloat() / 180f) * 800f),
-                                y = gradientOffsetY + (sin(gradientAngle * PI.toFloat() / 180f) * 800f),
-                            ),
-                        end =
-                            Offset(
-                                x = gradientOffsetX + 2500f + (cos((gradientAngle + 180f) * PI.toFloat() / 180f) * 800f),
-                                y = gradientOffsetY + 2500f + (sin((gradientAngle + 180f) * PI.toFloat() / 180f) * 800f),
-                            ),
-                    ),
-                ),
+                .drawBehind {
+                    val gradientAngle = animatedAngle.value
+                    val gradientOffsetX = animatedOffsetX.value
+                    val gradientOffsetY = animatedOffsetY.value
+                    drawRect(
+                        Brush.linearGradient(
+                            colors =
+                                listOf(
+                                    startColor.value,
+                                    midColor1.value,
+                                    midColor2.value,
+                                    endColor.value.copy(alpha = 0.9f),
+                                    endColor.value,
+                                ),
+                            start =
+                                Offset(
+                                    x = gradientOffsetX + (cos(gradientAngle * PI.toFloat() / 180f) * 800f),
+                                    y = gradientOffsetY + (sin(gradientAngle * PI.toFloat() / 180f) * 800f),
+                                ),
+                            end =
+                                Offset(
+                                    x = gradientOffsetX + 2500f + (cos((gradientAngle + 180f) * PI.toFloat() / 180f) * 800f),
+                                    y = gradientOffsetY + 2500f + (sin((gradientAngle + 180f) * PI.toFloat() / 180f) * 800f),
+                                ),
+                        ),
+                    )
+                },
     )
 }
