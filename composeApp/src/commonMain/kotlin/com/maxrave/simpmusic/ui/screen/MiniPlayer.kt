@@ -69,6 +69,8 @@ import androidx.compose.material3.WavyProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -77,6 +79,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -92,6 +95,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -174,7 +178,10 @@ fun MiniPlayer(
     navController: NavController? = null,
 ) {
     val controllerState by sharedViewModel.controllerState.collectAsStateWithLifecycle()
-    val timelineState by sharedViewModel.timeline.collectAsStateWithLifecycle()
+    // Held as the State and read only where the Desktop capsule draws the position, in scopes of
+    // their own. The position ticks every 50 ms, and read in this body it recomposed the whole
+    // capsule on every tick for as long as anything played.
+    val timeline = sharedViewModel.timeline.collectAsStateWithLifecycle()
     // The Desktop capsule's quality line between its timestamps — see toAudioQualityLabel.
     val formatState by sharedViewModel.format.collectAsStateWithLifecycle(initialValue = null)
 
@@ -569,22 +576,27 @@ fun MiniPlayer(
         var isSliding by rememberSaveable {
             mutableStateOf(false)
         }
-        var sliderValue by rememberSaveable {
-            mutableFloatStateOf(0f)
-        }
+        val sliderValueState =
+            rememberSaveable {
+                mutableFloatStateOf(0f)
+            }
+        var sliderValue by sliderValueState
         var showQueueBottomSheet by rememberSaveable {
             mutableStateOf(false)
         }
-        LaunchedEffect(key1 = timelineState, key2 = isSliding) {
-            if (!isSliding) {
-                sliderValue =
-                    if (timelineState.total > 0L) {
-                        timelineState.current.toFloat() * 100 / timelineState.total.toFloat()
-                    } else {
-                        0f
-                    }
+        LaunchedEffect(Unit) {
+            snapshotFlow { timeline.value to isSliding }.collect { (timelineState, sliding) ->
+                if (!sliding) {
+                    sliderValue =
+                        if (timelineState.total > 0L) {
+                            timelineState.current.toFloat() * 100 / timelineState.total.toFloat()
+                        } else {
+                            0f
+                        }
+                }
             }
         }
+        val timelineCrossfading by remember { derivedStateOf { timeline.value.isCrossfading } }
         // Only the Desktop capsule has a queue button, and App.kt hands that capsule the nav controller.
         if (showQueueBottomSheet && navController != null) {
             QueueBottomSheet(
@@ -797,7 +809,7 @@ fun MiniPlayer(
                                 // pointer is over the capsule — a crossfade cue nobody sees
                                 // unless they happen to be hovering is no cue at all.
                                 AnimatedVisibility(
-                                    visible = timelineState.isCrossfading,
+                                    visible = timelineCrossfading,
                                     enter = fadeIn(),
                                     exit = fadeOut(),
                                 ) {
@@ -841,11 +853,11 @@ fun MiniPlayer(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(
-                            text = timelineState.elapsedLabel(sliderValue / 100f),
+                        CapsuleElapsed(
+                            timeline = timeline,
+                            sliderValue = sliderValueState,
                             style = scrubberDigits,
                             color = textColor.copy(alpha = 0.7f),
-                            maxLines = 1,
                         )
                         // The Now Playing quality line, centred between the times and a step dimmer.
                         formatState.toAudioQualityLabel()?.let { quality ->
@@ -869,27 +881,17 @@ fun MiniPlayer(
                                 )
                             }
                         }
-                        Text(
-                            // Time REMAINING, signed, which is what Apple's capsule reports on the
-                            // right — not the track's total length.
-                            text =
-                                if (timelineState.isLive) {
-                                    stringResource(Res.string.live_badge)
-                                } else {
-                                    "−" +
-                                        formatDuration(
-                                            (timelineState.total * (1f - sliderValue / 100f)).roundToLong(),
-                                        )
-                                },
+                        CapsuleRemaining(
+                            timeline = timeline,
+                            sliderValue = sliderValueState,
                             style = scrubberDigits,
                             color = textColor.copy(alpha = 0.7f),
-                            maxLines = 1,
                         )
                     }
                     // The timestamps now sit on the content line, so the track no longer has to
                     // inset itself to keep clear of them.
                     CapsuleProgress(
-                        sliderValue = sliderValue,
+                        sliderValue = { sliderValue },
                         loading = loading,
                         trackHeight = if (showScrubber) 4.dp else 2.dp,
                         thumbSize = 0.dp,
@@ -1153,7 +1155,8 @@ private val VOLUME_SLIDER_LENGTH = 96.dp
  */
 @Composable
 private fun CapsuleProgress(
-    sliderValue: Float,
+    // Read inside, so the tick that moves it recomposes this bar and not the capsule around it.
+    sliderValue: () -> Float,
     loading: Boolean,
     trackHeight: Dp,
     thumbSize: Dp,
@@ -1201,7 +1204,7 @@ private fun CapsuleProgress(
                         Slider(
                             // Fraction, not 0..100 — see the note in NowPlayingScreen: material3 alpha25
                             // drops valueRange on its binary-compatibility overload.
-                            value = sliderValue / 100f,
+                            value = sliderValue() / 100f,
                             onValueChange = onValueChange,
                             onValueChangeFinished = onValueChangeFinished,
                             modifier = Modifier.fillMaxWidth(),
@@ -1245,4 +1248,47 @@ private fun CapsuleProgress(
             }
         }
     }
+}
+
+/** The capsule's elapsed time, in a scope of its own: it follows the position on every tick. */
+@Composable
+private fun CapsuleElapsed(
+    timeline: State<TimeLine>,
+    sliderValue: State<Float>,
+    style: TextStyle,
+    color: Color,
+) {
+    Text(
+        text = timeline.value.elapsedLabel(sliderValue.value / 100f),
+        style = style,
+        color = color,
+        maxLines = 1,
+    )
+}
+
+/** The capsule's time remaining, in a scope of its own: it follows the position on every tick. */
+@Composable
+private fun CapsuleRemaining(
+    timeline: State<TimeLine>,
+    sliderValue: State<Float>,
+    style: TextStyle,
+    color: Color,
+) {
+    val timelineState = timeline.value
+    Text(
+        // Time REMAINING, signed, which is what Apple's capsule reports on the
+        // right — not the track's total length.
+        text =
+            if (timelineState.isLive) {
+                stringResource(Res.string.live_badge)
+            } else {
+                "−" +
+                    formatDuration(
+                        (timelineState.total * (1f - sliderValue.value / 100f)).roundToLong(),
+                    )
+            },
+        style = style,
+        color = color,
+        maxLines = 1,
+    )
 }
