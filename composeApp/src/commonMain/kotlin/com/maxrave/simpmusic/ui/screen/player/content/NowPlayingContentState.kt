@@ -74,6 +74,7 @@ class NowPlayingContentState(
     val screenData: NowPlayingScreenData,
     val controllerState: ControlState,
     private val timelineSource: State<TimeLine>,
+    /** The position for the lyrics card, which holds still while the fullscreen lyrics page covers the player. */
     val timelineFlow: StateFlow<TimeLine>,
     val shouldShowVideo: Boolean,
     val isUserLoggedIn: Boolean,

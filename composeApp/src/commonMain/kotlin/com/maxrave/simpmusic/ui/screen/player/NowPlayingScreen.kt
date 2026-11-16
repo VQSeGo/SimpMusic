@@ -100,6 +100,7 @@ import com.maxrave.simpmusic.viewModel.NowPlayingBottomSheetViewModel
 import com.maxrave.simpmusic.viewModel.SharedViewModel
 import com.maxrave.simpmusic.viewModel.UIEvent
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
@@ -552,12 +553,21 @@ fun NowPlayingScreenContent(
     if (screenDataState.lyricsData != null && controllerState.isPlaying) {
         KeepScreenOn()
     }
+    // The position the lyrics card follows, which holds still while the lyrics page covers this
+    // window. A hidden window is not drawn, but it is still measured and laid out: the card's sung
+    // line and its scroll to the next line changed the layout on every tick, and each change cost a
+    // traversal and a frame of the hidden window, ~40 a second, beside the lyrics page's own.
+    // Uncovered, the card catches up at once.
+    val lyricsCardTimeline = remember(sharedViewModel) { MutableStateFlow(sharedViewModel.timeline.value) }
+    LaunchedEffect(sharedViewModel, lyricsPageCoversPlayer) {
+        if (!lyricsPageCoversPlayer) sharedViewModel.timeline.collect { lyricsCardTimeline.value = it }
+    }
     val state =
         NowPlayingContentState(
             screenData = screenDataState,
             controllerState = controllerState,
             timelineSource = timeline,
-            timelineFlow = sharedViewModel.timeline,
+            timelineFlow = lyricsCardTimeline,
             shouldShowVideo = shouldShowVideo,
             isUserLoggedIn = isUserLoggedIn,
             // The queue's copy as well: a song row written before its album was known keeps none.
