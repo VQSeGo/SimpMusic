@@ -24,7 +24,8 @@ private val CANCEL = labels("Cancel", "Отменить")
 private val PLAY_ALL = labels("Play all", "Воспроизвести все")
 private val LIBRARY = labels("Library", "Библиотека")
 private val HOME = labels("Home", "Главная")
-private val FAVORITE = Pattern.compile("Favorite.*")
+// The heart's content description: cd_in_favorites / cd_not_in_favorites (en, ru), formerly "Favorite checked/unchecked".
+private val FAVORITE = labels("In favorites", "Not in favorites", "В избранном", "Не в избранном")
 
 private const val TIMEOUT = 15_000L
 
