@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.maxrave.common.Config
 import com.maxrave.domain.data.entities.AlbumEntity
 import com.maxrave.domain.data.entities.DownloadState
+import com.maxrave.domain.data.model.browse.album.AlbumBrowse
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.browse.artist.ResultAlbum
 import com.maxrave.domain.data.model.searchResult.songs.Artist
@@ -121,6 +122,7 @@ class AlbumViewModel(
                                         )
                                     }
                                     albumRepository.updateAlbumInLibrary(now(), browseId)
+                                    refreshSavedAlbum(browseId, localAlbum, data, started)
                                 } else {
                                     albumRepository.insertAlbum(data.toAlbumEntity(browseId)).singleOrNull().let {
                                         log("Insert Album $it")
@@ -199,6 +201,31 @@ class AlbumViewModel(
         Logger.i("Offline", "album $browseId local shown ${started.elapsedNow().inWholeMilliseconds} ms")
         getAlbumFlow(browseId)
         return true
+    }
+
+    /**
+     * Writes the network's answer onto the saved copy of the album: title, cover, year, artists and
+     * the track list, with a song row for every track the copy did not have. Liked, download state
+     * and library date are the device's own and are not touched. Nothing is written when the copy
+     * already says the same.
+     */
+    private suspend fun refreshSavedAlbum(
+        browseId: String,
+        saved: AlbumEntity,
+        data: AlbumBrowse,
+        started: TimeMark,
+    ) {
+        if (data.tracks.isEmpty()) return
+        val known = saved.tracks.orEmpty().toSet()
+        data.tracks.filter { it.videoId !in known }.forEach { track ->
+            songRepository
+                .insertSong(track.toSongEntity().copy(inLibrary = Config.REMOVED_SONG_DATE_TIME))
+                .singleOrNull()
+                ?.let { log("Insert Song $it") }
+        }
+        if (albumRepository.refreshAlbumContent(data.toAlbumEntity(browseId))) {
+            Logger.i("Offline", "album $browseId saved copy updated ${started.elapsedNow().inWholeMilliseconds} ms")
+        }
     }
 
     private suspend fun localTracks(albumEntity: AlbumEntity): List<Track> =

@@ -289,7 +289,7 @@ class PlaylistViewModel(
                                                 radioEndpoint = data.first.radioEndpoint,
                                             ),
                                     )
-                                getPlaylistEntity(id = data.first.id, playlistBrowse = data.first)
+                                getPlaylistEntity(id = data.first.id, playlistBrowse = data.first, complete = data.second.isNullOrEmpty())
                             }
 
                             else -> {
@@ -357,6 +357,8 @@ class PlaylistViewModel(
     private fun getPlaylistEntity(
         id: String,
         playlistBrowse: PlaylistBrowse? = null,
+        // The network sent the whole playlist, not a first page with more to come.
+        complete: Boolean = false,
     ) {
         playlistEntityJob?.cancel()
         playlistEntityJob =
@@ -392,6 +394,13 @@ class PlaylistViewModel(
                             ?.let {
                                 log("Insert song: $it")
                             }
+                    }
+                    if (playlistEntity != null) {
+                        // The saved copy follows the network (title, cover, count, and the list when
+                        // the network sent all of it), after its songs exist; liked and download state stay.
+                        if (playlistRepository.refreshPlaylistContent(playlistBrowse.toPlaylistEntity(), complete)) {
+                            Logger.i("Offline", "playlist $id saved copy updated")
+                        }
                     }
                 } else if (playlistEntity != null) {
                     applyLocalPlaylist(playlistEntity, playlistEntity.tracks?.let { tracksOf(it) } ?: emptyList())
