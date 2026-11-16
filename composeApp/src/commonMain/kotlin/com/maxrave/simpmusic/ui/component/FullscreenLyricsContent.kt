@@ -3,7 +3,6 @@ package com.maxrave.simpmusic.ui.component
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -54,6 +53,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -81,6 +82,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.maxrave.domain.data.model.streams.TimeLine
 import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.expect.toggleMiniPlayer
 import com.maxrave.simpmusic.expect.ui.isLyricsBlurSupported
@@ -89,7 +91,6 @@ import com.maxrave.simpmusic.extension.LeftToRight
 import com.maxrave.simpmusic.extension.formatDuration
 import com.maxrave.simpmusic.extension.lengthLabel
 import com.maxrave.simpmusic.extension.getScreenSizeInfo
-import com.maxrave.simpmusic.extension.hsvToColor
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.lyrics.ShareLyricsSheet
 import com.maxrave.simpmusic.ui.component.lyrics.toShareLyricsLines
@@ -108,6 +109,7 @@ import com.maxrave.simpmusic.ui.screen.player.content.ExpressiveTrackInfoRow
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentActions
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentState
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingExpressiveTheme
+import com.maxrave.simpmusic.ui.screen.player.content.crossfadeRainbowColor
 import com.maxrave.simpmusic.ui.screen.player.linkedArtists
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
@@ -162,7 +164,9 @@ fun FullscreenLyricsContent(
     // the edge. This sheet's own 50dp then stacked on top of it, insetting the text by 70dp.
     val fullscreenAppleLyrics = isLyricsBlurSupported()
     val screenDataState by sharedViewModel.nowPlayingScreenData.collectAsStateWithLifecycle()
-    val timelineState by sharedViewModel.timeline.collectAsStateWithLifecycle()
+    // Held as the State and read only by the seek bar and the time row below, each in its own scope.
+    // The position ticks every 50 ms, and read here it recomposed the whole page on every tick.
+    val timeline = sharedViewModel.timeline.collectAsStateWithLifecycle()
     // Same correction LyricsView applies to the sheet itself, so the line the share picker opens on
     // is the line the listener is actually hearing.
     val fullscreenLyricsOffsetMs by sharedViewModel.getLyricsOffsetMs().collectAsStateWithLifecycle(0)
@@ -171,10 +175,6 @@ fun FullscreenLyricsContent(
     val coroutineScope = rememberCoroutineScope()
     val localDensity = LocalDensity.current
     val windowInsets = WindowInsets.systemBars
-
-    var sliderValue by rememberSaveable {
-        mutableFloatStateOf(0f)
-    }
 
     // Auto-hide controls state - Only hide control buttons, not title/progress
     var showControlButtons by rememberSaveable {
@@ -191,15 +191,6 @@ fun FullscreenLyricsContent(
             delay(4000) // Hide after 4 seconds
             showControlButtons = false
         }
-    }
-
-    LaunchedEffect(key1 = timelineState) {
-        sliderValue =
-            if (timelineState.total > 0L) {
-                timelineState.current.toFloat() * 100 / timelineState.total.toFloat()
-            } else {
-                0f
-            }
     }
 
     if (screenDataState.lyricsData != null) {
@@ -262,24 +253,6 @@ fun FullscreenLyricsContent(
                 )
             }
         } else {
-            // Crossfade: RGB rainbow color cycling when transitioning between tracks
-            val infiniteTransition = rememberInfiniteTransition(label = "crossfadeRainbow")
-            val rainbowHue by infiniteTransition.animateFloat(
-                initialValue = 0f,
-                targetValue = 360f,
-                animationSpec =
-                    infiniteRepeatable(
-                        animation = tween(1000, easing = LinearEasing),
-                        repeatMode = RepeatMode.Restart,
-                    ),
-                label = "rainbowHue",
-            )
-            val rainbowColor = hsvToColor(rainbowHue, 1f, 1f)
-            val sliderTrackColor by animateColorAsState(
-                targetValue = if (timelineState.isCrossfading) rainbowColor else Color.White,
-                animationSpec = tween(300),
-                label = "sliderCrossfadeColor",
-            )
             Box(modifier = Modifier.fillMaxSize()) {
                 // Animated gradient background.
                 AnimatedLyricsGradientBackground(color = color)
@@ -451,155 +424,13 @@ fun FullscreenLyricsContent(
                     // Progress Bar and Time - Always visible
                     LeftToRight {
                         Column {
-                            // Real Slider
-                            Box(
-                                Modifier
-                                    .padding(
-                                        top = 15.dp,
-                                    ).padding(horizontal = 40.dp),
-                            ) {
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .height(24.dp),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Crossfade(timelineState.loading) {
-                                        if (it) {
-                                            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-                                                LinearProgressIndicator(
-                                                    modifier =
-                                                        Modifier
-                                                            .fillMaxWidth()
-                                                            .height(4.dp)
-                                                            .padding(
-                                                                horizontal = 3.dp,
-                                                            ).clip(
-                                                                RoundedCornerShape(8.dp),
-                                                            ),
-                                                    color = Color.Gray,
-                                                    trackColor = Color.DarkGray,
-                                                    strokeCap = StrokeCap.Round,
-                                                )
-                                            }
-                                        } else {
-                                            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-                                                LinearProgressIndicator(
-                                                    progress = { timelineState.bufferedPercent.toFloat() / 100 },
-                                                    modifier =
-                                                        Modifier
-                                                            .fillMaxWidth()
-                                                            .height(4.dp)
-                                                            .padding(
-                                                                horizontal = 3.dp,
-                                                            ).clip(
-                                                                RoundedCornerShape(8.dp),
-                                                            ),
-                                                    color = Color.Gray,
-                                                    trackColor = Color.DarkGray,
-                                                    strokeCap = StrokeCap.Round,
-                                                    drawStopIndicator = {},
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                                CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-                                    Slider(
-                                        // Fraction, not 0..100 — see the note in NowPlayingScreen:
-                                        // material3 alpha25 drops valueRange on its binary-compatibility
-                                        // overload.
-                                        value = sliderValue / 100f,
-                                        onValueChange = {
-                                            sharedViewModel.onUIEvent(
-                                                UIEvent.UpdateProgress(it * 100f),
-                                            )
-                                        },
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .padding(top = 3.dp)
-                                                .align(
-                                                    Alignment.TopCenter,
-                                                ),
-                                        track = { sliderState ->
-                                            SliderDefaults.Track(
-                                                modifier =
-                                                    Modifier
-                                                        .height(5.dp),
-                                                enabled = true,
-                                                sliderState = sliderState,
-                                                colors =
-                                                    SliderDefaults.colors().copy(
-                                                        thumbColor = sliderTrackColor,
-                                                        activeTrackColor = sliderTrackColor,
-                                                        inactiveTrackColor = Color.Transparent,
-                                                    ),
-                                                thumbTrackGapSize = 0.dp,
-                                                drawTick = { _, _ -> },
-                                                drawStopIndicator = null,
-                                            )
-                                        },
-                                        thumb = {
-                                            SliderDefaults.Thumb(
-                                                modifier =
-                                                    Modifier
-                                                        .height(18.dp)
-                                                        .width(8.dp)
-                                                        .padding(
-                                                            vertical = 4.dp,
-                                                        ),
-                                                thumbSize = DpSize(8.dp, 8.dp),
-                                                interactionSource =
-                                                    remember {
-                                                        MutableInteractionSource()
-                                                    },
-                                                colors =
-                                                    SliderDefaults.colors().copy(
-                                                        thumbColor = Color.White,
-                                                        activeTrackColor = Color.White,
-                                                        inactiveTrackColor = Color.Transparent,
-                                                    ),
-                                                enabled = true,
-                                            )
-                                        },
-                                    )
-                                }
-                            }
+                            FullscreenLyricsSeekBar(
+                                timeline = timeline,
+                                onSeek = { sharedViewModel.onUIEvent(UIEvent.UpdateProgress(it)) },
+                            )
                             LazyColumn {
                                 item {
-                                    // Time Layout
-                                    Row(
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 40.dp),
-                                    ) {
-                                        Text(
-                                            text = if (timelineState.isLive) "" else formatDuration(timelineState.current),
-                                            style = typo().bodyMedium,
-                                            modifier = Modifier.weight(1f),
-                                            textAlign = TextAlign.Left,
-                                        )
-                                        AnimatedVisibility(
-                                            enter = fadeIn(),
-                                            exit = fadeOut(),
-                                            visible = timelineState.isCrossfading,
-                                        ) {
-                                            Text(
-                                                text = stringResource(Res.string.crossfading),
-                                                style = typo().bodyMedium,
-                                                modifier = Modifier.weight(1f),
-                                                textAlign = TextAlign.Center,
-                                            )
-                                        }
-                                        Text(
-                                            text = timelineState.lengthLabel(),
-                                            style = typo().bodyMedium,
-                                            modifier = Modifier.weight(1f),
-                                            textAlign = TextAlign.Right,
-                                        )
-                                    }
+                                    FullscreenLyricsTimeRow(timeline)
 
                                     Spacer(
                                         modifier =
@@ -727,6 +558,190 @@ fun FullscreenLyricsContent(
             setSleepTimerEnable = true,
             changeLyricsSourcesEnable = true,
             onShowInfo = { showInfoBottomSheet = true },
+        )
+    }
+}
+
+/**
+ * The portrait page's seek bar: the buffered line under a thin slider. Its own scope, because it is
+ * the one part of the page that has to follow the position on every 50 ms tick.
+ */
+@Composable
+private fun FullscreenLyricsSeekBar(
+    timeline: State<TimeLine>,
+    onSeek: (Float) -> Unit,
+) {
+    val loading by remember(timeline) { derivedStateOf { timeline.value.loading } }
+    val crossfading by remember(timeline) { derivedStateOf { timeline.value.isCrossfading } }
+    val position = timeline.value
+    Box(
+        Modifier
+            .padding(
+                top = 15.dp,
+            ).padding(horizontal = 40.dp),
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Crossfade(loading) {
+                if (it) {
+                    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
+                        LinearProgressIndicator(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(4.dp)
+                                    .padding(
+                                        horizontal = 3.dp,
+                                    ).clip(
+                                        RoundedCornerShape(8.dp),
+                                    ),
+                            color = Color.Gray,
+                            trackColor = Color.DarkGray,
+                            strokeCap = StrokeCap.Round,
+                        )
+                    }
+                } else {
+                    CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
+                        LinearProgressIndicator(
+                            // Read at draw time, so the buffer moving does not recompose anything.
+                            progress = { timeline.value.bufferedPercent.toFloat() / 100 },
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(4.dp)
+                                    .padding(
+                                        horizontal = 3.dp,
+                                    ).clip(
+                                        RoundedCornerShape(8.dp),
+                                    ),
+                            color = Color.Gray,
+                            trackColor = Color.DarkGray,
+                            strokeCap = StrokeCap.Round,
+                            drawStopIndicator = {},
+                        )
+                    }
+                }
+            }
+        }
+        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
+            Slider(
+                // Fraction, not 0..100 — see the note in NowPlayingScreen:
+                // material3 alpha25 drops valueRange on its binary-compatibility
+                // overload.
+                value =
+                    if (position.total > 0L) {
+                        position.current.toFloat() * 100 / position.total.toFloat() / 100f
+                    } else {
+                        0f
+                    },
+                onValueChange = {
+                    onSeek(it * 100f)
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 3.dp)
+                        .align(
+                            Alignment.TopCenter,
+                        ),
+                track = { sliderState ->
+                    // The rainbow is composed only while crossfading: its hue cycles every frame,
+                    // and an always-running cycle read by the page recomposed it on every frame.
+                    val trackColor = if (crossfading) crossfadeRainbowColor() else Color.White
+                    SliderDefaults.Track(
+                        modifier =
+                            Modifier
+                                .height(5.dp),
+                        enabled = true,
+                        sliderState = sliderState,
+                        colors =
+                            SliderDefaults.colors().copy(
+                                thumbColor = trackColor,
+                                activeTrackColor = trackColor,
+                                inactiveTrackColor = Color.Transparent,
+                            ),
+                        thumbTrackGapSize = 0.dp,
+                        drawTick = { _, _ -> },
+                        drawStopIndicator = null,
+                    )
+                },
+                thumb = {
+                    SliderDefaults.Thumb(
+                        modifier =
+                            Modifier
+                                .height(18.dp)
+                                .width(8.dp)
+                                .padding(
+                                    vertical = 4.dp,
+                                ),
+                        thumbSize = DpSize(8.dp, 8.dp),
+                        interactionSource =
+                            remember {
+                                MutableInteractionSource()
+                            },
+                        colors =
+                            SliderDefaults.colors().copy(
+                                thumbColor = Color.White,
+                                activeTrackColor = Color.White,
+                                inactiveTrackColor = Color.Transparent,
+                            ),
+                        enabled = true,
+                    )
+                },
+            )
+        }
+    }
+}
+
+/**
+ * Elapsed time, the crossfade label and the length under the seek bar. Each value is derived, so the
+ * row recomposes when a label actually changes (once a second) rather than on every position tick.
+ */
+@Composable
+private fun FullscreenLyricsTimeRow(timeline: State<TimeLine>) {
+    // Whole seconds, which is all formatDuration prints; a negative position keeps its own value,
+    // since that is what formatDuration turns into its "not available" label.
+    val elapsedMs by remember(timeline) {
+        derivedStateOf { timeline.value.current.let { if (it < 0L) it else it / 1000L * 1000L } }
+    }
+    val isCrossfading by remember(timeline) { derivedStateOf { timeline.value.isCrossfading } }
+    // Only what lengthLabel reads, so the moving fields of the position do not count as a change.
+    val length by remember(timeline) {
+        derivedStateOf { TimeLine(current = 0L, total = timeline.value.total, bufferedPercent = 0, isLive = timeline.value.isLive) }
+    }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 40.dp),
+    ) {
+        Text(
+            text = if (length.isLive) "" else formatDuration(elapsedMs),
+            style = typo().bodyMedium,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Left,
+        )
+        AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = isCrossfading,
+        ) {
+            Text(
+                text = stringResource(Res.string.crossfading),
+                style = typo().bodyMedium,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+            )
+        }
+        Text(
+            text = length.lengthLabel(),
+            style = typo().bodyMedium,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Right,
         )
     }
 }
