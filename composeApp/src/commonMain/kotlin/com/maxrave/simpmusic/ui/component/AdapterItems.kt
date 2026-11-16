@@ -64,7 +64,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -398,6 +400,32 @@ private fun Content.hoverPlay(viewModel: BaseViewModel): (() -> Unit)? {
     return { viewModel.playFromEndpoint(endpoint, title) }
 }
 
+// Android packs the Home-family cards tighter than Desktop: 8dp sides, so two artworks sit 16dp apart
+// instead of 20. Desktop keeps the values it was tuned with.
+private val compactCards = getPlatform() == Platform.Android
+private val cardSidePadding = if (compactCards) 8.dp else 10.dp
+
+/**
+ * The tallest text block under a Home card's artwork, HomeItemSong's: 8dp, two title lines, and the
+ * subtitle row (its line plus 6dp, or the 20dp explicit badge), measured in this device's own text.
+ * Android floors a card at artwork + this, so the tallest card in a row ends right under its subtitle.
+ * Desktop keeps its fixed 70dp, measured where Skia counts Poppins' line gap; on Android that left ~10dp spare.
+ */
+@Composable
+private fun cardTextBlockFloor(): Dp {
+    val measurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val title = typo().titleSmall
+    val subtitle = typo().bodySmall
+    return remember(measurer, density, title, subtitle) {
+        with(density) {
+            val titleLines = measurer.measure("A\nA", title).size.height.toDp()
+            val subtitleRow = maxOf(measurer.measure("A", subtitle).size.height.toDp() + 6.dp, 20.dp)
+            8.dp + titleLines + subtitleRow
+        }
+    }
+}
+
 /**
  * Spotify-style hover for a Home card: while the pointer is over it, or keyboard focus is on it,
  * the card sits on a faint onSurface tint and [HoverPlayButton] rises onto the artwork. Touch
@@ -555,13 +583,13 @@ fun HomeItemContentPlaylist(
         Column(
             modifier =
                 Modifier
-                    .padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 6.dp)
+                    .padding(start = cardSidePadding, top = 10.dp, end = cardSidePadding, bottom = 6.dp)
                     // One floor for every home card, so a row mixing them stays one height. 70
                     // covers the tallest text block among them, HomeItemSong's: 69.5dp when the
                     // text engine counts Poppins' line gap (Skia on Desktop does), 65.8dp when not.
                     // A cell-filling card has no such row to match and its artwork is narrower than
                     // thumbSize, so the floor would only add empty space under every tile.
-                    .then(if (fillMaxWidth) Modifier else Modifier.heightIn(min = thumbSize + 70.dp)),
+                    .then(if (fillMaxWidth) Modifier else Modifier.heightIn(min = thumbSize + if (compactCards) cardTextBlockFloor() else 70.dp)),
         ) {
             val thumb =
                 when (data) {
@@ -813,7 +841,8 @@ fun QuickPicksItem(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(10.dp),
+                    // 44dp artwork plus this padding is the grid's cell: 64dp, or 56dp on Android.
+                    .padding(horizontal = 10.dp, vertical = if (compactCards) 6.dp else 10.dp),
         ) {
             AsyncImage(
                 model =
@@ -843,7 +872,7 @@ fun QuickPicksItem(
                 verticalArrangement = Arrangement.SpaceEvenly,
             ) {
                 // One line + marquee, NOT maxLines = 2: the parent LazyHorizontalGrid uses
-                // GridCells.Fixed(4) over a fixed 256.dp, so every cell is exactly 64.dp and a
+                // GridCells.Fixed(4) over a fixed 256.dp (224.dp on Android), so every cell is exactly 64.dp (56.dp) and a
                 // second title line pushes the artist row out of the cell, where the grid clips it.
                 Text(
                     text = data.title,
@@ -936,8 +965,8 @@ fun HomeItemSong(
         Column(
             modifier =
                 Modifier
-                    .padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 6.dp)
-                    .heightIn(min = 230.dp),
+                    .padding(start = cardSidePadding, top = 10.dp, end = cardSidePadding, bottom = 6.dp)
+                    .heightIn(min = if (compactCards) 160.dp + cardTextBlockFloor() else 230.dp),
         ) {
             val thumb =
                 data.thumbnails.lastOrNull()?.url?.let {
@@ -1047,8 +1076,8 @@ fun HomeItemVideo(
         Column(
             modifier =
                 Modifier
-                    .padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 6.dp)
-                    .heightIn(min = 230.dp),
+                    .padding(start = cardSidePadding, top = 10.dp, end = cardSidePadding, bottom = 6.dp)
+                    .heightIn(min = if (compactCards) 160.dp + cardTextBlockFloor() else 230.dp),
         ) {
             val thumb = data.thumbnails.lastOrNull()?.url
             Box(Modifier.align(Alignment.CenterHorizontally)) {
@@ -1165,8 +1194,8 @@ fun HomeItemArtist(
         Column(
             modifier =
                 Modifier
-                    .padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 6.dp)
-                    .heightIn(min = 230.dp),
+                    .padding(start = cardSidePadding, top = 10.dp, end = cardSidePadding, bottom = 6.dp)
+                    .heightIn(min = if (compactCards) 160.dp + cardTextBlockFloor() else 230.dp),
         ) {
             val thumb = data.thumbnails.lastOrNull()?.url
             AsyncImage(
