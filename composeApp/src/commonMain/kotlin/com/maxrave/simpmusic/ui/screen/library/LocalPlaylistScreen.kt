@@ -266,11 +266,14 @@ fun LocalPlaylistScreen(
     var showSelectionAddToPlaylist by rememberSaveable { mutableStateOf(false) }
     var shouldShowSuggestButton by rememberSaveable { mutableStateOf(false) }
 
-    val playingTrack by sharedViewModel.nowPlayingState
-        .mapLatest {
-            it?.songEntity
-        }.collectAsState(initial = null)
-    val isPlaying by sharedViewModel.controllerState.map { it.isPlaying }.collectAsState(initial = false)
+    // Remembered: a flow built in the body is new on every recomposition of the screen, and
+    // collectAsState restarted its collector each time.
+    val playingTrack by remember(sharedViewModel) {
+        sharedViewModel.nowPlayingState.mapLatest { it?.songEntity }
+    }.collectAsState(initial = null)
+    val isPlaying by remember(sharedViewModel) {
+        sharedViewModel.controllerState.map { it.isPlaying }
+    }.collectAsState(initial = false)
 
     val queueData by sharedViewModel.getQueueDataState().collectAsStateWithLifecycle()
     val playingPlaylistId by remember {
@@ -279,7 +282,9 @@ fun LocalPlaylistScreen(
         }
     }
 
-    val suggestedTracks by viewModel.uiState.map { it.suggestions?.songs ?: emptyList() }.collectAsState(initial = emptyList())
+    val suggestedTracks by remember(viewModel) {
+        viewModel.uiState.map { it.suggestions?.songs ?: emptyList() }
+    }.collectAsState(initial = emptyList())
     val suggestionsLoading by viewModel.loading.collectAsStateWithLifecycle()
     var showSyncAlertDialog by rememberSaveable { mutableStateOf(false) }
     var showUnsyncAlertDialog by rememberSaveable { mutableStateOf(false) }
@@ -322,19 +327,28 @@ fun LocalPlaylistScreen(
         }
     }
 
-    val onPlaylistItemClick: (videoId: String) -> Unit = { videoId ->
-        viewModel.onUIEvent(
-            LocalPlaylistUIEvent.ItemClick(
-                videoId = videoId,
-            ),
-        )
-    }
-    val onItemMoreClick: (videoId: String) -> Unit = { videoId ->
-        currentItem = trackPagingItems.itemSnapshotList.findLast { it?.first?.videoId == videoId }?.first
-        if (currentItem != null) {
-            itemBottomSheetShow = true
+    // One instance each for the screen's lifetime. Built in the body, they were new lambdas on every
+    // recomposition of the screen, and so were the row callbacks wrapping them: every visible row
+    // recomposed in full with each one.
+    val onPlaylistItemClick: (videoId: String) -> Unit =
+        remember(viewModel) {
+            { videoId ->
+                viewModel.onUIEvent(
+                    LocalPlaylistUIEvent.ItemClick(
+                        videoId = videoId,
+                    ),
+                )
+            }
         }
-    }
+    val onItemMoreClick: (videoId: String) -> Unit =
+        remember(trackPagingItems) {
+            { videoId ->
+                currentItem = trackPagingItems.itemSnapshotList.findLast { it?.first?.videoId == videoId }?.first
+                if (currentItem != null) {
+                    itemBottomSheetShow = true
+                }
+            }
+        }
     val onPlaylistMoreClick: () -> Unit = {
         playlistBottomSheetShow = true
     }
@@ -1320,53 +1334,27 @@ fun LocalPlaylistScreen(
             val item = trackPagingItems[index]?.first
             if (item != null) {
                 val content = @Composable { mod: Modifier ->
-                    if (playingTrack?.videoId == item.videoId && isPlaying) {
-                        SongFullWidthItems(
-                            forceDark = true,
-                            isPlaying = true,
-                            shouldShowDragHandle = changingOrder,
-                            songEntity = item,
-                            onMoreClickListener = { onItemMoreClick(it) },
-                            onClickListener = {
-                                Logger.w("PlaylistScreen", "index: $index")
-                                onPlaylistItemClick(it)
-                            },
-                            onAddToQueue = {
-                                sharedViewModel.addListToQueue(
-                                    arrayListOf(item.toTrack()),
-                                )
-                            },
-                            selectionMode = selectionState.isActive,
-                            isSelected = selectionState.isSelected(item.videoId),
-                            // No long press while reordering: that gesture already belongs to drag.
-                            onLongClick = if (changingOrder) null else ({ selectionState.start(it) }),
-                            onSelectToggle = { selectionState.toggle(it) },
-                            modifier = mod,
-                        )
-                    } else {
-                        SongFullWidthItems(
-                            forceDark = true,
-                            isPlaying = false,
-                            shouldShowDragHandle = changingOrder,
-                            songEntity = item,
-                            onMoreClickListener = { onItemMoreClick(it) },
-                            onClickListener = {
-                                Logger.w("PlaylistScreen", "index: $index")
-                                onPlaylistItemClick(it)
-                            },
-                            onAddToQueue = {
-                                sharedViewModel.addListToQueue(
-                                    arrayListOf(item.toTrack()),
-                                )
-                            },
-                            selectionMode = selectionState.isActive,
-                            isSelected = selectionState.isSelected(item.videoId),
-                            // No long press while reordering: that gesture already belongs to drag.
-                            onLongClick = if (changingOrder) null else ({ selectionState.start(it) }),
-                            onSelectToggle = { selectionState.toggle(it) },
-                            modifier = mod,
-                        )
-                    }
+                    // One call for both states, so the row keeps its state and the artwork
+                    // crossfades to the playing indicator instead of the row being rebuilt.
+                    SongFullWidthItems(
+                        forceDark = true,
+                        isPlaying = isPlaying && playingTrack?.videoId == item.videoId,
+                        shouldShowDragHandle = changingOrder,
+                        songEntity = item,
+                        onMoreClickListener = onItemMoreClick,
+                        onClickListener = onPlaylistItemClick,
+                        onAddToQueue = {
+                            sharedViewModel.addListToQueue(
+                                arrayListOf(item.toTrack()),
+                            )
+                        },
+                        selectionMode = selectionState.isActive,
+                        isSelected = selectionState.isSelected(item.videoId),
+                        // No long press while reordering: that gesture already belongs to drag.
+                        onLongClick = if (changingOrder) null else ({ selectionState.start(it) }),
+                        onSelectToggle = { selectionState.toggle(it) },
+                        modifier = mod,
+                    )
                 }
                 if (changingOrder) {
                     DraggableItem(
@@ -1662,8 +1650,8 @@ fun LocalPlaylistScreen(
                         forceDark = true,
                         isPlaying = playingTrack?.videoId == song.videoId && isPlaying,
                         songEntity = song,
-                        onMoreClickListener = { onItemMoreClick(it) },
-                        onClickListener = { onPlaylistItemClick(it) },
+                        onMoreClickListener = onItemMoreClick,
+                        onClickListener = onPlaylistItemClick,
                         onAddToQueue = { sharedViewModel.addListToQueue(arrayListOf(song.toTrack())) },
                         selectionMode = selectionState.isActive,
                         isSelected = selectionState.isSelected(song.videoId),
