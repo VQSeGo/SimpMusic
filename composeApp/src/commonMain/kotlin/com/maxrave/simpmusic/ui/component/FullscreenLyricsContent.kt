@@ -4,12 +4,8 @@ import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.withInfiniteAnimationFrameNanos
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -57,6 +53,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,6 +61,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.MotionDurationScale
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -256,7 +254,7 @@ fun FullscreenLyricsContent(
         } else {
             Box(modifier = Modifier.fillMaxSize()) {
                 // Animated gradient background.
-                AnimatedLyricsGradientBackground(color = color)
+                AnimatedLyricsGradientBackground(color = color, drifting = controllerState.isPlaying)
 
                 // ── Foreground content column ─────────────────────────────────────
                 Column(
@@ -763,7 +761,7 @@ private fun FullscreenLyricsLandscape(
     Box(modifier = Modifier.fillMaxSize()) {
         // The Desktop chrome drawn over this layout is a sibling of this whole Box.
         Box(modifier = Modifier.fillMaxSize()) {
-            AnimatedLyricsGradientBackground(color = color)
+            AnimatedLyricsGradientBackground(color = color, drifting = state.controllerState.isPlaying)
         }
         Row(
             modifier =
@@ -1069,6 +1067,8 @@ private fun FullscreenLyricsList(
 @Composable
 internal fun AnimatedLyricsGradientBackground(
     color: Color,
+    // False holds the drift where it is (playback paused); the colour still glides on a track change.
+    drifting: Boolean,
     modifier: Modifier = Modifier,
 ) {
     // Animated gradient colors - SMOOTH ANIMATION
@@ -1077,41 +1077,25 @@ internal fun AnimatedLyricsGradientBackground(
     val midColor2 = remember { Animatable(color.copy(alpha = 0.85f)) }
     val endColor = remember { Animatable(Color.Black) }
 
-    // Dynamic gradient animation - MULTIPLE DIRECTIONS
-    // Replaces the previous `while(true) { delay(16) }` loop with a Compose
-    // infinite transition. Held as States and read only in the draw lambda below: read here, the
-    // values recomposed this whole background on every frame for as long as the page was open.
-    val gradientTransition = rememberInfiniteTransition(label = "lyricsGradient")
-    val animatedAngle = gradientTransition.animateFloat(
-        initialValue = -45f,
-        targetValue = 45f,
-        animationSpec =
-            infiniteRepeatable(
-                animation = tween(durationMillis = 6000, easing = LinearEasing),
-                repeatMode = RepeatMode.Reverse,
-            ),
-        label = "lyricsGradientAngle",
-    )
-    val animatedOffsetX = gradientTransition.animateFloat(
-        initialValue = -1500f,
-        targetValue = 1500f,
-        animationSpec =
-            infiniteRepeatable(
-                animation = tween(durationMillis = 8000, easing = LinearEasing),
-                repeatMode = RepeatMode.Reverse,
-            ),
-        label = "lyricsGradientOffsetX",
-    )
-    val animatedOffsetY = gradientTransition.animateFloat(
-        initialValue = -1000f,
-        targetValue = 1000f,
-        animationSpec =
-            infiniteRepeatable(
-                animation = tween(durationMillis = 8000, easing = LinearEasing),
-                repeatMode = RepeatMode.Reverse,
-            ),
-        label = "lyricsGradientOffsetY",
-    )
+    // Dynamic gradient animation - MULTIPLE DIRECTIONS: the angle swings over 6 s, the offsets over
+    // 8 s, each there and back. Driven by a clock of its own rather than an infinite transition so
+    // the drift can hold still while playback is paused and carry on from the same spot: an open
+    // page on pause otherwise redrew the whole window, blurred lyrics included, on every frame.
+    // Read only in the draw lambda below, so the drift redraws the background and recomposes nothing.
+    val driftNanos = remember { mutableLongStateOf(0L) }
+    LaunchedEffect(drifting) {
+        if (!drifting) return@LaunchedEffect
+        // Follows the system animation scale; with animations turned off the gradient holds still.
+        val scale = coroutineContext[MotionDurationScale]?.scaleFactor ?: 1f
+        if (scale <= 0f) return@LaunchedEffect
+        var lastFrameNanos = -1L
+        while (true) {
+            withInfiniteAnimationFrameNanos { frameNanos ->
+                if (lastFrameNanos >= 0L) driftNanos.longValue += ((frameNanos - lastFrameNanos) / scale).toLong()
+                lastFrameNanos = frameNanos
+            }
+        }
+    }
     // Smooth color animation based on lyrics color
     LaunchedEffect(color) {
         launch {
@@ -1145,9 +1129,10 @@ internal fun AnimatedLyricsGradientBackground(
             modifier
                 .fillMaxSize()
                 .drawBehind {
-                    val gradientAngle = animatedAngle.value
-                    val gradientOffsetX = animatedOffsetX.value
-                    val gradientOffsetY = animatedOffsetY.value
+                    val driftMs = driftNanos.longValue / 1_000_000L
+                    val gradientAngle = pingPong(driftMs, 6000, -45f, 45f)
+                    val gradientOffsetX = pingPong(driftMs, 8000, -1500f, 1500f)
+                    val gradientOffsetY = pingPong(driftMs, 8000, -1000f, 1000f)
                     drawRect(
                         Brush.linearGradient(
                             colors =
@@ -1172,4 +1157,19 @@ internal fun AnimatedLyricsGradientBackground(
                     )
                 },
     )
+}
+
+/**
+ * A linear there-and-back sweep from [from] to [to] and back, [durationMs] each way, at [timeMs] —
+ * what `infiniteRepeatable(tween(durationMs, LinearEasing), RepeatMode.Reverse)` plays.
+ */
+private fun pingPong(
+    timeMs: Long,
+    durationMs: Int,
+    from: Float,
+    to: Float,
+): Float {
+    val t = (timeMs % (2L * durationMs)).toFloat() / durationMs
+    val fraction = if (t <= 1f) t else 2f - t
+    return from + (to - from) * fraction
 }
