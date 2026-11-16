@@ -88,6 +88,9 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.http.Url
 import org.koin.compose.viewmodel.koinViewModel
+import org.jetbrains.compose.resources.stringResource
+import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
 
 private val RowGap = 10.dp
 
@@ -335,6 +338,7 @@ fun BrowseScreen(
                                     .size(32.dp),
                                 true,
                                 tint = MaterialTheme.colorScheme.onSurface,
+                                contentDescription = stringResource(Res.string.cd_back),
                             ) {
                                 navController.navigateUp()
                             }

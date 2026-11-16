@@ -908,4 +908,12 @@
     <string name="show_analytics_tab">Показывать вкладку «Статистика»</string>
     <string name="show_analytics_tab_description">В панели навигации, пока включена локальная история</string>
     <string name="liked_music">Понравившаяся музыка</string>
+    <string name="cd_back">Назад</string>
+    <string name="cd_play">Играть</string>
+    <string name="cd_pause">Пауза</string>
+    <string name="cd_close">Закрыть</string>
+    <string name="cd_previous">Предыдущий трек</string>
+    <string name="cd_next">Следующий трек</string>
+    <string name="cd_in_favorites">В избранном</string>
+    <string name="cd_not_in_favorites">Не в избранном</string>
 </resources>

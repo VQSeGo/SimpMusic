@@ -163,6 +163,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.download_notifications
 import simpmusic.composeapp.generated.resources.download_notifications_description
 import simpmusic.composeapp.generated.resources.about_us
@@ -2359,6 +2360,7 @@ fun SettingScreen(
                                             .size(32.dp),
                                         true,
                                         tint = MaterialTheme.colorScheme.onSurface,
+                                        contentDescription = stringResource(Res.string.cd_back),
                                     ) {
                                         coroutineScope.launch {
                                             sheetState.hide()
@@ -2420,6 +2422,7 @@ private fun SettingTopBar(
                     Modifier.size(32.dp),
                     true,
                     tint = MaterialTheme.colorScheme.onSurface,
+                    contentDescription = stringResource(Res.string.cd_back),
                 ) {
                     onBack()
                 }

@@ -33,6 +33,7 @@ import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.viewModel.WrappedUiState
 import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.wrapped
 import simpmusic.composeapp.generated.resources.wrapped_not_enough_body
 import simpmusic.composeapp.generated.resources.wrapped_not_enough_days
@@ -81,6 +82,7 @@ fun WrappedNotEnoughDataScreen(
                 imageVector = SimpIcons.ArrowBackIosNew,
                 tint = MaterialTheme.colorScheme.onSurface,
                 onClick = onBack,
+                contentDescription = stringResource(Res.string.cd_back),
             )
             Spacer(modifier = Modifier.width(14.dp))
             Text(

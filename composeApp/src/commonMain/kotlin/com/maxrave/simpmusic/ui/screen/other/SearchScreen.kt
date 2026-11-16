@@ -156,6 +156,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.albums
 import simpmusic.composeapp.generated.resources.artists
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.clear_search_history
 import simpmusic.composeapp.generated.resources.error_occurred
 import simpmusic.composeapp.generated.resources.everything_you_need
@@ -1115,7 +1116,7 @@ fun SearchScreen(
                                     ) {
                                         Icon(
                                             imageVector = SimpIcons.ArrowBackIosNew,
-                                            contentDescription = "Back",
+                                            contentDescription = stringResource(Res.string.cd_back),
                                         )
                                     }
                                 } else {

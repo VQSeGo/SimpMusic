@@ -213,6 +213,8 @@ import simpmusic.composeapp.generated.resources.bitrate
 import simpmusic.composeapp.generated.resources.can_not_be_empty
 import simpmusic.composeapp.generated.resources.cancel
 import simpmusic.composeapp.generated.resources.cancel_download
+import simpmusic.composeapp.generated.resources.cd_in_favorites
+import simpmusic.composeapp.generated.resources.cd_not_in_favorites
 import simpmusic.composeapp.generated.resources.codec
 import simpmusic.composeapp.generated.resources.copied_to_clipboard
 import simpmusic.composeapp.generated.resources.create_new_queue_and_play
@@ -1955,13 +1957,13 @@ fun HeartCheckBox(
             if (it) {
                 Image(
                     painter = painterResource(Res.drawable.baseline_favorite_24),
-                    contentDescription = "Favorite checked",
+                    contentDescription = stringResource(Res.string.cd_in_favorites),
                     modifier = Modifier.fillMaxSize().padding(4.dp),
                 )
             } else {
                 Image(
                     imageVector = SimpIcons.FavoriteBorder,
-                    contentDescription = "Favorite unchecked",
+                    contentDescription = stringResource(Res.string.cd_not_in_favorites),
                     modifier = Modifier.fillMaxSize().padding(4.dp),
                     colorFilter = ColorFilter.tint(tint),
                 )

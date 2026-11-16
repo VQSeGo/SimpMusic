@@ -39,6 +39,16 @@ import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.icon.SkipNext
 import com.maxrave.simpmusic.ui.icon.SkipPrevious
 import com.maxrave.simpmusic.viewModel.UIEvent
+import org.jetbrains.compose.resources.stringResource
+import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_next
+import simpmusic.composeapp.generated.resources.cd_pause
+import simpmusic.composeapp.generated.resources.cd_play
+import simpmusic.composeapp.generated.resources.cd_previous
+import simpmusic.composeapp.generated.resources.repeat_all
+import simpmusic.composeapp.generated.resources.repeat_off
+import simpmusic.composeapp.generated.resources.repeat_one
+import simpmusic.composeapp.generated.resources.shuffle
 
 // Base weights: prev 0.55 | play 1.2 | next 0.55. A pressed button grows ×1.15; because Row
 // normalizes weights, the other two shrink proportionally without any extra bookkeeping.
@@ -123,6 +133,7 @@ fun ExpressiveTransportRow(
         if (showShuffleAndRepeat) {
             ExpressiveToggleButton(
                 icon = SimpIcons.Shuffle,
+                label = stringResource(Res.string.shuffle),
                 active = controllerState.isShuffle,
                 onClick = { onUIEvent(UIEvent.Shuffle) },
             )
@@ -146,7 +157,7 @@ fun ExpressiveTransportRow(
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Icon(
                     imageVector = SimpIcons.SkipPrevious,
-                    contentDescription = "",
+                    contentDescription = stringResource(Res.string.cd_previous),
                     tint =
                         colorScheme.onSecondaryContainer.copy(
                             alpha = if (controllerState.isPreviousAvailable) 1f else 0.4f,
@@ -198,7 +209,7 @@ fun ExpressiveTransportRow(
                             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                                 Icon(
                                     imageVector = if (isPlaying) SimpIcons.Pause else SimpIcons.PlayArrow,
-                                    contentDescription = "",
+                                    contentDescription = stringResource(if (isPlaying) Res.string.cd_pause else Res.string.cd_play),
                                     tint = colorScheme.onPrimary,
                                     modifier = Modifier.size(36.dp),
                                 )
@@ -226,7 +237,7 @@ fun ExpressiveTransportRow(
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Icon(
                     imageVector = SimpIcons.SkipNext,
-                    contentDescription = "",
+                    contentDescription = stringResource(Res.string.cd_next),
                     tint =
                         colorScheme.onSecondaryContainer.copy(
                             alpha = if (controllerState.isNextAvailable) 1f else 0.4f,
@@ -240,6 +251,14 @@ fun ExpressiveTransportRow(
             val repeatState = controllerState.repeatState
             ExpressiveToggleButton(
                 icon = if (repeatState is RepeatState.One) SimpIcons.RepeatOne else SimpIcons.Repeat,
+                label =
+                    stringResource(
+                        when (repeatState) {
+                            is RepeatState.One -> Res.string.repeat_one
+                            is RepeatState.All -> Res.string.repeat_all
+                            else -> Res.string.repeat_off
+                        },
+                    ),
                 active = repeatState !is RepeatState.None,
                 onClick = { onUIEvent(UIEvent.Repeat) },
             )
@@ -254,6 +273,7 @@ fun ExpressiveTransportRow(
 @Composable
 private fun RowScope.ExpressiveToggleButton(
     icon: ImageVector,
+    label: String,
     active: Boolean,
     onClick: () -> Unit,
 ) {
@@ -270,7 +290,7 @@ private fun RowScope.ExpressiveToggleButton(
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Icon(
                 imageVector = icon,
-                contentDescription = "",
+                contentDescription = label,
                 tint = if (active) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(22.dp),
             )

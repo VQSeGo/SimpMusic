@@ -17,7 +17,9 @@ import com.maxrave.simpmusic.ui.icon.ArrowBackIosNew
 import com.maxrave.simpmusic.ui.icon.MoreVert
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +60,7 @@ fun NormalAppBarPreview() {
             IconButton(onClick = { }) {
                 Icon(
                     SimpIcons.ArrowBackIosNew,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(Res.string.cd_back),
                 )
             }
         },
@@ -66,7 +68,7 @@ fun NormalAppBarPreview() {
             IconButton(onClick = { }) {
                 Icon(
                     SimpIcons.MoreVert,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(Res.string.cd_back),
                 )
             }
         },

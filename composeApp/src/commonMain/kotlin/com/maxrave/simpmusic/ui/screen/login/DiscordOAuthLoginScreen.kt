@@ -49,6 +49,7 @@ import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.discord_login_failed
 import simpmusic.composeapp.generated.resources.discord_login_step_1
 import simpmusic.composeapp.generated.resources.discord_login_step_2
@@ -238,6 +239,7 @@ fun DiscordOAuthLoginScreen(
                         Modifier.size(32.dp),
                         true,
                         tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = stringResource(Res.string.cd_back),
                     ) {
                         navController.navigateUp()
                     }

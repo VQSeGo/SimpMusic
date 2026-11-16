@@ -149,6 +149,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.albums
 import simpmusic.composeapp.generated.resources.baseline_favorite_24
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.description
 import simpmusic.composeapp.generated.resources.error
 import simpmusic.composeapp.generated.resources.featured_inArtist
@@ -158,8 +159,10 @@ import simpmusic.composeapp.generated.resources.liked_songs_count
 import simpmusic.composeapp.generated.resources.more
 import simpmusic.composeapp.generated.resources.no_description
 import simpmusic.composeapp.generated.resources.popular
+import simpmusic.composeapp.generated.resources.radio
 import simpmusic.composeapp.generated.resources.related_artists
 import simpmusic.composeapp.generated.resources.share
+import simpmusic.composeapp.generated.resources.shuffle
 import simpmusic.composeapp.generated.resources.singles
 import simpmusic.composeapp.generated.resources.unknown
 import simpmusic.composeapp.generated.resources.videos
@@ -425,6 +428,7 @@ fun ArtistScreen(
                                                 .padding(12.dp)
                                                 .windowInsetsPadding(WindowInsets.statusBars)
                                                 .size(48.dp),
+                                        contentDescription = stringResource(Res.string.cd_back),
                                     ) {
                                         navController.navigateUp()
                                     }
@@ -479,7 +483,7 @@ fun ArtistScreen(
                                     ) {
                                         Icon(
                                             imageVector = SimpIcons.Sensors,
-                                            contentDescription = "Radio",
+                                            contentDescription = stringResource(Res.string.radio),
                                             tint = artistAccent,
                                             modifier = Modifier.size(22.dp),
                                         )
@@ -505,7 +509,7 @@ fun ArtistScreen(
                                     ) {
                                         Icon(
                                             imageVector = SimpIcons.Shuffle,
-                                            contentDescription = "Shuffle",
+                                            contentDescription = stringResource(Res.string.shuffle),
                                             tint = mutedPaletteBg,
                                             modifier = Modifier.size(28.dp),
                                         )
@@ -584,7 +588,7 @@ fun ArtistScreen(
                                     IconButton(onClick = { navController.navigateUp() }) {
                                         Icon(
                                             imageVector = SimpIcons.ArrowBackIosNew,
-                                            contentDescription = "Back",
+                                            contentDescription = stringResource(Res.string.cd_back),
                                             tint = Color.White,
                                             modifier = Modifier.size(20.dp),
                                         )

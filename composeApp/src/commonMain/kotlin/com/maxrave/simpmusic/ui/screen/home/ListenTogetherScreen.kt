@@ -100,6 +100,7 @@ import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.listen_together
 import simpmusic.composeapp.generated.resources.lt_background_warning
 import simpmusic.composeapp.generated.resources.lt_block
@@ -453,6 +454,7 @@ private fun BoxScope.BackButton(
                 .padding(start = 12.dp, top = 8.dp)
                 .size(48.dp),
         onClick = onBack,
+        contentDescription = stringResource(Res.string.cd_back),
     )
 }
 

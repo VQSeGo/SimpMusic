@@ -97,6 +97,7 @@ import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.add_to_queue
 import simpmusic.composeapp.generated.resources.album
 import simpmusic.composeapp.generated.resources.artists
+import simpmusic.composeapp.generated.resources.more
 import simpmusic.composeapp.generated.resources.play_next
 import simpmusic.composeapp.generated.resources.playlist
 import simpmusic.composeapp.generated.resources.radio
@@ -396,7 +397,7 @@ fun SongFullWidthItems(
                 // Hidden while selecting: the per-item menu moves up to the selection app bar,
                 // so one tap cannot mean both "act on this song" and "pick this song".
                 if (onMoreClickListener != null && !selectionMode) {
-                    RippleIconButton(imageVector = SimpIcons.MoreVert, fillMaxSize = false, tint = contentColor) {
+                    RippleIconButton(imageVector = SimpIcons.MoreVert, fillMaxSize = false, tint = contentColor, contentDescription = stringResource(Res.string.more)) {
                         if (itemVideoId.isNotBlank()) onMoreClickListener.invoke(itemVideoId)
                     }
                 }

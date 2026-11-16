@@ -53,6 +53,8 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -163,6 +165,7 @@ fun MoreAlbumsScreen(
                                     .size(32.dp),
                                 true,
                                 tint = MaterialTheme.colorScheme.onSurface,
+                                contentDescription = stringResource(Res.string.cd_back),
                             ) {
                                 navController.navigateUp()
                             }

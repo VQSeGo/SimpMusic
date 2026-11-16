@@ -12,6 +12,10 @@ import androidx.compose.ui.unit.dp
 import com.maxrave.simpmusic.ui.icon.Pause
 import com.maxrave.simpmusic.ui.icon.PlayArrow
 import com.maxrave.simpmusic.ui.icon.SimpIcons
+import org.jetbrains.compose.resources.stringResource
+import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_pause
+import simpmusic.composeapp.generated.resources.cd_play
 
 @Composable
 fun RippleIconButton(
@@ -19,6 +23,7 @@ fun RippleIconButton(
     modifier: Modifier = Modifier,
     fillMaxSize: Boolean = false,
     tint: Color = Color.White,
+    contentDescription: String? = null,
     onClick: () -> Unit,
 ) {
     IconButton(
@@ -27,7 +32,7 @@ fun RippleIconButton(
     ) {
         Icon(
             imageVector,
-            null,
+            contentDescription,
             tint = tint,
             modifier = if (fillMaxSize) Modifier.fillMaxSize().padding(4.dp) else Modifier,
         )
@@ -41,6 +46,7 @@ fun PlayPauseButton(
     tint: Color = Color.White,
     onClick: () -> Unit,
 ) {
+    val label = stringResource(if (isPlaying) Res.string.cd_pause else Res.string.cd_play)
     RippleIconButton(
         if (!isPlaying) {
             SimpIcons.PlayArrow
@@ -49,6 +55,7 @@ fun PlayPauseButton(
         },
         modifier = modifier,
         tint = tint,
+        contentDescription = label,
         onClick = onClick,
     )
 }

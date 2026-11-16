@@ -61,6 +61,15 @@ import dev.chrisbanes.haze.rememberHazeState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.*
+import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.app_name
+import simpmusic.composeapp.generated.resources.based_on_simpmusic
+import simpmusic.composeapp.generated.resources.cd_back
+import simpmusic.composeapp.generated.resources.copyright
+import simpmusic.composeapp.generated.resources.credit_app
+import simpmusic.composeapp.generated.resources.github
+import simpmusic.composeapp.generated.resources.issue_tracker
+import simpmusic.composeapp.generated.resources.version_format
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -238,6 +247,7 @@ fun CreditScreen(
                         .size(32.dp),
                     true,
                     tint = MaterialTheme.colorScheme.onSurface,
+                    contentDescription = stringResource(Res.string.cd_back),
                 ) {
                     navController.navigateUp()
                 }

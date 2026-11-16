@@ -97,7 +97,9 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.five_seconds
+import simpmusic.composeapp.generated.resources.more
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -363,6 +365,7 @@ fun FullscreenPlayer(
                                         Modifier
                                             .size(32.dp),
                                         true,
+                                        contentDescription = stringResource(Res.string.cd_back),
                                     ) {
                                         navController.navigateUp()
                                     }
@@ -371,6 +374,7 @@ fun FullscreenPlayer(
                             actions = {
                                 RippleIconButton(
                                     SimpIcons.MoreVert,
+                                    contentDescription = stringResource(Res.string.more),
                                 ) {
                                     showBottom = true
                                 }

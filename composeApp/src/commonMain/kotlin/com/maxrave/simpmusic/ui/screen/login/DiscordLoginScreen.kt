@@ -40,6 +40,7 @@ import com.maxrave.simpmusic.viewModel.LogInViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.log_in_to_discord
 import simpmusic.composeapp.generated.resources.login_success
 
@@ -118,6 +119,7 @@ fun DiscordLoginScreen(
                         Modifier.size(32.dp),
                         true,
                         tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = stringResource(Res.string.cd_back),
                     ) {
                         navController.navigateUp()
                     }

@@ -99,6 +99,9 @@ import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.album_length
 import simpmusic.composeapp.generated.resources.artists
 import simpmusic.composeapp.generated.resources.cached
+import simpmusic.composeapp.generated.resources.cd_back
+import simpmusic.composeapp.generated.resources.cd_close
+import simpmusic.composeapp.generated.resources.cd_play
 import simpmusic.composeapp.generated.resources.downloaded
 import simpmusic.composeapp.generated.resources.liked_music
 import simpmusic.composeapp.generated.resources.followed
@@ -109,6 +112,7 @@ import simpmusic.composeapp.generated.resources.most_played
 import simpmusic.composeapp.generated.resources.remove_download
 import simpmusic.composeapp.generated.resources.search
 import simpmusic.composeapp.generated.resources.seconds
+import simpmusic.composeapp.generated.resources.shuffle
 import simpmusic.composeapp.generated.resources.wrapped
 import simpmusic.composeapp.generated.resources.wrapped_recap_month
 import simpmusic.composeapp.generated.resources.wrapped_recap_month_year
@@ -612,6 +616,7 @@ fun LibraryDynamicPlaylistScreen(
                                 .size(32.dp),
                             true,
                             tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = stringResource(Res.string.cd_back),
                         ) {
                             navController.navigateUp()
                         }
@@ -625,6 +630,7 @@ fun LibraryDynamicPlaylistScreen(
                                 .size(48.dp),
                             fillMaxSize = true,
                             tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = stringResource(Res.string.cd_play),
                         ) {
                             if (type is LibraryDynamicPlaylistType.TopTracks) {
                                 val data = analyticsUIState.topTracks.data
@@ -655,6 +661,7 @@ fun LibraryDynamicPlaylistScreen(
                             Modifier.size(32.dp),
                             true,
                             tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = stringResource(Res.string.shuffle),
                         ) {
                             if (type is LibraryDynamicPlaylistType.TopTracks) {
                                 val data = analyticsUIState.topTracks.data
@@ -689,6 +696,7 @@ fun LibraryDynamicPlaylistScreen(
                                 .size(32.dp),
                             true,
                             tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = stringResource(if (showSearchBar) Res.string.cd_close else Res.string.search),
                         ) {
                             showSearchBar = !showSearchBar
                         }

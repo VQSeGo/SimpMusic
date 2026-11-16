@@ -125,6 +125,7 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.artists
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.date_range
 import simpmusic.composeapp.generated.resources.last_30_days
 import simpmusic.composeapp.generated.resources.receipt_open
@@ -463,6 +464,7 @@ fun AnalyticsScreen(
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(start = backGutter, top = 16.dp)
                     .size(48.dp),
+            contentDescription = stringResource(Res.string.cd_back),
         ) {
             navController.navigateUp()
         }

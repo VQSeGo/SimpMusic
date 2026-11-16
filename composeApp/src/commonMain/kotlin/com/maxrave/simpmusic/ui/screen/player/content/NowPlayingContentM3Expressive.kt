@@ -109,8 +109,16 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.audio_output
+import simpmusic.composeapp.generated.resources.cd_in_favorites
+import simpmusic.composeapp.generated.resources.cd_not_in_favorites
 import simpmusic.composeapp.generated.resources.crossfading
+import simpmusic.composeapp.generated.resources.more
+import simpmusic.composeapp.generated.resources.queue
 import simpmusic.composeapp.generated.resources.radio_mix_upper
+import simpmusic.composeapp.generated.resources.repeat_all
+import simpmusic.composeapp.generated.resources.repeat_off
+import simpmusic.composeapp.generated.resources.repeat_one
+import simpmusic.composeapp.generated.resources.shuffle
 
 /**
  * The Material 3 Expressive ("Tonal pills") Now Playing style.
@@ -368,7 +376,7 @@ private fun NowPlayingM3ExpressiveLayout(
                     ) {
                         Icon(
                             imageVector = SimpIcons.MoreVert,
-                            contentDescription = "",
+                            contentDescription = stringResource(Res.string.more),
                         )
                     }
                 }
@@ -602,7 +610,7 @@ internal fun ExpressiveTrackInfoRow(
             Crossfade(targetState = state.controllerState.isLiked) { liked ->
                 Icon(
                     imageVector = if (liked) SimpIcons.Favorite else SimpIcons.FavoriteBorder,
-                    contentDescription = "",
+                    contentDescription = stringResource(if (liked) Res.string.cd_in_favorites else Res.string.cd_not_in_favorites),
                 )
             }
         }
@@ -764,7 +772,7 @@ private fun ExpressiveConnectedGroup(
             Crossfade(targetState = state.controllerState.isShuffle, label = "expressiveShuffle") { isShuffle ->
                 Icon(
                     imageVector = SimpIcons.Shuffle,
-                    contentDescription = "",
+                    contentDescription = stringResource(Res.string.shuffle),
                     tint = if (isShuffle) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(22.dp),
                 )
@@ -780,7 +788,7 @@ private fun ExpressiveConnectedGroup(
                     is RepeatState.None -> {
                         Icon(
                             imageVector = SimpIcons.Repeat,
-                            contentDescription = "",
+                            contentDescription = stringResource(Res.string.repeat_off),
                             tint = colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(22.dp),
                         )
@@ -789,7 +797,7 @@ private fun ExpressiveConnectedGroup(
                     RepeatState.All -> {
                         Icon(
                             imageVector = SimpIcons.Repeat,
-                            contentDescription = "",
+                            contentDescription = stringResource(Res.string.repeat_all),
                             tint = colorScheme.onPrimaryContainer,
                             modifier = Modifier.size(22.dp),
                         )
@@ -798,7 +806,7 @@ private fun ExpressiveConnectedGroup(
                     RepeatState.One -> {
                         Icon(
                             imageVector = SimpIcons.RepeatOne,
-                            contentDescription = "",
+                            contentDescription = stringResource(Res.string.repeat_one),
                             tint = colorScheme.onPrimaryContainer,
                             modifier = Modifier.size(22.dp),
                         )
@@ -812,7 +820,7 @@ private fun ExpressiveConnectedGroup(
         ) {
             Icon(
                 imageVector = SimpIcons.QueueMusic,
-                contentDescription = "",
+                contentDescription = stringResource(Res.string.queue),
                 tint = colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(22.dp),
             )

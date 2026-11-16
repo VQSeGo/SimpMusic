@@ -60,6 +60,7 @@ import com.maxrave.simpmusic.viewModel.ListenTogetherSettingsViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.listen_together
 import simpmusic.composeapp.generated.resources.lt_as_host
 import simpmusic.composeapp.generated.resources.lt_auto_approve_joins
@@ -295,6 +296,7 @@ fun ListenTogetherSettingsScreen(
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(start = 12.dp, top = 8.dp)
                     .size(48.dp),
+            contentDescription = stringResource(Res.string.cd_back),
         ) {
             navController.navigateUp()
         }

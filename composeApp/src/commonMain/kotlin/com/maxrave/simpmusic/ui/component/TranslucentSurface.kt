@@ -47,12 +47,14 @@ fun TranslucentIconButton(
     modifier: Modifier = Modifier.size(48.dp),
     shape: Shape = CircleShape,
     tint: Color = Color.White,
+    contentDescription: String? = null,
     onClick: () -> Unit,
 ) {
     TranslucentContainer(modifier = modifier, shape = shape) {
         RippleIconButton(
             imageVector = imageVector,
             tint = tint,
+            contentDescription = contentDescription,
             onClick = onClick,
         )
     }

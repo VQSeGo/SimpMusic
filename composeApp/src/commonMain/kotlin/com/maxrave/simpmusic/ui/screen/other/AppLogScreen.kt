@@ -96,7 +96,10 @@ import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.all
 import simpmusic.composeapp.generated.resources.app_log
+import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.copied_to_clipboard
+import simpmusic.composeapp.generated.resources.delete
+import simpmusic.composeapp.generated.resources.download
 import simpmusic.composeapp.generated.resources.error
 import simpmusic.composeapp.generated.resources.log_empty
 import simpmusic.composeapp.generated.resources.log_errors
@@ -241,6 +244,7 @@ fun AppLogScreen(
                             Modifier.size(32.dp),
                             true,
                             tint = onSurface,
+                            contentDescription = stringResource(Res.string.cd_back),
                         ) {
                             navController.navigateUp()
                         }
@@ -248,7 +252,7 @@ fun AppLogScreen(
                 },
                 actions = {
                     // Android Studio's Logcat toolbar, in its order: clear, pause, restart, stick.
-                    RippleIconButton(SimpIcons.Delete, tint = onSurface) {
+                    RippleIconButton(SimpIcons.Delete, tint = onSurface, contentDescription = stringResource(Res.string.delete)) {
                         clearedAt = nowEpochMillis()
                     }
                     RippleIconButton(if (paused) SimpIcons.PlayArrow else SimpIcons.Pause, tint = onSurface) {
@@ -274,7 +278,7 @@ fun AppLogScreen(
                             stickToBottom = !stickToBottom
                         }
                     }
-                    RippleIconButton(if (isDesktop) SimpIcons.Download else SimpIcons.Share, tint = onSurface) {
+                    RippleIconButton(if (isDesktop) SimpIcons.Download else SimpIcons.Share, tint = onSurface, contentDescription = stringResource(if (isDesktop) Res.string.download else Res.string.share)) {
                         scope.launch {
                             if (!exportLog(shareTitle)) showToast(exportFailed, ToastGravity.Bottom)
                         }

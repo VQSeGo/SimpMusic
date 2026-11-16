@@ -131,10 +131,16 @@ import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.album
 import simpmusic.composeapp.generated.resources.album_length
 import simpmusic.composeapp.generated.resources.baseline_downloaded
+import simpmusic.composeapp.generated.resources.cd_back
+import simpmusic.composeapp.generated.resources.cd_pause
+import simpmusic.composeapp.generated.resources.cd_play
+import simpmusic.composeapp.generated.resources.download
 import simpmusic.composeapp.generated.resources.downloaded
 import simpmusic.composeapp.generated.resources.downloading
+import simpmusic.composeapp.generated.resources.more
 import simpmusic.composeapp.generated.resources.no_description
 import simpmusic.composeapp.generated.resources.other_version
+import simpmusic.composeapp.generated.resources.shuffle
 import simpmusic.composeapp.generated.resources.year_and_category
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -360,6 +366,7 @@ fun AlbumScreen(
                                                         .padding(12.dp)
                                                         .windowInsetsPadding(WindowInsets.statusBars)
                                                         .size(48.dp),
+                                                contentDescription = stringResource(Res.string.cd_back),
                                             ) {
                                                 navController.navigateUp()
                                             }
@@ -391,7 +398,7 @@ fun AlbumScreen(
                                                 ) {
                                                     Icon(
                                                         imageVector = SimpIcons.MoreVert,
-                                                        contentDescription = "More",
+                                                        contentDescription = stringResource(Res.string.more),
                                                         tint = Color.White,
                                                     )
                                                 }
@@ -495,7 +502,7 @@ fun AlbumScreen(
                                                             ) {
                                                                 Icon(
                                                                     imageVector = SimpIcons.Shuffle,
-                                                                    contentDescription = "Shuffle",
+                                                                    contentDescription = stringResource(Res.string.shuffle),
                                                                     tint = Color.White,
                                                                     modifier = Modifier.size(22.dp),
                                                                 )
@@ -528,7 +535,7 @@ fun AlbumScreen(
                                                                     )
                                                                     Spacer(modifier = Modifier.width(4.dp))
                                                                     Text(
-                                                                        text = if (isThisPlaying) "Pause" else "Play",
+                                                                        text = stringResource(if (isThisPlaying) Res.string.cd_pause else Res.string.cd_play),
                                                                         color = Color.Black,
                                                                         style = typo().labelLarge,
                                                                     )
@@ -598,7 +605,7 @@ fun AlbumScreen(
                                                                                 Icon(
                                                                                     imageVector = SimpIcons.DownloadForOffline,
                                                                                     tint = Color.White,
-                                                                                    contentDescription = "Download",
+                                                                                    contentDescription = stringResource(Res.string.download),
                                                                                     modifier = Modifier.size(22.dp),
                                                                                 )
                                                                             }
@@ -621,6 +628,7 @@ fun AlbumScreen(
                                                             .padding(12.dp)
                                                             .windowInsetsPadding(WindowInsets.statusBars)
                                                             .size(48.dp),
+                                                    contentDescription = stringResource(Res.string.cd_back),
                                                 ) {
                                                     navController.navigateUp()
                                                 }
@@ -652,7 +660,7 @@ fun AlbumScreen(
                                                 ) {
                                                     Icon(
                                                         imageVector = SimpIcons.MoreVert,
-                                                        contentDescription = "More",
+                                                        contentDescription = stringResource(Res.string.more),
                                                         tint = Color.White,
                                                     )
                                                 }
@@ -693,7 +701,7 @@ fun AlbumScreen(
                                                     ) {
                                                         Icon(
                                                             imageVector = SimpIcons.Shuffle,
-                                                            contentDescription = "Shuffle",
+                                                            contentDescription = stringResource(Res.string.shuffle),
                                                             tint = Color.White,
                                                             modifier = Modifier.size(22.dp),
                                                         )
@@ -726,7 +734,7 @@ fun AlbumScreen(
                                                             )
                                                             Spacer(modifier = Modifier.width(4.dp))
                                                             Text(
-                                                                text = if (isThisPlaying) "Pause" else "Play",
+                                                                text = stringResource(if (isThisPlaying) Res.string.cd_pause else Res.string.cd_play),
                                                                 color = Color.Black,
                                                                 style = typo().labelLarge,
                                                             )
@@ -796,7 +804,7 @@ fun AlbumScreen(
                                                                         Icon(
                                                                             imageVector = SimpIcons.DownloadForOffline,
                                                                             tint = Color.White,
-                                                                            contentDescription = "Download",
+                                                                            contentDescription = stringResource(Res.string.download),
                                                                             modifier = Modifier.size(22.dp),
                                                                         )
                                                                     }
@@ -949,6 +957,7 @@ fun AlbumScreen(
                                     Modifier
                                         .size(32.dp),
                                     true,
+                                    contentDescription = stringResource(Res.string.cd_back),
                                 ) {
                                     navController.navigateUp()
                                 }
