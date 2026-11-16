@@ -74,7 +74,14 @@ for run in $(seq 1 "$RUNS"); do
   koin_ms="$(mark_ms koin-done)"; first_ms="$(mark_ms first-composition)"; home_ms="$(mark_ms home-shown)"
   skips="$(printf '%s\n' "$proc_log" | grep -E 'Choreographer *: Skipped [0-9]+ frames' \
     | sed -E 's/.*Skipped ([0-9]+) frames.*/\1/' | awk -v m="$SKIP_MIN" '$1>=m' | paste -sd, - || true)"
-  browse_n="$(printf '%s\n' "$proc_log" | grep -cE 'curl .*/browse' || true)"
+  # Запросы browse видны только по curl-строкам уровня Debug. При выключенном отладочном журнале
+  # (по умолчанию он включён) таких строк нет вовсе: тогда считать нечего, а не "0".
+  curl_n="$(printf '%s\n' "$proc_log" | grep -cE 'curl .*https?://' || true)"
+  if [ "${curl_n:-0}" -gt 0 ]; then
+    browse_n="$(printf '%s\n' "$proc_log" | grep -cE 'curl .*/browse' || true)"
+  else
+    browse_n="н/д"
+  fi
   lines_n="$(printf '%s\n' "$proc_log" | grep -c . || true)"
 
   echo "== Прогон $run (pid ${pid:-?})"
@@ -83,7 +90,11 @@ for run in $(seq 1 "$RUNS"); do
   echo "   Метки Startup (мс от старта процесса):"
   if [ -n "$marks" ]; then printf '%s\n' "$marks" | sed 's/^/     /'; else echo "     нет"; fi
   echo "   Skipped >= $SKIP_MIN кадров: ${skips:-нет}"
-  echo "   Запросов browse: $browse_n; строк logcat процесса: $lines_n"
+  if [ "$browse_n" = "н/д" ]; then
+    echo "   Запросов browse: н/д (нет curl-строк: журнал выключен); строк logcat процесса: $lines_n"
+  else
+    echo "   Запросов browse: $browse_n; строк logcat процесса: $lines_n"
+  fi
 
   [ -n "$displayed_ms" ] && displayed_all+=("$displayed_ms")
   [ -n "$fully_ms" ] && fully_all+=("$fully_ms")
@@ -91,7 +102,8 @@ for run in $(seq 1 "$RUNS"); do
   [ -n "$first_ms" ] && first_all+=("$first_ms")
   [ -n "$home_ms" ] && home_all+=("$home_ms")
   skips_all+=("$(printf '%s' "$skips" | awk -F, '{print ($1==""?0:NF)}')")
-  browse_all+=("$browse_n"); lines_all+=("$lines_n")
+  [ "$browse_n" != "н/д" ] && browse_all+=("$browse_n")
+  lines_all+=("$lines_n")
 done
 
 med() { if [ "$#" -eq 0 ]; then echo "-"; else printf '%s\n' "$@" | median; fi; }
@@ -105,5 +117,9 @@ echo "   koin-done:        $(m koin_all) мс"
 echo "   first-composition: $(m first_all) мс"
 echo "   home-shown:       $(m home_all) мс"
 echo "   Зависаний >= $SKIP_MIN кадров: $(m skips_all)"
-echo "   Запросов browse:  $(m browse_all)"
+if [ "${#browse_all[@]}" -eq 0 ]; then
+  echo "   Запросов browse:  н/д при выключенном журнале"
+else
+  echo "   Запросов browse:  $(m browse_all)"
+fi
 echo "   Строк logcat:     $(m lines_all)"
