@@ -130,6 +130,7 @@ import com.maxrave.simpmusic.ui.icon.Search
 import com.maxrave.simpmusic.ui.icon.Shuffle
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
+import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.LocalIsDarkTheme
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
@@ -607,7 +608,7 @@ fun PlaylistScreen(
                                                             modifier =
                                                                 Modifier
                                                                     .size(280.dp)
-                                                                    .clip(RoundedCornerShape(8.dp)),
+                                                                    .clip(ArtworkShape),
                                                         )
                                                         Column(
                                                             modifier = Modifier.weight(1f),

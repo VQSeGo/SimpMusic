@@ -110,6 +110,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPla
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
+import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.AnalyticsUiState
@@ -780,7 +781,7 @@ private fun LandscapeHeader(
             ArtworkImage(
                 url = topTrack.second.thumbnails,
                 onBitmap = onBitmap,
-                modifier = Modifier.size(LANDSCAPE_ARTWORK).clip(RoundedCornerShape(8.dp)),
+                modifier = Modifier.size(LANDSCAPE_ARTWORK).clip(ArtworkShape),
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(

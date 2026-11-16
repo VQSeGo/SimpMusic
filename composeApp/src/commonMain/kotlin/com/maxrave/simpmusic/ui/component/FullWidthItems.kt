@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -86,6 +85,7 @@ import com.maxrave.simpmusic.ui.icon.PushPin
 import com.maxrave.simpmusic.ui.icon.QueueMusic
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.icon.SkipNext
+import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.LocalForceDarkText
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
@@ -304,7 +304,7 @@ fun SongFullWidthItems(
                                 modifier =
                                     Modifier
                                         .fillMaxSize()
-                                        .clip(RoundedCornerShape(4.dp)),
+                                        .clip(ArtworkShape),
                             )
                         } else {
                             Text(
@@ -467,7 +467,7 @@ fun SuggestItems(
                                 Modifier
                                     .wrapContentHeight()
                                     .fillMaxWidth()
-                                    .clip(RoundedCornerShape(4.dp)),
+                                    .clip(ArtworkShape),
                         )
                     }
                 }
@@ -616,7 +616,7 @@ fun PlaylistFullWidthItems(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .clip(RoundedCornerShape(4.dp)),
+                            .clip(ArtworkShape),
                 )
             }
             Column(

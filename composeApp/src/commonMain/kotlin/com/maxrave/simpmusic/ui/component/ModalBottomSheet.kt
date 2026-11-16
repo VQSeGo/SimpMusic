@@ -181,6 +181,7 @@ import com.maxrave.simpmusic.ui.icon.Tune
 import com.maxrave.simpmusic.ui.icon.Update
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
+import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.NowPlayingBottomSheetUIEvent
@@ -1491,7 +1492,7 @@ fun NowPlayingBottomSheet(
                                 Modifier
                                     .align(Alignment.CenterVertically)
                                     .size(44.dp)
-                                    .clip(RoundedCornerShape(6.dp)),
+                                    .clip(ArtworkShape),
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {

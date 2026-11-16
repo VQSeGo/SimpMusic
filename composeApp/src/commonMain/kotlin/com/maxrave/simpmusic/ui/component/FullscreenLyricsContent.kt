@@ -110,6 +110,7 @@ import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentState
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingExpressiveTheme
 import com.maxrave.simpmusic.ui.screen.player.content.crossfadeRainbowColor
 import com.maxrave.simpmusic.ui.screen.player.linkedArtists
+import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.NowPlayingScreenData
@@ -302,7 +303,7 @@ fun FullscreenLyricsContent(
                             modifier =
                                 Modifier
                                     .size(45.dp)
-                                    .clip(RoundedCornerShape(8.dp)),
+                                    .clip(ArtworkShape),
                         )
 
                         Spacer(modifier = Modifier.width(12.dp))
@@ -822,7 +823,7 @@ private fun FullscreenLyricsLandscape(
                                 Modifier
                                     .padding(horizontal = 20.dp)
                                     .size(artworkSize)
-                                    .clip(RoundedCornerShape(12.dp)),
+                                    .clip(ArtworkShape),
                         )
                         Spacer(modifier = Modifier.height(20.dp))
                         NowPlayingExpressiveTheme(state = state) {

@@ -115,6 +115,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.BrowseDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
 import com.maxrave.simpmusic.ui.icon.PlayArrow
 import com.maxrave.simpmusic.ui.icon.SimpIcons
+import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.LocalForceDarkText
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.HomeViewModel
@@ -666,7 +667,7 @@ fun HomeItemContentPlaylist(
                         (if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier.size(thumbSize))
                             .aspectRatio(1f)
                             .clip(
-                                RoundedCornerShape(10.dp),
+                                ArtworkShape,
                             ).hoverZoom(hovered),
                 )
                 if (onPlay != null) HoverPlayButton(visible = hovered, onClick = onPlay)
@@ -831,7 +832,7 @@ fun QuickPicksItem(
                         .align(Alignment.CenterVertically)
                         .size(44.dp)
                         .clip(
-                            RoundedCornerShape(10),
+                            ArtworkShape,
                         ),
             )
             Column(
@@ -964,7 +965,7 @@ fun HomeItemSong(
                         Modifier
                             .then(if (fillMaxWidth) Modifier.fillMaxWidth().aspectRatio(1f) else Modifier.size(160.dp))
                             .clip(
-                                RoundedCornerShape(10.dp),
+                                ArtworkShape,
                             ).hoverZoom(hovered),
                 )
                 if (onPlay != null) HoverPlayButton(visible = hovered, onClick = onPlay)
@@ -1069,7 +1070,7 @@ fun HomeItemVideo(
                             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier.height(160.dp))
                             .aspectRatio(16f / 9f)
                             .clip(
-                                RoundedCornerShape(10.dp),
+                                ArtworkShape,
                             ).hoverZoom(hovered),
                 )
                 if (onPlay != null) HoverPlayButton(visible = hovered, onClick = onPlay)
@@ -1305,7 +1306,7 @@ fun ItemVideoChart(
                         .width(280.dp)
                         .height(160.dp)
                         .clip(
-                            RoundedCornerShape(10),
+                            ArtworkShape,
                         ),
             )
             Row {
@@ -1522,7 +1523,7 @@ fun ItemTrackChart(
                         .align(Alignment.CenterVertically)
                         .size(50.dp)
                         .clip(
-                            RoundedCornerShape(10),
+                            ArtworkShape,
                         ),
             )
             Column(

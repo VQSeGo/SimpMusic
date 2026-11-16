@@ -93,6 +93,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.home.SettingsDestination
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
 import com.maxrave.simpmusic.ui.screen.home.chipStripEdgeFades
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
+import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.LibrarySidebarItem
 import com.maxrave.simpmusic.viewModel.LibrarySidebarKind
@@ -293,7 +294,7 @@ fun DesktopSidebar(
                             Box(
                                 Modifier
                                     .size(48.dp)
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .clip(ArtworkShape)
                                     .background(MaterialTheme.colorScheme.surfaceContainerHighest),
                                 contentAlignment = Alignment.Center,
                             ) { collection.icon() }
@@ -698,7 +699,7 @@ private fun SidebarLibraryRow(
 
 @Composable
 private fun SidebarCover(item: LibrarySidebarItem) {
-    val shape = if (item.kind == LibrarySidebarKind.ARTIST) CircleShape else RoundedCornerShape(8.dp)
+    val shape = if (item.kind == LibrarySidebarKind.ARTIST) CircleShape else ArtworkShape
     if (item.thumbnail.isNullOrEmpty()) {
         // A local playlist with no artwork: the gradient its title tile has in the Library grid,
         // without the title and badge, which that tile sizes for 150dp and which cannot be read at 48.

@@ -136,6 +136,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.search.SearchDestination
+import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.SearchScreenUIState
 import com.maxrave.simpmusic.viewModel.SearchType
@@ -1233,7 +1234,7 @@ fun SuggestItemRow(
             modifier =
                 Modifier
                     .size(40.dp)
-                    .clip(RoundedCornerShape(4.dp)),
+                    .clip(ArtworkShape),
         ) {
             AsyncImage(
                 model =
@@ -1255,7 +1256,7 @@ fun SuggestItemRow(
                             if (searchResult is ArtistsResult) {
                                 CircleShape
                             } else {
-                                RoundedCornerShape(4.dp)
+                                ArtworkShape
                             },
                         ),
             )

@@ -77,6 +77,7 @@ import com.maxrave.simpmusic.ui.icon.SkipNext
 import com.maxrave.simpmusic.ui.icon.SkipPrevious
 import com.maxrave.simpmusic.ui.icon.VolumeOff
 import com.maxrave.simpmusic.ui.icon.VolumeUp
+import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.NowPlayingScreenData
 import com.maxrave.simpmusic.viewModel.UIEvent
@@ -300,7 +301,7 @@ fun MediumMiniLayout(
                             Modifier
                                 .size(48.dp)
                                 .scale(artworkScale)
-                                .clip(RoundedCornerShape(6.dp))
+                                .clip(ArtworkShape)
                                 .hoverable(artworkInteractionSource),
                     )
 
@@ -523,7 +524,7 @@ fun SquareMiniLayout(
                         .weight(1f)
                         .fillMaxWidth(0.85f)
                         .scale(artworkScale)
-                        .clip(RoundedCornerShape(12.dp))
+                        .clip(ArtworkShape)
                         .hoverable(artworkInteractionSource),
             )
 
@@ -788,7 +789,7 @@ fun ExpandedMiniLayout(
                         Modifier
                             .size(64.dp)
                             .scale(artworkScale)
-                            .clip(RoundedCornerShape(8.dp))
+                            .clip(ArtworkShape)
                             .hoverable(artworkInteractionSource),
                 )
 
