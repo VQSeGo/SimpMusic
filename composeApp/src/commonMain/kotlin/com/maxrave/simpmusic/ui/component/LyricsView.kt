@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ModalBottomSheet
@@ -52,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
@@ -1068,8 +1070,6 @@ private fun AnimatedWord(
         }
     }
 
-    val progress = anim.value
-
     // The word's position, resolved by STATE rather than read raw. The Animatable is what carries
     // the 100ms timeline ticks at frame rate — it snaps to the real position and then animates to
     // the end of the word in wall-clock time, so the wipe keeps moving between ticks instead of
@@ -1079,11 +1079,21 @@ private fun AnimatedWord(
     // holds whatever it was constructed with, which is why reading it directly lit the first letter
     // of every upcoming word. Deciding 0 / anim / 1 from the state fixes that without giving up the
     // interpolation.
+    //
+    // A function, read only where the frame is drawn: the swell's layer, each character's ink and
+    // glow. Read here, in the body, it recomposed the sung word — every character of it, two Texts
+    // each — on every frame of the wipe, and the words behind it for as long as their light ebbed:
+    // ~2.8 ms of the UI thread a frame on the phone. Composition now hears only of the few moments
+    // that change the tree: the bloom switching radius and each character being reached.
     val wordProgress =
-        when {
-            isPast -> 1f
-            isActive -> progress
-            else -> 0f
+        remember(anim, isActive, isPast) {
+            {
+                when {
+                    isPast -> 1f
+                    isActive -> anim.value
+                    else -> 0f
+                }
+            }
         }
 
     // AMLL's emphasis strengths, derived from the word's OWN duration.
@@ -1107,33 +1117,37 @@ private fun AnimatedWord(
     // The flare's on/off, animated instead of switched. A word that has just been sung keeps its
     // light for FLARE_FADE_MS while the next word's comes up, so the hand-over happens across the
     // word boundary rather than at it. Settled words hold 0 and animate nothing.
-    val flareGate by animateFloatAsState(
-        targetValue = if (isActive) 1f else 0f,
-        // The duration is picked from the direction being travelled: snap up with the singing, ebb
-        // away slowly behind it.
-        animationSpec =
-            tween(
-                durationMillis = if (isActive) FLARE_ATTACK_MS else FLARE_FADE_MS,
-                easing = LinearEasing,
-            ),
-        label = "flareGate",
-    )
+    val flareGate =
+        animateFloatAsState(
+            targetValue = if (isActive) 1f else 0f,
+            // The duration is picked from the direction being travelled: snap up with the singing, ebb
+            // away slowly behind it.
+            animationSpec =
+                tween(
+                    durationMillis = if (isActive) FLARE_ATTACK_MS else FLARE_FADE_MS,
+                    easing = LinearEasing,
+                ),
+            label = "flareGate",
+        )
 
-    val eased = if (amount <= 0f && blurAmount <= 0f) 0f else empEasing(wordProgress)
+    val emphasised = amount > 0f || blurAmount > 0f
     val fontPx = with(LocalDensity.current) { style.fontSize.toPx() }
-    val heldGlow =
-        if (eased * blurAmount <= 0.01f) {
-            null
+    // While the swell is strong enough, the bloom takes the swell's wider radius; otherwise the sung
+    // base glow's. Only the switch is composition's business: its brightness is the flare, drawn.
+    val swellGlows by remember(wordProgress, emphasised, blurAmount) {
+        derivedStateOf { emphasised && empEasing(wordProgress()) * blurAmount > 0.01f }
+    }
+    val glowRadiusPx =
+        if (swellGlows) {
+            min(EMP_GLOW_RADIUS_EM, blurAmount * EMP_GLOW_RADIUS_EM) * fontPx
         } else {
-            glow?.copy(
-                color = glow.color.copy(alpha = (eased * blurAmount).coerceIn(0f, 1f)),
-                blurRadius = min(EMP_GLOW_RADIUS_EM, blurAmount * EMP_GLOW_RADIUS_EM) * fontPx,
-            )
+            SUNG_BASE_GLOW_EM * fontPx
         }
 
     Box(
         modifier =
             Modifier.graphicsLayer {
+                val eased = if (emphasised) empEasing(wordProgress()) else 0f
                 val scale = 1f + eased * EMP_SCALE_EM * amount
                 scaleX = scale
                 scaleY = scale
@@ -1143,111 +1157,145 @@ private fun AnimatedWord(
     ) {
         if (!wordBidi.isLeftToRight) {
             // Keep Arabic shaping and combining marks intact, including RTL words in an LTR line.
+            // Still follows the wipe in composition: its clip is a single drawWithContent and rare.
             ShapedLyricsWord(
                 word = word,
                 style = style,
-                progress = wordProgress,
+                progress = wordProgress(),
                 isRtl = wordDirection == TextDirection.Rtl,
                 restingColor = pendingColorOverride ?: DimRichPendingColor,
-                glow = heldGlow ?: glow?.copy(blurRadius = SUNG_BASE_GLOW_EM * fontPx),
-                flare = flareGate,
+                glow = glow?.copy(blurRadius = glowRadiusPx),
+                flare = flareGate.value,
                 fontPx = fontPx,
             )
         } else {
             val chars = word.toCharArray()
             val charCount = chars.size.coerceAtLeast(1)
+            // Intensity is the Shadow's alpha times the flare, which the character's layer applies.
+            val glowStyle =
+                glow?.let {
+                    style.copy(
+                        color = Color.Transparent,
+                        shadow = it.copy(color = it.color.copy(alpha = SUNG_BASE_GLOW_ALPHA), blurRadius = glowRadiusPx),
+                    )
+                }
             // A Latin word keeps its character order even inside an RTL line.
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row {
                     chars.forEachIndexed { charIndex, ch ->
-                        val charFrom = charIndex.toFloat() / charCount
-                        val charTo = (charIndex + 1).toFloat() / charCount
-                        val charProgress = ((wordProgress - charFrom) / (charTo - charFrom)).coerceIn(0f, 1f)
-                        val charPast = wordProgress >= charTo
-                        val charActive = isActive && wordProgress >= charFrom && wordProgress < charTo
-                        // The flare is a CONTINUOUS falloff from the playhead, not an on/off per character:
-                        // switching per character killed the light at every boundary and lit it again on the
-                        // next one, which read as flicker. Fading by distance lets the brightness hand over
-                        // between neighbours, so one travelling point of light moves across the word.
-                        val charCenter = (charFrom + charTo) / 2f
-                        val reach = (FLARE_REACH_CHARS / charCount).coerceAtLeast(0.0001f)
-                        val charFlare =
-                            if (flareGate <= 0f || glow == null) {
+                        LyricChar(
+                            char = ch,
+                            charFrom = charIndex.toFloat() / charCount,
+                            charTo = (charIndex + 1).toFloat() / charCount,
+                            charCount = charCount,
+                            wordProgress = wordProgress,
+                            isActive = isActive,
+                            style = style,
+                            glowStyle = glowStyle,
+                            flareGate = flareGate,
+                            restingColor = pendingColorOverride ?: DimRichPendingColor,
+                            fontPx = fontPx,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * One character of the sung word. Everything that moves with the wipe — its ink, the light around
+ * it, its lift — is read at draw time from [wordProgress]; the character recomposes once, when the
+ * light first reaches it and its rise starts.
+ */
+@Composable
+private fun LyricChar(
+    char: Char,
+    charFrom: Float,
+    charTo: Float,
+    charCount: Int,
+    wordProgress: () -> Float,
+    isActive: Boolean,
+    style: TextStyle,
+    glowStyle: TextStyle?,
+    flareGate: State<Float>,
+    restingColor: Color,
+    fontPx: Float,
+) {
+    val text = remember(char) { char.toString() }
+    // Lifted when the light touches it, over CHAR_RISE_MS, and LEFT THERE. Apple never brings the
+    // glyph back down — the sung half of a line simply sits higher than the half still to come — so
+    // there is no fall to animate, only an arrival.
+    //
+    // The trigger is instant, the travel is not: the light moves on long before the character has
+    // finished rising, which is exactly what makes the line ripple instead of stepping. Its own
+    // animation, on its own clock, so a word sung faster than the rise still completes.
+    val reached by remember(wordProgress, charFrom) { derivedStateOf { wordProgress() > charFrom } }
+    val charRise by animateFloatAsState(
+        targetValue = if (glowStyle != null && reached) 1f else 0f,
+        animationSpec = tween(CHAR_RISE_MS, easing = FastOutSlowInEasing),
+        label = "charRise",
+    )
+    Box(
+        modifier =
+            Modifier.graphicsLayer {
+                translationY = -charRise * CHAR_RISE_EM * fontPx
+            },
+    ) {
+        // Glow: transparent ink, so only the Shadow lands and it follows the glyph outline instead
+        // of boxing the character.
+        //
+        // The flare is a CONTINUOUS falloff from the playhead, not an on/off per character:
+        // switching per character killed the light at every boundary and lit it again on the next
+        // one, which read as flicker. Fading by distance lets the brightness hand over between
+        // neighbours, so one travelling point of light moves across the word.
+        //
+        // The node is composed unconditionally, at alpha 0 when the playhead is far away. That is
+        // what stops the hand-over from flickering: A fades down and B fades up, neither is ever
+        // added to or removed from the tree. ModulateAlpha fades the shadow itself: the default
+        // would render the Text into an offscreen layer only as big as its bounds and slice the
+        // bloom, which by definition spills outside them, into a rectangle.
+        if (glowStyle != null) {
+            BasicText(
+                text = text,
+                style = glowStyle,
+                modifier =
+                    Modifier.graphicsLayer {
+                        compositingStrategy = CompositingStrategy.ModulateAlpha
+                        val gate = flareGate.value
+                        alpha =
+                            if (gate <= 0f) {
                                 0f
                             } else {
-                                // Ahead of the light, a short linear ramp so a character brightens as it
-                                // is approached; behind it, an exponential wake.
-                                val delta = wordProgress - charCenter
+                                val charCenter = (charFrom + charTo) / 2f
+                                val reach = (FLARE_REACH_CHARS / charCount).coerceAtLeast(0.0001f)
+                                // Ahead of the light, a short linear ramp so a character brightens as
+                                // it is approached; behind it, an exponential wake.
+                                val delta = wordProgress() - charCenter
                                 val shape =
                                     if (delta > 0f) {
                                         exp(-delta / (FLARE_TAIL_CHARS / charCount))
                                     } else {
                                         (1f - abs(delta) / reach).coerceIn(0f, 1f)
                                     }
-                                shape * flareGate
+                                shape * gate
                             }
-                        // Lifted when the light touches it, over CHAR_RISE_MS, and LEFT THERE. Apple
-                        // never brings the glyph back down — the sung half of a line simply sits higher
-                        // than the half still to come — so there is no fall to animate, only an arrival.
-                        //
-                        // The trigger is instant, the travel is not: the light moves on long before the
-                        // character has finished rising, which is exactly what makes the line ripple
-                        // instead of stepping. Its own animation, on its own clock, so a word sung faster
-                        // than the rise still completes.
-                        val charRise by animateFloatAsState(
-                            targetValue = if (glow != null && charProgress > 0f) 1f else 0f,
-                            animationSpec = tween(CHAR_RISE_MS, easing = FastOutSlowInEasing),
-                            label = "charRise",
-                        )
-                        val restingColor = pendingColorOverride ?: DimRichPendingColor
-                        Box(
-                            modifier =
-                                Modifier.graphicsLayer {
-                                    translationY = -charRise * CHAR_RISE_EM * fontPx
-                                },
-                        ) {
-                            // Glow: transparent ink, so only the Shadow lands and it follows the glyph
-                            // outline instead of boxing the character.
-                            //
-                            val glowShadow = heldGlow ?: glow?.copy(blurRadius = SUNG_BASE_GLOW_EM * fontPx)
-                            if (glowShadow != null) {
-                                Text(
-                                    text = ch.toString(),
-                                    // Intensity goes into the Shadow's own alpha. NOT graphicsLayer.alpha:
-                                    // any alpha below 1 forces Compose to render the node into an offscreen
-                                    // layer first, and that layer is only as big as the Text's bounds — so
-                                    // the bloom, which by definition spills outside them, comes back sliced
-                                    // into a rectangle.
-                                    //
-                                    // The node is still composed unconditionally, at alpha 0 when the
-                                    // playhead is far away. That is what stops the hand-over from
-                                    // flickering: A fades down and B fades up, neither is ever added to or
-                                    // removed from the tree.
-                                    style =
-                                        style.copy(
-                                            shadow =
-                                                glowShadow.copy(
-                                                    color = glowShadow.color.copy(alpha = SUNG_BASE_GLOW_ALPHA * charFlare),
-                                                ),
-                                        ),
-                                    color = Color.Transparent,
-                                )
-                            }
-                            Text(
-                                text = ch.toString(),
-                                style = style,
-                                color =
-                                    when {
-                                        charPast -> Color.White
-                                        charActive -> lerp(restingColor, Color.White, charProgress)
-                                        else -> restingColor
-                                    },
-                            )
-                        }
-                    }
-                }
-            }
+                    },
+            )
         }
+        BasicText(
+            text = text,
+            style = style,
+            color = {
+                val progress = wordProgress()
+                when {
+                    progress >= charTo -> Color.White
+                    isActive && progress >= charFrom ->
+                        lerp(restingColor, Color.White, ((progress - charFrom) / (charTo - charFrom)).coerceIn(0f, 1f))
+                    else -> restingColor
+                }
+            },
+        )
     }
 }
 
