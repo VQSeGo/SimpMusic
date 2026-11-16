@@ -87,6 +87,7 @@ import com.maxrave.simpmusic.extension.smoothScrimBrush
 import com.maxrave.simpmusic.ui.component.DescriptionView
 import com.maxrave.simpmusic.ui.component.ExplicitBadge
 import com.maxrave.simpmusic.ui.component.HeartCheckBox
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.LyricsOffsetBar
 import com.maxrave.simpmusic.ui.component.LyricsView
 import com.maxrave.simpmusic.ui.component.PlayPauseButton
@@ -809,7 +810,7 @@ internal fun ExpressiveCollapsedToolbar(
                                         .wrapContentHeight(
                                             align = Alignment.CenterVertically,
                                         ).basicMarquee(
-                                            iterations = Int.MAX_VALUE,
+                                            iterations = LocalMarqueeIterations.current,
                                             animationMode = MarqueeAnimationMode.Immediately,
                                         ).focusable(),
                             )
@@ -842,7 +843,7 @@ internal fun ExpressiveCollapsedToolbar(
                                                 .wrapContentHeight(
                                                     align = Alignment.CenterVertically,
                                                 ).basicMarquee(
-                                                    iterations = Int.MAX_VALUE,
+                                                    iterations = LocalMarqueeIterations.current,
                                                     animationMode = MarqueeAnimationMode.Immediately,
                                                 ).focusable(),
                                     )

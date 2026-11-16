@@ -86,6 +86,7 @@ import com.maxrave.simpmusic.ui.component.DescriptionView
 import com.maxrave.simpmusic.ui.component.EndOfPage
 import com.maxrave.simpmusic.ui.component.HeartCheckBox
 import com.maxrave.simpmusic.ui.component.HomeItemContentPlaylist
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.TranslucentIconButton
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.PlaylistBottomSheet
@@ -933,7 +934,7 @@ fun AlbumScreen(
                                         .wrapContentHeight(
                                             align = Alignment.CenterVertically,
                                         ).basicMarquee(
-                                            iterations = Int.MAX_VALUE,
+                                            iterations = LocalMarqueeIterations.current,
                                             animationMode = MarqueeAnimationMode.Immediately,
                                         ).focusable(),
                             )

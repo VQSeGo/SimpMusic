@@ -45,6 +45,7 @@ import androidx.navigation.NavController
 import com.maxrave.domain.extension.now
 import com.maxrave.simpmusic.expect.openUrl
 import com.maxrave.simpmusic.extension.ultraThinBarStyle
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.RippleIconButton
 import com.maxrave.simpmusic.ui.icon.ArrowBackIosNew
 import com.maxrave.simpmusic.ui.icon.SimpIcons
@@ -218,7 +219,7 @@ fun CreditScreen(
                         .wrapContentHeight(
                             align = Alignment.CenterVertically,
                         ).basicMarquee(
-                            iterations = Int.MAX_VALUE,
+                            iterations = LocalMarqueeIterations.current,
                             animationMode = MarqueeAnimationMode.Immediately,
                         ).focusable(),
             )

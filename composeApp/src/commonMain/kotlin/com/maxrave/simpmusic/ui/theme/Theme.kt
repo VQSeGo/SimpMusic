@@ -20,6 +20,7 @@ import com.materialkolor.rememberDynamicColorScheme
 import com.maxrave.domain.manager.DataStoreManager
 import com.maxrave.simpmusic.expect.ui.SystemBarAppearanceEffect
 import com.maxrave.simpmusic.expect.ui.platformDynamicColorScheme
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 
 /**
  * Semantic colors that sit outside the Material 3 ColorScheme.
@@ -112,6 +113,7 @@ fun AppTheme(
     themeMode: String = DataStoreManager.THEME_MODE_DARK,
     themeColorSource: String = DataStoreManager.THEME_COLOR_DEFAULT,
     customThemeColor: Color? = null,
+    marqueeIterations: Int = Int.MAX_VALUE,
     content:
         @Composable()
         () -> Unit,
@@ -161,6 +163,7 @@ fun AppTheme(
                 LocalAppColors provides if (isDark) DarkAppColors else LightAppColors,
                 LocalIsDarkTheme provides isDark,
                 LocalForcedDarkColorScheme provides forcedDarkScheme,
+                LocalMarqueeIterations provides marqueeIterations,
                 content = content,
             )
         },

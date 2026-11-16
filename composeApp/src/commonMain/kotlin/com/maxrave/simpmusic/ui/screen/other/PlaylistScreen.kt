@@ -94,6 +94,7 @@ import com.maxrave.domain.data.entities.DownloadState
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.utils.toSongEntity
 import com.maxrave.logger.Logger
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.SearchBarExit
 import com.maxrave.simpmusic.ui.component.SearchBarEnter
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
@@ -1319,7 +1320,7 @@ fun PlaylistScreen(
                                         .wrapContentHeight(
                                             align = Alignment.CenterVertically,
                                         ).basicMarquee(
-                                            iterations = Int.MAX_VALUE,
+                                            iterations = LocalMarqueeIterations.current,
                                             animationMode = MarqueeAnimationMode.Immediately,
                                         ).focusable(),
                             )

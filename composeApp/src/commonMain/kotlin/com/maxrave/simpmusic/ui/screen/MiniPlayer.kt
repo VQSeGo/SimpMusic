@@ -125,6 +125,7 @@ import com.maxrave.simpmusic.extension.formatDuration
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.ExplicitBadge
 import com.maxrave.simpmusic.ui.component.HeartCheckBox
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.PlayPauseButton
 import com.maxrave.simpmusic.ui.component.PlayerControlLayout
 import com.maxrave.simpmusic.ui.component.QueueBottomSheet
@@ -469,7 +470,7 @@ fun MiniPlayer(
                                                     .wrapContentHeight(
                                                         align = Alignment.CenterVertically,
                                                     ).basicMarquee(
-                                                        iterations = Int.MAX_VALUE,
+                                                        iterations = LocalMarqueeIterations.current,
                                                         animationMode = MarqueeAnimationMode.Immediately,
                                                     ).focusable(),
                                         )
@@ -494,7 +495,7 @@ fun MiniPlayer(
                                                         .wrapContentHeight(
                                                             align = Alignment.CenterVertically,
                                                         ).basicMarquee(
-                                                            iterations = Int.MAX_VALUE,
+                                                            iterations = LocalMarqueeIterations.current,
                                                             animationMode = MarqueeAnimationMode.Immediately,
                                                         ).focusable(),
                                             )
@@ -781,7 +782,7 @@ fun MiniPlayer(
                                         .wrapContentHeight(
                                             align = Alignment.CenterVertically,
                                         ).basicMarquee(
-                                            iterations = Int.MAX_VALUE,
+                                            iterations = LocalMarqueeIterations.current,
                                             animationMode = MarqueeAnimationMode.Immediately,
                                         ).focusable(),
                             )

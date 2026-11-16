@@ -115,7 +115,7 @@ fun LibraryItem(
                             .wrapContentHeight(align = Alignment.CenterVertically)
                             .weight(1f)
                             .basicMarquee(
-                                iterations = Int.MAX_VALUE,
+                                iterations = LocalMarqueeIterations.current,
                                 animationMode = MarqueeAnimationMode.Immediately,
                             ).focusable(),
                 )

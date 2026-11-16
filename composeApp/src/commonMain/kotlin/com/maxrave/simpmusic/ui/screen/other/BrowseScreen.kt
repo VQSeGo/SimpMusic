@@ -67,6 +67,7 @@ import com.maxrave.simpmusic.ui.component.AmbientGlowHeight
 import com.maxrave.simpmusic.ui.component.CenterLoadingBox
 import com.maxrave.simpmusic.ui.component.EndOfPage
 import com.maxrave.simpmusic.ui.component.HomeContentCard
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.MoodMomentAndGenreHomeItem
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.RippleIconButton
@@ -316,7 +317,7 @@ fun BrowseScreen(
                                     .wrapContentHeight(
                                         align = Alignment.CenterVertically,
                                     ).basicMarquee(
-                                        iterations = Int.MAX_VALUE,
+                                        iterations = LocalMarqueeIterations.current,
                                         animationMode = MarqueeAnimationMode.Immediately,
                                     ).focusable(),
                         )

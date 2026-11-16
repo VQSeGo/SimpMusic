@@ -857,7 +857,7 @@ fun QuickPicksItem(
                             .padding(
                                 bottom = 3.dp,
                             ).basicMarquee(
-                                iterations = Int.MAX_VALUE,
+                                iterations = LocalMarqueeIterations.current,
                                 initialDelayMillis = 2000,
                                 repeatDelayMillis = 2000,
                                 velocity = 25.dp,

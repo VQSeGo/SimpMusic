@@ -75,6 +75,7 @@ import com.maxrave.simpmusic.ui.component.AppBottomNavigationBar
 import com.maxrave.simpmusic.ui.component.AppNavigationRail
 import com.maxrave.simpmusic.ui.component.DesktopSidebar
 import com.maxrave.simpmusic.ui.component.FoldingBottomNavigationBar
+import com.maxrave.simpmusic.ui.component.RestingMarqueeIterations
 import com.maxrave.simpmusic.ui.icon.ArrowForwardIos
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.AnalyticsDestination
@@ -110,7 +111,9 @@ import com.mikepenz.markdown.m3.markdownTypography
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlin.math.roundToInt
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -452,10 +455,15 @@ fun App(
     val isTablet = windowSize.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)
     val isTabletLandscape = isTablet && currentOrientation() == Orientation.LANDSCAPE
 
+    // Long titles scroll for good only while music plays; see LocalMarqueeIterations.
+    val isPlaying by remember(viewModel) {
+        viewModel.controllerState.map { it.isPlaying }.distinctUntilChanged()
+    }.collectAsStateWithLifecycle(viewModel.controllerState.value.isPlaying)
     AppTheme(
         themeMode = themeMode,
         themeColorSource = themeColorSource,
         customThemeColor = parseThemeColorHex(customThemeColorHex),
+        marqueeIterations = if (isPlaying) Int.MAX_VALUE else RestingMarqueeIterations,
     ) {
         // Read inside AppTheme so MaterialTheme reflects the resolved scheme.
         val isLightScheme = MaterialTheme.colorScheme.background.luminance() > 0.5f

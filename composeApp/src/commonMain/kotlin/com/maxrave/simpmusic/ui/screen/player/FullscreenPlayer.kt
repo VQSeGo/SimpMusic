@@ -71,6 +71,7 @@ import com.maxrave.simpmusic.extension.lengthLabel
 import com.maxrave.simpmusic.extension.rememberIsInPipMode
 import com.maxrave.simpmusic.extension.smoothScrimBrush
 import com.maxrave.simpmusic.ui.component.AddLyricsSheet
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.RippleIconButton
 import com.maxrave.simpmusic.ui.icon.ArrowBackIosNew
@@ -350,7 +351,7 @@ fun FullscreenPlayer(
                                             .fillMaxWidth()
                                             .wrapContentHeight(align = Alignment.CenterVertically)
                                             .basicMarquee(
-                                                iterations = Int.MAX_VALUE,
+                                                iterations = LocalMarqueeIterations.current,
                                                 animationMode = MarqueeAnimationMode.Immediately,
                                             ).focusable(),
                                 )

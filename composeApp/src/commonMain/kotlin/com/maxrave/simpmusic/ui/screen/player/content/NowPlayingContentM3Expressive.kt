@@ -82,6 +82,7 @@ import com.maxrave.simpmusic.extension.isElementVisible
 import com.maxrave.simpmusic.extension.lengthLabel
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.ExplicitBadge
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.LyricText
 import com.maxrave.simpmusic.ui.component.heartBurst
 import com.maxrave.simpmusic.ui.component.rememberHeartBurstState
@@ -350,7 +351,7 @@ private fun NowPlayingM3ExpressiveLayout(
                                     .fillMaxWidth()
                                     .wrapContentHeight(align = Alignment.CenterVertically)
                                     .basicMarquee(
-                                        iterations = Int.MAX_VALUE,
+                                        iterations = LocalMarqueeIterations.current,
                                         animationMode = MarqueeAnimationMode.Immediately,
                                     ).focusable(),
                         )
@@ -506,7 +507,7 @@ private fun ExpressiveInlineLyricLine(state: NowPlayingContentState) {
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
                     .basicMarquee(
-                        iterations = Int.MAX_VALUE,
+                        iterations = LocalMarqueeIterations.current,
                         animationMode = MarqueeAnimationMode.Immediately,
                     ).focusable(),
         )
@@ -541,7 +542,7 @@ internal fun ExpressiveTrackInfoRow(
                         .fillMaxWidth()
                         .wrapContentHeight(align = Alignment.CenterVertically)
                         .basicMarquee(
-                            iterations = Int.MAX_VALUE,
+                            iterations = LocalMarqueeIterations.current,
                             animationMode = MarqueeAnimationMode.Immediately,
                         ).focusable()
                         .clickable { actions.onNavigateToAlbum() },
@@ -568,7 +569,7 @@ internal fun ExpressiveTrackInfoRow(
                             .weight(1f)
                             .wrapContentHeight(align = Alignment.CenterVertically)
                             .basicMarquee(
-                                iterations = Int.MAX_VALUE,
+                                iterations = LocalMarqueeIterations.current,
                                 animationMode = MarqueeAnimationMode.Immediately,
                             ).focusable()
                             .clickable {

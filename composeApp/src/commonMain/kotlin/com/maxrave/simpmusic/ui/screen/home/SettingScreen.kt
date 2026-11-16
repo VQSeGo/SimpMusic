@@ -114,6 +114,7 @@ import com.maxrave.simpmusic.ui.component.AmbientThemeGlow
 import com.maxrave.simpmusic.ui.component.CenterLoadingBox
 import com.maxrave.simpmusic.ui.component.EndOfPage
 import com.maxrave.simpmusic.ui.component.LoadingDialog
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.LyricsSourcesDialog
 import com.maxrave.simpmusic.ui.component.lyricsSourcesSummary
 import com.maxrave.simpmusic.ui.component.RippleIconButton
@@ -2185,7 +2186,7 @@ fun SettingScreen(
                                             .fillMaxWidth()
                                             .wrapContentHeight(align = Alignment.CenterVertically)
                                             .basicMarquee(
-                                                iterations = Int.MAX_VALUE,
+                                                iterations = LocalMarqueeIterations.current,
                                                 animationMode = MarqueeAnimationMode.Immediately,
                                             ).focusable(),
                                 )

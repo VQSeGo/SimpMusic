@@ -320,7 +320,7 @@ fun FullscreenLyricsContent(
                                 modifier =
                                     Modifier
                                         .basicMarquee(
-                                            iterations = Int.MAX_VALUE,
+                                            iterations = LocalMarqueeIterations.current,
                                             animationMode = MarqueeAnimationMode.Immediately,
                                         ).focusable()
                                         .clickable { actions.onNavigateToAlbum() },
@@ -371,7 +371,7 @@ fun FullscreenLyricsContent(
                                     modifier =
                                         Modifier
                                             .basicMarquee(
-                                                iterations = Int.MAX_VALUE,
+                                                iterations = LocalMarqueeIterations.current,
                                                 animationMode = MarqueeAnimationMode.Immediately,
                                             ).focusable(),
                                 )

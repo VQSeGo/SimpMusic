@@ -100,6 +100,7 @@ import com.maxrave.simpmusic.extension.rememberPaletteColor
 import com.maxrave.simpmusic.extension.toSquareThumbnailUrl
 import com.maxrave.simpmusic.ui.component.AddToPlaylistModalBottomSheet
 import com.maxrave.simpmusic.ui.component.CenterLoadingBox
+import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
 import com.maxrave.simpmusic.ui.component.DescriptionView
 import com.maxrave.simpmusic.ui.component.EndOfPage
@@ -571,7 +572,7 @@ fun ArtistScreen(
                                             .fillMaxWidth()
                                             .wrapContentHeight(align = Alignment.CenterVertically)
                                             .basicMarquee(
-                                                iterations = Int.MAX_VALUE,
+                                                iterations = LocalMarqueeIterations.current,
                                                 animationMode = MarqueeAnimationMode.Immediately,
                                             ).focusable(),
                                 )
