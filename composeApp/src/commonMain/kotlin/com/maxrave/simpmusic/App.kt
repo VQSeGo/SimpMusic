@@ -70,6 +70,7 @@ import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.expect.Orientation
 import com.maxrave.simpmusic.expect.currentOrientation
 import com.maxrave.simpmusic.expect.openUrl
+import com.maxrave.simpmusic.expect.ui.LocalScrollbarBottomInset
 import com.maxrave.simpmusic.extension.copy
 import com.maxrave.simpmusic.ui.component.AppBottomNavigationBar
 import com.maxrave.simpmusic.ui.component.AppNavigationRail
@@ -652,22 +653,27 @@ fun App(
                                             .fillMaxSize()
                                             .hazeSource(hazeState),
                                     ) {
-                                        AppNavigationGraph(
-                                            innerPadding = innerPadding,
-                                            navController = navController,
-                                            hideNavBar = {
-                                                isNavBarVisible = false
-                                            },
-                                            showNavBar = {
-                                                isNavBarVisible = true
-                                            },
-                                            showNowPlayingSheet = {
-                                                isShowNowPlaylistScreen = true
-                                            },
-                                            onScrolling = {
-                                                isScrolledToTop = it
-                                            },
-                                        )
+                                        // The narrow desktop layout has a bottom bar over the pages; a page's scrollbar ends above it.
+                                        CompositionLocalProvider(
+                                            LocalScrollbarBottomInset provides innerPadding.calculateBottomPadding(),
+                                        ) {
+                                            AppNavigationGraph(
+                                                innerPadding = innerPadding,
+                                                navController = navController,
+                                                hideNavBar = {
+                                                    isNavBarVisible = false
+                                                },
+                                                showNavBar = {
+                                                    isNavBarVisible = true
+                                                },
+                                                showNowPlayingSheet = {
+                                                    isShowNowPlaylistScreen = true
+                                                },
+                                                onScrolling = {
+                                                    isScrolledToTop = it
+                                                },
+                                            )
+                                        }
                                     }
                                     if (!isDesktopShell) {
                                         tabletMiniPlayer(Modifier.padding(innerPadding).align(Alignment.BottomCenter))
