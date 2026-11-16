@@ -36,12 +36,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -49,8 +47,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -91,8 +87,6 @@ import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.NowPlayingScreenData
 import com.maxrave.simpmusic.viewModel.SharedViewModel
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import java.text.Bidi
@@ -1339,28 +1333,7 @@ fun FullscreenLyricsSheet(
     // Under the default width cap a wider window (a tablet held upright) shows the player at both
     // sides of the page, behind the scrim. 0 is an unknown width: then nothing counts as covered.
     val spansWindow = isLandscape || screenInfo.wDP in 1..BottomSheetDefaults.SheetMaxWidth.value.toInt()
-    val latestOnCoversWindowChange by rememberUpdatedState(onCoversWindowChange)
-    LaunchedEffect(sheetState, spansWindow) {
-        // The offset the sheet came to rest at when it opened. currentValue turns Expanded only once
-        // the opening animation has finished and stays Expanded through a drag that has not crossed
-        // the threshold yet, so "covered" also needs the offset to still be that one: the window under
-        // it shows from the first pixel of a drag.
-        var restingOffset: Float? = null
-        snapshotFlow { sheetState.currentValue to runCatching { sheetState.requireOffset() }.getOrNull() }
-            .map { (value, offset) ->
-                if (value != SheetValue.Expanded || offset == null) {
-                    restingOffset = null
-                    false
-                } else {
-                    val resting = restingOffset ?: offset.also { restingOffset = it }
-                    spansWindow && offset <= resting + 0.5f
-                }
-            }.distinctUntilChanged()
-            .collect { latestOnCoversWindowChange(it) }
-    }
-    DisposableEffect(Unit) {
-        onDispose { latestOnCoversWindowChange(false) }
-    }
+    ReportSheetCoversWindow(sheetState, spansWindow, onCoversWindowChange)
 
     ModalBottomSheet(
         onDismissRequest = {

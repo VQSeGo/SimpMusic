@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
@@ -80,6 +81,7 @@ import com.maxrave.domain.utils.toSongEntity
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.QueueBottomSheet
 import com.maxrave.simpmusic.ui.component.QueuePosition
+import com.maxrave.simpmusic.ui.component.ReportSheetCoversWindow
 import com.maxrave.simpmusic.ui.component.ArtistModalBottomSheet
 import com.maxrave.simpmusic.ui.component.YouTubeDislikeState
 import com.maxrave.simpmusic.ui.icon.KeyboardArrowDown
@@ -133,6 +135,19 @@ fun NowPlayingScreen(
             onDismiss()
         }
     }
+
+    // The sheet, fully open, hides the app's own window, which then stops drawing and shows again
+    // from the first pixel the sheet moves. Without this whatever moved on the screen under it (the
+    // search results drew ~57 frames a second on the phone) was drawn for as long as the player and
+    // the lyrics page over it stayed open, and took that time from their frames: RenderThread and UI
+    // thread are one per process. The default width cap leaves what is under a wider sheet visible
+    // at its sides.
+    var playerCoversWindow by remember { mutableStateOf(false) }
+    SkipDrawingHostWhile(playerCoversWindow)
+    ReportSheetCoversWindow(
+        sheetState = sheetState,
+        spansWindow = getScreenSizeInfo().wDP in 1..BottomSheetDefaults.SheetMaxWidth.value.toInt(),
+    ) { playerCoversWindow = it }
 
     ModalBottomSheet(
         modifier =
