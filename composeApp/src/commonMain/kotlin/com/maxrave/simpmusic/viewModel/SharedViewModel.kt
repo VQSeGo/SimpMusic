@@ -544,7 +544,9 @@ class SharedViewModel(
     ) {
         viewModelScope.launch {
             mediaPlayerHandler.clearMediaItems()
-            songRepository.insertSong(track.toSongEntity()).lastOrNull()?.let {
+            // A new row stays out of "Recently added" until the track really plays (the handler sets
+            // inLibrary then); insertSong keeps an existing row as it is.
+            songRepository.insertSong(track.toSongEntity().copy(inLibrary = Config.REMOVED_SONG_DATE_TIME)).lastOrNull()?.let {
                 println("insertSong: $it")
                 songRepository
                     .getSongById(track.videoId)
