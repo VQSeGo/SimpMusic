@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -49,6 +50,7 @@ import com.maxrave.domain.mediaservice.handler.QueueData
 import com.maxrave.domain.utils.LocalResource
 import com.maxrave.domain.utils.toArrayListTrack
 import com.maxrave.domain.utils.toTrack
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.extension.getStringBlocking
 import com.maxrave.simpmusic.extension.ultraThinBarStyle
 import com.maxrave.simpmusic.ui.component.SearchBarExit
@@ -205,7 +207,9 @@ fun LibraryDynamicPlaylistScreen(
                 ?: emptyList()
     }
 
+    val listState = rememberLazyListState()
     LazyColumn(
+        state = listState,
         modifier = Modifier.hazeSource(hazeState),
         contentPadding = innerPadding,
     ) {
@@ -463,6 +467,10 @@ fun LibraryDynamicPlaylistScreen(
             EndOfPage()
         }
     }
+    VerticalScrollBar(
+        scrollState = listState,
+        modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+    )
     if (showSelectionSheet) {
         val selectedIds = selectionState.selected.toList()
         val isDownloadedList = LibraryDynamicPlaylistType.toType(type) == LibraryDynamicPlaylistType.Downloaded

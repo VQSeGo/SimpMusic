@@ -78,6 +78,7 @@ import com.maxrave.domain.data.model.listentogether.RoomJoinRequest
 import com.maxrave.domain.data.model.listentogether.RoomMember
 import com.maxrave.domain.data.model.listentogether.RoomSuggestion
 import com.maxrave.simpmusic.expect.shareUrl
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.extension.angledGradientBackground
 import com.maxrave.simpmusic.extension.artworkScrimBrush
 import com.maxrave.simpmusic.extension.rgbFactor
@@ -230,6 +231,7 @@ fun ListenTogetherScreen(
         }
 
         if (wide) {
+            val listScrollState = rememberScrollState()
             Row(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
                 // The identity side scrolls separately and normally does not move at all: the room
                 // code is what people read aloud, so it stays on screen while the list scrolls.
@@ -257,7 +259,7 @@ fun ListenTogetherScreen(
                         Modifier
                             .weight(0.58f)
                             .fillMaxHeight()
-                            .verticalScroll(rememberScrollState())
+                            .verticalScroll(listScrollState)
                             .padding(start = 4.dp, end = 40.dp, top = 30.dp)
                             .animateContentSize(),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -265,12 +267,14 @@ fun ListenTogetherScreen(
                     WorkArea(state, displayName, codeInput, viewModel, { managing = it }, openSettings)
                 }
             }
+            VerticalScrollBar(scrollState = listScrollState)
         } else {
+            val pageScrollState = rememberScrollState()
             Column(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(pageScrollState)
                         .padding(innerPadding)
                         .padding(horizontal = 24.dp, vertical = 14.dp)
                         .animateContentSize(),
@@ -284,6 +288,7 @@ fun ListenTogetherScreen(
                 }
                 WorkArea(state, displayName, codeInput, viewModel, { managing = it }, openSettings)
             }
+            VerticalScrollBar(scrollState = pageScrollState)
         }
 
         BackButton { navController.navigateUp() }

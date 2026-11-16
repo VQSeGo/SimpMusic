@@ -58,6 +58,7 @@ import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.utils.LocalResource
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.extension.copy
 import com.maxrave.simpmusic.extension.isScrollingUp
 import com.maxrave.simpmusic.extension.ultraThinBarStyle
@@ -275,6 +276,10 @@ fun LibraryScreen(
                             EndOfPage()
                         }
                     }
+                    VerticalScrollBar(
+                        scrollState = state,
+                        modifier = Modifier.padding(top = topAppBarHeight),
+                    )
                 }
             }
 

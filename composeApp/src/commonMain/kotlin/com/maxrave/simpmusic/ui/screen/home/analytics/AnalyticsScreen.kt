@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
@@ -80,6 +81,7 @@ import com.maxrave.domain.utils.LocalResource
 import com.maxrave.domain.utils.connectArtists
 import com.maxrave.domain.utils.toArrayListTrack
 import com.maxrave.domain.utils.toTrack
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.expect.ui.toImageBitmap
 import com.maxrave.simpmusic.extension.getScreenSizeInfo
 import com.maxrave.simpmusic.extension.getStringBlocking
@@ -284,6 +286,7 @@ fun AnalyticsScreen(
         )
     }
 
+    val listState = rememberLazyListState()
     Box(
         modifier =
             Modifier
@@ -291,6 +294,7 @@ fun AnalyticsScreen(
                 .background(pageBackground),
     ) {
         LazyColumn(
+            state = listState,
             modifier =
                 Modifier
                     .fillMaxSize(),
@@ -423,6 +427,7 @@ fun AnalyticsScreen(
 
             item { EndOfPage() }
         }
+        VerticalScrollBar(scrollState = listState)
 
         if (selectionState.isActive) {
             SongSelectionTopAppBar(

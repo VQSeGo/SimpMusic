@@ -121,6 +121,7 @@ import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.Startup
 import com.maxrave.simpmusic.expect.openUrl
 import com.maxrave.simpmusic.expect.ui.HorizontalScrollBar
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.expect.ui.rememberReportFullyDrawn
 import com.maxrave.simpmusic.extension.angledGradientBackground
 import com.maxrave.simpmusic.extension.artworkScrimBrush
@@ -771,6 +772,10 @@ fun HomeScreen(
                             EndOfPage()
                         }
                     }
+                    VerticalScrollBar(
+                        scrollState = scrollState,
+                        modifier = Modifier.padding(top = with(LocalDensity.current) { topAppBarHeightPx.toDp() }),
+                    )
                 } else {
                     Column {
                         Spacer(

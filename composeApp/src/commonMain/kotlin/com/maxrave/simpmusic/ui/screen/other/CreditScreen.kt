@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.maxrave.domain.extension.now
 import com.maxrave.simpmusic.expect.openUrl
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.extension.ultraThinBarStyle
 import com.maxrave.simpmusic.ui.component.LocalMarqueeIterations
 import com.maxrave.simpmusic.ui.component.RippleIconButton
@@ -68,13 +69,14 @@ fun CreditScreen(
     navController: NavController,
 ) {
     val hazeState = rememberHazeState()
+    val scrollState = rememberScrollState()
     Column(
         modifier =
             Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(top = 64.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .hazeSource(state = hazeState),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -204,6 +206,10 @@ fun CreditScreen(
         // Bottom spacing
         Spacer(modifier = Modifier.height(200.dp))
     }
+    VerticalScrollBar(
+        scrollState = scrollState,
+        modifier = Modifier.padding(top = paddingValues.calculateTopPadding() + 64.dp),
+    )
     TopAppBar(
         modifier =
             Modifier

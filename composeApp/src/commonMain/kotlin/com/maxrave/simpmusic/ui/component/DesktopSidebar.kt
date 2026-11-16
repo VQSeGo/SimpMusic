@@ -73,6 +73,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.maxrave.domain.data.model.library.LibraryCollectionPreview
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.extension.barBlurStyle
 import com.maxrave.simpmusic.extension.mouseDragScroll
 import com.maxrave.simpmusic.ui.icon.Add
@@ -314,6 +315,10 @@ fun DesktopSidebar(
             }
             item { Spacer(Modifier.height(8.dp)) }
         }
+        VerticalScrollBar(
+            scrollState = listState,
+            modifier = Modifier.padding(top = with(LocalDensity.current) { headerHeightPx.toDp() }),
+        )
         Box(
             Modifier
                 .fillMaxWidth()

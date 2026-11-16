@@ -88,6 +88,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.toBitmap
 import com.kmpalette.rememberPaletteState
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.extension.barBlurStyle
 import com.maxrave.simpmusic.ui.component.DownloadingIndicator
 import com.maxrave.domain.data.entities.DownloadState
@@ -1141,6 +1142,7 @@ fun PlaylistScreen(
                         }
                     }
                 }
+                VerticalScrollBar(scrollState = lazyState)
 
                 AnimatedVisibility(
                     visible = showSearchBar,

@@ -60,6 +60,7 @@ import androidx.navigation.NavController
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.expect.copyToClipboard
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.Chip
 import com.maxrave.simpmusic.ui.component.EndOfPage
@@ -348,11 +349,14 @@ fun AppLogScreen(
                                 EndOfPage()
                             }
                         }
+                        VerticalScrollBar(scrollState = logListState)
                     }
 
                     else -> {
                         var expanded by remember { mutableStateOf(emptySet<Long>()) }
+                        val errorListState = rememberLazyListState()
                         LazyColumn(
+                            state = errorListState,
                             contentPadding = PaddingValues(top = 12.dp, bottom = bottomInset),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.padding(horizontal = if (wide) 20.dp else 16.dp),
@@ -370,6 +374,7 @@ fun AppLogScreen(
                                 EndOfPage()
                             }
                         }
+                        VerticalScrollBar(scrollState = errorListState)
                     }
                 }
             }

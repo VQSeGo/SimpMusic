@@ -68,6 +68,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.kmpalette.rememberPaletteState
 import com.maxrave.domain.data.model.searchResult.songs.Artist
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.extension.barBlurStyle
 import com.maxrave.simpmusic.ui.component.ArtistModalBottomSheet
 import com.maxrave.simpmusic.ui.component.DownloadingIndicator
@@ -917,6 +918,7 @@ fun AlbumScreen(
                         EndOfPage()
                     }
                 }
+                VerticalScrollBar(scrollState = lazyState)
                 AnimatedVisibility(
                     visible = shouldHideTopBar && !selectionState.isActive,
                     enter = fadeIn() + slideInVertically(),

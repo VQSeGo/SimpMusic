@@ -100,6 +100,7 @@ import com.maxrave.domain.utils.LocalResource
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
 import com.maxrave.simpmusic.expect.ui.LoginSyncDialog
+import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
 import com.maxrave.simpmusic.expect.ui.filePickerResult
 import com.maxrave.simpmusic.expect.ui.fileSaverResult
 import com.maxrave.simpmusic.expect.ui.isWallpaperDynamicColorSupported
@@ -1794,6 +1795,10 @@ fun SettingScreen(
             EndOfPage()
         }
     }
+    VerticalScrollBar(
+        scrollState = settingListState,
+        modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+    )
     val showLoadingDialog by viewModel.showLoadingDialog.collectAsStateWithLifecycle()
     if (showLoadingDialog.first) {
         LoadingDialog(
