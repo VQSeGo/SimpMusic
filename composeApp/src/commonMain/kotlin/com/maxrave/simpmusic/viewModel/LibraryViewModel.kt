@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.lastOrNull
@@ -52,6 +53,8 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.youtube_playlist_create_failed
+import simpmusic.composeapp.generated.resources.youtube_playlist_created
 import simpmusic.composeapp.generated.resources.added_local_playlist
 import simpmusic.composeapp.generated.resources.wrapped_recap_month
 import simpmusic.composeapp.generated.resources.wrapped_recap_month_year
@@ -139,6 +142,14 @@ class LibraryViewModel(
     val localTrackingEnabled = dataStoreManager.localTrackingEnabled.mapLatest { it == DataStoreManager.TRUE }
 
     init {
+        // A YouTube playlist created or deleted elsewhere (a playlist's menu, the Create sheet) is
+        // read again into the tab, if the tab has been loaded at all.
+        viewModelScope.launch {
+            playlistRepository.youTubePlaylistsVersion.drop(1).collect {
+                if (_youTubePlaylist.value is LocalResource.Success) getYouTubePlaylist()
+                if (_favoritePlaylist.value is LocalResource.Success) getPlaylistFavorite()
+            }
+        }
         viewModelScope.launch {
             val currentScreenJob =
                 launch {
@@ -354,6 +365,17 @@ class LibraryViewModel(
                 when (it) {
                     is Resource.Success -> _chartPlaylists.value = LocalResource.Success(it.data ?: emptyList())
                     is Resource.Error -> _chartPlaylists.value = LocalResource.Error(it.message ?: "Unknown error")
+                }
+            }
+        }
+    }
+
+    fun createYouTubePlaylist(title: String) {
+        viewModelScope.launch {
+            playlistRepository.createYouTubePlaylist(title).collect { res ->
+                when (res) {
+                    is Resource.Success -> makeToast(getString(Res.string.youtube_playlist_created))
+                    is Resource.Error -> makeToast(getString(Res.string.youtube_playlist_create_failed))
                 }
             }
         }

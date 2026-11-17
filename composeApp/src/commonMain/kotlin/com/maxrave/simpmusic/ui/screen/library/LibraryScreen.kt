@@ -152,6 +152,7 @@ fun LibraryScreen(
         mutableStateOf(0.dp)
     }
     var showAddSheet by remember { mutableStateOf(false) }
+    var showAddYouTubeSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(nowPlaying) {
         Logger.w("LibraryScreen", "Check nowPlaying: $nowPlaying")
@@ -290,6 +291,10 @@ fun LibraryScreen(
                     youTubePlaylist,
                     emptyText = Res.string.no_YouTube_playlists,
                     onScrolling = onScrolling,
+                    // The same create tile as the local tab, making a private playlist in the account.
+                    createNewPlaylist = {
+                        showAddYouTubeSheet = true
+                    },
                 ) {
                     viewModel.getYouTubePlaylist()
                 }
@@ -366,6 +371,12 @@ fun LibraryScreen(
         CreateLocalPlaylistSheet(
             onDismiss = { showAddSheet = false },
             onCreate = viewModel::createPlaylist,
+        )
+    }
+    if (showAddYouTubeSheet) {
+        CreateLocalPlaylistSheet(
+            onDismiss = { showAddYouTubeSheet = false },
+            onCreate = viewModel::createYouTubePlaylist,
         )
     }
     Column(
