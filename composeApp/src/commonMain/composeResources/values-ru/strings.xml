@@ -553,7 +553,6 @@
     <string name="mix_for_you">Миксы для вас</string>
     <string name="mix">Микс</string>
     <string name="no_mixes_found">Не найдено миксов</string>
-    <string name="no_charts_found">Чарты не найдены</string>
     <string name="desktop_webview_description">В связи с ограничениями Compose Multiplatform, WebView невозможно реализовать на настольных устройствах.\n
 Ознакомьтесь с этим руководством, чтобы узнать, как выполнить вход на настольной версии:\n</string>
     <string name="open_blog_post">Читать в блоге</string>
@@ -637,7 +636,6 @@
     <string name="quit_app">Выйти из приложения</string>
     <string name="local_tracking_title">Локальная история прослушивания</string>
     <string name="local_tracking_description">Записывать историю прослушивания в локальную базу данных</string>
-    <string name="simpmusic_charts">Чарты SimpMusic</string>
     <string name="crossfading">Кроссфейд</string>
     <string name="your_320kbps_url">Ваш URL 320 кбит/с</string>
     <string name="your_320kbps_url_description">Оставьте пустым для автоматического выбора рабочего URL-адреса из контроллера обновления.</string>

@@ -43,7 +43,6 @@ import com.maxrave.domain.data.entities.AlbumEntity
 import com.maxrave.domain.data.entities.LocalPlaylistEntity
 import com.maxrave.domain.data.entities.PlaylistEntity
 import com.maxrave.domain.data.model.searchResult.playlists.PlaylistsResult
-import com.maxrave.domain.data.type.ChartItem
 import com.maxrave.domain.data.type.MonthlyRecapItem
 import com.maxrave.domain.data.type.PlaylistType
 import com.maxrave.domain.utils.LocalResource
@@ -227,15 +226,6 @@ internal inline fun <reified T> GridLibraryPlaylist(
                         HomeItemContentPlaylist(
                             onClick = {
                                 when (item) {
-                                    is ChartItem -> {
-                                        navController.navigate(
-                                            PlaylistDestination(
-                                                playlistId = item.ytPlaylistId,
-                                                isYourYouTubePlaylist = false,
-                                            ),
-                                        )
-                                    }
-
                                     is LocalPlaylistEntity -> {
                                         navController.navigate(
                                             LocalPlaylistDestination(

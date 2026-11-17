@@ -438,7 +438,6 @@
     <string name="explicit_content_blocked">เนื้อหาที่ไม่เหมาะสมถูกข้าม</string>
     <string name="mix_for_you">มิกซ์สำหรับคุณ</string>
     <string name="no_mixes_found">ไม่พบมิกซ์</string>
-    <string name="no_charts_found">ไม่พบข้อมูลชาร์ต</string>
     <string name="desktop_webview_description">เนื่องจากข้อจำกัดของ Compose Multiplatform ทำให้ฉันไม่สามารถใช้งาน WebView บนเดสก์ท็อปได้ \nอ่านข้อมูลนี้เพื่อเรียนรู้เพิ่มเติมเกี่ยวกับวิธีการเข้าสู่ระบบบนเดสก์ท็อป:\n</string>
     <string name="open_blog_post">เปิดบล็อกโพสต์</string>
     <string name="discord_integration">เชื่อมต่อ Discord</string>
@@ -484,7 +483,6 @@
     <string name="quit_app">ออกจากแอป</string>
     <string name="local_tracking_title">ติดตามประวัติการฟังในเครื่อง</string>
     <string name="local_tracking_description">บันทึกประวัติการฟังไว้ในฐานข้อมูลภายในเครื่อง</string>
-    <string name="simpmusic_charts">ชาร์ต SimpMusic</string>
     <string name="crossfading">Crossfading</string>
     <string name="your_320kbps_url">ลิงก์สตรีม 320 kbps ของคุณ</string>
     <string name="your_320kbps_url_description">เว้นว่างไว้เพื่อให้ระบบเลือก URL ที่ใช้งานได้จากตัวตรวจสอบสถานะให้อัตโนมัติ</string>

@@ -463,7 +463,6 @@
     <string name="explicit_content_blocked">Wulgarna treść będzie pomijana</string>
     <string name="mix_for_you">Miks dla Ciebie</string>
     <string name="no_mixes_found">Nie znaleziono miksów</string>
-    <string name="no_charts_found">Nie znaleziono list przebojów</string>
     <string name="desktop_webview_description">Ze względu na ograniczenia Compose Multiplatform nie mogę zaimplementować WebView na komputerach.\nPrzeczytaj, aby dowiedzieć się, jak zalogować się na pulpicie:\n</string>
     <string name="open_blog_post">Otwórz post bloga</string>
     <string name="discord_integration">Integracja z Discord</string>

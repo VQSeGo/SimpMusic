@@ -531,7 +531,6 @@
     <string name="mix_for_you">Un mix rien que pour vous</string>
     <string name="mix">Mix</string>
     <string name="no_mixes_found">Aucun mix trouvé</string>
-    <string name="no_charts_found">Aucun classement trouvé</string>
     <string name="desktop_webview_description">En raison des limitations de Compose Multiplatform, je ne peux pas intégrer WebView sur ordinateur de bureau.\nConsultez cet article pour en savoir plus sur la procédure de connexion sur ordinateur de bureau :\n</string>
     <string name="open_blog_post">Ouvrir l'article de blog</string>
     <string name="discord_integration">Intégration Discord</string>
@@ -610,7 +609,6 @@
     <string name="quit_app">Quitter l'application</string>
     <string name="local_tracking_title">Historique d'écoute local</string>
     <string name="local_tracking_description">Enregistrez votre historique d'écoute dans une base de données locale</string>
-    <string name="simpmusic_charts">Classements SimpMusic</string>
     <string name="crossfading">Fondu enchaîné</string>
     <string name="your_320kbps_url">Votre URL 320 kbps</string>
     <string name="your_320kbps_url_description">Laissez ce champ vide pour que le système sélectionne automatiquement une URL valide à partir de l'outil de vérification de disponibilité.</string>

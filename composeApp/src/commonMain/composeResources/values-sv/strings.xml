@@ -531,7 +531,6 @@
     <string name="mix_for_you">Mix för dig</string>
     <string name="mix">Mix</string>
     <string name="no_mixes_found">Inga mixar hittades</string>
-    <string name="no_charts_found">Inga topplistor hittades</string>
     <string name="desktop_webview_description">På grund av begränsningarna i Compose Multiplatform kan jag inte implementera WebView på datorer.\nLäs det här för att ta reda på hur du loggar in på en dator:\n</string>
     <string name="open_blog_post">Öppna blogginlägget</string>
     <string name="discord_integration">Discord-integrering</string>
@@ -610,7 +609,6 @@
     <string name="quit_app">Avsluta appen</string>
     <string name="local_tracking_title">Spara lyssningshistorik lokalt</string>
     <string name="local_tracking_description">Spara din lyssningshistorik i den lokala databasen</string>
-    <string name="simpmusic_charts">SimpMusic-topplistor</string>
     <string name="crossfading">Övertoning</string>
     <string name="your_320kbps_url">Din webbadress för 320 kbit/s</string>
     <string name="your_320kbps_url_description">Lämna tomt för att automatiskt välja en fungerande webbadress med hjälp av drifttidskontrollen.</string>

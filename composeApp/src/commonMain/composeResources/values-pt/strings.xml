@@ -423,7 +423,6 @@
     <string name="explicit_content_blocked">Explicit content is skipped</string>
     <string name="mix_for_you">Mix for you</string>
     <string name="no_mixes_found">No mixes found</string>
-    <string name="no_charts_found">Nenhuma parada encontrada</string>
     <string name="desktop_webview_description">Devido às limitações do Compose Multiplataform, não posso implementar WebView no desktop. U\nLeia isso para saber mais como fazer login no desktop:\n</string>
     <string name="open_blog_post">Abrir post do blog</string>
     <string name="discord_integration">Integração com o Discord</string>
@@ -457,7 +456,6 @@
     <string name="quit_app">Sair do app</string>
     <string name="local_tracking_title">Histórico de reprodução local</string>
     <string name="local_tracking_description">Registrar seu histórico de reprodução no banco de dados local</string>
-    <string name="simpmusic_charts">Paradas SimpMusic</string>
     <string name="crossfading">Crossfading</string>
     <string name="your_320kbps_url">Sua URL de 320kbps</string>
     <string name="your_320kbps_url_description">Deixe vazio para escolher automaticamente uma URL de trabalho do verificador.</string>

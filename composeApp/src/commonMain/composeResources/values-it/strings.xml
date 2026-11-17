@@ -511,7 +511,6 @@
     <string name="mix_for_you">Mix per te</string>
     <string name="mix">Mix</string>
     <string name="no_mixes_found">Nessun mix trovato</string>
-    <string name="no_charts_found">Nessuna classifica trovata</string>
     <string name="desktop_webview_description">A causa delle limitazioni di Compose Multiplatform, non posso implementare WebView sul desktop.\nLeggi questo per saperne di più su come accedere su desktop:\n</string>
     <string name="open_blog_post">Apri post del blog</string>
     <string name="discord_integration">Integrazione con Discord</string>
@@ -572,7 +571,6 @@
     <string name="quit_app">Esci dall'applicazione</string>
     <string name="local_tracking_title">Tracciamento locale della cronologia degli ascolti</string>
     <string name="local_tracking_description">Registra la cronologia di ascolto nel database locale</string>
-    <string name="simpmusic_charts">Classifica SimpMusic</string>
     <string name="crossfading">Dissolvenza incrociata</string>
     <string name="your_320kbps_url">Il tuo URL 320kbps</string>
     <string name="your_320kbps_url_description">Lascia vuoto per scegliere automaticamente un URL di lavoro dal checker uptime.</string>

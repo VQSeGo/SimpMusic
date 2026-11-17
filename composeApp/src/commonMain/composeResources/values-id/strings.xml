@@ -426,7 +426,6 @@
     <string name="explicit_content_blocked">Konten dewasa dilewati</string>
     <string name="mix_for_you">Campuran untuk Anda</string>
     <string name="no_mixes_found">Tidak ditemukan campuran</string>
-    <string name="no_charts_found">Tidak ditemukan tangga lagu</string>
     <string name="desktop_webview_description">Karena keterbatasan Compose Multiplatform, Saya tidak dapat mengimplementasikan WebView di desktop.\nBaca ini untuk mengetahui cara masuk di desktop:\n</string>
     <string name="open_blog_post">Buka postingan blog</string>
     <string name="discord_integration">Integrasi Discord</string>
@@ -460,7 +459,6 @@
     <string name="quit_app">Keluar aplikasi</string>
     <string name="local_tracking_title">Riwayat mendengarkan pelacakan lokal</string>
     <string name="local_tracking_description">Catat riwayat mendengarkan Anda ke basis data lokal</string>
-    <string name="simpmusic_charts">Tangga lagu SimpMusic</string>
     <string name="crossfading">Memudar</string>
     <string name="your_320kbps_url">URL 320kbps Anda</string>
     <string name="your_320kbps_url_description">Biarkan kosong agar sistem secara otomatis memilih URL yang aktif dari alat pemeriksa status aktif.</string>

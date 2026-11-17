@@ -536,7 +536,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nBuild with ❤️ and 
     <string name="mix_for_you">מיקס בשבילך</string>
     <string name="mix">מיקס</string>
     <string name="no_mixes_found">לא נמצאו מיקסים</string>
-    <string name="no_charts_found">לא נמצאו תרשימים</string>
     <string name="desktop_webview_description">עקב המגבלות של Compose Multiplatform, איני יכול ליישם WebView במחשב שולחני.\nקרא את זה כדי ללמוד עוד כיצד להתחבר במחשב שולחני:\n</string>
     <string name="open_blog_post">פתח את פוסט הבלוג</string>
     <string name="discord_integration">חיבור Discord</string>
@@ -615,7 +614,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nBuild with ❤️ and 
     <string name="quit_app">סגור אפליקציה</string>
     <string name="local_tracking_title">היסטוריית האזנה למעקב מקומי</string>
     <string name="local_tracking_description">רשום את היסטוריית ההאזנה שלך למסד הנתונים המקומי</string>
-    <string name="simpmusic_charts">מצעדי SimpMusic</string>
     <string name="crossfading">משלב בין השירים</string>
     <string name="your_320kbps_url">קישור ה-320kbps שלך</string>
     <string name="your_320kbps_url_description">השאר ריק כדי לבחור אוטומטית את הקישור העובד מבודק זמן הפעילות.</string>

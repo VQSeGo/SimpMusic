@@ -531,7 +531,6 @@
     <string name="mix_for_you">Mix für Dich</string>
     <string name="mix">Mix</string>
     <string name="no_mixes_found">Keine Mixes gefunden</string>
-    <string name="no_charts_found">Keine Charts gefunden</string>
     <string name="desktop_webview_description">Aufgrund der Einschränkungen von Compose Multiplattform, kann ich WebView nicht auf dem Desktop implementieren.\nLies dies, um mehr zu erfahren, wie du dich im Desktop einloggst:\n</string>
     <string name="open_blog_post">Blog-Beitrag öffnen</string>
     <string name="discord_integration">Discord-Integration</string>
@@ -610,7 +609,6 @@
     <string name="quit_app">App beenden</string>
     <string name="local_tracking_title">Lokale Aufzeichnung des Wiedergabeverlaufs</string>
     <string name="local_tracking_description">Zeichne den Wiedergabeverlauf in der lokalen Datenbank auf</string>
-    <string name="simpmusic_charts">SimpMusic Charts</string>
     <string name="crossfading">Crossfading (überblenden)</string>
     <string name="your_320kbps_url">Deine 320kbps URL</string>
     <string name="your_320kbps_url_description">Lassen Sie das Feld leer, damit automatisch eine funktionierende URL aus dem Verfügbarkeitsprüfer ausgewählt wird.</string>

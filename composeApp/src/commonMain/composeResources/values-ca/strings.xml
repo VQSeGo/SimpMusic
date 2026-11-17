@@ -413,7 +413,6 @@
     <string name="explicit_content_blocked">El contingut explícit serà saltat</string>
     <string name="mix_for_you">Mescla per a vostè</string>
     <string name="no_mixes_found">No s'han trobat mescles</string>
-    <string name="no_charts_found">No s'han trobat gràfics</string>
     <string name="desktop_webview_description">A causa de les limitacions de Compose Multiplatform, no puc implementar WebView a l’entorn d’escriptori.\nLlegeix això per obtenir més informació sobre com iniciar sessió a l’escriptori:\n</string>
     <string name="open_blog_post">Obre l'entrada del blog</string>
     <string name="discord_integration">Integració amb Discord</string>
@@ -447,7 +446,6 @@
     <string name="quit_app">Surt de l'aplicació</string>
     <string name="local_tracking_title">Seguiment local de l'historial d'escolta</string>
     <string name="local_tracking_description">Registra l'historial d'escolta a la base de dades local</string>
-    <string name="simpmusic_charts">Llistes d'èxits de SimpMusic</string>
     <string name="crossfading">Transició gradual</string>
     <string name="your_320kbps_url">El teu URL de 320 kbps</string>
     <string name="your_320kbps_url_description">Deixa-ho en blanc per seleccionar automàticament un URL operatiu des del verificador d'estat.</string>

@@ -430,7 +430,6 @@
     <string name="explicit_content_blocked">연령 제한 콘텐츠 건너뜀</string>
     <string name="mix_for_you">당신을 위한 믹스</string>
     <string name="no_mixes_found">믹스 없음</string>
-    <string name="no_charts_found">차트를 찾을 수 없습니다</string>
     <string name="desktop_webview_description">Compose Multiplatform의 제한으로 인해 데스크톱에서 WebView를 구현할 수 없습니다.\n데스크톱에 로그인하는 방법을 자세히 알아보려면 다음을 읽어보세요.\n</string>
     <string name="open_blog_post">블로그 게시물 열기</string>
     <string name="discord_integration">Discord 연동</string>
@@ -483,7 +482,6 @@
     <string name="quit_app">앱 종료</string>
     <string name="local_tracking_title">로컬 재생 기록 추적</string>
     <string name="local_tracking_description">로컬 데이터베이스에 나의 재생 기록 저장</string>
-    <string name="simpmusic_charts">Simpmusic 차트</string>
     <string name="crossfading">크로스페이드 중</string>
     <string name="your_320kbps_url">320kbps URL</string>
     <string name="your_320kbps_url_description">가동 시간 검사기에서 작동하는 URL을 자동으로 선택하려면 비워 두세요.</string>

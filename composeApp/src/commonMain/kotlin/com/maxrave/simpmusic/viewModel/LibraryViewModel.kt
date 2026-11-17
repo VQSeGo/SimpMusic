@@ -10,7 +10,6 @@ import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.data.model.library.LibraryCollectionPreview
 import com.maxrave.domain.data.model.library.LibraryOverview
 import com.maxrave.domain.data.model.searchResult.playlists.PlaylistsResult
-import com.maxrave.domain.data.type.ChartItem
 import com.maxrave.domain.data.type.MonthlyRecapItem
 import com.maxrave.domain.data.type.PlaylistType
 import com.maxrave.domain.data.type.RecentlyType
@@ -97,10 +96,6 @@ class LibraryViewModel(
     private val _downloadedPlaylist: MutableStateFlow<LocalResource<List<PlaylistType>>> =
         MutableStateFlow(LocalResource.Loading())
     val downloadedPlaylist: StateFlow<LocalResource<List<PlaylistType>>> get() = _downloadedPlaylist.asStateFlow()
-
-    private val _chartPlaylists: MutableStateFlow<LocalResource<List<ChartItem>>> =
-        MutableStateFlow(LocalResource.Loading())
-    val chartPlaylists: StateFlow<LocalResource<List<ChartItem>>> get() = _chartPlaylists.asStateFlow()
 
     /**
      * The months the Wrapped tab offers a recap for, newest first.
@@ -355,18 +350,6 @@ class LibraryViewModel(
         } else {
             org.jetbrains.compose.resources
                 .getString(Res.string.wrapped_recap_month_year, monthName, year.toString())
-        }
-    }
-
-    fun getChartPlaylists() {
-        _chartPlaylists.value = LocalResource.Loading()
-        viewModelScope.launch {
-            playlistRepository.getChartPlaylist().collectLatest {
-                when (it) {
-                    is Resource.Success -> _chartPlaylists.value = LocalResource.Success(it.data ?: emptyList())
-                    is Resource.Error -> _chartPlaylists.value = LocalResource.Error(it.message ?: "Unknown error")
-                }
-            }
         }
     }
 

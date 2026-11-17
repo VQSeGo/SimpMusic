@@ -421,7 +421,6 @@
     <string name="explicit_content_blocked">限制级内容已跳过</string>
     <string name="mix_for_you">为您准备的音乐</string>
     <string name="no_mixes_found">未找到歌曲</string>
-    <string name="no_charts_found">未找到榜单</string>
     <string name="desktop_webview_description">受 Compose 的多平台限制，目前无法在桌面端实现 WebView。\n
 请参阅此处，了解如何在桌面端进行登录：\n</string>
     <string name="open_blog_post">打开博客文章</string>
@@ -461,7 +460,6 @@
     <string name="quit_app">退出应用</string>
     <string name="local_tracking_title">在本地保存播放历史记录</string>
     <string name="local_tracking_description">将您的收听历史记录到本地数据库</string>
-    <string name="simpmusic_charts">SimpMusic 排行榜</string>
     <string name="crossfading">交叉淡入淡出</string>
     <string name="your_320kbps_url">您的 320kbps URL</string>
     <string name="your_320kbps_url_description">留空则由可用性检查程序自动选择一个有效的 URL。</string>

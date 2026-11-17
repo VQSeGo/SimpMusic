@@ -508,7 +508,6 @@
     <string name="mix_for_you">為您準備</string>
     <string name="mix">混音</string>
     <string name="no_mixes_found">找不到合輯</string>
-    <string name="no_charts_found">未找到圖表</string>
     <string name="desktop_webview_description">由於 Compose Multiplatform 的限制，我無法在桌面端實作 WebView。 \n請閱讀此文以了解如何在桌面端登入：\n</string>
     <string name="open_blog_post">開啟部落格文章</string>
     <string name="discord_integration">Discord 整合</string>
@@ -587,7 +586,6 @@
     <string name="quit_app">退出app</string>
     <string name="local_tracking_title">本地追蹤收聽歷史記錄</string>
     <string name="local_tracking_description">將您的收聽歷史記錄到本機資料庫</string>
-    <string name="simpmusic_charts">SimpMusic排行榜</string>
     <string name="crossfading">交叉淡入淡出</string>
     <string name="your_320kbps_url">您的 320kbps URL</string>
     <string name="your_320kbps_url_description">保持空白以自動選擇上一次工作中的URL。</string>

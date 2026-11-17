@@ -528,7 +528,6 @@
     <string name="mix_for_you">Mix cho bạn</string>
     <string name="mix">Mix</string>
     <string name="no_mixes_found">Không có bản mix nào</string>
-    <string name="no_charts_found">Không tìm thấy bảng xếp hạng nào</string>
     <string name="desktop_webview_description">Do những hạn chế của Compose Multiplatform, tôi không thể triển khai WebView trên máy tính để bàn.\nĐọc bài viết này để tìm hiểu thêm về cách đăng nhập trên máy tính để bàn:\n</string>
     <string name="open_blog_post">Mở bài blog</string>
     <string name="discord_integration">Tích hợp Discord</string>
@@ -607,7 +606,6 @@
     <string name="quit_app">Thoát ứng dụng</string>
     <string name="local_tracking_title">Theo dõi lịch sử nghe cục bộ</string>
     <string name="local_tracking_description">Ghi lại lịch sử nghe nhạc vào cơ sở dữ liệu cục bộ</string>
-    <string name="simpmusic_charts">SimpMusic Charts</string>
     <string name="crossfading">Đang chuyển bài mượt mà</string>
     <string name="your_320kbps_url">Đường dẫn link 320kbps của bạn</string>
     <string name="your_320kbps_url_description">Để trống để tự động chọn một URL hoạt động từ hệ thống kiểm tra.</string>
