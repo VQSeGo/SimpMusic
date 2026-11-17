@@ -914,4 +914,12 @@
     <string name="cd_next">Следующий трек</string>
     <string name="cd_in_favorites">В избранном</string>
     <string name="cd_not_in_favorites">Не в избранном</string>
+    <string name="youtube_music_playlist">Плейлист YouTube Music</string>
+    <string name="create_youtube_playlist_description">Приватный плейлист в аккаунте YouTube Music</string>
+    <string name="youtube_playlist_created">Плейлист создан в YouTube Music</string>
+    <string name="youtube_playlist_create_failed">Не удалось создать плейлист</string>
+    <string name="delete_youtube_playlist_warning">Удалить «%1$s» из аккаунта YouTube Music? Это нельзя отменить.</string>
+    <string name="youtube_playlist_deleted">Плейлист удалён</string>
+    <string name="youtube_playlist_delete_failed">Не удалось удалить плейлист</string>
+    <string name="remove_from_youtube_playlist_failed">Не удалось убрать трек из плейлиста</string>
 </resources>

@@ -919,4 +919,12 @@
     <string name="cd_next">Next track</string>
     <string name="cd_in_favorites">In favorites</string>
     <string name="cd_not_in_favorites">Not in favorites</string>
+    <string name="youtube_music_playlist">YouTube Music playlist</string>
+    <string name="create_youtube_playlist_description">A private playlist in your YouTube Music account</string>
+    <string name="youtube_playlist_created">Playlist created in YouTube Music</string>
+    <string name="youtube_playlist_create_failed">Couldn't create the playlist</string>
+    <string name="delete_youtube_playlist_warning">Delete “%1$s” from your YouTube Music account? This can't be undone.</string>
+    <string name="youtube_playlist_deleted">Playlist deleted</string>
+    <string name="youtube_playlist_delete_failed">Couldn't delete the playlist</string>
+    <string name="remove_from_youtube_playlist_failed">Couldn't remove the song from the playlist</string>
 </resources>

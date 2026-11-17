@@ -56,11 +56,15 @@ import simpmusic.composeapp.generated.resources.playlist
 import simpmusic.composeapp.generated.resources.playlist_is_empty
 import simpmusic.composeapp.generated.resources.radio
 import simpmusic.composeapp.generated.resources.radio_not_available
+import simpmusic.composeapp.generated.resources.remove_from_youtube_playlist_failed
+import simpmusic.composeapp.generated.resources.removed_from_YouTube_playlist
 import simpmusic.composeapp.generated.resources.shuffle
 import simpmusic.composeapp.generated.resources.shuffle_not_available
 import simpmusic.composeapp.generated.resources.synced
 import simpmusic.composeapp.generated.resources.syncing
 import simpmusic.composeapp.generated.resources.view_count
+import simpmusic.composeapp.generated.resources.youtube_playlist_delete_failed
+import simpmusic.composeapp.generated.resources.youtube_playlist_deleted
 
 class PlaylistViewModel(
     private val songRepository: SongRepository,
@@ -95,6 +99,14 @@ class PlaylistViewModel(
 
     private var playlistEntityJob: Job? = null
     private var loadJob: Job? = null
+
+    // Entry ids (setVideoId) of the open playlist's rows as the network sent them, by videoId. The
+    // rows on screen can be the saved copy's, which carry none.
+    private val setVideoIds = mutableMapOf<String, String>()
+
+    // Set once the open playlist has been deleted from the account; the screen closes on it.
+    private val _deleted = MutableStateFlow(false)
+    val deleted: StateFlow<Boolean> = _deleted
 
     // The playlist the screen is loading or showing. Every write of a load checks it, so the answer
     // for a playlist the user has already left cannot land on the next one.
@@ -174,6 +186,8 @@ class PlaylistViewModel(
         _playlistEntity.value = null
         _downloadedList.value = emptyList()
         _listColors.value = emptyList()
+        setVideoIds.clear()
+        _deleted.value = false
         checkDownloadedPlaylist?.cancel()
         checkDownloadedPlaylist = null
         playlistEntityJob?.cancel()
@@ -245,6 +259,7 @@ class PlaylistViewModel(
                             is Resource.Success if (data != null) -> {
                                 Logger.d(tag) { "Playlist data: ${Logger.clip(data)}" }
                                 log("Playlist endpoint: ${data.first.shuffleEndpoint}")
+                                rememberSetVideoIds(data.first.tracks)
                                 val shown = _tracks.value.map { it.videoId }
                                 val fresh = data.first.tracks.map { it.videoId }
                                 when {
@@ -287,6 +302,7 @@ class PlaylistViewModel(
                                                 year = data.first.year,
                                                 shuffleEndpoint = data.first.shuffleEndpoint,
                                                 radioEndpoint = data.first.radioEndpoint,
+                                                isOwned = data.first.isOwned,
                                             ),
                                     )
                                 getPlaylistEntity(id = data.first.id, playlistBrowse = data.first, complete = data.second.isNullOrEmpty())
@@ -337,6 +353,7 @@ class PlaylistViewModel(
                                     log("Insert song: $it")
                                 }
                         }
+                        rememberSetVideoIds(res.first.orEmpty())
                         _tracks.update {
                             val newList = it.toMutableList()
                             newList.addAll(res.first ?: emptyList())
@@ -753,6 +770,72 @@ class PlaylistViewModel(
                         }
                     }
                 }
+        }
+    }
+
+    private fun rememberSetVideoIds(tracks: List<Track>) {
+        tracks.forEach { track -> track.setVideoId?.let { id -> setVideoIds.getOrPut(track.videoId) { id } } }
+    }
+
+    /** Removes [track] from the open playlist in the account; its row goes once YouTube agrees. */
+    fun removeFromYouTubePlaylist(track: Track) {
+        val data = uiState.value.data ?: return
+        if (!data.isOwned) return
+        viewModelScope.launch {
+            playlistRepository
+                .removeYouTubePlaylistItem(data.id, track.videoId, track.setVideoId ?: setVideoIds[track.videoId])
+                .collect { res ->
+                    when (res) {
+                        is Resource.Success -> {
+                            val removed = res.data
+                            if (loadingId == data.id) {
+                                _tracks.update { list ->
+                                    val index =
+                                        list
+                                            .indexOfFirst { (it.setVideoId ?: setVideoIds[it.videoId]) == removed && it.videoId == track.videoId }
+                                            .takeIf { it >= 0 }
+                                            ?: list.indexOfFirst { it.videoId == track.videoId }
+                                    if (index < 0) list else list.toMutableList().apply { removeAt(index) }
+                                }
+                                setVideoIds.remove(track.videoId)
+                                _playlistEntity.update { entity ->
+                                    entity?.copy(
+                                        tracks = entity.tracks?.toMutableList()?.apply { remove(track.videoId) },
+                                        trackCount = (entity.trackCount - 1).coerceAtLeast(0),
+                                    )
+                                }
+                                (uiState.value as? Success)?.data?.takeIf { it.id == data.id }?.let { shown ->
+                                    _uiState.value = Success(shown.copy(trackCount = (shown.trackCount - 1).coerceAtLeast(0)))
+                                }
+                            }
+                            makeToast(getString(Res.string.removed_from_YouTube_playlist))
+                        }
+
+                        is Resource.Error -> {
+                            makeToast(getString(Res.string.remove_from_youtube_playlist_failed))
+                        }
+                    }
+                }
+        }
+    }
+
+    /** Deletes the open playlist from the account; [deleted] turns true when it is gone. */
+    fun deleteYouTubePlaylist() {
+        val data = uiState.value.data ?: return
+        if (!data.isOwned) return
+        viewModelScope.launch {
+            playlistRepository.deleteYouTubePlaylist(data.id).collect { res ->
+                when (res) {
+                    is Resource.Success -> {
+                        makeToast(getString(Res.string.youtube_playlist_deleted))
+                        if (loadingId == data.id) _deleted.value = true
+                    }
+
+                    is Resource.Error -> {
+                        makeToast(getString(Res.string.youtube_playlist_delete_failed))
+                    }
+                }
+            }
         }
     }
 

@@ -2752,6 +2752,8 @@ fun PlaylistBottomSheet(
     onEditTitle: (newTitle: String) -> Unit = {},
     onSaveToLocal: () -> Unit,
     onAddToQueue: (() -> Unit)? = null,
+    /** Set only for a playlist the account owns: deletes it from YouTube (the caller confirms first). */
+    onDelete: (() -> Unit)? = null,
     localPlaylistRepository: LocalPlaylistRepository = koinInject(),
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -2893,6 +2895,12 @@ fun PlaylistBottomSheet(
                 ActionButton(icon = SimpIcons.Share, text = Res.string.share) {
                     val url = "https://music.youtube.com/playlist?list=${playlistId.replaceFirst("VL", "")}"
                     shareUrl(shareTitle, url)
+                }
+                if (onDelete != null) {
+                    ActionButton(icon = SimpIcons.Delete, text = Res.string.delete_playlist) {
+                        hideModalBottomSheet()
+                        onDelete()
+                    }
                 }
                 EndOfModalBottomSheet()
             }

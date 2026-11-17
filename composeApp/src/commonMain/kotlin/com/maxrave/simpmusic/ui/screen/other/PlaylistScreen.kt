@@ -41,6 +41,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -116,6 +117,7 @@ import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.PlaylistBottomSheet
 import com.maxrave.simpmusic.ui.component.RippleIconButton
 import com.maxrave.simpmusic.ui.component.SongFullWidthItems
+import com.maxrave.simpmusic.ui.component.rememberSurfaceDarkColors
 import com.maxrave.simpmusic.ui.component.translucentSurface
 import com.maxrave.simpmusic.ui.component.selection.SelectedSongsBottomSheet
 import com.maxrave.simpmusic.ui.component.selection.SongSelectionTopAppBar
@@ -160,6 +162,10 @@ import simpmusic.composeapp.generated.resources.baseline_downloaded
 import simpmusic.composeapp.generated.resources.cd_back
 import simpmusic.composeapp.generated.resources.cd_pause
 import simpmusic.composeapp.generated.resources.cd_play
+import simpmusic.composeapp.generated.resources.cancel
+import simpmusic.composeapp.generated.resources.delete
+import simpmusic.composeapp.generated.resources.delete_playlist
+import simpmusic.composeapp.generated.resources.delete_youtube_playlist_warning
 import simpmusic.composeapp.generated.resources.download
 import simpmusic.composeapp.generated.resources.downloaded
 import simpmusic.composeapp.generated.resources.downloading
@@ -287,6 +293,12 @@ fun PlaylistScreen(
     }
     var playlistBottomSheetShow by remember {
         mutableStateOf(false)
+    }
+    var showDeleteConfirm by remember { mutableStateOf(false) }
+    val deleted by viewModel.deleted.collectAsStateWithLifecycle()
+    // The playlist is gone from the account: nothing is left to show.
+    LaunchedEffect(deleted) {
+        if (deleted) navController.navigateUp()
     }
 
     val onPlaylistItemClick: (videoId: String) -> Unit = { videoId ->
@@ -1276,7 +1288,8 @@ fun PlaylistScreen(
                     )
                 }
                 if (itemBottomSheetShow && currentItem != null) {
-                    val track = currentItem?.toSongEntity() ?: return@AnimatedContent
+                    val item = currentItem ?: return@AnimatedContent
+                    val track = item.toSongEntity()
                     NowPlayingBottomSheet(
                         onDismiss = {
                             itemBottomSheetShow = false
@@ -1284,6 +1297,8 @@ fun PlaylistScreen(
                         },
                         navController = navController,
                         song = track,
+                        // Only the account's own playlist can lose a song.
+                        onDelete = if (data.isOwned) ({ viewModel.removeFromYouTubePlaylist(item) }) else null,
                     )
                 }
                 if (playlistBottomSheetShow) {
@@ -1299,7 +1314,7 @@ fun PlaylistScreen(
                         onDismiss = { playlistBottomSheetShow = false },
                         playlistId = data.id,
                         playlistName = data.title,
-                        isYourYouTubePlaylist = isYourYouTubePlaylist && !data.isRadio,
+                        isYourYouTubePlaylist = (isYourYouTubePlaylist || data.isOwned) && !data.isRadio,
                         onSaveToLocal = {
                             viewModel.getFullTracks { track ->
                                 viewModel.saveToLocal(track)
@@ -1309,6 +1324,30 @@ fun PlaylistScreen(
                             viewModel.updatePlaylistTitle(newTitle, data.id)
                         },
                         onAddToQueue = if (data.isRadio) null else addToQueue,
+                        onDelete = if (data.isOwned && !data.isRadio) ({ showDeleteConfirm = true }) else null,
+                    )
+                }
+                if (showDeleteConfirm) {
+                    AlertDialog(
+                        containerColor = rememberSurfaceDarkColors().container,
+                        titleContentColor = rememberSurfaceDarkColors().content,
+                        textContentColor = rememberSurfaceDarkColors().content,
+                        title = { Text(text = stringResource(Res.string.delete_playlist)) },
+                        text = { Text(text = stringResource(Res.string.delete_youtube_playlist_warning, data.title)) },
+                        onDismissRequest = { showDeleteConfirm = false },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                showDeleteConfirm = false
+                                viewModel.deleteYouTubePlaylist()
+                            }) {
+                                Text(text = stringResource(Res.string.delete))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showDeleteConfirm = false }) {
+                                Text(text = stringResource(Res.string.cancel))
+                            }
+                        },
                     )
                 }
                 AnimatedVisibility(
