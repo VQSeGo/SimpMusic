@@ -2,6 +2,7 @@ package com.maxrave.simpmusic.ui.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -57,8 +58,21 @@ private class HolderPainter(
     override val intrinsicSize: Size =
         if (square) Size(art.width.toFloat(), art.height.toFloat()) else Size.Unspecified
 
+    private var alpha = 1f
+
+    /**
+     * Taken here, not by [Painter]: a painter that refuses alpha is drawn into an offscreen layer
+     * for every frame it is translucent, and an image request's crossfade fades the placeholder out
+     * over 200 ms. A list scrolled for the first time had a few rows fading at once, each one more
+     * render pass in the frame (N2). The fill goes around the art instead of under it, so the art
+     * and the fill never overlap and each can carry the alpha itself, same as the layer did.
+     */
+    override fun applyAlpha(alpha: Float): Boolean {
+        this.alpha = alpha
+        return true
+    }
+
     override fun DrawScope.onDraw() {
-        drawRect(background)
         val padding = MIN_PADDING * min(size.width, size.height)
         // The art is as tall as the frame, unless that brings the note closer than the padding to an edge.
         val side =
@@ -68,11 +82,37 @@ private class HolderPainter(
                 (size.height - 2 * padding) / NOTE_HEIGHT,
             )
         val sidePx = side.roundToInt()
-        if (sidePx <= 0) return
+        if (sidePx <= 0) {
+            drawRect(background, alpha = alpha)
+            return
+        }
+        val left = ((size.width - side) / 2).roundToInt()
+        val top = ((size.height - side) / 2).roundToInt()
+        fillAround(left.toFloat(), top.toFloat(), (left + sidePx).toFloat(), (top + sidePx).toFloat())
         drawImage(
             image = art,
-            dstOffset = IntOffset(((size.width - side) / 2).roundToInt(), ((size.height - side) / 2).roundToInt()),
+            dstOffset = IntOffset(left, top),
             dstSize = IntSize(sidePx, sidePx),
+            alpha = alpha,
         )
+    }
+
+    /** The background on the four bands of the frame outside [left]..[right] × [top]..[bottom]. */
+    private fun DrawScope.fillAround(
+        left: Float,
+        top: Float,
+        right: Float,
+        bottom: Float,
+    ) {
+        val width = size.width
+        val height = size.height
+        val innerTop = top.coerceIn(0f, height)
+        val innerBottom = bottom.coerceIn(innerTop, height)
+        if (innerTop > 0f) drawRect(background, Offset.Zero, Size(width, innerTop), alpha)
+        if (innerBottom < height) drawRect(background, Offset(0f, innerBottom), Size(width, height - innerBottom), alpha)
+        val bandHeight = innerBottom - innerTop
+        if (bandHeight <= 0f) return
+        if (left > 0f) drawRect(background, Offset(0f, innerTop), Size(min(left, width), bandHeight), alpha)
+        if (right < width) drawRect(background, Offset(right.coerceAtLeast(0f), innerTop), Size(width - right.coerceAtLeast(0f), bandHeight), alpha)
     }
 }
