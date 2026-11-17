@@ -855,7 +855,10 @@ fun AlbumScreen(
                             Column(modifier = Modifier.animateItem()) {
                                 SongFullWidthItems(
                                     forceDark = true,
-                                    isPlaying = item.videoId == playingVideoId,
+                                    isPlaying =
+                                        item.videoId == playingVideoId ||
+                                            uiState.downloadedTwins[item.videoId]?.videoId == playingVideoId,
+                                    downloadedCopy = item.videoId in uiState.downloadedTwins,
                                     index = index,
                                     track = item,
                                     onMoreClickListener = {

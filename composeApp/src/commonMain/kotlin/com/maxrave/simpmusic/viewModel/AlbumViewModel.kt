@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.maxrave.common.Config
 import com.maxrave.domain.data.entities.AlbumEntity
 import com.maxrave.domain.data.entities.DownloadState
+import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.data.model.browse.album.AlbumBrowse
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.browse.artist.ResultAlbum
@@ -19,6 +20,7 @@ import com.maxrave.domain.utils.Resource
 import com.maxrave.domain.utils.toAlbumEntity
 import com.maxrave.domain.utils.toArrayListTrack
 import com.maxrave.domain.utils.toSongEntity
+import com.maxrave.domain.utils.toTrack
 import com.maxrave.logger.LogLevel
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
@@ -28,7 +30,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.lastOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -51,6 +56,33 @@ class AlbumViewModel(
     private var loadJob: Job? = null
     private var albumFlowFor: String? = null
     private var collectDownloadStateJob: Job? = null
+
+    init {
+        // Another edition of this album may hold the downloaded copy of a track: the same recording has a
+        // different videoId there, and the edition of the track playing is not always the one downloaded.
+        viewModelScope.launch {
+            combine(
+                _uiState.map { it.listTrack to it.title }.distinctUntilChanged(),
+                songRepository.observeDownloadedSongs(),
+            ) { (tracks, title), downloaded ->
+                findDownloadedTwins(tracks, downloaded, title)
+            }.distinctUntilChanged()
+                .collectLatest { twins ->
+                    _uiState.update { state ->
+                        val everyTrackDownloaded =
+                            state.listTrack.isNotEmpty() &&
+                                state.listTrack.all {
+                                    it.videoId in twins || downloadUtils.downloadTask.value[it.videoId] == DownloadState.STATE_DOWNLOADED
+                                }
+                        state.copy(
+                            downloadedTwins = twins,
+                            downloadState =
+                                if (everyTrackDownloaded) DownloadState.STATE_DOWNLOADED else state.downloadState,
+                        )
+                    }
+                }
+        }
+    }
 
     /**
      * Opens [browseId]: the saved copy from the database first, when there is one, then the
@@ -304,7 +336,9 @@ class AlbumViewModel(
                     if (uiState.value.listTrack.isEmpty()) return@collectLatest
                     var count = 0
                     uiState.value.listTrack.forEach { track ->
-                        if (downloadTask[track.videoId] == DownloadState.STATE_DOWNLOADED) {
+                        if (downloadTask[track.videoId] == DownloadState.STATE_DOWNLOADED ||
+                            track.videoId in uiState.value.downloadedTwins
+                        ) {
                             count++
                         }
                     }
@@ -320,11 +354,14 @@ class AlbumViewModel(
             }
     }
 
+    /** The track as played: the downloaded copy from another edition of the album where there is one. */
+    private fun Track.asPlayed(): Track = uiState.value.downloadedTwins[videoId]?.toTrack() ?: this
+
     fun playTrack(track: Track) {
         setQueueData(
             QueueData.Data(
-                listTracks = uiState.value.listTrack.toCollection(ArrayList()),
-                firstPlayedTrack = track,
+                listTracks = uiState.value.listTrack.mapTo(ArrayList()) { it.asPlayed() },
+                firstPlayedTrack = track.asPlayed(),
                 playlistId = uiState.value.browseId.replaceFirst("VL", ""),
                 playlistName = "${getString(Res.string.album)} \"${uiState.value.title}\"",
                 playlistType = PlaylistType.ALBUM,
@@ -332,7 +369,7 @@ class AlbumViewModel(
             ),
         )
         val index = uiState.value.listTrack.indexOf(track)
-        loadMediaItem(track, Config.ALBUM_CLICK, if (index == -1) 0 else index)
+        loadMediaItem(track.asPlayed(), Config.ALBUM_CLICK, if (index == -1) 0 else index)
     }
 
     fun shuffle() {
@@ -340,7 +377,7 @@ class AlbumViewModel(
             makeToast(getString(Res.string.playlist_is_empty))
             return
         }
-        val shuffleList = uiState.value.listTrack.shuffled()
+        val shuffleList = uiState.value.listTrack.map { it.asPlayed() }.shuffled()
         val randomIndex = shuffleList.indices.random()
         setQueueData(
             QueueData.Data(
@@ -374,7 +411,11 @@ class AlbumViewModel(
                 makeToast(getString(Res.string.playlist_is_empty))
                 return@launch
             }
-            val listJob = fullListSong.filter { it.downloadState != DownloadState.STATE_DOWNLOADED }
+            // A track whose copy is downloaded from another edition of the album is not fetched again.
+            val listJob =
+                fullListSong.filter {
+                    it.downloadState != DownloadState.STATE_DOWNLOADED && it.videoId !in uiState.value.downloadedTwins
+                }
             log("List job: $listJob")
             if (listJob.isEmpty()) {
                 makeToast(getString(Res.string.downloaded))
@@ -408,6 +449,8 @@ data class AlbumUIState(
     val length: String = "",
     val listTrack: List<Track> = emptyList(),
     val otherVersion: List<ResultAlbum> = emptyList(),
+    /** Track videoId to the downloaded copy of that recording on another edition of the album. */
+    val downloadedTwins: Map<String, SongEntity> = emptyMap(),
     val loadState: LocalPlaylistState.PlaylistLoadState = LocalPlaylistState.PlaylistLoadState.Loading,
 ) {
     companion object {

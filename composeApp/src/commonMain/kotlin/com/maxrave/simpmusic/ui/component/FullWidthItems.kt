@@ -120,6 +120,8 @@ fun SongFullWidthItems(
     index: Int? = null,
     songEntity: SongEntity? = null,
     isPlaying: Boolean,
+    // The recording is on disk under another videoId (another edition of the album): marked as downloaded.
+    downloadedCopy: Boolean = false,
     shouldShowDragHandle: Boolean = false,
     onMoreClickListener: ((videoId: String) -> Unit)? = null,
     onClickListener: ((videoId: String) -> Unit)? = null,
@@ -145,7 +147,8 @@ fun SongFullWidthItems(
         .collectAsState(initial = null)
     // A row built from a stored song already knows its state; the stored copy arrives a frame later.
     val downloadState = storedSong?.downloadState ?: songEntity?.downloadState ?: DownloadState.STATE_NOT_DOWNLOADED
-    val downloaded = (songEntity != null || track != null) && downloadState == DownloadState.STATE_DOWNLOADED
+    val downloaded =
+        ((songEntity != null || track != null) && downloadState == DownloadState.STATE_DOWNLOADED) || downloadedCopy
     // The badge appears without its animation when the stored copy first arrives: every row scrolled
     // into a downloaded list played a fade (an offscreen layer) and a horizontal expand (a new layout
     // of the row each frame) for a badge it had all along (N2). A later change still animates.
