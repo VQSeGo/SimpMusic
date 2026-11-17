@@ -639,8 +639,6 @@
     <string name="rate_translated_lyrics">Rate translation</string>
     <string name="rate_lyrics">Rate lyrics</string>
     <string name="open_app">Open SimpMusic</string>
-    <string name="close_miniplayer">Close Mini-player</string>
-    <string name="open_miniplayer">Open Mini-player</string>
     <string name="quit_app">Quit app</string>
     <string name="local_tracking_title">Local tracking listening history</string>
     <string name="local_tracking_description">Log your listening history to local database</string>

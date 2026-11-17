@@ -52,7 +52,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,7 +82,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.maxrave.domain.data.model.streams.TimeLine
 import com.maxrave.simpmusic.Platform
-import com.maxrave.simpmusic.expect.toggleMiniPlayer
 import com.maxrave.simpmusic.expect.ui.isLyricsBlurSupported
 import com.maxrave.simpmusic.extension.KeepScreenOn
 import com.maxrave.simpmusic.extension.LeftToRight
@@ -95,13 +93,10 @@ import com.maxrave.simpmusic.ui.component.lyrics.ShareLyricsSheet
 import com.maxrave.simpmusic.ui.component.lyrics.toShareLyricsLines
 import com.maxrave.simpmusic.ui.icon.Close
 import com.maxrave.simpmusic.ui.icon.MoreVert
-import com.maxrave.simpmusic.ui.icon.PictureInPictureAlt
 import com.maxrave.simpmusic.ui.icon.QueueMusic
 import com.maxrave.simpmusic.ui.icon.Share
 import com.maxrave.simpmusic.ui.icon.AvTimer
 import com.maxrave.simpmusic.ui.icon.SimpIcons
-import com.maxrave.simpmusic.ui.icon.VolumeOff
-import com.maxrave.simpmusic.ui.icon.VolumeUp
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.screen.player.content.ExpressivePlaybackControls
 import com.maxrave.simpmusic.ui.screen.player.content.ExpressiveTrackInfoRow
@@ -138,8 +133,6 @@ private val LANDSCAPE_BOTTOM_PADDING = 32.dp
 
 // Apple Music's desktop full-screen player caps its artwork well short of the column it sits in.
 private val LANDSCAPE_ARTWORK_MAX_SIZE = 420.dp
-
-private val CHROME_VOLUME_SLIDER_WIDTH = 120.dp
 
 /**
  * The fullscreen lyrics page, hosted the way Now Playing is: [FullscreenLyricsSheet] puts it in a
@@ -247,7 +240,6 @@ fun FullscreenLyricsContent(
             )
             if (isDesktop) {
                 FullscreenLyricsDesktopChrome(
-                    sharedViewModel = sharedViewModel,
                     onDismiss = onDismiss,
                     modifier = Modifier.align(Alignment.TopCenter),
                 )
@@ -275,7 +267,6 @@ fun FullscreenLyricsContent(
                 ) {
                     if (isDesktop) {
                         FullscreenLyricsDesktopChrome(
-                            sharedViewModel = sharedViewModel,
                             onDismiss = onDismiss,
                         )
                     }
@@ -863,42 +854,14 @@ private fun FullscreenLyricsLandscape(
 }
 
 /**
- * Desktop's way out of the page, plus the two controls it covers up. There is no sheet to drag
- * away and no back gesture there, and the page sits over the capsule that normally carries the
- * mini-player switch and the volume.
+ * Desktop's way out of the page: there is no sheet to drag away and no back gesture there, so the
+ * page carries its own close button.
  */
 @Composable
 private fun FullscreenLyricsDesktopChrome(
-    sharedViewModel: SharedViewModel,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val controllerState by sharedViewModel.controllerState.collectAsStateWithLifecycle()
-
-    // The Desktop capsule's volume state machine (MiniPlayer), unchanged.
-    var isVolumeSliding by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var volumeValue by rememberSaveable {
-        mutableFloatStateOf(0f)
-    }
-    LaunchedEffect(key1 = controllerState, key2 = isVolumeSliding) {
-        if (!isVolumeSliding) {
-            volumeValue = controllerState.volume
-        }
-    }
-    // Remembers the level to come back to when unmuting, so the button restores
-    // what the user was listening at instead of jumping to full volume.
-    // Starting muted leaves nothing to restore, so full volume stays the fallback.
-    var previousVolumeValue by rememberSaveable {
-        mutableFloatStateOf(controllerState.volume.takeIf { it > 0f } ?: 1f)
-    }
-    LaunchedEffect(controllerState.volume) {
-        if (controllerState.volume > 0f) {
-            previousVolumeValue = controllerState.volume
-        }
-    }
-
     Row(
         modifier =
             modifier
@@ -915,86 +878,6 @@ private fun FullscreenLyricsDesktopChrome(
         ) {
             IconButton(onClick = onDismiss) {
                 Icon(imageVector = SimpIcons.Close, contentDescription = "", tint = Color.White)
-            }
-            IconButton(onClick = { toggleMiniPlayer() }) {
-                Icon(
-                    imageVector = SimpIcons.PictureInPictureAlt,
-                    contentDescription = "Mini Player",
-                    tint = Color.White,
-                )
-            }
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        Row(
-            modifier =
-                Modifier
-                    .height(48.dp)
-                    .translucentSurface(RoundedCornerShape(24.dp))
-                    .padding(end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(
-                onClick = {
-                    // Toggle mute/unmute
-                    if (controllerState.volume > 0f) {
-                        sharedViewModel.onUIEvent(UIEvent.UpdateVolume(0f))
-                    } else {
-                        sharedViewModel.onUIEvent(
-                            UIEvent.UpdateVolume(previousVolumeValue.coerceIn(0.1f, 1f)),
-                        )
-                    }
-                },
-            ) {
-                Icon(
-                    imageVector =
-                        if (controllerState.volume > 0f) {
-                            SimpIcons.VolumeUp
-                        } else {
-                            SimpIcons.VolumeOff
-                        },
-                    tint = Color.White,
-                    contentDescription = if (controllerState.volume > 0f) "Mute" else "Unmute",
-                )
-            }
-            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-                Slider(
-                    value = volumeValue,
-                    onValueChangeFinished = {
-                        isVolumeSliding = false
-                        sharedViewModel.onUIEvent(
-                            UIEvent.UpdateVolume(volumeValue.coerceIn(0f, 1f)),
-                        )
-                    },
-                    onValueChange = {
-                        isVolumeSliding = true
-                        volumeValue = it
-                    },
-                    valueRange = 0f..1f,
-                    modifier = Modifier.width(CHROME_VOLUME_SLIDER_WIDTH),
-                    track = { sliderState ->
-                        SliderDefaults.Track(
-                            modifier =
-                                Modifier
-                                    .height(4.dp),
-                            enabled = true,
-                            sliderState = sliderState,
-                            colors =
-                                SliderDefaults.colors().copy(
-                                    thumbColor = Color.White,
-                                    activeTrackColor = Color.White,
-                                    inactiveTrackColor = Color.White.copy(alpha = 0.3f),
-                                ),
-                            thumbTrackGapSize = 0.dp,
-                            drawTick = { _, _ -> },
-                            drawStopIndicator = null,
-                        )
-                    },
-                    thumb = {
-                        // No thumb, as on the capsule's volume slider — the active/inactive split
-                        // marks the level.
-                        Spacer(Modifier.size(0.dp))
-                    },
-                )
             }
         }
     }

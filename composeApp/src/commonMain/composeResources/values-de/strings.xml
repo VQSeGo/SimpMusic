@@ -607,8 +607,6 @@
     <string name="rate_translated_lyrics">Übersetzung bewerten</string>
     <string name="rate_lyrics">Songtext bewerten</string>
     <string name="open_app">SimpMusic öffnen</string>
-    <string name="close_miniplayer">Mini-Player schließen</string>
-    <string name="open_miniplayer">Mini-Player öffnen</string>
     <string name="quit_app">App beenden</string>
     <string name="local_tracking_title">Lokale Aufzeichnung des Wiedergabeverlaufs</string>
     <string name="local_tracking_description">Zeichne den Wiedergabeverlauf in der lokalen Datenbank auf</string>

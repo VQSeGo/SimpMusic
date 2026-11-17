@@ -444,8 +444,6 @@
     <string name="rate_translated_lyrics">Valora la traducció</string>
     <string name="rate_lyrics">Valora la lletra</string>
     <string name="open_app">Obri SimpMusic</string>
-    <string name="close_miniplayer">Tanca el minireproductor</string>
-    <string name="open_miniplayer">Obre el minireproductor</string>
     <string name="quit_app">Surt de l'aplicació</string>
     <string name="local_tracking_title">Seguiment local de l'historial d'escolta</string>
     <string name="local_tracking_description">Registra l'historial d'escolta a la base de dades local</string>

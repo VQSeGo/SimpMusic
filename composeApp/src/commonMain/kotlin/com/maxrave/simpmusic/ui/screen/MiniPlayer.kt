@@ -118,7 +118,6 @@ import com.maxrave.domain.utils.connectArtists
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.expect.ui.toImageBitmap
 import com.maxrave.simpmusic.Platform
-import com.maxrave.simpmusic.expect.toggleMiniPlayer
 import com.maxrave.simpmusic.extension.LeftToRight
 import com.maxrave.simpmusic.extension.elapsedLabel
 import com.maxrave.simpmusic.extension.formatDuration
@@ -134,7 +133,6 @@ import com.maxrave.simpmusic.ui.component.wavyIndicatorSpeed
 import com.maxrave.simpmusic.ui.icon.Close
 import com.maxrave.simpmusic.ui.icon.Headphones
 import com.maxrave.simpmusic.ui.icon.OpenInFull
-import com.maxrave.simpmusic.ui.icon.PictureInPictureAlt
 import com.maxrave.simpmusic.ui.icon.QueueMusic
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.icon.VolumeOff
@@ -939,16 +937,6 @@ fun MiniPlayer(
                             tint = textColor,
                             contentDescription = "",
                         )
-                    }
-                    // Desktop mini player button (JVM only)
-                    if (getPlatform() == Platform.Desktop) {
-                        IconButton(onClick = { toggleMiniPlayer() }) {
-                            Icon(
-                                imageVector = SimpIcons.PictureInPictureAlt,
-                                tint = textColor,
-                                contentDescription = "Mini Player",
-                            )
-                        }
                     }
                     var isVolumeSliding by rememberSaveable {
                         mutableStateOf(false)

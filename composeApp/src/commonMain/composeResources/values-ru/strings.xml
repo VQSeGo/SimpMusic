@@ -634,8 +634,6 @@
     <string name="rate_translated_lyrics">Оцените перевод</string>
     <string name="rate_lyrics">Оцените текст</string>
     <string name="open_app">Открыть SimpMusic</string>
-    <string name="close_miniplayer">Закрыть мини-плеер</string>
-    <string name="open_miniplayer">Открыть мини-плеер</string>
     <string name="quit_app">Выйти из приложения</string>
     <string name="local_tracking_title">Локальная история прослушивания</string>
     <string name="local_tracking_description">Записывать историю прослушивания в локальную базу данных</string>

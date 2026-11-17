@@ -569,8 +569,6 @@
     <string name="rate_translated_lyrics">Valuta traduzione</string>
     <string name="rate_lyrics">Valuta testo</string>
     <string name="open_app">Apri SimpMusic</string>
-    <string name="close_miniplayer">Chiudi il mini-lettore</string>
-    <string name="open_miniplayer">Apri il mini-lettore</string>
     <string name="quit_app">Esci dall'applicazione</string>
     <string name="local_tracking_title">Tracciamento locale della cronologia degli ascolti</string>
     <string name="local_tracking_description">Registra la cronologia di ascolto nel database locale</string>

@@ -480,8 +480,6 @@
     <string name="rate_translated_lyrics">번역 평가</string>
     <string name="rate_lyrics">가사 평가</string>
     <string name="open_app">SimpMusic 열기</string>
-    <string name="close_miniplayer">미니 플레이어 닫기</string>
-    <string name="open_miniplayer">미니 플레이어 열기</string>
     <string name="quit_app">앱 종료</string>
     <string name="local_tracking_title">로컬 재생 기록 추적</string>
     <string name="local_tracking_description">로컬 데이터베이스에 나의 재생 기록 저장</string>

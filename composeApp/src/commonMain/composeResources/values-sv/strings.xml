@@ -607,8 +607,6 @@
     <string name="rate_translated_lyrics">Betygsätt översättningen</string>
     <string name="rate_lyrics">Betygsätt låttexten</string>
     <string name="open_app">Öppna SimpMusic</string>
-    <string name="close_miniplayer">Stäng minispelaren</string>
-    <string name="open_miniplayer">Öppna minispelaren</string>
     <string name="quit_app">Avsluta appen</string>
     <string name="local_tracking_title">Spara lyssningshistorik lokalt</string>
     <string name="local_tracking_description">Spara din lyssningshistorik i den lokala databasen</string>

@@ -139,6 +139,11 @@
   их больше нет), загрузка `remote-config.json` из репозитория оригинала при запуске и промо из него (`Promo`,
   `LyricsPromoLine` под текстами, ключи DataStore `remote_promos`, `promo_shown`). «Итоги» и ссылка
   `simpmusic://library?tab=wrapped` остались. Запрос `registry/player_configs.json` (шифр YouTube) не тронут.
+  Также: баннер «Introducing SimpMusic Chart» в сетках библиотеки Android (кнопка `SimpMusicChartButton` остаётся в поиске,
+  чип «Чарты SimpMusic» не тронут); мини-плеер-окно ПК (`MiniPlayerManager`, `MiniPlayerWindow`, `MiniPlayerRoot`,
+  `MiniPlayerLayout`, `expect fun toggleMiniPlayer`, пункт трея `open_miniplayer` / `close_miniplayer`, иконка
+  `PictureInPictureAlt`) и кнопка «окно» с регулятором громкости в полноэкранной лирике ПК (в шапке осталась только кнопка
+  закрытия; громкость плеера и `UIEvent.UpdateVolume` не тронуты).
   Также: комментарии YouTube (код удалён полностью: `CommentsViewModel`, `CommentsBottomSheet`, иконка `CommentOutline`,
   `SongRepository.getComments` / `postComment` / `performCommentAction`, `YouTube.comments` / `createComment`, `CommentsPage`,
   модели и строки). Кнопки комментариев в плеере уже не было.

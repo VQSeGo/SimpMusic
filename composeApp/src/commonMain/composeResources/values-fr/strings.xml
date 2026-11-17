@@ -607,8 +607,6 @@
     <string name="rate_translated_lyrics">Évaluez la traduction</string>
     <string name="rate_lyrics">Évaluer les paroles</string>
     <string name="open_app">Ouvrir SimpMusic</string>
-    <string name="close_miniplayer">Fermer le mini-lecteur</string>
-    <string name="open_miniplayer">Ouvrir le mini-lecteur</string>
     <string name="quit_app">Quitter l'application</string>
     <string name="local_tracking_title">Historique d'écoute local</string>
     <string name="local_tracking_description">Enregistrez votre historique d'écoute dans une base de données locale</string>

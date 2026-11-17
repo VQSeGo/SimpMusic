@@ -458,7 +458,6 @@
     <string name="analytics_axis_discovery">Keşfet</string>
     <string name="analytics_axis_replay">Tekrarla</string>
     <string name="open_app">SimpMusic ile Aç</string>
-    <string name="close_miniplayer">Mini Oynatıcıyı Kapat</string>
     <string name="local_tracking_title">Yerel izleme dinleme geçmişi</string>
     <string name="local_tracking_description">Dinleme geçmişinizi yerel veritabanına kaydedin</string>
     <string name="synced_playlist_cannot_change_order">Senkronize edilen çalma listelerindeki sıra değiştirilemez</string>

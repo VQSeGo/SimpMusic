@@ -584,8 +584,6 @@
     <string name="rate_translated_lyrics">翻譯評分</string>
     <string name="rate_lyrics">評價歌詞</string>
     <string name="open_app">打開 SimpMusic</string>
-    <string name="close_miniplayer">關閉迷你播放器</string>
-    <string name="open_miniplayer">開啟迷你播放器</string>
     <string name="quit_app">退出app</string>
     <string name="local_tracking_title">本地追蹤收聽歷史記錄</string>
     <string name="local_tracking_description">將您的收聽歷史記錄到本機資料庫</string>

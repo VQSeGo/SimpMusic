@@ -494,8 +494,6 @@
     <string name="rate_translated_lyrics">Oceń tłumaczenie</string>
     <string name="rate_lyrics">Oceń tekst</string>
     <string name="open_app">Otwórz SimpMusic</string>
-    <string name="close_miniplayer">Zamknij mini odtwarzacz</string>
-    <string name="open_miniplayer">Otwórz mini odtwarzacz</string>
     <string name="quit_app">Zamknij aplikację</string>
     <!-- Listen Together -->
 </resources>

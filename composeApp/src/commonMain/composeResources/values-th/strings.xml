@@ -481,8 +481,6 @@
     <string name="rate_translated_lyrics">ให้คะแนนคำแปล</string>
     <string name="rate_lyrics">ให้คะแนนเนื้อเพลง</string>
     <string name="open_app">เปิด SimpMusic</string>
-    <string name="close_miniplayer">ปิดมินิเพลเยอร์</string>
-    <string name="open_miniplayer">เปิดมินิเพลเยอร์</string>
     <string name="quit_app">ออกจากแอป</string>
     <string name="local_tracking_title">ติดตามประวัติการฟังในเครื่อง</string>
     <string name="local_tracking_description">บันทึกประวัติการฟังไว้ในฐานข้อมูลภายในเครื่อง</string>

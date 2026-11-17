@@ -560,8 +560,6 @@
     <string name="rate_translated_lyrics">Valorar traducción</string>
     <string name="rate_lyrics">Valorar letra</string>
     <string name="open_app">Abrir SimpMusic</string>
-    <string name="close_miniplayer">Cerrar minireproductor</string>
-    <string name="open_miniplayer">Abrir minireproductor</string>
     <string name="quit_app">Salir</string>
     <string name="local_tracking_title">Historial de escuchas local de seguimiento</string>
     <string name="local_tracking_description">Registra tu historial de escucha en la base de datos local</string>

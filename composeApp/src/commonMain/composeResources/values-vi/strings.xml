@@ -604,8 +604,6 @@
     <string name="rate_translated_lyrics">Đánh giá bản dịch</string>
     <string name="rate_lyrics">Đánh giá lời bài hát</string>
     <string name="open_app">Mở SimpMusic</string>
-    <string name="close_miniplayer">Đóng trình phát thu nhỏ</string>
-    <string name="open_miniplayer">Mở trình phát thu nhỏ</string>
     <string name="quit_app">Thoát ứng dụng</string>
     <string name="local_tracking_title">Theo dõi lịch sử nghe cục bộ</string>
     <string name="local_tracking_description">Ghi lại lịch sử nghe nhạc vào cơ sở dữ liệu cục bộ</string>

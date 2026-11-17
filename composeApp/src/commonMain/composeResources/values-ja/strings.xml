@@ -604,8 +604,6 @@
     <string name="rate_translated_lyrics">翻訳を評価</string>
     <string name="rate_lyrics">歌詞を評価</string>
     <string name="open_app">SimpMusicを開く</string>
-    <string name="close_miniplayer">ミニプレーヤーを閉じる</string>
-    <string name="open_miniplayer">ミニプレイヤーを開く</string>
     <string name="quit_app">アプリを終了</string>
     <string name="local_tracking_title">再生履歴をローカルに保存</string>
     <string name="local_tracking_description">再生履歴をローカルデータベースに記録しま す</string>

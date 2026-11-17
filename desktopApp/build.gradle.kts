@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter
 //   * compose.desktop.application packaging (jpackage path, still used
 //     until Conveyor cutover lands in Task 14)
 //   * desktop packaging pipelines (Conveyor, AppImage wrapping)
-//   * desktop-only UI (CustomTitleBar, MiniPlayerWindow, CrashDialog, etc.)
+//   * desktop-only UI (CustomTitleBar, CrashDialog, etc.)
 //
 // composeApp remains a pure KMP library — its src/jvmMain only carries the
 // expect/actual implementations the shared code needs on the JVM.

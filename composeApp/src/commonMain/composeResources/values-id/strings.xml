@@ -457,8 +457,6 @@
     <string name="rate_translated_lyrics">Nilai terjemahan</string>
     <string name="rate_lyrics">Nilai lirik</string>
     <string name="open_app">Buka SimpMusic</string>
-    <string name="close_miniplayer">Tutup pemutar Mini</string>
-    <string name="open_miniplayer">Buka pemutar Mini</string>
     <string name="quit_app">Keluar aplikasi</string>
     <string name="local_tracking_title">Riwayat mendengarkan pelacakan lokal</string>
     <string name="local_tracking_description">Catat riwayat mendengarkan Anda ke basis data lokal</string>

@@ -612,8 +612,6 @@ SimpMusic תמיד בחינם וללא פרסומות \n\nBuild with ❤️ and 
     <string name="rate_translated_lyrics">דרג תרגום</string>
     <string name="rate_lyrics">דרג מילים</string>
     <string name="open_app">פתח את SimpMusic</string>
-    <string name="close_miniplayer">סגור את המיני-נגן</string>
-    <string name="open_miniplayer">פתח את המיני-נגן</string>
     <string name="quit_app">סגור אפליקציה</string>
     <string name="local_tracking_title">היסטוריית האזנה למעקב מקומי</string>
     <string name="local_tracking_description">רשום את היסטוריית ההאזנה שלך למסד הנתונים המקומי</string>

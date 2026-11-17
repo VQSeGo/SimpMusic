@@ -33,8 +33,6 @@ import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.di.viewModelModule
 import com.maxrave.simpmusic.extension.DesktopWindowChrome
 import com.maxrave.simpmusic.ui.component.CustomTitleBar
-import com.maxrave.simpmusic.ui.mini_player.MiniPlayerManager
-import com.maxrave.simpmusic.ui.mini_player.MiniPlayerWindow
 import com.maxrave.simpmusic.ui.theme.isDarkTheme
 import com.maxrave.simpmusic.utils.AppImageLoader
 import com.maxrave.simpmusic.utils.VersionManager
@@ -65,10 +63,8 @@ import org.simpmusic.discord.configDiscord
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.app_name
 import simpmusic.composeapp.generated.resources.circle_app_icon
-import simpmusic.composeapp.generated.resources.close_miniplayer
 import simpmusic.composeapp.generated.resources.explicit_content_blocked
 import simpmusic.composeapp.generated.resources.open_app
-import simpmusic.composeapp.generated.resources.open_miniplayer
 import simpmusic.composeapp.generated.resources.quit_app
 import simpmusic.composeapp.generated.resources.time_out_check_internet_connection_or_change_piped_instance_in_settings
 import java.awt.Canvas
@@ -295,8 +291,6 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
         }
         val openAppString = stringResource(Res.string.open_app)
         val quitAppString = stringResource(Res.string.quit_app)
-        val openMiniPlayer = stringResource(Res.string.open_miniplayer)
-        val closeMiniPlayer = stringResource(Res.string.close_miniplayer)
         val appName = stringResource(Res.string.app_name)
         val nowPlayingData by sharedViewModel.nowPlayingScreenData.collectAsState()
         val nowPlayingTitle = nowPlayingData.nowPlayingTitle
@@ -329,17 +323,8 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
                 Item(openAppString) {
                     DesktopRestoreSignal.request()
                 }
+                Divider()
             }
-            if (MiniPlayerManager.isOpen) {
-                Item(closeMiniPlayer) {
-                    MiniPlayerManager.isOpen = false
-                }
-            } else {
-                Item(openMiniPlayer) {
-                    MiniPlayerManager.isOpen = true
-                }
-            }
-            Divider()
             Item(quitAppString) {
                 mediaPlayerHandler.release()
                 Sentry.endSession()
@@ -481,16 +466,6 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
                 )
                 ToastHost()
             }
-        }
-
-        // Mini Player Window (separate window)
-        if (MiniPlayerManager.isOpen) {
-            MiniPlayerWindow(
-                sharedViewModel = sharedViewModel,
-                onCloseRequest = {
-                    MiniPlayerManager.isOpen = false
-                },
-            )
         }
     }
 }

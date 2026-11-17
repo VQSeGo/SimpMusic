@@ -454,8 +454,6 @@
     <string name="rate_translated_lyrics">Avaliar tradução</string>
     <string name="rate_lyrics">Avalie as letras</string>
     <string name="open_app">Abrir SimpMusic</string>
-    <string name="close_miniplayer">Fechar Mini-player</string>
-    <string name="open_miniplayer">Abrir Mini-player</string>
     <string name="quit_app">Sair do app</string>
     <string name="local_tracking_title">Histórico de reprodução local</string>
     <string name="local_tracking_description">Registrar seu histórico de reprodução no banco de dados local</string>
