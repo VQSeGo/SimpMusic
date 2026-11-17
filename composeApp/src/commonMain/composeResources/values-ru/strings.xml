@@ -283,7 +283,7 @@
     <string name="older_first">Сначала старые</string>
     <string name="newer_first">Сначала новые</string>
     <string name="added_date">Дата добавления</string>
-    <string name="credit_app">Сделано с ❤️ и Claude от VQSeGo</string>
+    <string name="credit_app">Сделано с ❤️ от VQSeGo и Claude</string>
     <string name="issue_tracker">Трекер проблем</string>
     <string name="featured_playlists">Избранные плейлисты</string>
     <string name="featured_inArtist">Где встречается</string>
@@ -708,7 +708,7 @@
     <string name="share_lyrics_selected_count">Выбрано %1$d песен</string>
     <string name="share_lyrics_continue">Продолжить</string>
     <string name="share_lyrics_max_reached">Вы можете поделиться до %1$d строк</string>
-    <string name="share_lyrics_save">Сохранить изображение</string>
+    <string name="share_lyrics_save">Сохранить</string>
     <string name="share_lyrics_share_action">Поделиться</string>
     <string name="share_lyrics_saved">Сохранено в ваших фото</string>
     <string name="share_lyrics_saved_desktop">Сохранено в папке загрузок</string>

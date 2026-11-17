@@ -281,7 +281,7 @@
     <string name="older_first">Older First</string>
     <string name="newer_first">Newer First</string>
     <string name="added_date">Added date</string>
-    <string name="credit_app">Build with ❤️ and Claude from VQSeGo</string>
+    <string name="credit_app">Made with ❤️ by VQSeGo and Claude</string>
     <string name="issue_tracker">Issue Tracker</string>
     <string name="copyright" translatable="false">©2023-%1$s Tuan Minh Nguyen Duc (maxrave-dev)</string>
     <string name="featured_playlists">Featured Playlists</string>
@@ -715,7 +715,7 @@
     <string name="share_lyrics_selected_count">%1$d lines selected</string>
     <string name="share_lyrics_continue">Continue</string>
     <string name="share_lyrics_max_reached">You can share up to %1$d lines</string>
-    <string name="share_lyrics_save">Save image</string>
+    <string name="share_lyrics_save">Save</string>
     <string name="share_lyrics_share_action">Share</string>
     <string name="share_lyrics_saved">Saved to your photos</string>
     <string name="share_lyrics_saved_desktop">Saved to your downloads folder</string>
