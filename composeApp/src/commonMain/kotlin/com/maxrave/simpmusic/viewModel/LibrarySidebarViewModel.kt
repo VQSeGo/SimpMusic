@@ -33,8 +33,8 @@ import kotlinx.datetime.LocalDateTime
 /**
  * Feeds the Desktop sidebar: the pinned collections, everything else the user keeps (local and
  * saved playlists, saved albums, followed artists) as one list, which queue is
- * playing, and whether the sidebar is folded. The four library sources are one-shot reads, not
- * observed queries, so the list is read again on [refresh].
+ * playing, and whether the sidebar is folded. Local playlists are an observed Room query, so a new
+ * one shows at once; the other three sources are one-shot reads, read again on [refresh].
  */
 class LibrarySidebarViewModel(
     private val dataStoreManager: DataStoreManager,
@@ -62,7 +62,7 @@ class LibrarySidebarViewModel(
         refreshes
             .flatMapLatest {
                 combine(
-                    localPlaylistRepository.getAllLocalPlaylists(),
+                    localPlaylistRepository.observeAllLocalPlaylists(),
                     playlistRepository.getLikedPlaylists(),
                     albumRepository.getLikedAlbums(),
                     artistRepository.getFollowedArtists(),
