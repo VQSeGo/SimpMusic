@@ -167,6 +167,10 @@
   `how-to-login` (`Cookies.jvm.kt`, `ListeningReceipt.kt`, `YTItem.kt`, `AndroidManifest.xml`), Discord «Listen on
   SimpMusic» (`simpmusic.org/app/watch`), «О нас» → `github.com/maxrave-dev/SimpMusic`, чип «Чарты SimpMusic» и баннер в
   поиске. Решение пользователя 2026-11-15: пока не трогаем. Строка `credit_app` звучит, будто сборку делал maxrave-dev.
+  Решение 2026-11-17: (1) «Поделиться» и кнопка Discord → `music.youtube.com` (входящие `simpmusic.org/…` по-прежнему
+  открываются); (2) чип «Чарты SimpMusic», баннер в поиске (`SimpMusicChart.kt`) и запрос `chart.simpmusic.org/api/playlists`
+  убрать; (3) ссылки на блог «как войти» оставить; (4) «simpmusic.org» в карточке «Итоги» и `credit_app` убрать; (5) GitHub
+  оригинала (GPL), `api-lyrics.simpmusic.org`, файл шифра — оставить.
 - [x] **Н10 (P3) Скрейпер:** при холодном запуске без сети 4–6 строк `not found` на трек; с VPN без сети запрос висит
   20 с (туннель жив) вместо быстрой ошибки.
   Сделано `4fd02aa0` (core `1cec0db`, Sonnet): строки `not found` — это тексты (1 на трек после `800f0fef`), не скрейпер.
