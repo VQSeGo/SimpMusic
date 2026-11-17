@@ -5,8 +5,8 @@ import java.awt.Toolkit
 /**
  * Thin entry point for SimpMusic Desktop.
  *
- * All window setup, Sentry init, Koin loading, deep link
- * handling, mini-player wiring, and tray integration live in
+ * All window setup, Koin loading, deep link
+ * handling and tray integration live in
  * `composeApp/src/jvmMain/.../main.kt` as `fun runDesktopApp()`. That keeps
  * the shared module self-contained (it can still be launched directly
  * during development) while letting this :desktopApp module own the JVM
