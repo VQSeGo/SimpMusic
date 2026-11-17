@@ -181,6 +181,21 @@ fun DesktopSidebar(
             else -> navController.popBackStack(destination, inclusive = false)
         }
     }
+    // A library row is different: its screen reads the playlist, album or artist once when it opens, so going back to
+    // the copy that sat in the stack showed stale data (a playlist filled meanwhile still said "0 tracks"). The old
+    // copy and what lies above it are dropped and a fresh one is opened in its place: the history keeps no duplicate,
+    // and Esc goes to the screen that was below the old copy. The screen already on top is left alone.
+    val openFresh: (Any) -> Unit = { destination ->
+        val entry = runCatching { navController.getBackStackEntry(destination) }.getOrNull()
+        when {
+            entry == null -> navController.navigate(destination)
+            entry.id == navController.currentBackStackEntry?.id -> Unit
+            else -> {
+                navController.popBackStack(destination, inclusive = true)
+                navController.navigate(destination)
+            }
+        }
+    }
     val selectTab: (BottomNavScreen) -> Unit = { screen ->
         if (selectedIndex == screen.ordinal) {
             if (currentBackStackEntry?.destination?.hierarchy?.any { it.hasRoute(screen.destination::class) } == true) {
@@ -289,7 +304,7 @@ fun DesktopSidebar(
                             pinned = true,
                             playing = false,
                             collapsed = collapsed,
-                            onClick = { openOnce(LibraryDynamicPlaylistDestination(type = collection.type.toStringParams())) },
+                            onClick = { openFresh(LibraryDynamicPlaylistDestination(type = collection.type.toStringParams())) },
                         ) {
                             Box(
                                 Modifier
@@ -309,7 +324,7 @@ fun DesktopSidebar(
                     pinned = false,
                     playing = item.queueId != null && item.queueId.removePrefix("VL") == playingQueueId,
                     collapsed = collapsed,
-                    onClick = { openOnce(item.destination) },
+                    onClick = { openFresh(item.destination) },
                 ) {
                     SidebarCover(item)
                 }
