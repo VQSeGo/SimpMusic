@@ -5,11 +5,11 @@
 #
 # App arguments go to the app, e.g. a deep link: simpmusic://album?id=MPREb_...
 #
-# Modes (scenarios from OFFLINE_PLAN.md, section 4):
+# Modes (scenarios from docs/plans/2.6.0/OFFLINE_PLAN.md, section 4):
 #   offline   (default) C1, C4: only a loopback that is down. DNS and every connection fail at once.
 #   hang      C3 (an imitation): names resolve (a fake DNS answers every name with 10.255.255.1) and the
 #             default route leads into a dummy interface, so every connection hangs until its own
-#             timeout instead of failing. Real "white list" networks may differ: see OFFLINE_PLAN.md, 8.
+#             timeout instead of failing. Real "white list" networks may differ: see docs/plans/2.6.0/OFFLINE_PLAN.md, 8.
 #   proxied   C2: the namespace's only way out is an HTTP proxy outside it (net-helper.py on a unix
 #             socket). The JVM gets it through -Dhttp(s).proxyHost, mpv through http_proxy. Run
 #             `desktop-no-network.sh cut` from another terminal to kill that proxy mid-track: every open

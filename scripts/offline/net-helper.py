@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Network helpers for the offline scenarios (OFFLINE_PLAN.md, section 4). Standard library only.
+"""Network helpers for the offline scenarios (docs/plans/2.6.0/OFFLINE_PLAN.md, section 4). Standard library only.
 
   proxy <listen> [--blackhole]
       HTTP proxy (CONNECT and absolute-URI requests). <listen> is a TCP port (bound to 127.0.0.1 only)

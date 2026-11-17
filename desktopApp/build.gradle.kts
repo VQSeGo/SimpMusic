@@ -469,7 +469,7 @@ tasks.register("packageConveyorAppImage") {
             ProcessBuilder(
                 appimagetool.canonicalPath,
                 // zstd instead of gzip: the image is mounted fresh on every launch and every jar
-                // read goes through squashfuse decompression; measured in OPTIMIZATION_PLAN.md
+                // read goes through squashfuse decompression; measured in docs/plans/2.6.0/OPTIMIZATION_PLAN.md
                 // (task 8a). zstd is also the new tool's default, stated here so it cannot drift.
                 "--comp",
                 "zstd",
