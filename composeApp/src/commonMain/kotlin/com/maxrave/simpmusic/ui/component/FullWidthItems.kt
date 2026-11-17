@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -36,6 +37,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -141,7 +143,14 @@ fun SongFullWidthItems(
     // collectAsState dropped its collector and ran the Room query again each time the row recomposed.
     val storedSong by remember(storedVideoId) { songRepository.getSongAsFlow(storedVideoId) }
         .collectAsState(initial = null)
-    val downloadState = storedSong?.downloadState ?: DownloadState.STATE_NOT_DOWNLOADED
+    // A row built from a stored song already knows its state; the stored copy arrives a frame later.
+    val downloadState = storedSong?.downloadState ?: songEntity?.downloadState ?: DownloadState.STATE_NOT_DOWNLOADED
+    val downloaded = (songEntity != null || track != null) && downloadState == DownloadState.STATE_DOWNLOADED
+    // The badge appears without its animation when the stored copy first arrives: every row scrolled
+    // into a downloaded list played a fade (an offscreen layer) and a horizontal expand (a new layout
+    // of the row each frame) for a badge it had all along (N2). A later change still animates.
+    val downloadBadge = remember(storedVideoId, storedSong != null) { MutableTransitionState(downloaded) }
+    SideEffect { downloadBadge.targetState = downloaded }
     // The list's own model says what its source said; the stored row adds what playback learned
     // since, which is the only way a queue row is marked — the queue response shows no LIVE chip.
     val isLive = track?.isLive == true || songEntity?.isLive == true || storedSong?.isLive == true
@@ -339,14 +348,7 @@ fun SongFullWidthItems(
                                 ),
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        AnimatedVisibility(
-                            visible =
-                                if (songEntity != null || track != null) {
-                                    downloadState == DownloadState.STATE_DOWNLOADED
-                                } else {
-                                    false
-                                },
-                        ) {
+                        AnimatedVisibility(visibleState = downloadBadge) {
                             Row {
                                 Icon(
                                     imageVector = SimpIcons.DownloadForOffline,
