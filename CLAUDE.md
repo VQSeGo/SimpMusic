@@ -223,6 +223,11 @@
   очистка `sentry-debug-meta.properties`, поле `sentryDsn` в BuildKonfig, ключи `SENTRY_DSN` / `SENTRY_AUTH_TOKEN` в `local.properties`,
   `io.sentry.auto-init` в манифесте, правила ProGuard, запись в `aboutlibraries.json`, раздел «Full or FOSS» в README). Диалог падения
   на ПК остался без отправки.
+  Также: Return YouTube Dislike (запрос к `returnyoutubedislikeapi.com` на каждый трек в `YouTube.getSongInfo`, `Ytmusic.returnYouTubeDislike`,
+  `ReturnYouTubeDislikeResponse`, поля `viewCount` / `like` / `dislike` в `SongInfo`; строки «Просмотры» и «лайки/дизлайки» в окне
+  информации о треке и в карточке описания Now Playing, строки `plays` и `like_and_dislike`). Столбцы `song_info.viewCount`, `like`,
+  `dislike` (`SongInfoEntity`) остаются в базе без кода, который в них пишет и читает. Своего счётчика из YouTube в информации нет.
+  Кнопка «Дизлайк» в `⋯` (запись оценки в YouTube) не тронута.
 
 ## Приёмы и ловушки
 

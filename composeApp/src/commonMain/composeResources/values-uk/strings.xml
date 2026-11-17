@@ -347,8 +347,6 @@
     <string name="log_out_warning">Вийти з усіх акаунтів?</string>
     <string name="play_next">Відтворити наступу</string>
     <string name="codec">Кодек</string>
-    <string name="plays">К-сть відтворень/переглядів</string>
-    <string name="like_and_dislike">%1$d вподобань, %2$d невподобань</string>
     <string name="published_at">Опубліковано на %1$s</string>
     <string name="less">Менше</string>
     <string name="spotify">Spotify</string>

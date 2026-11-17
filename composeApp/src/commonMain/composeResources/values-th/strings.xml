@@ -294,8 +294,6 @@
     <string name="log_out_warning">ออกจากระบบทุกบัญชีใช่ไหม?</string>
     <string name="play_next">เล่นต่อไป</string>
     <string name="codec">โคเดก</string>
-    <string name="plays">เล่น/ดูจำนวน</string>
-    <string name="like_and_dislike">%1$d ชอบ, %2$d ไม่ชอบ</string>
     <string name="published_at">เผยแพร่เมื่อ %1$s</string>
     <string name="less">น้อยลง</string>
     <string name="spotify">Spotify</string>

@@ -357,8 +357,6 @@
     <string name="log_out_warning">להתנתק מכל החשבונות?</string>
     <string name="play_next">נגן כשיר הבא</string>
     <string name="codec">מקדד</string>
-    <string name="plays">כמות ניגונים/צפיות</string>
-    <string name="like_and_dislike">%1$d לייק(ים), %2$d דיסלייק(ים)</string>
     <string name="published_at">פורסם ב-%1$s</string>
     <string name="less">פחות</string>
     <string name="spotify">Spotify</string>

@@ -1,5 +1,5 @@
 <div align="center"> <img src="https://raw.githubusercontent.com/maxrave-dev/SimpMusic/dev/fastlane/metadata/android/en-US/images/featureGraphic.png"> <h1>SimpMusic</h1>  
-A FOSS YouTube Music client for Android and Desktop with many features from<br>Spotify, SponsorBlock, ReturnYouTubeDislike using Compose Multiplatform to develop.
+A FOSS YouTube Music client for Android and Desktop with many features from<br>Spotify using Compose Multiplatform to develop.
 <br> 
 <br>
 <a href="https://github.com/maxrave-dev/SimpMusic/releases"><img src="https://img.shields.io/github/v/release/maxrave-dev/SimpMusic"></a> <a href="https://github.com/maxrave-dev/SimpMusic/releases"><img src="https://img.shields.io/github/downloads/maxrave-dev/SimpMusic/total"></a> <br> <br> <a href="https://trendshift.io/repositories/13482" target="_blank"><img src="https://trendshift.io/api/badge/repositories/13482" alt="maxrave-dev%2FSimpMusic | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
@@ -55,7 +55,7 @@ A FOSS YouTube Music client for Android and Desktop with many features from<br>S
 - Synced lyrics from SimpMusic Lyrics, LRCLIB, BetterLyrics, Spotify (require login) and YouTube Transcript - AI lyrics translation (BETA) (\*)  
 - Personalize data (\**) and multi-YouTube-account support    
 - Dislike songs on YouTube Music so it recommends them less (NEW)
-- Supports SponsorBlock and Return YouTube Dislike
+- Supports SponsorBlock
 - Sleep Timer    
 - Android Auto with online content, feature rich UI/UX
 - Discord Rich Presence support

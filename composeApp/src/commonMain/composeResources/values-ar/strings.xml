@@ -274,8 +274,6 @@
     <string name="log_out_warning">تسجيل الخروج من كل الحساب؟</string>
     <string name="play_next">تشغيل التالي</string>
     <string name="codec">الترميز</string>
-    <string name="plays">عدد تشغيل/عرض</string>
-    <string name="like_and_dislike">%1$d إعجابـ(ات), %2$d عدم إعجابـ(ات)</string>
     <string name="less">أقل</string>
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">تسجيل الدخول إلى Spotify</string>

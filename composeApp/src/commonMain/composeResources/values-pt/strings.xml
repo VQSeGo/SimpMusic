@@ -280,8 +280,6 @@
     <string name="log_out_warning">Terminar sessão de todas as contas?</string>
     <string name="play_next">Reproduzir próxima</string>
     <string name="codec">Codec</string>
-    <string name="plays">Quantidade de visualizações</string>
-    <string name="like_and_dislike">%1$d curtida(s), %2$d não gostei(s)</string>
     <string name="published_at">Publicado em %1$s</string>
     <string name="less">Menos</string>
     <string name="spotify">Spotify</string>

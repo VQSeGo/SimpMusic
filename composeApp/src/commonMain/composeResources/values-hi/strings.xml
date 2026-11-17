@@ -281,8 +281,6 @@
     <string name="log_out_warning">सभी खातों से लॉग आउट करें?</string>
     <string name="play_next">अगला चलाएं</string>
     <string name="codec">कोडेक</string>
-    <string name="plays">प्ले/व्यू काउंट</string>
-    <string name="like_and_dislike">%1$d पसंद, %2$d नापसंद</string>
     <string name="less">कम</string>
     <string name="spotify">स्पॉटिफाए</string>
     <string name="log_in_to_spotify">Spotify में लॉग इन करें</string>

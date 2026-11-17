@@ -338,8 +338,6 @@
     <string name="log_out_warning">¿Cerrar sesión en todas las cuentas?</string>
     <string name="play_next">Reproducir siguiente</string>
     <string name="codec">Códec</string>
-    <string name="plays">Número de reproducciones y vistas</string>
-    <string name="like_and_dislike">%1$d me gusta • %2$d no me gusta</string>
     <string name="published_at">Publicado el %1$s</string>
     <string name="less">Menos</string>
     <string name="spotify">Spotify</string>

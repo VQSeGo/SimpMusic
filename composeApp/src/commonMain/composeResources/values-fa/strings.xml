@@ -286,8 +286,6 @@
     <string name="log_out_warning">آیا از همه حساب‌ها خارج شوید؟</string>
     <string name="play_next">پخش بعدی</string>
     <string name="codec">کدک</string>
-    <string name="plays">تعداد پخش/نمایش</string>
-    <string name="like_and_dislike">%1$d پسندیده، %2$d نپسندیده</string>
     <string name="less">کمتر</string>
     <string name="spotify">اسپاتیفای</string>
     <string name="log_in_to_spotify">وارد اسپاتیفای شوید</string>

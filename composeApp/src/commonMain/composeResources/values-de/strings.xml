@@ -353,8 +353,6 @@
     <string name="log_out_warning">Von allen Accounts abmelden?</string>
     <string name="play_next">Als nächstes abspielen</string>
     <string name="codec">Codec</string>
-    <string name="plays">Aufrufe</string>
-    <string name="like_and_dislike">%1$d mag ich, %2$d mag ich nicht</string>
     <string name="published_at">Veröffentlicht am %1$s</string>
     <string name="less">Weniger</string>
     <string name="spotify">Spotify</string>

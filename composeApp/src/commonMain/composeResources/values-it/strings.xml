@@ -343,8 +343,6 @@
     <string name="log_out_warning">Disconnettersi da tutti gli account?</string>
     <string name="play_next">Riproduci successivo</string>
     <string name="codec">Codec</string>
-    <string name="plays">Conteggio Riproduzioni/Visualizzazioni</string>
-    <string name="like_and_dislike">%1$d mi piace, %2$d non mi piace</string>
     <string name="published_at">Pubblicato il %1$s</string>
     <string name="less">Meno</string>
     <string name="spotify">Spotify</string>

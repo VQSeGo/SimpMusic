@@ -350,8 +350,6 @@
     <string name="log_out_warning">すべてのアカウントをログアウトしますか？</string>
     <string name="play_next">次に再生</string>
     <string name="codec">コー​​デック</string>
-    <string name="plays">再生/表示回数</string>
-    <string name="like_and_dislike">%1$d 高評価/ %2$d 低評価</string>
     <string name="published_at">%1$s に公開</string>
     <string name="less">少なく表示</string>
     <string name="spotify">Spotify</string>

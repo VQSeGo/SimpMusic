@@ -353,8 +353,6 @@
     <string name="log_out_warning">Se déconnecter de tous les comptes ?</string>
     <string name="play_next">Suivant</string>
     <string name="codec">Codec</string>
-    <string name="plays">Nombre de Lectures / Vues</string>
-    <string name="like_and_dislike">%1$d j'aime, %2$d je n'aime pas</string>
     <string name="published_at">Publié le %1$s</string>
     <string name="less">Moins</string>
     <string name="spotify">Spotify</string>

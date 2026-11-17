@@ -263,8 +263,6 @@
     <string name="log_out_warning">Bütün hesablardan çıxılsın?</string>
     <string name="play_next">Sonra səsləndir</string>
     <string name="codec">Kodlama</string>
-    <string name="plays">Səsləndirmə/Baxış Sayı</string>
-    <string name="like_and_dislike">%1$d bəyənmə, %2$d bəyənməmə</string>
     <string name="less">Daha az</string>
     <string name="spotify">Spotify</string>
     <string name="log_in_to_spotify">Spotify-a daxil olun</string>

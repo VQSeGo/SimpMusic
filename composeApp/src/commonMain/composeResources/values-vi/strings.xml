@@ -350,8 +350,6 @@
     <string name="log_out_warning">Đăng xuất khỏi tất cả các tài khoản?</string>
     <string name="play_next">Phát tiếp theo</string>
     <string name="codec">Bộ giải mã</string>
-    <string name="plays">Lượt phát/xem</string>
-    <string name="like_and_dislike">%1$d thích, %2$d không thích</string>
     <string name="published_at">Phát hành lúc %1$s</string>
     <string name="less">Ẩn bớt</string>
     <string name="spotify">Spotify</string>

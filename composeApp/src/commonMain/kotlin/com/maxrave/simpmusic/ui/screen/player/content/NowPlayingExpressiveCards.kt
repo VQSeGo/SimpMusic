@@ -113,7 +113,6 @@ import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.artists
 import simpmusic.composeapp.generated.resources.description
-import simpmusic.composeapp.generated.resources.like_and_dislike
 import simpmusic.composeapp.generated.resources.line_synced
 import simpmusic.composeapp.generated.resources.lyrics
 import simpmusic.composeapp.generated.resources.lyrics_offset
@@ -129,7 +128,6 @@ import simpmusic.composeapp.generated.resources.share_lyrics
 import simpmusic.composeapp.generated.resources.show
 import simpmusic.composeapp.generated.resources.spotify_lyrics_provider
 import simpmusic.composeapp.generated.resources.unsynced
-import simpmusic.composeapp.generated.resources.view_count
 
 // Shared shape for the below-the-fold tonal cards.
 private val ExpressiveCardShape = RoundedCornerShape(20.dp)
@@ -685,26 +683,6 @@ internal fun ExpressiveBelowTheFold(
                         text = stringResource(Res.string.published_at, state.screenData.songInfoData?.uploadDate ?: ""),
                         style = typo().labelSmall,
                         color = Color.White,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text =
-                            stringResource(
-                                Res.string.view_count,
-                                "%,d".format(state.screenData.songInfoData?.viewCount),
-                            ),
-                        style = typo().labelMedium,
-                        color = Color.White,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text =
-                            stringResource(
-                                Res.string.like_and_dislike,
-                                state.screenData.songInfoData?.like ?: 0,
-                                state.screenData.songInfoData?.dislike ?: 0,
-                            ),
-                        style = typo().bodyMedium,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(

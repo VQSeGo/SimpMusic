@@ -295,8 +295,6 @@
     <string name="log_out_warning">Tüm hesaplardan çıkış yapılsın mı?</string>
     <string name="play_next">Sonrakini çal</string>
     <string name="codec">Kodek</string>
-    <string name="plays">Oynatma/Görüntüleme Sayısı</string>
-    <string name="like_and_dislike">%1$d beğeni %2$d beğenmeme</string>
     <string name="published_at">Yayınlanma tarihi %1$s</string>
     <string name="less">Daha az</string>
     <string name="spotify">Spotify</string>

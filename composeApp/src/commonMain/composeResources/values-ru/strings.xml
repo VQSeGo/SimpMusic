@@ -375,8 +375,6 @@
     <string name="log_out_warning">Выйти из всех аккаунтов?</string>
     <string name="play_next">Играть далее</string>
     <string name="codec">Кодек</string>
-    <string name="plays">Количество просмотров</string>
-    <string name="like_and_dislike">%1$d лайков, %2$d дизлайков</string>
     <string name="published_at">Опубликовано: %1$s</string>
     <string name="less">Меньше</string>
     <string name="spotify">Spotify</string>

@@ -353,8 +353,6 @@
     <string name="log_out_warning">Logga ut från alla konton?</string>
     <string name="play_next">Spela härnäst</string>
     <string name="codec">Kodek</string>
-    <string name="plays">Antal uppspelningar/visningar</string>
-    <string name="like_and_dislike">Gilla-markeringar: %1$d, ogilla-markeringar: %2$d</string>
     <string name="published_at">Publicerad %1$s</string>
     <string name="less">Mindre</string>
     <string name="spotify">Spotify</string>
