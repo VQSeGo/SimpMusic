@@ -47,6 +47,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.maxrave.domain.repository.ListenTogetherRepository
 import com.maxrave.simpmusic.ui.icon.Groups
+import com.maxrave.simpmusic.ui.icon.LibraryMusic
 import com.maxrave.simpmusic.ui.icon.PlaylistAdd
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.ListenTogetherDestination
@@ -59,12 +60,14 @@ import org.koin.compose.koinInject
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.create
 import simpmusic.composeapp.generated.resources.create_playlist_description
+import simpmusic.composeapp.generated.resources.create_youtube_playlist_description
 import simpmusic.composeapp.generated.resources.create_room_description
 import simpmusic.composeapp.generated.resources.create_room_live
 import simpmusic.composeapp.generated.resources.listen_together
 import simpmusic.composeapp.generated.resources.local_playlist
 import simpmusic.composeapp.generated.resources.playlist_name
 import simpmusic.composeapp.generated.resources.playlist_name_cannot_be_empty
+import simpmusic.composeapp.generated.resources.youtube_music_playlist
 
 /** The button in the Home top bar: Settings on a phone, Reload on Desktop. */
 @Composable
@@ -79,8 +82,8 @@ fun HomeBarButton(
 }
 
 /**
- * The Create sheet (local playlist or Listen Together room) and the playlist-name sheet it leads to,
- * for any button that wants to open them: the Library's Create tile and the Desktop sidebar's "+".
+ * The Create sheet (local playlist, YouTube Music playlist or Listen Together room) and the
+ * playlist-name sheet it leads to, for the Desktop sidebar's "+".
  */
 @Composable
 fun CreateDialogs(
@@ -91,6 +94,7 @@ fun CreateDialogs(
 ) {
     val room by koinInject<ListenTogetherRepository>().room.collectAsStateWithLifecycle()
     var showPlaylistName by remember { mutableStateOf(false) }
+    var showYouTubePlaylistName by remember { mutableStateOf(false) }
     if (visible) {
         CreateSheet(
             liveRoom = room.inRoom,
@@ -98,6 +102,10 @@ fun CreateDialogs(
             onPlaylist = {
                 onDismiss()
                 showPlaylistName = true
+            },
+            onYouTubePlaylist = {
+                onDismiss()
+                showYouTubePlaylistName = true
             },
             onListenTogether = {
                 onDismiss()
@@ -111,6 +119,12 @@ fun CreateDialogs(
             onCreate = sharedViewModel::createLocalPlaylist,
         )
     }
+    if (showYouTubePlaylistName) {
+        CreateLocalPlaylistSheet(
+            onDismiss = { showYouTubePlaylistName = false },
+            onCreate = sharedViewModel::createYouTubePlaylist,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,6 +133,7 @@ private fun CreateSheet(
     liveRoom: Boolean,
     onDismiss: () -> Unit,
     onPlaylist: () -> Unit,
+    onYouTubePlaylist: () -> Unit,
     onListenTogether: () -> Unit,
 ) {
     ModalBottomSheet(
@@ -150,6 +165,12 @@ private fun CreateSheet(
                     title = stringResource(Res.string.local_playlist),
                     subtitle = stringResource(Res.string.create_playlist_description),
                     onClick = onPlaylist,
+                )
+                CreateRow(
+                    icon = SimpIcons.LibraryMusic,
+                    title = stringResource(Res.string.youtube_music_playlist),
+                    subtitle = stringResource(Res.string.create_youtube_playlist_description),
+                    onClick = onYouTubePlaylist,
                 )
                 CreateRow(
                     icon = SimpIcons.Groups,
@@ -217,7 +238,10 @@ private fun SheetHandle() {
     }
 }
 
-/** Name a new local playlist. Shared by Library's create tile and the Create sheet. */
+/**
+ * Name a new playlist, local or in YouTube Music: [onCreate] decides which. Shared by Library's create
+ * tiles and the Create sheet.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateLocalPlaylistSheet(

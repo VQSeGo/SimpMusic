@@ -59,7 +59,9 @@ class LibrarySidebarViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val items: StateFlow<List<LibrarySidebarItem>> =
-        refreshes
+        // A YouTube playlist created or deleted from the "+" or a playlist's menu re-reads the list
+        // too: neither has to move the back stack.
+        combine(refreshes, playlistRepository.youTubePlaylistsVersion) { refresh, version -> refresh to version }
             .flatMapLatest {
                 combine(
                     localPlaylistRepository.observeAllLocalPlaylists(),

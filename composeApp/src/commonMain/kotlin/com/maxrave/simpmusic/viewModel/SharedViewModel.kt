@@ -115,6 +115,8 @@ import org.koin.core.component.inject
 import simpmusic.composeapp.generated.resources.album_not_found
 import simpmusic.composeapp.generated.resources.log_in_to_like
 import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.youtube_playlist_create_failed
+import simpmusic.composeapp.generated.resources.youtube_playlist_created
 import simpmusic.composeapp.generated.resources.added_local_playlist
 import simpmusic.composeapp.generated.resources.added_to_queue
 import simpmusic.composeapp.generated.resources.disliked
@@ -861,6 +863,18 @@ class SharedViewModel(
                     getString(Res.string.added_local_playlist),
                 ).lastOrNull()
             makeToast(getString(Res.string.added_local_playlist))
+        }
+    }
+
+    /** Creates a private playlist in the YouTube Music account; it shows in the library lists at once. */
+    fun createYouTubePlaylist(title: String) {
+        viewModelScope.launch {
+            playlistRepository.createYouTubePlaylist(title).collect { res ->
+                when (res) {
+                    is Resource.Success -> makeToast(getString(Res.string.youtube_playlist_created))
+                    is Resource.Error -> makeToast(getString(Res.string.youtube_playlist_create_failed))
+                }
+            }
         }
     }
 
