@@ -143,7 +143,8 @@
   чип «Чарты SimpMusic» не тронут); мини-плеер-окно ПК (`MiniPlayerManager`, `MiniPlayerWindow`, `MiniPlayerRoot`,
   `MiniPlayerLayout`, `expect fun toggleMiniPlayer`, пункт трея `open_miniplayer` / `close_miniplayer`, иконка
   `PictureInPictureAlt`) и кнопка «окно» с регулятором громкости в полноэкранной лирике ПК (в шапке осталась только кнопка
-  закрытия; громкость плеера и `UIEvent.UpdateVolume` не тронуты).
+  закрытия; громкость плеера и `UIEvent.UpdateVolume` не тронуты), а также кнопка громкости со всплывающим ползунком в
+  капсуле `MiniPlayer` (узкое окно ПК).
   Также: комментарии YouTube (код удалён полностью: `CommentsViewModel`, `CommentsBottomSheet`, иконка `CommentOutline`,
   `SongRepository.getComments` / `postComment` / `performCommentAction`, `YouTube.comments` / `createComment`, `CommentsPage`,
   модели и строки). Кнопки комментариев в плеере уже не было.

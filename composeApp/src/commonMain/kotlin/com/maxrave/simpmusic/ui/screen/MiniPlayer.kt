@@ -13,10 +13,8 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -36,7 +34,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,8 +43,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -87,7 +82,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
@@ -97,15 +91,12 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -135,18 +126,14 @@ import com.maxrave.simpmusic.ui.icon.Headphones
 import com.maxrave.simpmusic.ui.icon.OpenInFull
 import com.maxrave.simpmusic.ui.icon.QueueMusic
 import com.maxrave.simpmusic.ui.icon.SimpIcons
-import com.maxrave.simpmusic.ui.icon.VolumeOff
-import com.maxrave.simpmusic.ui.icon.VolumeUp
 import com.maxrave.simpmusic.ui.screen.player.content.toAudioQualityLabel
 import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.LocalIsDarkTheme
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.SharedViewModel
 import com.maxrave.simpmusic.viewModel.UIEvent
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import simpmusic.composeapp.generated.resources.Res
@@ -613,7 +600,6 @@ fun MiniPlayer(
         // An opaque theme surface, the Android card's colour; a haze blur instead gives a dark smear
         // rather than a floating pill.
         val capsuleShape = RoundedCornerShape(50)
-        val density = LocalDensity.current
         Box(
             modifier
                 .background(MaterialTheme.colorScheme.surfaceContainer, capsuleShape)
@@ -938,193 +924,6 @@ fun MiniPlayer(
                             contentDescription = "",
                         )
                     }
-                    var isVolumeSliding by rememberSaveable {
-                        mutableStateOf(false)
-                    }
-                    var volumeValue by rememberSaveable {
-                        mutableFloatStateOf(0f)
-                    }
-                    LaunchedEffect(key1 = controllerState, key2 = isVolumeSliding) {
-                        if (!isVolumeSliding) {
-                            volumeValue = controllerState.volume
-                        }
-                    }
-                    // Remembers the level to come back to when unmuting, so the button restores
-                    // what the user was listening at instead of jumping to full volume.
-                    // Starting muted leaves nothing to restore, so full volume stays the fallback.
-                    var previousVolumeValue by rememberSaveable {
-                        mutableFloatStateOf(controllerState.volume.takeIf { it > 0f } ?: 1f)
-                    }
-                    LaunchedEffect(controllerState.volume) {
-                        if (controllerState.volume > 0f) {
-                            previousVolumeValue = controllerState.volume
-                        }
-                    }
-                    // Vertical volume popup anchored on the speaker icon, the way a context menu
-                    // opens: a Popup draws outside the capsule's bounds, so the capsule keeps its
-                    // width instead of expanding sideways as it used to. `hoverable` sits on the
-                    // anchor Box AND on the popup body, otherwise the popup closes the moment the
-                    // pointer leaves the icon and the slider becomes impossible to reach.
-                    val volumeInteraction = remember { MutableInteractionSource() }
-                    val isVolumeHovered by volumeInteraction.collectIsHoveredAsState()
-                    val popupInteraction = remember { MutableInteractionSource() }
-                    val isPopupHovered by popupInteraction.collectIsHoveredAsState()
-                    Box(modifier = Modifier.hoverable(volumeInteraction)) {
-                        IconButton(
-                            onClick = {
-                                // Toggle mute/unmute
-                                if (controllerState.volume > 0f) {
-                                    sharedViewModel.onUIEvent(UIEvent.UpdateVolume(0f))
-                                } else {
-                                    sharedViewModel.onUIEvent(
-                                        UIEvent.UpdateVolume(previousVolumeValue.coerceIn(0.1f, 1f)),
-                                    )
-                                }
-                            },
-                        ) {
-                            Icon(
-                                imageVector =
-                                    if (controllerState.volume > 0f) {
-                                        SimpIcons.VolumeUp
-                                    } else {
-                                        SimpIcons.VolumeOff
-                                    },
-                                tint = textColor,
-                                contentDescription = if (controllerState.volume > 0f) "Mute" else "Unmute",
-                            )
-                        }
-                        // Releasing the mouse above the popup — which is what happens when you drag
-                        // the thumb to the top — drops the hover and `isVolumeSliding` in the same
-                        // frame, so the popup used to vanish right under the user's hand. Hold it
-                        // open for a beat instead: moving back in cancels this effect before the
-                        // delay elapses, so the popup stays.
-                        var isVolumePopupVisible by remember { mutableStateOf(false) }
-                        LaunchedEffect(isVolumeHovered, isPopupHovered, isVolumeSliding) {
-                            if (isVolumeHovered || isPopupHovered || isVolumeSliding) {
-                                isVolumePopupVisible = true
-                            } else {
-                                delay(400)
-                                isVolumePopupVisible = false
-                            }
-                        }
-                        if (isVolumePopupVisible) {
-                            Popup(
-                                alignment = Alignment.TopCenter,
-                                offset = IntOffset(0, with(density) { -(VOLUME_POPUP_HEIGHT + 4.dp).roundToPx() }),
-                            ) {
-                                Column(
-                                    modifier =
-                                        Modifier
-                                            .hoverable(popupInteraction)
-                                            .width(44.dp)
-                                            .height(VOLUME_POPUP_HEIGHT)
-                                            .clip(RoundedCornerShape(14.dp))
-                                            // Theme surface, not `background` — that one animates to the
-                                            // artwork's palette colour, which turned the popup olive green
-                                            // for one cover and pink for the next.
-                                            .background(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.96f))
-                                            .padding(vertical = 10.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                                ) {
-                                    Text(
-                                        text = (volumeValue * 100).roundToInt().toString(),
-                                        style = typo().bodySmall,
-                                        color = textColor.copy(alpha = 0.7f),
-                                        maxLines = 1,
-                                    )
-                                    // Weighted box: whatever height is left after the label and the icon, the slider
-                                    // centres inside it. A fixed-height popup used to overflow — 96dp of slider plus
-                                    // label, icon, spacing and padding came to 164dp in a 148dp popup, so the icon
-                                    // was swallowed and the track sat glued to the bottom edge.
-                                    Box(
-                                        modifier = Modifier.weight(1f).fillMaxWidth(),
-                                        contentAlignment = Alignment.Center,
-                                    ) {
-                                        LeftToRight {
-                                            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-                                                // A vertical Slider is a horizontal one rotated a quarter
-                                                // turn: graphicsLayer rotates the drawing AND the pointer
-                                                // input, so drag direction follows the visual.
-                                                Slider(
-                                                    value = volumeValue,
-                                                    onValueChangeFinished = {
-                                                        isVolumeSliding = false
-                                                        sharedViewModel.onUIEvent(
-                                                            UIEvent.UpdateVolume(volumeValue.coerceIn(0f, 1f)),
-                                                        )
-                                                    },
-                                                    onValueChange = {
-                                                        isVolumeSliding = true
-                                                        volumeValue = it
-                                                    },
-                                                    valueRange = 0f..1f,
-                                                    modifier =
-                                                        Modifier
-                                                            .graphicsLayer {
-                                                                // transformOrigin(0, 0) and place(-width, 0) below are
-                                                                // a pair — they only work together. Dropping the origin
-                                                                // and centring the rotation leaves the slider drawn
-                                                                // outside its own node, where the popup's clip() eats
-                                                                // it and nothing shows at all.
-                                                                rotationZ = 270f
-                                                                transformOrigin = TransformOrigin(0f, 0f)
-                                                            }.layout { measurable, constraints ->
-                                                                val placeable =
-                                                                    measurable.measure(
-                                                                        Constraints(
-                                                                            minWidth = constraints.minHeight,
-                                                                            maxWidth = constraints.maxHeight,
-                                                                            minHeight = constraints.minWidth,
-                                                                            maxHeight = constraints.maxWidth,
-                                                                        ),
-                                                                    )
-                                                                layout(placeable.height, placeable.width) {
-                                                                    placeable.place(-placeable.width, 0)
-                                                                }
-                                                            }.width(VOLUME_SLIDER_LENGTH),
-                                                    track = { sliderState ->
-                                                        SliderDefaults.Track(
-                                                            modifier =
-                                                                Modifier
-                                                                    .height(4.dp),
-                                                            enabled = true,
-                                                            sliderState = sliderState,
-                                                            colors =
-                                                                SliderDefaults.colors().copy(
-                                                                    thumbColor = textColor,
-                                                                    activeTrackColor = textColor,
-                                                                    inactiveTrackColor = textColor.copy(alpha = 0.3f),
-                                                                ),
-                                                            thumbTrackGapSize = 0.dp,
-                                                            drawTick = { _, _ -> },
-                                                            drawStopIndicator = null,
-                                                        )
-                                                    },
-                                                    thumb = {
-                                                        // No thumb: it never sat visually centred on the rotated track, and the
-                                                        // slider drags the same without one — the active/inactive split marks the level.
-                                                        Spacer(Modifier.size(0.dp))
-                                                    },
-                                                )
-                                            }
-                                        }
-                                    }
-                                    Icon(
-                                        imageVector =
-                                            if (controllerState.volume > 0f) {
-                                                SimpIcons.VolumeUp
-                                            } else {
-                                                SimpIcons.VolumeOff
-                                            },
-                                        tint = textColor.copy(alpha = 0.7f),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(15.dp),
-                                    )
-                                }
-                            }
-                        }
-                    }
                     IconButton(onClick = { onClose() }) {
                         Icon(SimpIcons.Close, "", tint = textColor)
                     }
@@ -1134,8 +933,6 @@ fun MiniPlayer(
     }
 }
 
-private val VOLUME_POPUP_HEIGHT = 180.dp
-private val VOLUME_SLIDER_LENGTH = 96.dp
 
 /**
  * The capsule player's progress bar: a real [Slider] so it can be dragged, drawn over a
