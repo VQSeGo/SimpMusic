@@ -357,11 +357,6 @@ private fun ListeningReceiptPaper(
             seed = receipt.seed,
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 10.dp, bottom = 4.dp),
         )
-        Text(
-            text = "simpmusic.org",
-            modifier = Modifier.fillMaxWidth(),
-            style = mono.copy(fontSize = 14.sp, lineHeight = 18.sp, textAlign = TextAlign.Center),
-        )
     }
 }
 

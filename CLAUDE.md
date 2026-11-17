@@ -207,6 +207,15 @@
   (`TranslucentSurface.kt`, `surfaceContainerHighest` 80 %), чипы с обводкой, плоский мини-плеер. Нижняя панель Android теперь
   `FoldingBottomNavigationBar` (бывшая `LiquidGlassAppBottomNavigationBar`, только плоский вариант). Haze (размытие шапок, листов,
   боковой панели) не тронут.
+  Также: чарты SimpMusic (чип «Чарты SimpMusic» в библиотеке, `LibraryChipType.CHART`, баннер `SimpMusicChartButton` в поиске, запрос
+  `chart.simpmusic.org/api/playlists`: `YouTube.getSimpMusicChart`, `SimpMusicChartResponse`, `PlaylistRepository.getChartPlaylist`,
+  `ChartItem`, `LibraryViewModel.chartPlaylists`; строки `simpmusic_charts` и `no_charts_found`; сохранённый `library_current_screen=chart`
+  читается как «нет значения»). Чарты самого YouTube (`parseChart`, `Chart`) не тронуты. Упоминания оригинала в тексте: строка
+  «simpmusic.org» внизу карточки «Итоги» и описание оригинала в `credit_app` (осталось «Сделано с ❤️ и Claude от VQSeGo» во всех языках);
+  блог «как войти» (`Cookies.jvm.kt`), `based_on_simpmusic`, GitHub оригинала и `api-lyrics.simpmusic.org` не тронуты. «Поделиться»
+  (`YTItem.shareLink`) и кнопка Discord «Listen on YouTube Music» ведут на `music.youtube.com`; входящие `simpmusic.org/app/...` и
+  `simpmusic://` открываются по-прежнему (`App.kt`, `DesktopDeepLinkHandler`, манифест), ссылки `music.youtube.com` (`/watch`,
+  `/playlist`, `/channel`) тоже.
 
 ## Приёмы и ловушки
 
