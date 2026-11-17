@@ -163,7 +163,7 @@
   Сделано `ce695ef3`: 28 ключей (остальные 16 `translatable="false"`).
 - [x] **Н8 (P3) Spotify с успешным, но пустым ответом** не даёт ни запасного провайдера, ни «не найден» (старое поведение;
   уйдёт само при очереди источников, см. Ж1). Закрыто Ж1: пустой ответ = «текста нет», идём дальше.
-- [ ] **Н9 (P3) Ссылки на сайт оригинала:** `chart.simpmusic.org` (`GridLibraryPlaylist.kt`, `SearchScreen.kt`), блог
+- [x] **Н9 (P3) Ссылки на сайт оригинала:** `chart.simpmusic.org` (`GridLibraryPlaylist.kt`, `SearchScreen.kt`), блог
   `how-to-login` (`Cookies.jvm.kt`, `ListeningReceipt.kt`, `YTItem.kt`, `AndroidManifest.xml`), Discord «Listen on
   SimpMusic» (`simpmusic.org/app/watch`), «О нас» → `github.com/maxrave-dev/SimpMusic`, чип «Чарты SimpMusic» и баннер в
   поиске. Решение пользователя 2026-11-15: пока не трогаем. Строка `credit_app` звучит, будто сборку делал maxrave-dev.
@@ -171,6 +171,10 @@
   открываются); (2) чип «Чарты SimpMusic», баннер в поиске (`SimpMusicChart.kt`) и запрос `chart.simpmusic.org/api/playlists`
   убрать; (3) ссылки на блог «как войти» оставить; (4) «simpmusic.org» в карточке «Итоги» и `credit_app` убрать; (5) GitHub
   оригинала (GPL), `api-lyrics.simpmusic.org`, файл шифра — оставить.
+  Сделано (Sonnet): `d19ba900` (core `7a86c59`) — `shareLink` и Discord «Listen on YouTube Music» на `music.youtube.com`;
+  `13fbd6b8` — чип, баннер, `SimpMusicChart.kt`, запрос и модели чартов SimpMusic удалены; `a74c58fb` — «simpmusic.org» в
+  «Итогах» убран, `credit_app` = только «Сделано с ❤️ и Claude от VQSeGo». ПК вживую: «Поделиться» копирует
+  `music.youtube.com/watch?v=…`, баннера в поиске нет. Discord, «Итоги», библиотека Android без чипа — вживую не смотрели.
 - [x] **Н10 (P3) Скрейпер:** при холодном запуске без сети 4–6 строк `not found` на трек; с VPN без сети запрос висит
   20 с (туннель жив) вместо быстрой ошибки.
   Сделано `4fd02aa0` (core `1cec0db`, Sonnet): строки `not found` — это тексты (1 на трек после `800f0fef`), не скрейпер.
