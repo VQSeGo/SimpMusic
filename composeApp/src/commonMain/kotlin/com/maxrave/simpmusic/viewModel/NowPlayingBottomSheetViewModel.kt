@@ -237,10 +237,11 @@ class NowPlayingBottomSheetViewModel(
                             videoId = songUIState.videoId,
                         ).collectLatestResource(
                             onSuccess = {
-                                makeToast(it)
+                                // The repository returns the raw response status ("STATUS_SUCCEEDED"), not text for the user.
+                                makeToast(getString(Res.string.added_to_youtube_playlist))
                             },
                             onError = {
-                                makeToast(it)
+                                makeToast(getString(Res.string.error_occurred))
                             },
                         )
                 }
