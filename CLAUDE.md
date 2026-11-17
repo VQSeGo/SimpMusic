@@ -155,7 +155,7 @@
   Также: раздел об авторе и пожертвованиях (строки настроек «Автор», «Следите за мной на X», «Блог разработчика», «Купи кофе»,
   те же ссылки и кнопки сайта, блога и спонсорства на `CreditScreen`; строковые ключи `author`, `maxrave_dev`, `follow_me_on_x`,
   `buy_me_a_coffee`, `developer_blog`, `developer_blog_tagline`, `donation`, `paypal`, `visit_blog`, `website`; строка автора в
-  `EndOfPage`). Авторство оригинала (GPL-3.0) остаётся: строка `based_on_simpmusic` рядом с версией в настройках и на `CreditScreen`,
+  `EndOfPage`). Подпись «@год SimpMusic vX» внизу страниц тоже убрана (2026-11-17): `EndOfPage` теперь только отступ 280 dp. Авторство оригинала (GPL-3.0) остаётся: строка `based_on_simpmusic` рядом с версией в настройках и на `CreditScreen`,
   там же юридический текст. Кнопка Discord «Visit SimpMusic» ведёт на репозиторий форка, GitHub и «Проблемы» на `CreditScreen` тоже.
   Также: распознавание музыки через Shazam (Android: кнопка микрофона в поиске и лист `SongRecognitionSheet`, `SongRecognizer`,
   `ShazamSignature`, `expect`/`actual` `SongRecognition`, плитка шторки `RecognitionTileService`, ссылка `simpmusic://recognize` и

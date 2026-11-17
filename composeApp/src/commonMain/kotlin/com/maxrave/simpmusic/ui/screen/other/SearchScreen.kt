@@ -505,9 +505,7 @@ fun SearchScreen(
                             }
                         }
                         item {
-                            EndOfPage(
-                                withoutCredit = true,
-                            )
+                            EndOfPage()
                         }
                     }
                     VerticalScrollBar(
@@ -599,9 +597,7 @@ fun SearchScreen(
                                 }
                             }
                             item {
-                                EndOfPage(
-                                    withoutCredit = true,
-                                )
+                                EndOfPage()
                             }
                         }
                     }
