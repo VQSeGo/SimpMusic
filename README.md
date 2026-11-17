@@ -2,72 +2,55 @@
 A FOSS YouTube Music client for Android and Desktop with many features from<br>Spotify using Compose Multiplatform to develop.
 <br> 
 <br>
-<a href="https://github.com/maxrave-dev/SimpMusic/releases"><img src="https://img.shields.io/github/v/release/maxrave-dev/SimpMusic"></a> <a href="https://github.com/maxrave-dev/SimpMusic/releases"><img src="https://img.shields.io/github/downloads/maxrave-dev/SimpMusic/total"></a> <br> <br> <a href="https://trendshift.io/repositories/13482" target="_blank"><img src="https://trendshift.io/api/badge/repositories/13482" alt="maxrave-dev%2FSimpMusic | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+<a href="https://github.com/VQSeGo/SimpMusic/releases"><img src="https://img.shields.io/github/v/release/VQSeGo/SimpMusic"></a> <a href="https://github.com/VQSeGo/SimpMusic/releases"><img src="https://img.shields.io/github/downloads/VQSeGo/SimpMusic/total"></a> <br> <br> <a href="https://trendshift.io/repositories/13482" target="_blank"><img src="https://trendshift.io/api/badge/repositories/13482" alt="maxrave-dev%2FSimpMusic | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 <br>
 <br>
 <a href="https://www.producthunt.com/products/simpmusic/reviews?utm_source=badge-product_rating&utm_medium=badge&utm_source=badge-simpmusic" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/product_rating.svg?product_id=903836&theme=dark" alt="SimpMusic - A&#0032;FOSS&#0032;YouTube&#0032;Music&#0032;client&#0032;for&#0032;Android&#0032;with&#0032;many&#0032;features | Product Hunt" style="width: 242px; height: 108px;" width="242" height="108" /></a>
 <br> 
 <h4>Download</h4>  
-<a href="https://apt.izzysoft.de/packages/com.maxrave.simpmusic/"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" width="200"></a> 
-<a href="https://f-droid.org/en/packages/com.maxrave.simpmusic/"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="200"></a> 
-<a href="https://www.openapk.net/simpmusic/com.maxrave.simpmusic/"><img src="https://www.openapk.net/images/openapk-badge.png" width="200"></a> 
-<a href="https://github.com/maxrave-dev/SimpMusic/releases"><img src="https://raw.githubusercontent.com/NeoApplications/Neo-Backup/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" width="200"></a> 
-<br><sub>On vivo phones, install <code>SimpMusic-full-vivo-*.apk</code> from <a href="https://github.com/maxrave-dev/SimpMusic/releases">Releases</a> for Origin Island and the music widget. It installs as a separate app and can't sit next to Spotify.</sub>
-<h4>Nightly Build</h4>  
-<a href="https://www.simpmusic.org/download/nightly"><img src="https://github.com/maxrave-dev/SimpMusic/actions/workflows/android.yml/badge.svg"></a><br/> <a href="https://www.simpmusic.org/download/nightly"><img src="https://raw.githubusercontent.com/NeoApplications/Neo-Backup/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" width="200"></a> 
+<a href="https://github.com/VQSeGo/SimpMusic/releases"><img src="https://raw.githubusercontent.com/NeoApplications/Neo-Backup/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" width="200"></a> 
 </div>  
 
-> SimpMusic is available on Desktop now!
+> **This is a personal fork of [SimpMusic](https://github.com/maxrave-dev/SimpMusic) by maxrave-dev (GPL-3.0).** It is trimmed down to a YouTube Music player for Android and Linux. Builds are published only in this repository's [Releases](https://github.com/VQSeGo/SimpMusic/releases). The sections about contributing, translations, Discord, donations and sponsors below are about the original project.
 >
 > [kotlin-footguns](https://github.com/maxrave-dev/kotlin-footguns) — the Kotlin, Compose Multiplatform and desktop JVM traps this project ran into the hard way. Star it if it saves you a night.
 
-[![Sponsor](https://readme.cash/i/janwgx1dnp.svg)](https://readme.cash/c/janwgx1dnp)
   
 ## Features ✨️    
 - Play music from YouTube Music or YouTube for free, without ads and in the background
-- Recognize the song playing near you, then find it in SimpMusic (Android) (NEW)
 - Add your own synced lyrics, line by line or word by word, to songs that have none (NEW)
-- Read YouTube comments in Now Playing, and post, reply or like them when signed in (NEW)
-- Your library sidebar on Desktop with your playlists, albums, artists and podcasts (NEW)
-- Three Now Playing styles: Classic, Material 3 Expressive and a redesigned Apple Music player with Apple Music-style lyrics (NEW)
+- Your library sidebar on Desktop with your playlists, albums and artists (NEW)
+- Material 3 Expressive Now Playing with Apple Music-style lyrics (NEW)
 - Ten-band equalizer with presets and AutoEq headphone profiles, plus Delay and Reverb effects, or your phone's system equalizer on Android (NEW)
-- Pick the speaker, headphones or Cast device SimpMusic plays on, without moving other apps' audio (NEW)
 - SimpMusic Wrapped: your year in music, plus monthly recap playlists (NEW)
 - On-device listening analytics: charts, period history, listening clock and a shareable listening receipt (NEW)
-- Word-by-word Apple Music-style lyrics, romanization for 12 languages, share lyrics as an image, landscape fullscreen lyrics and a timing offset (NEW)
+- Word-by-word Apple Music-style lyrics, share lyrics as an image, landscape fullscreen lyrics and a timing offset (NEW)
 - Home screen widgets: turntable, playlists and listening insights (NEW)
 - Send your sign-ins from Android to Desktop by scanning a QR code (NEW)
 - Preferred audio language for videos with several audio tracks (NEW)
 - High quality up-to 256kbps stream (Opus or AAC) for YouTube Music Premium users
-- Browsing Home, Charts, Podcast, Moods & Genre with YouTube Music data at high speed    
+- Browsing Home, Charts, Moods & Genre with YouTube Music data at high speed    
 - Search everything on YouTube    
-- Spotify Canvas and Animated Album Art supported (NEW)
-- Power your experience with SimpMusic Chart (https://chart.simpmusic.org/)
 - Play 1080p video option with subtitle    
 - Play YouTube Music live stations (NEW)
-- AI song suggestions and an AI reading of your music taste (NEW)
-- Import playlists converted from Spotify and other apps
-- Customize your playlist, synced with YouTube Music
-- Notifications from followed artists    
+- Create your own YouTube Music playlists, remove songs from them or delete them, plus local playlists synced with YouTube Music
 - Caching and offline playback support, plus Smart downloads of the songs you play most (Android) (NEW)    
-- Crossfade with DJ-style like Apple Music
+- Crossfade
 - Customizing THEME (Light, Dark, Color, etc)
-- Synced lyrics from SimpMusic Lyrics, LRCLIB, BetterLyrics, Spotify (require login) and YouTube Transcript - AI lyrics translation (BETA) (\*)  
-- Personalize data (\**) and multi-YouTube-account support    
+- Synced lyrics from SimpMusic Lyrics, LRCLIB, BetterLyrics, Spotify (require login) and YouTube Transcript, asked in the order you choose  
+- Personalize data (\*) and multi-YouTube-account support    
 - Dislike songs on YouTube Music so it recommends them less (NEW)
-- Supports SponsorBlock
 - Sleep Timer    
 - Android Auto with online content, feature rich UI/UX
 - Discord Rich Presence support
 - Listen Together: shared rooms that play in sync with friends, compatible with Metrolist (NEW)
 - And many more!    
   
-> (\*) Use your OpenAI or Gemini API key    
-> (\**) For users who chose "Send back to Google" feature    
+> (\*) For users who chose "Send back to Google" feature    
     
 > **Warning**    
  > This app is in the beta stage, so it may have many bugs and make it crash. If you find any bugs,      
-> please create an issue or contact me via email or Discord server.   
+> please create an issue in this repository.   
 > Because of depending on YouTube Music, the player error will happen and it's normally, please don't ask me about the stable state of this app.
     
 ## Screenshots    
@@ -97,27 +80,24 @@ A FOSS YouTube Music client for Android and Desktop with many features from<br>S
  
  ## Data    
 - This app uses hidden API from YouTube Music with some tricks to get data from YouTube Music.    
-- Use Spotify Web API and some tricks to get Spotify Canvas and Lyrics    
+- Use Spotify Web API and some tricks to get lyrics    
 - Thanks to [InnerTune](https://github.com/z-huang/InnerTune/) for the idea to get data from YouTube Music. This repo is my inspiration to create this app.    
 - Special thanks to [SmartTube](https://github.com/yuliskov/SmartTube). This repo help me to extract the streaming URL of YouTube Music.    
-- My app is using [SponsorBlock](https://sponsor.ajay.app/) to skip sponsor in YouTube videos.    
-- ReturnYouTubeDislike for getting information on votes 
 - Main lyrics data from SimpMusic Lyrics
 - Alternative lyrics data from LRCLIB. More information [LRCLIB](https://lrclib.net/)    
-- Song recognition by Shazam, with the recognizer ported from [Metrolist](https://github.com/MetrolistGroup/Metrolist)
  
  ## Privacy    
- SimpMusic doesn't have any tracker or third-party server for collecting user data in FOSS version. If YouTube      
+ This fork has no trackers, analytics or crash reporting. If YouTube      
 logged-in users enable "Send back to Google" feature, SimpMusic only uses YouTube Music Tracking API to send listening history and listening record of video to Google for better recommendations and      
 supporting artist or YouTube Creator (For API reference,      
-see [this](https://github.com/maxrave-dev/core/blob/master/service/kotlinYtmusicScraper/src/commonMain/kotlin/com/maxrave/kotlinytmusicscraper/Ytmusic.kt)).
+see [this](https://github.com/VQSeGo/core/blob/redesign/service/kotlinYtmusicScraper/src/commonMain/kotlin/com/maxrave/kotlinytmusicscraper/Ytmusic.kt)). The feature is off by default. Lyrics sources receive the song being played (SimpMusic Lyrics: the video id; LRCLIB, BetterLyrics, Spotify: title and artist); each source can be turned off in Lyrics sources.
 
 ## Desktop app
 
 ### Which file should I download?
 - For Windows: Download `SimpMusic-Windows-installer.zip`, unzip it and run `install.bat`.
-- For macOS (macOS 15 or newer): Download the file with extension `.dmg`.
 - For Linux: Download the file with extension `.AppImage` (all Linux distributions)
+- Only the Linux build is tested; there is no macOS build.
 
 ### Log in guide: https://www.simpmusic.org/blogs/en/how-to-log-in-on-desktop-app
 #### Discord login guide: https://gist.github.com/MarvNC/e601f3603df22f36ebd3102c501116c6
@@ -126,7 +106,7 @@ see [this](https://github.com/maxrave-dev/core/blob/master/service/kotlinYtmusic
 - Some Linux distributions may have stability issues (upstream JetBrains issue).
 - ARM64 on Windows and Linux: use the x64 build.
 
-Please report issues on our Discord server if you find any bugs.
+Please report bugs as issues in this repository.
  
 ## Translation    
 [![Crowdin](https://badges.crowdin.net/simpmusic/localized.svg)](https://crowdin.com/project/simpmusic)

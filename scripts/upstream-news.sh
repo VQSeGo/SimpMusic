@@ -18,11 +18,13 @@ ensure_remote() { # $1 = repo dir, $2 = url
         git -C "$1" remote add upstream "$2"
         git -C "$1" remote set-url --push upstream DISABLED
     fi
+    # The original's release tags (v2.6.0 and so on) must not land here: our own release tags share the names.
+    git -C "$1" config remote.upstream.tagopt --no-tags
 }
 ensure_remote . https://github.com/maxrave-dev/SimpMusic.git
 ensure_remote core https://github.com/maxrave-dev/core
-git fetch -q upstream
-git -C core fetch -q upstream
+git fetch -q --no-tags upstream
+git -C core fetch -q --no-tags upstream
 
 main_mark=$(awk '$1 == "main" { print $2 }' "$MARKS")
 core_mark=$(awk '$1 == "core" { print $2 }' "$MARKS")
