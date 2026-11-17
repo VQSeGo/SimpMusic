@@ -25,7 +25,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.simpmusic.crashlytics.configCrashlytics
 import org.simpmusic.discord.configDiscord
 import java.io.File
 import java.lang.reflect.Field
@@ -39,7 +38,6 @@ class SimpMusicApplication :
         super.onCreate()
         // First, so the rest of startup reaches the App log too (Settings → Developer option).
         Logger.enableFileLogging(File(filesDir, "logs").path)
-        configCrashlytics(this, BuildKonfig.sentryDsn)
         // Before Koin: DiscordRepository is created at start and reads which login this build uses.
         configDiscord(BuildKonfig.discordClientId)
         // Info, not Debug: Debug listed every definition and instance (~470 lines on the main thread

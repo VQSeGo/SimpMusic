@@ -53,8 +53,6 @@ include(
     ":media-jvm-ui",
     ":media3",
     ":media3-ui",
-    ":crashlytics",
-    ":crashlytics-empty",
     ":kizzy",
     ":discord",
     ":listenTogether",

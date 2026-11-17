@@ -1,21 +1,11 @@
-import java.util.Properties
-
 // SimpMusic for vivo: androidApp's sources, shipped under a package vivo's Origin Island follows.
 // vivo's island and music widget only follow apps on vivo's own list of package names, and a normal
 // app cannot add itself to that list. This module builds androidApp unchanged under one of the listed
 // names. Built with: ./build_and_sign_apk.sh --release --full --vivo
 // Everything except the package and the ABI mirrors androidApp/build.gradle.kts: keep the two in step.
 
-val isFullBuild: Boolean =
-    try {
-        extra["isFullBuild"] == "true"
-    } catch (e: Exception) {
-        false
-    }
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.sentry.gradle)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -153,41 +143,4 @@ dependencies {
 
     implementation(projects.composeApp)
     implementation(projects.data)
-
-    if (isFullBuild) {
-        implementation(projects.crashlytics)
-    } else {
-        implementation(projects.crashlyticsEmpty)
-    }
-}
-
-// Only the Full build is shipped for vivo, so androidApp's FOSS-only Sentry meta cleanup is not repeated.
-sentry {
-    org.set("simpmusic")
-    projectName.set("android")
-    ignoredBuildTypes.set(setOf("debug"))
-    autoInstallation.enabled = false
-    if (isFullBuild) {
-        val token =
-            try {
-                val properties = Properties()
-                properties.load(rootProject.file("local.properties").inputStream())
-                properties.getProperty("SENTRY_AUTH_TOKEN")
-            } catch (e: Exception) {
-                println("Failed to load SENTRY_AUTH_TOKEN from local.properties: ${e.message}")
-                null
-            }
-        authToken.set(token ?: "")
-        includeProguardMapping.set(true)
-        // Pull requests from forks get no secrets: build without uploading instead of failing on a 401.
-        autoUploadProguardMapping.set(!token.isNullOrBlank())
-    } else {
-        includeProguardMapping.set(false)
-        autoUploadProguardMapping.set(false)
-        uploadNativeSymbols.set(false)
-        includeDependenciesReport.set(false)
-        includeSourceContext.set(false)
-        includeNativeSources.set(false)
-    }
-    telemetry.set(false)
 }

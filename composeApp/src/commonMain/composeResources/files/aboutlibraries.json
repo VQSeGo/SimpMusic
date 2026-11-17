@@ -6409,29 +6409,6 @@
             ]
         },
         {
-            "uniqueId": "io.sentry:sentry",
-            "artifactVersion": "8.61.1",
-            "name": "Sentry SDK",
-            "description": "SDK for sentry.io",
-            "website": "https://github.com/getsentry/sentry-java",
-            "developers": [
-                {
-                    "name": "Sentry Team and Contributors"
-                }
-            ],
-            "scm": {
-                "connection": "scm:git:git://github.com/getsentry/sentry-java.git",
-                "developerConnection": "scm:git:ssh://git@github.com/getsentry/sentry-java.git",
-                "url": "https://github.com/getsentry/sentry-java"
-            },
-            "licenses": [
-                "MIT"
-            ],
-            "funding": [
-                
-            ]
-        },
-        {
             "uniqueId": "it.krzeminski:snakeyaml-engine-kmp",
             "artifactVersion": "3.1.1",
             "name": "SnakeYAML Engine KMP",

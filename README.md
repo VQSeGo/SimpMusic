@@ -112,12 +112,6 @@ logged-in users enable "Send back to Google" feature, SimpMusic only uses YouTub
 supporting artist or YouTube Creator (For API reference,      
 see [this](https://github.com/maxrave-dev/core/blob/master/service/kotlinYtmusicScraper/src/commonMain/kotlin/com/maxrave/kotlinytmusicscraper/Ytmusic.kt)).
 
-We collect crash data in the Full version to improve the app.
-   
-## Full or FOSS version
-I use [Sentry](http://sentry.io) crashlytics to catch all crashes in the Full version. [Sentry](https://github.com/getsentry/sentry) is the open-source project.
- If you don't want to be collected crash data, you must use FOSS version.
- 
 ## Desktop app
 
 ### Which file should I download?
@@ -219,15 +213,10 @@ src="https://raw.githubusercontent.com/liberapay/liberapay.com/master/www/assets
 <img src="https://support.crowdin.com/assets/logos/plate/png/crowdin-logo-with-plate.png" width="300"/>
 </a>
 <br>
-<a href="https://sentry.io">
-<img src="https://github.com/maxrave-dev/SimpMusic/blob/dev/asset/sentry.svg?raw=true" width="300"/>
-</a>
-<br>
 <br>
 
-Crowdin and Sentry both have a free enterprise plan for Open-source projects. Follow the URLs: 
+Crowdin has a free enterprise plan for Open-source projects. Follow the URL: 
 - [Open Source License Request Form | Crowdin](https://crowdin.com/page/open-source-project-setup-request)
-- [Sentry for Open Source | Sentry](https://sentry.io/for/open-source/)
 
 ## Past sponsored:
 <br />

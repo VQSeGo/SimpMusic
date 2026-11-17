@@ -124,7 +124,7 @@ kotlin {
             implementation(projects.data)
 
             // `api` rather than `implementation` so :androidApp can hand it the Discord application id
-            // from BuildKonfig at startup, the same way it does for Sentry.
+            // from BuildKonfig at startup.
             api(projects.discord)
 
             // Navigation Compose
@@ -182,7 +182,6 @@ kotlin {
             // shared JVM UI + expect/actuals and their direct dependencies.
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-            implementation(libs.sentry.jvm)
             implementation(libs.native.tray)
             implementation(libs.nucleus.core.runtime)
             implementation(projects.mediaJvmUi)
@@ -832,14 +831,8 @@ buildkonfig {
 
         if (isFullBuild) {
             try {
-                println("Full build detected, enabling Sentry DSN")
                 val properties = Properties()
                 properties.load(rootProject.file("local.properties").inputStream())
-                buildConfigField(
-                    STRING,
-                    "sentryDsn",
-                    properties.getProperty("SENTRY_DSN") ?: "",
-                )
                 buildConfigField(
                     STRING,
                     "discordClientId",
@@ -847,12 +840,10 @@ buildkonfig {
                 )
             } catch (e: Exception) {
                 println("Failed to load secrets from local.properties: ${e.message}")
-                buildConfigField(STRING, "sentryDsn", "")
                 buildConfigField(STRING, "discordClientId", "")
             }
         } else {
-            buildConfigField(STRING, "sentryDsn", "")
-            // No Discord application either, so Rich Presence keeps going through kizzy.
+            // Without the full build there is no Discord application, so Rich Presence keeps going through kizzy.
             buildConfigField(STRING, "discordClientId", "")
         }
     }

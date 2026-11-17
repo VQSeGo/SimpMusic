@@ -216,6 +216,13 @@
   (`YTItem.shareLink`) и кнопка Discord «Listen on YouTube Music» ведут на `music.youtube.com`; входящие `simpmusic.org/app/...` и
   `simpmusic://` открываются по-прежнему (`App.kt`, `DesktopDeepLinkHandler`, манифест), ссылки `music.youtube.com` (`/watch`,
   `/playlist`, `/channel`) тоже.
+  Также: Sentry (отчёты о падениях и транзакции «app.open»; модули `crashlytics` и `crashlytics-empty`, функции `configCrashlytics`,
+  `reportCrash`, `pushPlayerError` и свойство `MediaPlayerHandler.pushPlayerError` с вызовами в обоих обработчиках (ошибка плеера и
+  так пишется через `Logger.e`), `Sentry.init` / `machineId()` / `desktopOs()` в `DesktopApp.kt`, отправка в `CrashDialog`; зависимости
+  `sentry-android`, `sentry-jvm`, Gradle-плагин `io.sentry.android.gradle` и блок `sentry {}` в `androidApp` / `vivoAndroidApp`,
+  очистка `sentry-debug-meta.properties`, поле `sentryDsn` в BuildKonfig, ключи `SENTRY_DSN` / `SENTRY_AUTH_TOKEN` в `local.properties`,
+  `io.sentry.auto-init` в манифесте, правила ProGuard, запись в `aboutlibraries.json`, раздел «Full or FOSS» в README). Диалог падения
+  на ПК остался без отправки.
 
 ## Приёмы и ловушки
 
@@ -244,7 +251,8 @@
 - Настройки, не требующие нового ключа в `core`, храним через `dataStoreManager.getString/putString`.
 - Общие помощники, которые нужны в нескольких местах, выносим в отдельный файл, а не оставляем в файле
   удалённого стиля (пример: `ArtworkPagerLogic.kt`).
-- Приватность: FOSS-сборка без трекинга; Sentry и Discord OAuth только при `isFullBuild=true`.
+- Приватность: ни телеметрии, ни отчётов о падениях нет (Sentry удалён). `isFullBuild=true` (`gradle.properties`) теперь нужен только для
+  `discordClientId` из `local.properties` (Discord OAuth); при `false` Rich Presence идёт через kizzy. Диалог падения на ПК (`CrashDialog`) остался и ничего не отправляет.
 - Отладочный журнал: Настройки → «Функции разработчика» → «Отладочный журнал» (ключ `debug_logging`, по умолчанию вкл,
   действует сразу; `Logger.debugLogging` гасит `Logger.d`, curl, Ktor `Logging`, OkHttp). Секреты (cookie, `SAPISIDHASH`, `sp_dc`,
   токены) маскируются всегда (`LogRedaction` в `core/common`); дампы пишите `Logger.d(tag) { Logger.clip(x) }`.

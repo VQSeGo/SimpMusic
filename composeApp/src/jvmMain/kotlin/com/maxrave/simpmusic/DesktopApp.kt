@@ -40,11 +40,6 @@ import com.maxrave.simpmusic.viewModel.SharedViewModel
 import com.maxrave.simpmusic.viewModel.changeLanguageNative
 import dev.nucleusframework.composenativetray.tray.api.Tray
 import dev.nucleusframework.core.runtime.SingleInstanceManager
-import io.sentry.ScopeType
-import io.sentry.Sentry
-import io.sentry.SentryLevel
-import io.sentry.protocol.OperatingSystem
-import io.sentry.protocol.User
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -74,10 +69,8 @@ import java.awt.event.ComponentEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
-import java.security.MessageDigest
 import javax.swing.Timer
 
-private const val SENTRY_APP_OPEN = "app.open"
 
 /**
  * Any `scheme://…` command-line argument. RFC 3986 §3.1 allows ALPHA followed by
@@ -212,23 +205,6 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
     changeLanguageNative(language)
 
     VersionManager.initialize()
-    if (BuildKonfig.sentryDsn.isNotEmpty()) {
-        val installationId = machineId()
-        Sentry.init { options ->
-            options.dsn = BuildKonfig.sentryDsn
-            options.release = "simpmusic-desktop@${VersionManager.getVersionName()}"
-            options.setDiagnosticLevel(SentryLevel.ERROR)
-            options.distinctId = installationId
-            options.isSendDefaultPii = true
-            options.setTracesSampler { context -> if (context.transactionContext.name == SENTRY_APP_OPEN) 1.0 else 0.0 }
-        }
-        // sentry-java fills in no OS context on the JVM (only sentry-android does). The global scope reaches
-        // every event and the app.open transaction, on every thread.
-        Sentry.configureScope(ScopeType.GLOBAL) { it.contexts.setOperatingSystem(desktopOs()) }
-        if (installationId != null) Sentry.setUser(User().apply { id = installationId })
-        Sentry.startSession()
-        Sentry.startTransaction(SENTRY_APP_OPEN, SENTRY_APP_OPEN).finish()
-    }
 
     // The download queue clears the leftovers of an interrupted download when it is built, and Koin builds
     // it lazily: without this, the first screen to ask for it is the first moment that happens.
@@ -247,11 +223,6 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
                 }
             },
         )
-    }
-    mediaPlayerHandler.pushPlayerError = { error ->
-        Sentry.withScope { scope ->
-            Sentry.captureMessage("Player Error: ${error.message}, code: ${error.errorCode}, code name: ${error.errorCodeName}")
-        }
     }
 
     // Register simpmusic:// protocol handler on Windows (HKCU, no admin needed)
@@ -327,7 +298,6 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
             }
             Item(quitAppString) {
                 mediaPlayerHandler.release()
-                Sentry.endSession()
                 exitApplication()
             }
         }
@@ -485,102 +455,6 @@ private object DesktopRestoreSignal {
     }
 }
 
-/**
- * The OS's own machine id, hashed so the raw value never leaves the machine: stable across launches
- * and reinstalls without storing anything. Null when the OS will not say. Blocking (runs a process on
- * Windows and macOS).
- */
-private fun machineId(): String? {
-    val os = System.getProperty("os.name").orEmpty()
-    val raw =
-        runCatching {
-            when {
-                os.startsWith("Windows") -> {
-                    // /reg:64: MachineGuid exists only in the 64-bit registry view.
-                    runCommand("reg", "query", "HKLM\\SOFTWARE\\Microsoft\\Cryptography", "/v", "MachineGuid", "/reg:64")
-                        .substringAfter("REG_SZ", "")
-                        .trim()
-                }
-
-                os.startsWith("Mac") -> {
-                    Regex("\"IOPlatformUUID\" = \"([^\"]+)\"")
-                        .find(runCommand("ioreg", "-rd1", "-c", "IOPlatformExpertDevice"))
-                        ?.groupValues
-                        ?.get(1)
-                }
-
-                else -> {
-                    listOf("/etc/machine-id", "/var/lib/dbus/machine-id")
-                        .firstNotNullOfOrNull { path -> File(path).takeIf { it.canRead() }?.readText()?.trim() }
-                }
-            }
-        }.getOrNull()
-    if (raw.isNullOrBlank()) return null
-    return MessageDigest.getInstance("SHA-256").digest(raw.toByteArray()).joinToString("") { "%02x".format(it) }
-}
-
-/**
- * The OS as Sentry shows it ("Windows 11 24H2", "macOS 27.0.1", "Ubuntu 24.04"). Name and version are set
- * explicitly, so Sentry does not guess from a raw description — its Windows table stops at build 22999.
- * Falls back to the JDK's own values when anything fails. Blocking (runs `reg` on Windows).
- */
-private fun desktopOs(): OperatingSystem {
-    val osName = System.getProperty("os.name").orEmpty()
-    val osVersion = System.getProperty("os.version")
-    return runCatching {
-        OperatingSystem().apply {
-            when {
-                osName.startsWith("Windows") -> {
-                    // The JDK's os.version is "10.0" on both Windows 10 and 11; the build lives in the registry.
-                    val reg = runCommand("reg", "query", "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "/reg:64")
-
-                    fun value(key: String) = Regex("^\\s+$key\\s+REG_\\w+\\s+(\\S+)", RegexOption.MULTILINE).find(reg)?.groupValues?.get(1)
-                    val ubr = value("UBR")?.removePrefix("0x")?.toIntOrNull(16)
-                    name = "Windows"
-                    // ReleaseId is what Windows 10 had before DisplayVersion arrived in 20H2.
-                    version = listOfNotNull(osName.removePrefix("Windows "), value("DisplayVersion") ?: value("ReleaseId")).joinToString(" ")
-                    build = value("CurrentBuild")?.let { if (ubr != null) "$it.$ubr" else it }
-                }
-
-                osName.startsWith("Mac") -> {
-                    // Not os.version: JDKs without JDK-8359830 (the bundled runtime is 21.0.2) report macOS 26 as
-                    // "16.0". The hidden link is the file that fix reads, unaffected by SYSTEM_VERSION_COMPAT.
-                    val plist = File("/System/Library/CoreServices/.SystemVersionPlatform.plist").readText()
-
-                    fun value(key: String) = Regex("<key>$key</key>\\s*<string>([^<]+)</string>").find(plist)?.groupValues?.get(1)
-                    name = "macOS"
-                    version = value("ProductVersion")
-                    build = value("ProductBuildVersion")
-                }
-
-                else -> {
-                    // os-release(5): /etc/os-release wins, /usr/lib/os-release is the fallback.
-                    val release =
-                        listOf("/etc/os-release", "/usr/lib/os-release")
-                            .firstNotNullOfOrNull { path -> File(path).takeIf { it.canRead() }?.readLines() }
-                            .orEmpty()
-                            .associate { it.substringBefore('=') to it.substringAfter('=').trim('"', '\'') }
-                    name = release["NAME"] ?: osName
-                    version = release["VERSION_ID"]
-                    kernelVersion = osVersion
-                }
-            }
-        }
-    }.getOrElse {
-        OperatingSystem().apply {
-            name = osName
-            version = osVersion
-        }
-    }
-}
-
 // Skiko draws into a heavyweight java.awt.Canvas nested somewhere under the content pane.
 private fun Container.findCanvas(predicate: (Canvas) -> Boolean): Canvas? =
     components.firstNotNullOfOrNull { if (it is Canvas) it.takeIf(predicate) else (it as? Container)?.findCanvas(predicate) }
-
-private fun runCommand(vararg command: String): String =
-    ProcessBuilder(*command)
-        .start()
-        .inputStream
-        .bufferedReader()
-        .use { it.readText() }
