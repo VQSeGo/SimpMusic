@@ -228,6 +228,10 @@
   информации о треке и в карточке описания Now Playing, строки `plays` и `like_and_dislike`). Столбцы `song_info.viewCount`, `like`,
   `dislike` (`SongInfoEntity`) остаются в базе без кода, который в них пишет и читает. Своего счётчика из YouTube в информации нет.
   Кнопка «Дизлайк» в `⋯` (запись оценки в YouTube) не тронута.
+  Также: мёртвый код с чужими адресами: `ApiService` и `ApiResponse` в `core/service/kizzy` (`kizzy-api.cjjdxhdjd.workers.dev`; Discord RPC
+  их не использовал и работает через `KizzyRPC` / `DiscordWebSocket`), список серверов Piped в `YouTube.kt` и цепочка вокруг него
+  (`YouTube.pipeStream`, `Ytmusic.pipedStreams`, `PipedResponse`, `toListFormat`, `PipedResponse.toTrack`, модели `StreamData`,
+  `AudioStream`, `PreviewFrame`, `RelatedStream`, `VideoStream` в `domain/.../streams`; `YouTubeWatchEndpoint` и `TimeLine` остались).
 
 ## Приёмы и ловушки
 
