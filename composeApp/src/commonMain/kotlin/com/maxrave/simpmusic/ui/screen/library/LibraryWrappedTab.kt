@@ -14,6 +14,7 @@ import com.maxrave.domain.utils.LocalResource
 import com.maxrave.simpmusic.ui.component.GridLibraryPlaylist
 import com.maxrave.simpmusic.ui.component.WrappedEntryCard
 import com.maxrave.simpmusic.ui.navigation.destination.home.WrappedDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.viewModel.WrappedUiState
 import com.maxrave.simpmusic.viewModel.WrappedViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -66,7 +67,7 @@ fun LibraryWrappedTab(
                 {
                     WrappedEntryCard(
                         wrapped = it.wrapped,
-                        onClick = { navController.navigate(WrappedDestination) },
+                        onClick = { navController.navigateOnce(WrappedDestination) },
                         modifier = Modifier.fillMaxWidth().padding(horizontal = CARD_GUTTER, vertical = 8.dp),
                     )
                 }

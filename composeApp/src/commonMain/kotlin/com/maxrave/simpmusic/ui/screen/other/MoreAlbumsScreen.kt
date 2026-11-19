@@ -44,6 +44,7 @@ import com.maxrave.simpmusic.ui.icon.ArrowBackIosNew
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.MoreAlbumsDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.MoreAlbumsUIState
 import com.maxrave.simpmusic.viewModel.MoreAlbumsViewModel
@@ -119,7 +120,7 @@ fun MoreAlbumsScreen(
                         HomeItemContentPlaylist(
                             data = data,
                             onClick = {
-                                navController.navigate(
+                                navController.navigateOnce(
                                     AlbumDestination(
                                         browseId = album.browseId,
                                     ),

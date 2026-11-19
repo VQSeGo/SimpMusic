@@ -94,6 +94,7 @@ import com.maxrave.simpmusic.ui.icon.Settings
 import com.maxrave.simpmusic.ui.icon.Share
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.ListenTogetherSettingsDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.ListenTogetherViewModel
 import kotlinx.coroutines.delay
@@ -198,7 +199,7 @@ fun ListenTogetherScreen(
         val shareCode: () -> Unit = {
             state.roomCode?.let { shareUrl(title = shareTitle, url = SHARE_PREFIX + it) }
         }
-        val openSettings: () -> Unit = { navController.navigate(ListenTogetherSettingsDestination) }
+        val openSettings: () -> Unit = { navController.navigateOnce(ListenTogetherSettingsDestination) }
 
         // Home's ambient top glow, tinted from the THEME rather than artwork — this page has none.
         // Same recipe as HomeScreen's first item: an angled two-stop gradient with a scrim easing

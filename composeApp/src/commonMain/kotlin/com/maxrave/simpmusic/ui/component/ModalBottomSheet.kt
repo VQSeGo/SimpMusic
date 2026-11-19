@@ -181,6 +181,7 @@ import com.maxrave.simpmusic.ui.icon.Tune
 import com.maxrave.simpmusic.ui.icon.Update
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
@@ -1637,7 +1638,7 @@ fun NowPlayingBottomSheet(
                     ) {
                         uiState.songUIState.album?.id?.let { id ->
                             onNavigateToOtherScreen()
-                            navController.navigate(AlbumDestination(browseId = id))
+                            navController.navigateOnce(AlbumDestination(browseId = id))
                         }
                     }
                     ActionButton(
@@ -2660,7 +2661,7 @@ fun ArtistModalBottomSheet(
                                             val id = artist.id
                                             if (!id.isNullOrBlank()) {
                                                 onNavigateToOtherScreen()
-                                                navController.navigate(ArtistDestination(id))
+                                                navController.navigateOnce(ArtistDestination(id))
                                             }
                                         },
                             ) {

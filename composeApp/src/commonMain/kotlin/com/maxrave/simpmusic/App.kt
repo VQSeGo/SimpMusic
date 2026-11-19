@@ -91,6 +91,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.player.FullscreenDestination
 import com.maxrave.simpmusic.ui.navigation.destination.search.SearchDestination
 import com.maxrave.simpmusic.ui.navigation.graph.AppNavigationGraph
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.screen.MiniPlayer
 import com.maxrave.simpmusic.ui.screen.player.NowPlayingScreen
 import com.maxrave.simpmusic.ui.screen.player.NowPlayingScreenContent
@@ -264,11 +265,11 @@ fun App(
                     "playlist" -> {
                         data.getQueryParameter("list")?.let { playlistId ->
                             if (playlistId.startsWith("OLAK5uy_")) {
-                                navController.navigate(AlbumDestination(browseId = playlistId))
+                                navController.navigateOnce(AlbumDestination(browseId = playlistId))
                             } else if (playlistId.startsWith("VL")) {
-                                navController.navigate(PlaylistDestination(playlistId = playlistId))
+                                navController.navigateOnce(PlaylistDestination(playlistId = playlistId))
                             } else {
-                                navController.navigate(PlaylistDestination(playlistId = "VL$playlistId"))
+                                navController.navigateOnce(PlaylistDestination(playlistId = "VL$playlistId"))
                             }
                         }
                     }
@@ -284,7 +285,7 @@ fun App(
                             }
                         artistId?.let {
                             if (it.startsWith("UC")) {
-                                navController.navigate(ArtistDestination(channelId = it))
+                                navController.navigateOnce(ArtistDestination(channelId = it))
                             } else {
                                 viewModel.makeToast(getString(Res.string.this_link_is_not_supported))
                             }
@@ -293,7 +294,7 @@ fun App(
 
                     "album" -> {
                         data.getQueryParameter("id")?.let { albumId ->
-                            navController.navigate(AlbumDestination(browseId = albumId))
+                            navController.navigateOnce(AlbumDestination(browseId = albumId))
                         }
                     }
 
@@ -311,17 +312,17 @@ fun App(
                                 viewModel.makeToast(getString(Res.string.this_link_is_not_supported))
                             } else {
                                 viewModel.requestLibraryTab(tab)
-                                navController.navigate(LibraryDestination)
+                                navController.navigateOnce(LibraryDestination)
                             }
                         } else {
-                            navController.navigate(LibraryDynamicPlaylistDestination(type = type))
+                            navController.navigateOnce(LibraryDynamicPlaylistDestination(type = type))
                         }
                     }
 
                     // simpmusic://analytics — added for the launch banners.
                     "analytics" -> {
                         if (isAppLinkAvailable(appPath, null, localTrackingOn, youTubeLoggedIn)) {
-                            navController.navigate(AnalyticsDestination)
+                            navController.navigateOnce(AnalyticsDestination)
                         } else {
                             viewModel.makeToast(getString(Res.string.this_link_is_not_supported))
                         }
@@ -340,19 +341,19 @@ fun App(
                             ?.let { playlistId ->
                                 viewModel.setIntent(null)
                                 if (playlistId.startsWith("OLAK5uy_")) {
-                                    navController.navigate(
+                                    navController.navigateOnce(
                                         AlbumDestination(
                                             browseId = playlistId,
                                         ),
                                     )
                                 } else if (playlistId.startsWith("VL")) {
-                                    navController.navigate(
+                                    navController.navigateOnce(
                                         PlaylistDestination(
                                             playlistId = playlistId,
                                         ),
                                     )
                                 } else {
-                                    navController.navigate(
+                                    navController.navigateOnce(
                                         PlaylistDestination(
                                             playlistId = "VL$playlistId",
                                         ),
@@ -365,7 +366,7 @@ fun App(
                         data.lastPathSegment?.let { artistId ->
                             if (artistId.startsWith("UC")) {
                                 viewModel.setIntent(null)
-                                navController.navigate(
+                                navController.navigateOnce(
                                     ArtistDestination(
                                         channelId = artistId,
                                     ),
@@ -424,7 +425,7 @@ fun App(
                 it.hasRoute(AnalyticsDestination::class)
             } == true
         ) {
-            navController.navigate(HomeDestination) {
+            navController.navigateOnce(HomeDestination) {
                 popUpTo(navController.graph.startDestinationId) {
                     saveState = true
                 }
@@ -441,7 +442,7 @@ fun App(
                 it.hasRoute(MixForYouDestination::class)
             } == true
         ) {
-            navController.navigate(HomeDestination) {
+            navController.navigateOnce(HomeDestination) {
                 popUpTo(navController.graph.startDestinationId) {
                     saveState = true
                 }

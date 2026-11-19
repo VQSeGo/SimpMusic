@@ -116,6 +116,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.BrowseDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
 import com.maxrave.simpmusic.ui.icon.PlayArrow
 import com.maxrave.simpmusic.ui.icon.SimpIcons
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.LocalForceDarkText
 import com.maxrave.simpmusic.ui.theme.typo
@@ -211,7 +212,7 @@ fun HomeSectionHeader(
                     .focusable(true)
                     .clip(RoundedCornerShape(8.dp))
                     .clickable {
-                        navController.navigate(
+                        navController.navigateOnce(
                             ArtistDestination(
                                 channelId = channelId,
                             ),
@@ -331,7 +332,7 @@ fun HomeContentCard(
     if ((playlistId != null && temp.videoId == null) || (playlistId != null && temp.videoId == "")) {
         if (playlistId.startsWith("UC")) {
             HomeItemArtist(onClick = {
-                navController.navigate(
+                navController.navigateOnce(
                     ArtistDestination(
                         channelId = playlistId,
                     ),
@@ -339,7 +340,7 @@ fun HomeContentCard(
             }, data = temp, fillMaxWidth = fillMaxWidth)
         } else {
             HomeItemContentPlaylist(onClick = {
-                navController.navigate(
+                navController.navigateOnce(
                     PlaylistDestination(
                         playlistId = playlistId,
                     ),
@@ -349,7 +350,7 @@ fun HomeContentCard(
     } else if ((browseId != null && temp.videoId == null) || (browseId != null && temp.videoId == "")) {
         if (browseId.startsWith("UC")) {
             HomeItemArtist(onClick = {
-                navController.navigate(
+                navController.navigateOnce(
                     ArtistDestination(
                         channelId = browseId,
                     ),
@@ -357,7 +358,7 @@ fun HomeContentCard(
             }, data = temp, fillMaxWidth = fillMaxWidth)
         } else {
             HomeItemContentPlaylist(onClick = {
-                navController.navigate(
+                navController.navigateOnce(
                     AlbumDestination(
                         browseId = browseId,
                     ),
@@ -537,19 +538,19 @@ fun NavController.navigateToMoreEndpoint(
 ) {
     when (endpoint.pageType) {
         MoreEndpoint.PAGE_TYPE_ALBUM, MoreEndpoint.PAGE_TYPE_AUDIOBOOK -> {
-            navigate(AlbumDestination(browseId = endpoint.browseId))
+            navigateOnce(AlbumDestination(browseId = endpoint.browseId))
         }
 
         MoreEndpoint.PAGE_TYPE_PLAYLIST -> {
-            navigate(PlaylistDestination(playlistId = endpoint.browseId))
+            navigateOnce(PlaylistDestination(playlistId = endpoint.browseId))
         }
 
         MoreEndpoint.PAGE_TYPE_ARTIST, MoreEndpoint.PAGE_TYPE_USER_CHANNEL -> {
-            navigate(ArtistDestination(channelId = endpoint.browseId))
+            navigateOnce(ArtistDestination(channelId = endpoint.browseId))
         }
 
         else -> {
-            navigate(BrowseDestination(browseId = endpoint.browseId, params = endpoint.params, title = title))
+            navigateOnce(BrowseDestination(browseId = endpoint.browseId, params = endpoint.params, title = title))
         }
     }
 }
@@ -1650,7 +1651,7 @@ fun MoodAndGenresContentItem(
                         )
                         homeViewModel.loadMediaItem(track, type = Config.SONG_CLICK)
                     } else {
-                        navController.navigate(
+                        navController.navigateOnce(
                             PlaylistDestination(
                                 playlistId =
                                     if (item is com.maxrave.domain.data.model.mood.genre.Content) {

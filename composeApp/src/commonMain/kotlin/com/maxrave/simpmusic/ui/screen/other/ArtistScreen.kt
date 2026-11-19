@@ -128,6 +128,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.MoreAlbumsDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.ArtistScreenState
@@ -711,7 +712,7 @@ private fun ArtistSections(
                 count = likedSongCount,
                 artistName = state.data.title.orEmpty(),
                 onClick = {
-                    navController.navigate(
+                    navController.navigateOnce(
                         LibraryDynamicPlaylistDestination(
                             type = LibraryDynamicPlaylistType.ArtistLiked(channelId).toStringParams(),
                         ),
@@ -737,7 +738,7 @@ private fun ArtistSections(
                         onClick = {
                             val id = state.data.listSongParam
                             if (id != null) {
-                                navController.navigate(PlaylistDestination(id))
+                                navController.navigateOnce(PlaylistDestination(id))
                             } else {
                                 viewModel.makeToast(runBlocking { getString(Res.string.error) })
                             }
@@ -813,7 +814,7 @@ private fun ArtistSections(
                         onClick = {
                             if (state.data.channelId != null) {
                                 val id = "MPAD${state.data.channelId}"
-                                navController.navigate(
+                                navController.navigateOnce(
                                     MoreAlbumsDestination(
                                         id = id,
                                         type = MoreAlbumsDestination.SINGLE_TYPE,
@@ -845,7 +846,7 @@ private fun ArtistSections(
                     items(state.data.singles?.results ?: emptyList()) { single ->
                         HomeItemContentPlaylist(
                             forceDark = true,                            onClick = {
-                                navController.navigate(
+                                navController.navigateOnce(
                                     AlbumDestination(
                                         single.browseId,
                                     ),
@@ -884,7 +885,7 @@ private fun ArtistSections(
                         onClick = {
                             if (state.data.channelId != null) {
                                 val id = "MPAD${state.data.channelId}"
-                                navController.navigate(
+                                navController.navigateOnce(
                                     MoreAlbumsDestination(
                                         id = id,
                                         type = MoreAlbumsDestination.ALBUM_TYPE,
@@ -916,7 +917,7 @@ private fun ArtistSections(
                     items(state.data.albums?.results ?: emptyList()) { album ->
                         HomeItemContentPlaylist(
                             forceDark = true,                            onClick = {
-                                navController.navigate(
+                                navController.navigateOnce(
                                     AlbumDestination(
                                         browseId = album.browseId,
                                     ),
@@ -955,7 +956,7 @@ private fun ArtistSections(
                         onClick = {
                             val videoListParam = state.data.video?.videoListParam
                             if (videoListParam != null) {
-                                navController.navigate(
+                                navController.navigateOnce(
                                     PlaylistDestination(
                                         videoListParam,
                                     ),
@@ -1056,7 +1057,7 @@ private fun ArtistSections(
                     items(state.data.featuredOn) { feature ->
                         HomeItemContentPlaylist(
                             forceDark = true,                            onClick = {
-                                navController.navigate(
+                                navController.navigateOnce(
                                     PlaylistDestination(
                                         feature.id,
                                     ),
@@ -1107,7 +1108,7 @@ private fun ArtistSections(
                     items(state.data.related?.results ?: emptyList()) { related ->
                         HomeItemArtist(
                             forceDark = true,                            onClick = {
-                                navController.navigate(
+                                navController.navigateOnce(
                                     ArtistDestination(
                                         channelId = related.browseId,
                                     ),

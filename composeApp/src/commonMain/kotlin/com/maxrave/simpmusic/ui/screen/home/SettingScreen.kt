@@ -132,6 +132,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.home.CreditDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.DiscordLoginDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.LoginDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.SpotifyLoginDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.md_theme_dark_primary
 import com.maxrave.simpmusic.ui.theme.parseThemeColorHex
 import com.maxrave.simpmusic.ui.theme.typo
@@ -1403,7 +1404,7 @@ fun SettingScreen(
                                 confirmLabel = runBlocking { getString(Res.string.log_out_from_spotify) },
                             ) { viewModel.setSpotifyLogIn(false) }
                         } else {
-                            navController.navigate(SpotifyLoginDestination)
+                            navController.navigateOnce(SpotifyLoginDestination)
                         }
                     },
                 )
@@ -1430,7 +1431,7 @@ fun SettingScreen(
                                 confirmLabel = runBlocking { getString(Res.string.log_out_from_discord) },
                             ) { viewModel.logOutDiscord() }
                         } else {
-                            navController.navigate(DiscordLoginDestination)
+                            navController.navigateOnce(DiscordLoginDestination)
                         }
                     },
                 )
@@ -1745,7 +1746,7 @@ fun SettingScreen(
                     title = stringResource(Res.string.version),
                     subtitle = stringResource(Res.string.version_format, VersionManager.getVersionName()),
                     onClick = {
-                        navController.navigate(CreditDestination)
+                        navController.navigateOnce(CreditDestination)
                     },
                 )
                 SettingItem(
@@ -1782,7 +1783,7 @@ fun SettingScreen(
                     title = stringResource(Res.string.app_log),
                     subtitle = stringResource(Res.string.app_log_description),
                     onClick = {
-                        navController.navigate(AppLogDestination)
+                        navController.navigateOnce(AppLogDestination)
                     },
                 )
                 SettingItem(
@@ -2078,7 +2079,7 @@ fun SettingScreen(
                                 text = Res.string.add_an_account,
                             ) {
                                 showYouTubeAccountDialog = false
-                                navController.navigate(LoginDestination)
+                                navController.navigateOnce(LoginDestination)
                             }
                         }
                     }

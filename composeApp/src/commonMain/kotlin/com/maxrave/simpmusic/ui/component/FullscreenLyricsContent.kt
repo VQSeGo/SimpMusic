@@ -98,6 +98,7 @@ import com.maxrave.simpmusic.ui.icon.Share
 import com.maxrave.simpmusic.ui.icon.AvTimer
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.screen.player.content.ExpressivePlaybackControls
 import com.maxrave.simpmusic.ui.screen.player.content.ExpressiveTrackInfoRow
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentActions
@@ -338,7 +339,7 @@ fun FullscreenLyricsContent(
                                                 // The host animates its own exit: the sheet hides
                                                 // before it leaves composition, the Popup just closes.
                                                 onDismiss()
-                                                navController.navigate(
+                                                navController.navigateOnce(
                                                     ArtistDestination(
                                                         channelId = channelId,
                                                     ),

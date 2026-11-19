@@ -107,6 +107,7 @@ import com.maxrave.simpmusic.ui.icon.Shuffle
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
@@ -179,7 +180,7 @@ fun AlbumScreen(
         if (artists.size > 1) {
             artistChoice = artists
         } else {
-            artists.firstOrNull()?.id?.let { navController.navigate(ArtistDestination(channelId = it)) }
+            artists.firstOrNull()?.id?.let { navController.navigateOnce(ArtistDestination(channelId = it)) }
         }
     }
 
@@ -912,7 +913,7 @@ fun AlbumScreen(
                                         HomeItemContentPlaylist(
                                             forceDark = true,
                                             onClick = {
-                                                navController.navigate(
+                                                navController.navigateOnce(
                                                     AlbumDestination(
                                                         browseId = album.browseId,
                                                     ),

@@ -161,6 +161,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPla
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.LoginDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
 import com.maxrave.simpmusic.ui.theme.desktopPanelDark
 import com.maxrave.simpmusic.ui.theme.typo
@@ -468,7 +469,7 @@ fun HomeScreen(
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.doneShowLogInAlert(doNotShowAgain)
-                    navController.navigate(LoginDestination)
+                    navController.navigateOnce(LoginDestination)
                 }) {
                     Text(stringResource(Res.string.go_to_log_in_page))
                 }
@@ -519,7 +520,7 @@ fun HomeScreen(
                         OfflineErrorState(
                             onRetry = onRefresh,
                             onOpenDownloaded = {
-                                navController.navigate(
+                                navController.navigateOnce(
                                     LibraryDynamicPlaylistDestination(
                                         type = LibraryDynamicPlaylistType.Downloaded.toStringParams(),
                                     ),
@@ -842,7 +843,7 @@ fun HomeScreen(
                         HomeBarButton(SimpIcons.Refresh, stringResource(Res.string.reload), onRefresh)
                     } else {
                         HomeBarButton(SimpIcons.Settings, stringResource(Res.string.settings)) {
-                            navController.navigate(SettingsDestination)
+                            navController.navigateOnce(SettingsDestination)
                         }
                     }
                 }
@@ -1122,7 +1123,7 @@ fun MoodMomentAndGenre(
                         title = item.title,
                         stripeColor = item.stripeColor,
                     ) {
-                        navController.navigate(
+                        navController.navigateOnce(
                             MoodDestination(
                                 item.params,
                             ),
@@ -1206,7 +1207,7 @@ fun ChartData(
                 }) {
                     HomeItemContentPlaylist(
                         onClick = {
-                            navController.navigate(
+                            navController.navigateOnce(
                                 PlaylistDestination(
                                     playlistId = item.playlists[it].id,
                                     isYourYouTubePlaylist = false,
@@ -1241,7 +1242,7 @@ fun ChartData(
                 val data = chart.artists.itemArtists[it]
                 ItemArtistChart(
                     onClick = {
-                        navController.navigate(
+                        navController.navigateOnce(
                             ArtistDestination(
                                 channelId = data.browseId,
                             ),

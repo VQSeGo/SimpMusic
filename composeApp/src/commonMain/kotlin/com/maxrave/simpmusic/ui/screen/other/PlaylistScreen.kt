@@ -132,6 +132,7 @@ import com.maxrave.simpmusic.ui.icon.Search
 import com.maxrave.simpmusic.ui.icon.Shuffle
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.LocalIsDarkTheme
 import com.maxrave.simpmusic.ui.theme.seed
@@ -494,7 +495,7 @@ fun PlaylistScreen(
                                                                 contentPadding = PaddingValues(vertical = 1.dp),
                                                                 onClick = {
                                                                     if (data.author.id.isNotEmpty()) {
-                                                                        navController.navigate(
+                                                                        navController.navigateOnce(
                                                                             ArtistDestination(
                                                                                 data.author.id,
                                                                             ),
@@ -648,7 +649,7 @@ fun PlaylistScreen(
                                                                 modifier =
                                                                     Modifier.clickable {
                                                                         if (data.author.id.isNotEmpty()) {
-                                                                            navController.navigate(
+                                                                            navController.navigateOnce(
                                                                                 ArtistDestination(
                                                                                     data.author.id,
                                                                                 ),

@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Dp
 import com.maxrave.simpmusic.extension.LeftToRight
 import com.maxrave.simpmusic.ui.icon.ArrowForwardIos
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import simpmusic.composeapp.generated.resources.analytics_avg_per_day
 import simpmusic.composeapp.generated.resources.analytics_busiest_day
 import simpmusic.composeapp.generated.resources.analytics_by_decade
@@ -207,10 +208,10 @@ fun AnalyticsScreen(
         itemBottomSheetShow = true
     }
     val onArtistClick: (channelId: String) -> Unit = {
-        navController.navigate(ArtistDestination(channelId = it))
+        navController.navigateOnce(ArtistDestination(channelId = it))
     }
     val onAlbumClick: (browseId: String) -> Unit = {
-        navController.navigate(AlbumDestination(browseId = it))
+        navController.navigateOnce(AlbumDestination(browseId = it))
     }
 
     // The page takes the top track's dominant tone, the Apple Music treatment the other immersive
@@ -353,7 +354,7 @@ fun AnalyticsScreen(
                         wrappedReady?.let { ready ->
                             WrappedEntryCard(
                                 wrapped = ready.wrapped,
-                                onClick = { navController.navigate(WrappedDestination) },
+                                onClick = { navController.navigateOnce(WrappedDestination) },
                             )
                         }
                     }
@@ -1167,7 +1168,7 @@ private fun TopArtistsSection(
     if (artists.isEmpty()) return
     Column {
         SectionHeader(stringResource(Res.string.your_top_artists), gutter) {
-            navController.navigate(
+            navController.navigateOnce(
                 LibraryDynamicPlaylistDestination(
                     // The period on screen, not the latest one: the playlist opens its own view
                     // model, which would otherwise start from the present.
@@ -1204,7 +1205,7 @@ private fun TopAlbumsSection(
     if (albums.isEmpty()) return
     Column {
         SectionHeader(stringResource(Res.string.your_top_albums), gutter) {
-            navController.navigate(
+            navController.navigateOnce(
                 LibraryDynamicPlaylistDestination(
                     // The period on screen, not the latest one: the playlist opens its own view
                     // model, which would otherwise start from the present.
@@ -1244,7 +1245,7 @@ private fun TopTracksSection(
     if (tracks.isEmpty()) return
     Column {
         SectionHeader(stringResource(Res.string.your_top_tracks), gutter) {
-            navController.navigate(
+            navController.navigateOnce(
                 LibraryDynamicPlaylistDestination(
                     // The period on screen, not the latest one: the playlist opens its own view
                     // model, which would otherwise start from the present.

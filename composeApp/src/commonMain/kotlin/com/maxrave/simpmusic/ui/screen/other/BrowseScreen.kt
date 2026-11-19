@@ -76,6 +76,7 @@ import com.maxrave.simpmusic.ui.component.homeCardAspectRatio
 import com.maxrave.simpmusic.ui.icon.ArrowBackIosNew
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.MoodDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.desktopPanelDark
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.BrowseUIState
@@ -241,7 +242,7 @@ fun BrowseScreen(
                                                     stripeColor = mood.stripeColor,
                                                     fillMaxWidth = true,
                                                 ) {
-                                                    navController.navigate(MoodDestination(mood.params))
+                                                    navController.navigateOnce(MoodDestination(mood.params))
                                                 }
                                             }
                                         }

@@ -43,6 +43,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.LocalPlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.LibraryViewModel
 import com.maxrave.simpmusic.viewModel.SharedViewModel
@@ -170,7 +171,7 @@ fun LibraryItem(
                                         ArtistFullWidthItems(
                                             data = item as? ArtistEntity ?: return@forEach,
                                             onClickListener = {
-                                                navController.navigate(
+                                                navController.navigateOnce(
                                                     ArtistDestination(
                                                         channelId = item.channelId,
                                                     ),
@@ -186,7 +187,7 @@ fun LibraryItem(
                                                 onClickListener = {
                                                     when (item) {
                                                         is AlbumEntity -> {
-                                                            navController.navigate(
+                                                            navController.navigateOnce(
                                                                 AlbumDestination(
                                                                     item.browseId,
                                                                 ),
@@ -194,7 +195,7 @@ fun LibraryItem(
                                                         }
 
                                                         is PlaylistEntity -> {
-                                                            navController.navigate(
+                                                            navController.navigateOnce(
                                                                 PlaylistDestination(
                                                                     item.id,
                                                                 ),
@@ -217,7 +218,7 @@ fun LibraryItem(
                                             onClick = {
                                                 when (item) {
                                                     is LocalPlaylistEntity -> {
-                                                        navController.navigate(
+                                                        navController.navigateOnce(
                                                             LocalPlaylistDestination(
                                                                 item.id,
                                                             ),
@@ -225,7 +226,7 @@ fun LibraryItem(
                                                     }
 
                                                     is PlaylistsResult -> {
-                                                        navController.navigate(
+                                                        navController.navigateOnce(
                                                             PlaylistDestination(
                                                                 item.browseId,
                                                                 isYourYouTubePlaylist = true,
@@ -234,7 +235,7 @@ fun LibraryItem(
                                                     }
 
                                                     is AlbumEntity -> {
-                                                        navController.navigate(
+                                                        navController.navigateOnce(
                                                             AlbumDestination(
                                                                 item.browseId,
                                                             ),
@@ -242,7 +243,7 @@ fun LibraryItem(
                                                     }
 
                                                     is PlaylistEntity -> {
-                                                        navController.navigate(
+                                                        navController.navigateOnce(
                                                             PlaylistDestination(
                                                                 item.id,
                                                             ),

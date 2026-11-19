@@ -75,6 +75,7 @@ import com.maxrave.simpmusic.ui.icon.Shuffle
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.screen.home.analytics.monthFullName
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.AnalyticsUiState
@@ -238,7 +239,7 @@ fun LibraryDynamicPlaylistScreen(
                 ArtistFullWidthItems(
                     artist,
                     onClickListener = {
-                        navController.navigate(
+                        navController.navigateOnce(
                             ArtistDestination(
                                 channelId = artist.channelId,
                             ),
@@ -269,7 +270,7 @@ fun LibraryDynamicPlaylistScreen(
                                 }
                             },
                             onClickListener = {
-                                navController.navigate(
+                                navController.navigateOnce(
                                     ArtistDestination(
                                         channelId = artist.second.channelId,
                                     ),
@@ -304,7 +305,7 @@ fun LibraryDynamicPlaylistScreen(
                                 }
                             },
                             onClickListener = {
-                                navController.navigate(
+                                navController.navigateOnce(
                                     AlbumDestination(
                                         browseId = album.second.browseId,
                                     ),

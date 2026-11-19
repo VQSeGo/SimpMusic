@@ -82,6 +82,7 @@ import com.maxrave.simpmusic.ui.icon.PeopleAlt
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.ListenTogetherDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.SettingsDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.LibraryViewModel
 import com.maxrave.simpmusic.viewModel.SharedViewModel
@@ -403,7 +404,7 @@ fun LibraryScreen(
             // The Library bar had no actions slot at all — added for the Listen Together entry,
             // which the design canvas puts on Home AND Library.
             actions = {
-                ListenTogetherIconButton { navController.navigate(ListenTogetherDestination) }
+                ListenTogetherIconButton { navController.navigateOnce(ListenTogetherDestination) }
             },
         )
         AnimatedVisibility(visible = selectionState.isActive) {

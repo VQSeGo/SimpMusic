@@ -56,6 +56,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.LocalPlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
 import com.maxrave.simpmusic.ui.theme.seed
 import com.maxrave.simpmusic.ui.theme.typo
@@ -227,7 +228,7 @@ internal inline fun <reified T> GridLibraryPlaylist(
                             onClick = {
                                 when (item) {
                                     is LocalPlaylistEntity -> {
-                                        navController.navigate(
+                                        navController.navigateOnce(
                                             LocalPlaylistDestination(
                                                 item.id,
                                             ),
@@ -235,7 +236,7 @@ internal inline fun <reified T> GridLibraryPlaylist(
                                     }
 
                                     is PlaylistsResult -> {
-                                        navController.navigate(
+                                        navController.navigateOnce(
                                             PlaylistDestination(
                                                 item.browseId,
                                                 isYourYouTubePlaylist = true,
@@ -244,7 +245,7 @@ internal inline fun <reified T> GridLibraryPlaylist(
                                     }
 
                                     is AlbumEntity -> {
-                                        navController.navigate(
+                                        navController.navigateOnce(
                                             AlbumDestination(
                                                 item.browseId,
                                             ),
@@ -252,7 +253,7 @@ internal inline fun <reified T> GridLibraryPlaylist(
                                     }
 
                                     is PlaylistEntity -> {
-                                        navController.navigate(
+                                        navController.navigateOnce(
                                             PlaylistDestination(
                                                 item.id,
                                             ),
@@ -263,7 +264,7 @@ internal inline fun <reified T> GridLibraryPlaylist(
                                     // `playback_event` — so it opens the dynamic playlist screen,
                                     // which rebuilds it from the year and month carried here.
                                     is MonthlyRecapItem -> {
-                                        navController.navigate(
+                                        navController.navigateOnce(
                                             LibraryDynamicPlaylistDestination(
                                                 type =
                                                     LibraryDynamicPlaylistType

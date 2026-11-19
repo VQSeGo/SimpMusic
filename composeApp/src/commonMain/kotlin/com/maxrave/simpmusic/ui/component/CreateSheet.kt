@@ -51,6 +51,7 @@ import com.maxrave.simpmusic.ui.icon.LibraryMusic
 import com.maxrave.simpmusic.ui.icon.PlaylistAdd
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.ListenTogetherDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.SharedViewModel
 import kotlinx.coroutines.launch
@@ -109,7 +110,7 @@ fun CreateDialogs(
             },
             onListenTogether = {
                 onDismiss()
-                navController.navigate(ListenTogetherDestination)
+                navController.navigateOnce(ListenTogetherDestination)
             },
         )
     }

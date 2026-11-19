@@ -38,6 +38,7 @@ import coil3.request.crossfade
 import com.maxrave.domain.data.model.library.LibraryCollectionPreview
 import com.maxrave.domain.data.model.library.LibraryOverview
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDynamicPlaylistDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
 import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.typo
@@ -70,7 +71,7 @@ fun LibraryTilingBox(
 ) {
     val container = libraryCardColor()
     val open = { type: LibraryDynamicPlaylistType ->
-        navController.navigate(LibraryDynamicPlaylistDestination(type = type.toStringParams()))
+        navController.navigateOnce(LibraryDynamicPlaylistDestination(type = type.toStringParams()))
     }
     val followedCard: @Composable (Modifier) -> Unit = { modifier ->
         CollectionCard(

@@ -134,6 +134,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.PlaylistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.search.SearchDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.typo
 import com.maxrave.simpmusic.viewModel.SearchScreenUIState
@@ -433,19 +434,19 @@ fun SearchScreen(
                                         }
 
                                         is ArtistsResult -> {
-                                            navController.navigate(
+                                            navController.navigateOnce(
                                                 ArtistDestination(item.browseId),
                                             )
                                         }
 
                                         is AlbumsResult -> {
-                                            navController.navigate(
+                                            navController.navigateOnce(
                                                 AlbumDestination(item.browseId),
                                             )
                                         }
 
                                         is PlaylistsResult -> {
-                                            navController.navigate(
+                                            navController.navigateOnce(
                                                 PlaylistDestination(
                                                     item.browseId,
                                                 ),
@@ -686,7 +687,7 @@ fun SearchScreen(
                                         title = item.title,
                                         artworkUrl = moodArtwork[item.params],
                                     ) {
-                                        navController.navigate(MoodDestination(item.params))
+                                        navController.navigateOnce(MoodDestination(item.params))
                                     }
                                 }
                             }
@@ -871,7 +872,7 @@ fun SearchScreen(
                                                                     PlaylistFullWidthItems(
                                                                         data = result,
                                                                         onClickListener = {
-                                                                            navController.navigate(
+                                                                            navController.navigateOnce(
                                                                                 AlbumDestination(
                                                                                     result.browseId,
                                                                                 ),
@@ -884,7 +885,7 @@ fun SearchScreen(
                                                                     ArtistFullWidthItems(
                                                                         data = result,
                                                                         onClickListener = {
-                                                                            navController.navigate(
+                                                                            navController.navigateOnce(
                                                                                 ArtistDestination(
                                                                                     result.browseId,
                                                                                 ),
@@ -897,7 +898,7 @@ fun SearchScreen(
                                                                     PlaylistFullWidthItems(
                                                                         data = result,
                                                                         onClickListener = {
-                                                                            navController.navigate(
+                                                                            navController.navigateOnce(
                                                                                 PlaylistDestination(
                                                                                     result.browseId,
                                                                                 ),

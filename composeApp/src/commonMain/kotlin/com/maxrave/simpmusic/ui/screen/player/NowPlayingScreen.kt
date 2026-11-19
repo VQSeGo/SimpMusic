@@ -90,6 +90,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.home.ListenTogetherDestin
 import com.maxrave.simpmusic.ui.navigation.destination.list.AlbumDestination
 import com.maxrave.simpmusic.ui.navigation.destination.list.ArtistDestination
 import com.maxrave.simpmusic.ui.navigation.destination.player.FullscreenDestination
+import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentActions
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentM3Expressive
 import com.maxrave.simpmusic.ui.screen.player.content.NowPlayingContentState
@@ -623,7 +624,7 @@ fun NowPlayingScreenContent(
                     )?.let { channelId ->
                         showFullscreenLyrics = false
                         onDismiss()
-                        navController.navigate(
+                        navController.navigateOnce(
                             ArtistDestination(
                                 channelId = channelId,
                             ),
@@ -635,14 +636,14 @@ fun NowPlayingScreenContent(
                 val openAlbum: (String) -> Unit = { albumId ->
                     showFullscreenLyrics = false
                     onDismiss()
-                    navController.navigate(AlbumDestination(browseId = albumId))
+                    navController.navigateOnce(AlbumDestination(browseId = albumId))
                 }
                 val albumId = state.albumId
                 if (albumId != null) openAlbum(albumId) else sharedViewModel.findAlbumOfNowPlaying(openAlbum)
             },
             onOpenListenTogether = {
                 onDismiss()
-                navController.navigate(ListenTogetherDestination)
+                navController.navigateOnce(ListenTogetherDestination)
             },
             onShowMoreSheet = { showSheet = true },
             onShowQueue = { showQueueBottomSheet = true },
@@ -652,7 +653,7 @@ fun NowPlayingScreenContent(
             onLyricsOffsetChange = { sharedViewModel.setLyricsOffsetMs(it) },
             onEnterFullscreenVideo = {
                 onDismiss()
-                navController.navigate(FullscreenDestination)
+                navController.navigateOnce(FullscreenDestination)
             },
             onDismiss = onDismiss,
             onToolbarVisibilityChange = { shouldShowToolbar = it },
