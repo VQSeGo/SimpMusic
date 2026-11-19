@@ -75,6 +75,10 @@ RUN git clone --depth 1 --branch v7.351.0 --recursive \
 #   asetnsamples - cuts the audio into one frame per waveform bar,
 #   astats       - measures each frame's RMS and exports it as frame metadata,
 #   ametadata    - prints that metadata to a file the app reads back.
+#
+# The last two are the "skip silence" and "normalize volume" settings on Desktop:
+#   silenceremove - drops the silence at the start, inside and at the end of a track,
+#   alimiter      - a limiter after the loudness gain, so lifting a quiet track cannot clip.
 # ---------------------------------------------------------------------------
 RUN git clone --depth 1 --branch n7.1.1 https://github.com/FFmpeg/FFmpeg.git ffmpeg && \
     cd ffmpeg && \
@@ -83,7 +87,7 @@ RUN git clone --depth 1 --branch n7.1.1 https://github.com/FFmpeg/FFmpeg.git ffm
         --enable-shared --disable-static \
         --disable-programs --disable-doc --disable-debug \
         --disable-encoders --disable-muxers --disable-devices \
-        --disable-filters --enable-filter=aresample,atempo,rubberband,scale,format,aformat,anull,null,volume,lavfi,acompressor,firequalizer,equalizer,highpass,lowpass,dynaudnorm,loudnorm,aecho,afir,amovie,asplit,amix,asetnsamples,astats,ametadata,aeval \
+        --disable-filters --enable-filter=aresample,atempo,rubberband,scale,format,aformat,anull,null,volume,lavfi,acompressor,firequalizer,equalizer,highpass,lowpass,dynaudnorm,loudnorm,aecho,afir,amovie,asplit,amix,asetnsamples,astats,ametadata,aeval,silenceremove,alimiter \
         --enable-openssl --enable-protocol=https,http,tls,file,pipe,crypto,hls,data \
         --enable-libdav1d \
         --enable-version3 \
