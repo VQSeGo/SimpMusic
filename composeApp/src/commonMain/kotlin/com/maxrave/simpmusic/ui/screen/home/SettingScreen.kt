@@ -1091,11 +1091,6 @@ fun SettingScreen(
             item(key = "audio") {
                 SettingGroup(title = stringResource(Res.string.audio)) {
                     SettingItem(
-                        title = stringResource(Res.string.normalize_volume),
-                        subtitle = stringResource(Res.string.balance_media_loudness),
-                        switch = (normalizeVolume to { viewModel.setNormalizeVolume(it) }),
-                    )
-                    SettingItem(
                         title = stringResource(Res.string.skip_silent),
                         subtitle = stringResource(Res.string.skip_no_music_part),
                         switch = (skipSilent to { viewModel.setSkipSilent(it) }),
@@ -1144,6 +1139,13 @@ fun SettingScreen(
         }
         item(key = "playback") {
             SettingGroup(title = stringResource(Res.string.playback)) {
+                // On both platforms: Android drives the system loudness enhancer, Desktop mpv's volume-gain,
+                // each from the loudness YouTube reports for the track. It sat in the Android-only audio group.
+                SettingItem(
+                    title = stringResource(Res.string.normalize_volume),
+                    subtitle = stringResource(Res.string.balance_media_loudness),
+                    switch = (normalizeVolume to { viewModel.setNormalizeVolume(it) }),
+                )
                 // Under Playback rather than Audio because that whole group sits inside an
                 // Android-only branch — "Open system equalizer" is an Android feature — and this
                 // one is on both platforms: mpv's `af` chain on Desktop, an AudioProcessor in the
