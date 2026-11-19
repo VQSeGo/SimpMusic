@@ -39,7 +39,9 @@
   `LoudnessEnhancer` цеплялся к сессии прошлого трека (адаптер шлёт `onMediaItemTransition` до подмены плеера), на первом
   треке не создавался. Проверить на телефоне: тихий и громкий трек подряд, с кроссфейдом и без.
 
-- [ ] Б6 **P2** Релиз из CI собирает AppImage без `silenceremove`: пропуск тишины в Linux-релизе не работает (вопрос к пользователю)
+- [x] Б6 **P2** Релиз из CI собирает AppImage без `silenceremove`: пропуск тишины в Linux-релизе не работает — CI теперь
+  собирает libmpv в Docker и кэширует по `scripts/mpv-linux/**` + `mpvVersion` (решение пользователя 2026-11-20); проверится
+  первым релизным прогоном (в журнале не должно быть `skip silence unavailable`)
   - Что: `release.yml` зовёт только `:composeApp:mpvSetupAll` (стоковый `mpv-natives-linux-x64.tar.gz`); пересборка libmpv
     с белым списком (`6a11d3e3`) есть только в `scripts/build-appimage.sh`. Журнал ПК: `skip silence unavailable`.
   - Как поправить: шаг `:composeApp:mpvSetupLinuxCi` в CI + `scripts/mpv-linux/**` в ключ кэша (холодная сборка 20–40 мин).

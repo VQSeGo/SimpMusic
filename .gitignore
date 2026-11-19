@@ -35,6 +35,7 @@ ign.md
 /baselineprofile/build/
 # libmpv native libraries (downloaded by `./gradlew :composeApp:mpvSetupAll`)
 /mpv-natives/
+/mpv-linux-slice/
 # Agent scratch state. NOT anchored to the repo root: agents drop .omc/ next to
 # whatever directory they happen to be working in, which is how 21 of these ended
 # up committed under composeApp/src/.

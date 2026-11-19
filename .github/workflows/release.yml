@@ -109,6 +109,35 @@ jobs:
       - name: Populate mpv-natives
         run: ./gradlew :composeApp:mpvSetupAll --no-configuration-cache
 
+      # The stock Linux slice lacks silenceremove (skip silence on the PC). Our own libmpv is built from
+      # scripts/mpv-linux in Docker (~20-40 min cold) and cached until those scripts or mpvVersion change.
+      - name: Linux libmpv cache key
+        id: libmpv
+        run: echo "mpv=$(grep -oP '^val mpvVersion = "\K[^"]+' composeApp/build.gradle.kts)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Linux libmpv
+        id: libmpv-cache
+        uses: actions/cache@v4
+        with:
+          path: mpv-linux-slice
+          key: libmpv-linux-${{ steps.libmpv.outputs.mpv }}-${{ hashFiles('scripts/mpv-linux/**') }}
+
+      - name: Build Linux libmpv
+        if: steps.libmpv-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          ./gradlew :composeApp:mpvSetupLinuxCi --no-configuration-cache
+          test -f mpv-natives/linux-x64/libmpv.so.2
+          rm -rf mpv-linux-slice
+          cp -a mpv-natives/linux-x64 mpv-linux-slice
+
+      - name: Use the cached Linux libmpv
+        if: steps.libmpv-cache.outputs.cache-hit == 'true'
+        run: |
+          set -euo pipefail
+          rm -rf mpv-natives/linux-x64
+          cp -a mpv-linux-slice mpv-natives/linux-x64
+
       - name: Generate Conveyor config
         run: ./gradlew :desktopApp:writeConveyorConfig --no-configuration-cache
 
