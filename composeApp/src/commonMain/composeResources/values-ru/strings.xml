@@ -530,6 +530,8 @@
     <string name="smart_downloads_waiting_for_wifi">Умные загрузки будут запущены при следующем запуске приложения через Wi-Fi</string>
     <string name="crossfade_skip_album">Убрать кроссфейд в альбомах</string>
     <string name="crossfade_skip_album_description">Убирает кроссфейд между песнями в альбомах, в которых предусмотрен свой переход. На выходе из альбома кроссфейд сохраняется.</string>
+    <string name="no_crossfade_at_start">Без кроссфейда в начале</string>
+    <string name="no_crossfade_at_end">Без кроссфейда в конце</string>
     <string name="youtube_subtitle_language">Язык перевода субтитров YouTube</string>
     <string name="youtube_subtitle_language_message">Введите код языка (например: en) (2 буквы). Это предпочитаемый язык перевода для субтитров YouTube.</string>
     <string name="preferred_audio_language">Предпочитаемый язык аудио</string>

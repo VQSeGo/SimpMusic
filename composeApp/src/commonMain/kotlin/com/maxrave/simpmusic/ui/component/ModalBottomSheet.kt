@@ -69,6 +69,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -174,6 +176,8 @@ import com.maxrave.simpmusic.ui.icon.Share
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.icon.SkipNext
 import com.maxrave.simpmusic.ui.icon.Speed
+import com.maxrave.simpmusic.ui.icon.FirstPage
+import com.maxrave.simpmusic.ui.icon.LastPage
 import com.maxrave.simpmusic.ui.icon.Sync
 import com.maxrave.simpmusic.ui.icon.SyncDisabled
 import com.maxrave.simpmusic.ui.icon.ThumbDownOutline
@@ -262,6 +266,8 @@ import simpmusic.composeapp.generated.resources.pitch
 import simpmusic.composeapp.generated.resources.play_next
 import simpmusic.composeapp.generated.resources.playback_speed
 import simpmusic.composeapp.generated.resources.playback_speed_pitch
+import simpmusic.composeapp.generated.resources.no_crossfade_at_end
+import simpmusic.composeapp.generated.resources.no_crossfade_at_start
 import simpmusic.composeapp.generated.resources.playback_speed_pitch_disabled
 import simpmusic.composeapp.generated.resources.playlist_name_cannot_be_empty
 import simpmusic.composeapp.generated.resources.processing
@@ -1273,6 +1279,8 @@ fun NowPlayingBottomSheet(
     var isBottomSheetVisible by rememberSaveable { mutableStateOf(false) }
     var changePlaybackSpeedPitch by remember { mutableStateOf(false) }
     val crossfadeEnabled by dataStoreManager.crossfadeEnabled.collectAsState(DataStoreManager.FALSE)
+    val crossfadeExcludedStarts by dataStoreManager.crossfadeExcludedStarts.collectAsState(emptySet())
+    val crossfadeExcludedEnds by dataStoreManager.crossfadeExcludedEnds.collectAsState(emptySet())
 
     LaunchedEffect(uiState) {
         if (uiState.songUIState.videoId.isNotEmpty() && !isBottomSheetVisible) {
@@ -1721,6 +1729,29 @@ fun NowPlayingBottomSheet(
                             }
                         }
                     }
+                    // Per-track crossfade marks, stored locally; the players read them at each junction
+                    // (CrossfadeExclusions). Shown only while crossfade is on, since off they change nothing.
+                    val markVideoId = uiState.songUIState.videoId
+                    if (crossfadeEnabled == DataStoreManager.TRUE && markVideoId.isNotEmpty()) {
+                        SwitchActionButton(
+                            icon = SimpIcons.FirstPage,
+                            text = Res.string.no_crossfade_at_start,
+                            checked = markVideoId in crossfadeExcludedStarts,
+                        ) { excluded ->
+                            coroutineScope.launch {
+                                dataStoreManager.setCrossfadeExcluded(markVideoId, atEnd = false, excluded = excluded)
+                            }
+                        }
+                        SwitchActionButton(
+                            icon = SimpIcons.LastPage,
+                            text = Res.string.no_crossfade_at_end,
+                            checked = markVideoId in crossfadeExcludedEnds,
+                        ) { excluded ->
+                            coroutineScope.launch {
+                                dataStoreManager.setCrossfadeExcluded(markVideoId, atEnd = true, excluded = excluded)
+                            }
+                        }
+                    }
                     ActionButton(
                         icon = SimpIcons.Share,
                         text = Res.string.share,
@@ -1815,6 +1846,47 @@ fun ActionButton(
                         .wrapContentHeight(Alignment.CenterVertically),
             )
         }
+    }
+}
+
+/** An [ActionButton] row that turns a setting on and off, with its switch at the end of the row. */
+@Composable
+fun SwitchActionButton(
+    icon: ImageVector,
+    text: StringResource,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    val c = rememberSurfaceDarkColors()
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .toggleable(value = checked, role = Role.Switch, onValueChange = onCheckedChange)
+                .padding(horizontal = 20.dp),
+    ) {
+        Image(
+            imageVector = icon,
+            contentDescription = null,
+            modifier =
+                Modifier
+                    .wrapContentSize(Alignment.Center)
+                    .padding(12.dp),
+            colorFilter = ColorFilter.tint(c.content),
+        )
+        Text(
+            text = stringResource(text),
+            style = typo().labelSmall,
+            color = c.content,
+            modifier =
+                Modifier
+                    .padding(start = 10.dp)
+                    .weight(1f)
+                    .wrapContentHeight(Alignment.CenterVertically),
+        )
+        // The row takes the tap, so the switch only shows the state.
+        Switch(checked = checked, onCheckedChange = null)
     }
 }
 
