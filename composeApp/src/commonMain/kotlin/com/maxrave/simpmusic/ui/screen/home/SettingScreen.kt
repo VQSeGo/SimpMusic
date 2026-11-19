@@ -1090,11 +1090,6 @@ fun SettingScreen(
         if (getPlatform() == Platform.Android) {
             item(key = "audio") {
                 SettingGroup(title = stringResource(Res.string.audio)) {
-                    SettingItem(
-                        title = stringResource(Res.string.skip_silent),
-                        subtitle = stringResource(Res.string.skip_no_music_part),
-                        switch = (skipSilent to { viewModel.setSkipSilent(it) }),
-                    )
                     val equalizerTypeLabels =
                         listOf(
                             DataStoreManager.EQUALIZER_TYPE_BUILT_IN to stringResource(Res.string.equalizer_type_built_in),
@@ -1145,6 +1140,13 @@ fun SettingScreen(
                     title = stringResource(Res.string.normalize_volume),
                     subtitle = stringResource(Res.string.balance_media_loudness),
                     switch = (normalizeVolume to { viewModel.setNormalizeVolume(it) }),
+                )
+                // Silence at the start, inside and at the end of a track: Media3's skipper and an AudioProcessor for
+                // its tail on Android, mpv's silenceremove on Desktop. Also moved out of the Android-only group.
+                SettingItem(
+                    title = stringResource(Res.string.skip_silent),
+                    subtitle = stringResource(Res.string.skip_no_music_part),
+                    switch = (skipSilent to { viewModel.setSkipSilent(it) }),
                 )
                 // Under Playback rather than Audio because that whole group sits inside an
                 // Android-only branch — "Open system equalizer" is an Android feature — and this
