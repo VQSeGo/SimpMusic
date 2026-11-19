@@ -1,5 +1,6 @@
 package com.maxrave.simpmusic.ui.screen.player.content
 
+import com.maxrave.domain.mediaservice.player.DownloadedClip
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector4D
 import androidx.compose.foundation.ScrollState
@@ -108,6 +109,11 @@ class NowPlayingContentState(
     val videoAspectRatio: Float = 16f / 9,
     /** This track's artwork seed when it is already known (see SharedViewModel.artworkSeed). */
     val artworkSeed: Color? = null,
+    /**
+     * The track is a clip downloaded as audio only and "watch video" is on: the cover gets a button that
+     * shows its video from the network, or hides it again. Null hides the button.
+     */
+    val downloadedClip: DownloadedClip? = null,
 ) {
     val timelineState: TimeLine get() = timelineSource.value
 
@@ -141,6 +147,8 @@ class NowPlayingContentActions(
     /** Writes the lyrics timing offset of the track playing. */
     val onLyricsOffsetChange: (Int) -> Unit,
     val onEnterFullscreenVideo: () -> Unit,
+    /** Shows (true) or hides the video of the downloaded clip playing, see [NowPlayingContentState.downloadedClip]. */
+    val onShowDownloadedClip: (Boolean) -> Unit = {},
     val onDismiss: () -> Unit,
     val onToolbarVisibilityChange: (Boolean) -> Unit,
     /** Reorders the queue. `from`/`to` are absolute indices into [NowPlayingContentState.artworkQueue]. */

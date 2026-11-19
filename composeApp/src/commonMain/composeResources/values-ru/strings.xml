@@ -920,4 +920,7 @@
     <string name="youtube_playlist_deleted">Плейлист удалён</string>
     <string name="youtube_playlist_delete_failed">Не удалось удалить плейлист</string>
     <string name="remove_from_youtube_playlist_failed">Не удалось убрать трек из плейлиста</string>
+    <string name="show_clip">Показать клип</string>
+    <string name="hide_clip">Скрыть клип</string>
+    <string name="clip_unavailable">Не удалось загрузить клип, играет скачанный звук. Проверьте подключение к интернету</string>
 </resources>

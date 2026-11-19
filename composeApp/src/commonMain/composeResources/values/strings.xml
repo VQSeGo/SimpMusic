@@ -925,4 +925,7 @@
     <string name="youtube_playlist_deleted">Playlist deleted</string>
     <string name="youtube_playlist_delete_failed">Couldn't delete the playlist</string>
     <string name="remove_from_youtube_playlist_failed">Couldn't remove the song from the playlist</string>
+    <string name="show_clip">Show clip</string>
+    <string name="hide_clip">Hide clip</string>
+    <string name="clip_unavailable">Couldn't load the clip, playing the downloaded audio. Check your internet connection</string>
 </resources>

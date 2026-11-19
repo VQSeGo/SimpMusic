@@ -95,12 +95,15 @@ import com.maxrave.simpmusic.ui.component.hasTiming
 import com.maxrave.simpmusic.ui.component.lyrics.ShareLyricsSheet
 import com.maxrave.simpmusic.ui.component.lyrics.toShareLyricsLines
 import com.maxrave.simpmusic.ui.component.rememberHolderPainter
+import com.maxrave.simpmusic.ui.component.TranslucentIconButton
 import com.maxrave.simpmusic.ui.icon.AvTimer
 import com.maxrave.simpmusic.ui.icon.Forward5
 import com.maxrave.simpmusic.ui.icon.Fullscreen
+import com.maxrave.simpmusic.ui.icon.MusicNote
 import com.maxrave.simpmusic.ui.icon.Replay5
 import com.maxrave.simpmusic.ui.icon.Share
 import com.maxrave.simpmusic.ui.icon.SimpIcons
+import com.maxrave.simpmusic.ui.icon.SmartDisplay
 import com.maxrave.simpmusic.ui.icon.Subtitles
 import com.maxrave.simpmusic.ui.icon.SubtitlesOff
 import com.maxrave.simpmusic.ui.icon.ThumbsUpDown
@@ -113,6 +116,7 @@ import org.jetbrains.compose.resources.stringResource
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.artists
 import simpmusic.composeapp.generated.resources.description
+import simpmusic.composeapp.generated.resources.hide_clip
 import simpmusic.composeapp.generated.resources.line_synced
 import simpmusic.composeapp.generated.resources.lyrics
 import simpmusic.composeapp.generated.resources.lyrics_offset
@@ -126,6 +130,7 @@ import simpmusic.composeapp.generated.resources.rate_lyrics
 import simpmusic.composeapp.generated.resources.rich_synced
 import simpmusic.composeapp.generated.resources.share_lyrics
 import simpmusic.composeapp.generated.resources.show
+import simpmusic.composeapp.generated.resources.show_clip
 import simpmusic.composeapp.generated.resources.spotify_lyrics_provider
 import simpmusic.composeapp.generated.resources.unsynced
 
@@ -404,6 +409,23 @@ internal fun ExpressiveArtworkCardPage(
                                 }
                             }
                         }
+                    }
+                    // A clip downloaded as audio only: its video from the network on request, for this
+                    // track only. Over the video overlay, which would otherwise take the tap.
+                    val downloadedClip = state.downloadedClip
+                    if (downloadedClip != null && state.screenData.isVideo && state.shouldShowVideo) {
+                        TranslucentIconButton(
+                            imageVector = if (downloadedClip.shown) SimpIcons.MusicNote else SimpIcons.SmartDisplay,
+                            contentDescription =
+                                stringResource(if (downloadedClip.shown) Res.string.hide_clip else Res.string.show_clip),
+                            tint = colorScheme.onSurface,
+                            onClick = { actions.onShowDownloadedClip(!downloadedClip.shown) },
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(10.dp)
+                                    .size(40.dp),
+                        )
                     }
                 } else if (pageTrack != null) {
                     // Adjacent page — static thumbnail card.

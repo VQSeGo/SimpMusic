@@ -26,6 +26,9 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import org.jetbrains.compose.resources.getString
+import simpmusic.composeapp.generated.resources.Res
+import simpmusic.composeapp.generated.resources.clip_unavailable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -206,6 +209,13 @@ fun NowPlayingScreenContent(
     val formatState by sharedViewModel.format.collectAsStateWithLifecycle(initialValue = null)
 
     val shouldShowVideo by sharedViewModel.getVideo.collectAsStateWithLifecycle()
+    // A clip downloaded as audio only, with "watch video" on: the cover offers its video from the network.
+    val downloadedClip by mediaPlayerHandler.player.downloadedClip.collectAsStateWithLifecycle()
+    LaunchedEffect(mediaPlayerHandler) {
+        mediaPlayerHandler.player.downloadedClipFailures.collect {
+            sharedViewModel.makeToast(getString(Res.string.clip_unavailable))
+        }
+    }
     val isUserLoggedIn by sharedViewModel
         .isUserLoggedInFlow()
         .collectAsStateWithLifecycle(initialValue = false)
@@ -591,6 +601,7 @@ fun NowPlayingScreenContent(
             lyricsOffsetMs = lyricsOffsetMs.toLong(),
             videoAspectRatio = rememberVideoAspectRatio(MAIN_PLAYER) ?: 16f / 9,
             artworkSeed = artworkSeed?.takeIf { it.first == artworkSeedKey }?.second,
+            downloadedClip = downloadedClip,
         )
     val actions =
         NowPlayingContentActions(
@@ -655,6 +666,7 @@ fun NowPlayingScreenContent(
                 onDismiss()
                 navController.navigateOnce(FullscreenDestination)
             },
+            onShowDownloadedClip = { mediaPlayerHandler.player.showDownloadedClip(it) },
             onDismiss = onDismiss,
             onToolbarVisibilityChange = { shouldShowToolbar = it },
             onMoveQueueItem = { from, to ->
