@@ -12,6 +12,14 @@ OUT_DIR="${OUT_DIR:-$HOME/TorvaldsVPN/Music/builds}"
 GRADLE_FLAGS=(--no-configuration-cache)
 
 ./gradlew :composeApp:mpvSetupAll "${GRADLE_FLAGS[@]}"
+# mpvSetupAll unpacks the stock libmpv from the release of the original (no silenceremove, so no
+# "skip silence" on Desktop) over mpv-natives/linux-x64. With Docker available the slice is rebuilt
+# from scripts/mpv-linux on top of it (cached after the first run), so the AppImage carries our filters.
+if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+    ./gradlew :composeApp:mpvSetupLinuxCi "${GRADLE_FLAGS[@]}"
+else
+    echo "Docker не запущен: в AppImage уйдёт libmpv из релиза, без silenceremove (пропуск тишины на ПК не заработает)" >&2
+fi
 ./gradlew :desktopApp:writeConveyorConfig "${GRADLE_FLAGS[@]}"
 conveyor --agree-to-license=1 -Kapp.machines=linux.amd64.glibc make linux-app
 ./gradlew :desktopApp:packageConveyorAppImage "${GRADLE_FLAGS[@]}"
