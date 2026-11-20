@@ -279,7 +279,10 @@
     (`getNewestPlaylistPairSong`), не трогал: вне темы аудита.
   - Где: `LocalPlaylistRepositoryImpl.addTrackToLocalPlaylist`, `updateListTrackSynced`.
 
-- [ ] Б36 **P3** Добавление в свой YouTube-плейлист трека, который там уже есть (подозрение)
+- [x] Б36 **P3** Добавление в свой YouTube-плейлист трека, который там уже есть (подозрение) — `8e348794` (core `1eaee12`):
+  у ytmusicapi `DEDUPE_OPTION_SKIP` как раз разрешает дубликаты, без него YouTube их отклоняет — запрос не менялся. Ответ без
+  записи больше не роняет разбор: трек ищется в плейлисте, найден → «Уже есть в этом плейлисте YouTube» и его `setVideoId`.
+  Вживую не проверено
   - Что: `addItemYouTubePlaylist` шлёт `ACTION_ADD_VIDEO` без `dedupeOption` (ytmusicapi по умолчанию ставит
     `DEDUPE_OPTION_SKIP`), проверки в `⋯` нет. Вероятно, в YouTube появляется дубликат, либо приходит пустой
     `playlistEditResults` и тост «ошибка». Проверить вживую, какой из двух.
