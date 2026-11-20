@@ -783,6 +783,7 @@ fun NowPlayingScreenContent(
             onShowInfo = { showInfoBottomSheet = true },
             setSleepTimerEnable = true,
             changeLyricsSourcesEnable = true,
+            onOtherLyrics = if (screenDataState.lyricsData != null) sharedViewModel::showOtherLyrics else null,
             // Offered only once every provider and the offline cache came back empty for this song.
             onAddLyrics =
                 nowPlayingState

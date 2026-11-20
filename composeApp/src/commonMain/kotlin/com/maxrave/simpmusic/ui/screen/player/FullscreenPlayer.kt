@@ -769,6 +769,7 @@ fun FullscreenPlayer(
                     navController = navController,
                     setSleepTimerEnable = true,
                     changeLyricsSourcesEnable = true,
+                    onOtherLyrics = if (nowPlayingState.lyricsData != null) sharedViewModel::showOtherLyrics else null,
                     song = null,
                     // Offered only once every provider and the offline cache came back empty for this song.
                     onAddLyrics =

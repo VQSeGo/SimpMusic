@@ -51,6 +51,7 @@ import com.maxrave.domain.repository.CacheRepository
 import com.maxrave.domain.repository.DiscordRepository
 import com.maxrave.domain.repository.LocalPlaylistRepository
 import com.maxrave.domain.repository.LyricsCanvasRepository
+import com.maxrave.domain.repository.NO_MORE_LYRICS_VARIANTS
 import com.maxrave.domain.repository.PlaylistRepository
 import com.maxrave.domain.repository.SearchRepository
 import com.maxrave.domain.repository.SongRepository
@@ -72,13 +73,18 @@ import com.maxrave.simpmusic.expect.getDownloadFolderPath
 import com.maxrave.simpmusic.expect.isOnUnmeteredNetwork
 import com.maxrave.simpmusic.expect.ui.toByteArray
 import com.maxrave.simpmusic.getPlatform
+import com.maxrave.simpmusic.ui.component.title
 import com.maxrave.simpmusic.ui.screen.player.albumIdOf
+import com.maxrave.simpmusic.utils.LyricsChoice
+import com.maxrave.simpmusic.utils.LyricsChoices
 import com.maxrave.simpmusic.utils.LyricsSource
 import com.maxrave.simpmusic.utils.LyricsSourceEntry
 import com.maxrave.simpmusic.utils.LyricsSourceQueue
 import com.maxrave.simpmusic.utils.VersionManager
 import com.maxrave.simpmusic.utils.hasText
+import com.maxrave.simpmusic.utils.hasVariants
 import com.maxrave.simpmusic.utils.isSynced
+import com.maxrave.simpmusic.utils.otherLyricsWalk
 import com.maxrave.simpmusic.utils.pickUpdateDownloadUrl
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
 import com.maxrave.simpmusic.ui.screen.player.content.artworkSeedColor
@@ -114,6 +120,10 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.getString
 import org.koin.core.component.inject
 import simpmusic.composeapp.generated.resources.album_not_found
+import simpmusic.composeapp.generated.resources.no_other_lyrics
+import simpmusic.composeapp.generated.resources.other_lyrics_from
+import simpmusic.composeapp.generated.resources.other_lyrics_from_result
+import simpmusic.composeapp.generated.resources.other_lyrics_searching
 import simpmusic.composeapp.generated.resources.log_in_to_like
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.youtube_playlist_create_failed
@@ -1099,16 +1109,154 @@ class SharedViewModel(
                 }
             val queue = LyricsSourceQueue.flow(dataStoreManager).first()
             val spotifyLoggedIn = dataStoreManager.spdc.first().isNotEmpty()
+            if (showChosenLyrics(song, artist ?: "", duration, queue, spotifyLoggedIn)) return@launch
             askLyricsQueue(song, artist ?: "", duration, queue, spotifyLoggedIn)
         }
     }
 
+    /** The sources of [queue] that are switched on and can be asked now, in its order. */
+    private fun usableLyricsSources(
+        queue: List<LyricsSourceEntry>,
+        spotifyLoggedIn: Boolean,
+    ): List<LyricsSource> =
+        queue
+            .filter { it.enabled && (it.source != LyricsSource.SPOTIFY || spotifyLoggedIn) }
+            .map { it.source }
+
+    /**
+     * The lyrics picked with Other lyrics for [song], instead of the queue: true when they are on screen.
+     * For a search source the pick is the saved copy (the pick saved it), since the same search can rank
+     * its results differently next time; it is asked again only when the copy is gone. SimpMusic and
+     * YouTube answer by videoId and are asked again, which also brings their translation. A pick whose
+     * source was switched off since, or that has nothing now, leaves the track to the queue.
+     */
+    private suspend fun showChosenLyrics(
+        song: SongEntity,
+        artist: String,
+        duration: Int,
+        queue: List<LyricsSourceEntry>,
+        spotifyLoggedIn: Boolean,
+    ): Boolean {
+        val videoId = song.videoId
+        val choice = LyricsChoices.get(dataStoreManager, videoId) ?: return false
+        if (choice.source !in usableLyricsSources(queue, spotifyLoggedIn)) return false
+        if (choice.source != LyricsSource.SIMPMUSIC && choice.source != LyricsSource.YOUTUBE) {
+            savedLyricsJob?.join()
+            val shown = _nowPlayingScreenData.value.lyricsData
+            if (shown != null && shown.lyrics.hasText() &&
+                (shown.lyricsProvider == LyricsProvider.OFFLINE || shown.lyricsProvider == choice.source.provider)
+            ) {
+                Logger.d(LYRICS_QUEUE_TAG, "$videoId chosen ${choice.source}:${choice.variant} saved copy")
+                shownLyricsChoice = videoId to choice
+                if (shown.lyricsProvider != choice.source.provider) {
+                    _nowPlayingScreenData.update {
+                        it.copy(lyricsData = it.lyricsData?.copy(lyricsProvider = choice.source.provider))
+                    }
+                }
+                return true
+            }
+        }
+        val attempt = askLyricsSource(choice.source, song, artist, duration, choice.variant)
+        Logger.d(LYRICS_QUEUE_TAG, "$videoId chosen ${choice.source}:${choice.variant} -> ${if (attempt is LyricsAttempt.Found) "found" else "nothing"}")
+        if (attempt !is LyricsAttempt.Found) return false
+        showLyricsAnswer(videoId, duration, attempt.answer)
+        return true
+    }
+
+    // How many results of one search Other lyrics tries before it moves on to the next source.
+    private val otherLyricsVariants = 5
+
+    /**
+     * Other lyrics, from the lyrics menu: replaces the lyrics on screen with the next ones found — the
+     * next result of the same source's search, then the other switched-on sources in the queue's
+     * order, round to the start — and keeps that pick for the track ([LyricsChoices]), so it plays with
+     * them next time. The text on screen is skipped wherever it turns up again. The pick also replaces
+     * the track's saved lyrics, which is what is shown offline.
+     */
+    fun showOtherLyrics() {
+        val song = _nowPlayingState.value?.songEntity ?: return
+        val videoId = song.videoId
+        if (LiveStreamRegistry.isLive(videoId)) return
+        val duration = (timeline.value.total / 1000).toInt()
+        lyricsChainJob?.cancel()
+        lyricsChainFor = videoId
+        lyricsChainJob =
+            viewModelScope.launch {
+                makeToast(getString(Res.string.other_lyrics_searching))
+                val artist =
+                    song.artistName?.firstOrNull()?.takeIf { !it.contains("Various Artists") }
+                        ?: mediaPlayerHandler.nowPlaying.first()?.metadata?.artist
+                        ?: ""
+                val queue = LyricsSourceQueue.flow(dataStoreManager).first()
+                val spotifyLoggedIn = dataStoreManager.spdc.first().isNotEmpty()
+                val sources = usableLyricsSources(queue, spotifyLoggedIn)
+                // The text on screen by its words (and whether it is synced): a result of the same song
+                // with the same words is not other lyrics, whatever its timing.
+                fun Lyrics.text() = syncType to lines?.map { decodeHtmlEntities(it.words).trim() }
+                val shownText = _nowPlayingScreenData.value.lyricsData?.lyrics?.text()
+                val current =
+                    shownLyricsChoice?.takeIf { it.first == videoId }?.second
+                        ?: LyricsChoices.get(dataStoreManager, videoId)
+                Logger.d(LYRICS_QUEUE_TAG, "$videoId other lyrics after ${current?.let { "${it.source}:${it.variant}" } ?: "unknown"}")
+                for (step in otherLyricsWalk(sources, current, otherLyricsVariants)) {
+                    for (variant in step.from until step.until) {
+                        if (_nowPlayingState.value?.songEntity?.videoId != videoId) return@launch
+                        val attempt = askLyricsSource(step.source, song, artist, duration, variant)
+                        Logger.d(
+                            LYRICS_QUEUE_TAG,
+                            "$videoId other ${step.source}:$variant -> " +
+                                when (attempt) {
+                                    is LyricsAttempt.Found -> "${attempt.answer.lyrics.lines?.size} lines"
+                                    LyricsAttempt.Exhausted -> "no more results"
+                                    LyricsAttempt.Missing -> "nothing"
+                                },
+                        )
+                        if (attempt == LyricsAttempt.Exhausted) break
+                        if (attempt !is LyricsAttempt.Found) continue
+                        // The lyrics on screen again, from another result or source: not other lyrics.
+                        if (attempt.answer.lyrics.text() == shownText) continue
+                        showLyricsAnswer(videoId, duration, attempt.answer)
+                        val choice = LyricsChoice(step.source, variant)
+                        LyricsChoices.put(dataStoreManager, videoId, choice)
+                        val sourceName = getString(step.source.title)
+                        makeToast(
+                            if (variant == 0) {
+                                getString(Res.string.other_lyrics_from, sourceName)
+                            } else {
+                                getString(Res.string.other_lyrics_from_result, sourceName, variant + 1)
+                            },
+                        )
+                        return@launch
+                    }
+                }
+                makeToast(getString(Res.string.no_other_lyrics))
+            }
+    }
+
+    // Which source and result the lyrics on screen came from, and for which track; null for saved or
+    // typed-in lyrics. Other lyrics goes on from here.
+    private var shownLyricsChoice: Pair<String, LyricsChoice>? = null
+
     /** What one source answered: its text, and the translation that came with it (YouTube's). */
     private class LyricsAnswer(
-        val provider: LyricsProvider,
+        val source: LyricsSource,
+        val variant: Int,
         val lyrics: Lyrics,
         val translation: Lyrics? = null,
-    )
+    ) {
+        val provider: LyricsProvider get() = source.provider
+    }
+
+    /** One request to one source: lyrics, none, or no result that far down its search ([NO_MORE_LYRICS_VARIANTS]). */
+    private sealed interface LyricsAttempt {
+        class Found(
+            val answer: LyricsAnswer,
+        ) : LyricsAttempt
+
+        data object Missing : LyricsAttempt
+
+        data object Exhausted : LyricsAttempt
+    }
 
     /**
      * Asks the sources switched on in [queue], in its order, until one has synced lyrics. A source with
@@ -1136,7 +1284,7 @@ class SharedViewModel(
             }
             // The chain is cancelled on a track change; this covers the moment before that lands.
             if (_nowPlayingState.value?.songEntity?.videoId != videoId) return
-            val answer = askLyricsSource(entry.source, song, artist, duration)
+            val answer = (askLyricsSource(entry.source, song, artist, duration) as? LyricsAttempt.Found)?.answer
             Logger.d(
                 LYRICS_QUEUE_TAG,
                 "$videoId ${entry.source} -> " +
@@ -1168,51 +1316,62 @@ class SharedViewModel(
         }
     }
 
-    /** One source's lyrics for [song], or null when it has none to give. */
+    /**
+     * One source's lyrics for [song]: [variant] 0 is the source's own pick, 1, 2, … the next results of
+     * its search (Other lyrics). BetterLyrics and YouTube have one answer per track.
+     */
     private suspend fun askLyricsSource(
         source: LyricsSource,
         song: SongEntity,
         artist: String,
         duration: Int,
-    ): LyricsAnswer? {
+        variant: Int = 0,
+    ): LyricsAttempt {
+        if (variant > 0 && !source.hasVariants) return LyricsAttempt.Exhausted
+        var exhausted = false
+
+        fun Resource<Lyrics>?.lyricsOrNull(): Lyrics? {
+            if ((this as? Resource.Error)?.message == NO_MORE_LYRICS_VARIANTS) exhausted = true
+            return this?.successData()
+        }
         val answer =
             try {
                 when (source) {
                     LyricsSource.SIMPMUSIC ->
                         lyricsCanvasRepository
-                            .getSimpMusicLyrics(song.videoId)
+                            .getSimpMusicLyrics(song.videoId, variant)
                             .firstOrNull()
-                            ?.successData()
-                            ?.let { LyricsAnswer(LyricsProvider.SIMPMUSIC, it) }
+                            .lyricsOrNull()
+                            ?.let { LyricsAnswer(source, variant, it) }
 
                     LyricsSource.LRCLIB ->
                         lyricsCanvasRepository
-                            .getLrclibLyricsData(artist, song.title, duration)
+                            .getLrclibLyricsData(artist, song.title, duration, variant)
                             .firstOrNull()
-                            ?.successData()
-                            ?.let { LyricsAnswer(LyricsProvider.LRCLIB, it) }
+                            .lyricsOrNull()
+                            ?.let { LyricsAnswer(source, variant, it) }
 
                     LyricsSource.BETTER_LYRICS ->
                         lyricsCanvasRepository
                             .getBetterLyrics(artist, song.title, duration)
                             .firstOrNull()
-                            ?.successData()
-                            ?.let { LyricsAnswer(LyricsProvider.BETTER_LYRICS, it) }
+                            .lyricsOrNull()
+                            ?.let { LyricsAnswer(source, variant, it) }
 
                     // Spotify's flow can end without a word (no tokens), which firstOrNull reads as nothing.
                     LyricsSource.SPOTIFY ->
                         lyricsCanvasRepository
-                            .getSpotifyLyrics(dataStoreManager, "${song.title} $artist", duration)
+                            .getSpotifyLyrics(dataStoreManager, song.title, artist, duration, variant)
                             .firstOrNull()
-                            ?.successData()
-                            ?.let { LyricsAnswer(LyricsProvider.SPOTIFY, it) }
+                            .lyricsOrNull()
+                            ?.let { LyricsAnswer(source, variant, it) }
 
                     LyricsSource.YOUTUBE ->
                         lyricsCanvasRepository
                             .getYouTubeCaption(dataStoreManager.youtubeSubtitleLanguage.first(), song.videoId)
                             .firstOrNull()
                             ?.successData()
-                            ?.let { (lyrics, translation) -> LyricsAnswer(LyricsProvider.YOUTUBE, lyrics, translation) }
+                            ?.let { (lyrics, translation) -> LyricsAnswer(source, variant, lyrics, translation) }
                 }
             } catch (e: CancellationException) {
                 throw e
@@ -1220,7 +1379,11 @@ class SharedViewModel(
                 Logger.w(LYRICS_QUEUE_TAG, "${song.videoId} $source failed: ${e.message}")
                 null
             }
-        return answer?.takeIf { it.lyrics.hasText() }
+        return when {
+            answer != null && answer.lyrics.hasText() -> LyricsAttempt.Found(answer)
+            exhausted -> LyricsAttempt.Exhausted
+            else -> LyricsAttempt.Missing
+        }
     }
 
     private fun <T> Resource<T>.successData(): T? = (this as? Resource.Success)?.data
@@ -1234,6 +1397,9 @@ class SharedViewModel(
         duration: Int,
         answer: LyricsAnswer,
     ) {
+        if (_nowPlayingState.value?.songEntity?.videoId == videoId) {
+            shownLyricsChoice = videoId to LyricsChoice(answer.source, answer.variant)
+        }
         updateLyrics(videoId, duration, answer.lyrics, false, answer.provider)
         when (answer.provider) {
             LyricsProvider.YOUTUBE -> answer.translation?.let { updateLyrics(videoId, duration, it, true, LyricsProvider.YOUTUBE) }
@@ -1904,6 +2070,17 @@ enum class LyricsProvider {
     BETTER_LYRICS,
     OFFLINE,
 }
+
+/** The provider shown under lyrics from [this] source. */
+val LyricsSource.provider: LyricsProvider
+    get() =
+        when (this) {
+            LyricsSource.SIMPMUSIC -> LyricsProvider.SIMPMUSIC
+            LyricsSource.SPOTIFY -> LyricsProvider.SPOTIFY
+            LyricsSource.LRCLIB -> LyricsProvider.LRCLIB
+            LyricsSource.BETTER_LYRICS -> LyricsProvider.BETTER_LYRICS
+            LyricsSource.YOUTUBE -> LyricsProvider.YOUTUBE
+        }
 
 data class NowPlayingScreenData(
     val playlistName: String,

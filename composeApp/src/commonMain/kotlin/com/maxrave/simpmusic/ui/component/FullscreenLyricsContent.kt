@@ -549,6 +549,7 @@ fun FullscreenLyricsContent(
             song = null,
             setSleepTimerEnable = true,
             changeLyricsSourcesEnable = true,
+            onOtherLyrics = if (screenDataState.lyricsData != null) sharedViewModel::showOtherLyrics else null,
             onShowInfo = { showInfoBottomSheet = true },
         )
     }

@@ -259,6 +259,11 @@
     <string name="lyrics_sources">Источники текстов</string>
     <string name="lyrics_sources_description">Спрашиваются сверху вниз, пока у одного не найдётся текст. Синхронизированный текст ниже по списку берётся вместо простого. Перетащите строку, чтобы переместить её (на телефоне сначала нажмите и удерживайте).</string>
     <string name="lyrics_sources_all_off">Все источники выключены</string>
+    <string name="other_lyrics">Другой текст</string>
+    <string name="other_lyrics_searching">Ищем другой текст…</string>
+    <string name="other_lyrics_from">Текст: %1$s</string>
+    <string name="other_lyrics_from_result">Текст: %1$s, результат %2$d</string>
+    <string name="no_other_lyrics">Другого текста не нашлось</string>
     <string name="lyrics_source_needs_spotify_login">Пропускается, пока не выполнен вход в Spotify</string>
     <string name="translation_language">Язык перевода</string>
     <string name="follow_app_language">Следуйте языку приложения</string>

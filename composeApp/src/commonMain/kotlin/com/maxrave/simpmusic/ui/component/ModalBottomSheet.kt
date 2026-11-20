@@ -250,6 +250,7 @@ import simpmusic.composeapp.generated.resources.like
 import simpmusic.composeapp.generated.resources.liked
 import simpmusic.composeapp.generated.resources.list_all_cookies_of_this_page
 import simpmusic.composeapp.generated.resources.lyrics_sources
+import simpmusic.composeapp.generated.resources.other_lyrics
 import simpmusic.composeapp.generated.resources.merging_audio_and_video
 import simpmusic.composeapp.generated.resources.mime_type
 import simpmusic.composeapp.generated.resources.move_down
@@ -1244,6 +1245,8 @@ fun NowPlayingBottomSheet(
     onRemoveFromCache: (() -> Unit)? = null,
     /** Set while the song playing has no lyrics: adds Add lyrics under Lyrics sources. */
     onAddLyrics: (() -> Unit)? = null,
+    /** Set while lyrics are on screen: adds Other lyrics under Lyrics sources. */
+    onOtherLyrics: (() -> Unit)? = null,
     /** Set when opened from a queue row: adds that row's move and delete actions at the top. */
     queuePosition: QueuePosition? = null,
     /**
@@ -1669,6 +1672,15 @@ fun NowPlayingBottomSheet(
                             ) {
                                 lyricsSources = true
                             }
+                        }
+                    }
+                    if (onOtherLyrics != null) {
+                        ActionButton(
+                            icon = SimpIcons.Sync,
+                            text = Res.string.other_lyrics,
+                        ) {
+                            hideModalBottomSheet()
+                            onOtherLyrics()
                         }
                     }
                     if (onAddLyrics != null) {
