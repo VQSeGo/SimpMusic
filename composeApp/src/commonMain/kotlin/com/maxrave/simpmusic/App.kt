@@ -93,6 +93,7 @@ import com.maxrave.simpmusic.ui.navigation.destination.search.SearchDestination
 import com.maxrave.simpmusic.ui.navigation.graph.AppNavigationGraph
 import com.maxrave.simpmusic.ui.navigation.navigateOnce
 import com.maxrave.simpmusic.ui.screen.MiniPlayer
+import com.maxrave.simpmusic.ui.screen.library.LibraryDynamicPlaylistType
 import com.maxrave.simpmusic.ui.screen.player.NowPlayingScreen
 import com.maxrave.simpmusic.ui.screen.player.NowPlayingScreenContent
 import com.maxrave.simpmusic.ui.theme.AppTheme
@@ -317,6 +318,10 @@ fun App(
                                 viewModel.requestLibraryTab(tab)
                                 navController.navigateOnce(LibraryDestination)
                             }
+                        } else if (runCatching { LibraryDynamicPlaylistType.toType(type) }.isFailure) {
+                            // The list screen parses the type while composing and throws on one it does
+                            // not know, so a mistyped or foreign link crashed the app.
+                            viewModel.makeToast(unsupportedLink)
                         } else {
                             navController.navigateOnce(LibraryDynamicPlaylistDestination(type = type))
                         }
