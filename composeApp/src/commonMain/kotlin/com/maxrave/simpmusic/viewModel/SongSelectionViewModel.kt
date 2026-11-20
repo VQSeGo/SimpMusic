@@ -134,6 +134,7 @@ class SongSelectionViewModel(
                         successMessage = getString(Res.string.added_to_playlist),
                         updatedYtMessage = getString(Res.string.added_to_playlist),
                         errorMessage = getString(Res.string.error),
+                        alreadyInYtMessage = getString(Res.string.added_to_playlist),
                     ).collectResource(
                         onSuccess = { added++ },
                         onError = { },

@@ -250,6 +250,7 @@
     <string name="unsync_playlist_warning">"Unsync this playlist? This playlist will not be removed from YouTube Music "</string>
     <string name="unsyncing">Unsyncing</string>
     <string name="added_to_youtube_playlist">Added to YouTube Playlist</string>
+    <string name="already_in_youtube_playlist">Already in this YouTube playlist</string>
     <string name="removed_from_YouTube_playlist">Removed from YouTube Playlist</string>
     <string name="update_playlist">Update playlist from YouTube Music</string>
     <string name="backup_create_success">Backup create success</string>

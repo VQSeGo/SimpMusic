@@ -252,6 +252,7 @@
     <string name="unsync_playlist_warning">"Отменить синхронизацию этого плейлиста? Этот плейлист не будет удален из YouTube Music "</string>
     <string name="unsyncing">Отмена синхронизации</string>
     <string name="added_to_youtube_playlist">Добавлено в плейлист YouTube</string>
+    <string name="already_in_youtube_playlist">Уже есть в этом плейлисте YouTube</string>
     <string name="removed_from_YouTube_playlist">Удалено из плейлиста YouTube</string>
     <string name="update_playlist">Обновить плейлист из YouTube Music</string>
     <string name="backup_create_success">Резервное копирование создает успех</string>

@@ -19,6 +19,7 @@ import com.maxrave.domain.repository.LocalPlaylistRepository
 import com.maxrave.domain.repository.PlaylistRepository
 import com.maxrave.domain.repository.SongRepository
 import com.maxrave.domain.utils.Resource
+import com.maxrave.domain.utils.YouTubePlaylistAdd
 import com.maxrave.domain.utils.collectLatestResource
 import com.maxrave.domain.utils.collectResource
 import com.maxrave.domain.utils.isLive
@@ -41,6 +42,7 @@ import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.added_to_playlist
 import simpmusic.composeapp.generated.resources.added_to_queue
 import simpmusic.composeapp.generated.resources.added_to_youtube_playlist
+import simpmusic.composeapp.generated.resources.already_in_youtube_playlist
 import simpmusic.composeapp.generated.resources.delete_song_from_playlist
 import simpmusic.composeapp.generated.resources.downloading
 import simpmusic.composeapp.generated.resources.error
@@ -238,8 +240,15 @@ class NowPlayingBottomSheetViewModel(
                             videoId = songUIState.videoId,
                         ).collectLatestResource(
                             onSuccess = {
-                                // The repository returns the raw response status ("STATUS_SUCCEEDED"), not text for the user.
-                                makeToast(getString(Res.string.added_to_youtube_playlist))
+                                makeToast(
+                                    getString(
+                                        if (it == YouTubePlaylistAdd.ALREADY_IN_PLAYLIST) {
+                                            Res.string.already_in_youtube_playlist
+                                        } else {
+                                            Res.string.added_to_youtube_playlist
+                                        },
+                                    ),
+                                )
                             },
                             onError = {
                                 makeToast(getString(Res.string.error_occurred))
@@ -306,6 +315,7 @@ class NowPlayingBottomSheetViewModel(
                                 successMessage = getString(Res.string.added_to_playlist),
                                 updatedYtMessage = getString(Res.string.added_to_youtube_playlist),
                                 errorMessage = getString(Res.string.error),
+                                alreadyInYtMessage = getString(Res.string.already_in_youtube_playlist),
                             ).collectLatestResource(
                                 onSuccess = {
                                     makeToast(it ?: getString(Res.string.added_to_playlist))

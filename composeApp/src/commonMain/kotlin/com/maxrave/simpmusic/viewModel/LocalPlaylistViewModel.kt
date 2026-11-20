@@ -70,6 +70,7 @@ import simpmusic.composeapp.generated.resources.add_to_queue
 import simpmusic.composeapp.generated.resources.added_to_playlist
 import simpmusic.composeapp.generated.resources.added_to_queue
 import simpmusic.composeapp.generated.resources.added_to_youtube_playlist
+import simpmusic.composeapp.generated.resources.already_in_youtube_playlist
 import simpmusic.composeapp.generated.resources.can_t_add_to_youtube_playlist
 import simpmusic.composeapp.generated.resources.can_t_delete_from_youtube_playlist
 import simpmusic.composeapp.generated.resources.delete
@@ -786,6 +787,7 @@ class LocalPlaylistViewModel(
                         getString(Res.string.added_to_playlist),
                         getString(Res.string.added_to_youtube_playlist),
                         getString(Res.string.can_t_add_to_youtube_playlist),
+                        getString(Res.string.already_in_youtube_playlist),
                     ).collectLatestResource(
                         onSuccess = {
                             makeToast(it)
