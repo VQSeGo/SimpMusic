@@ -134,25 +134,26 @@ class HomeViewModel(
             }
             // One subscription loads Home: at start, and again when the region, the language, the
             // session or the mood chip changes. The settings store re-emits on any write, hence the dedupe.
-            // The cookie seen by the last load that got past the wait below; null until the first one.
-            var loadedCookie: String? = null
+            // The session seen by the last load that got past the wait below; null until the first one.
+            var loadedSession: HomeSession? = null
             combine(
                 dataStoreManager.location,
                 dataStoreManager.language,
-                dataStoreManager.cookie,
+                // A channel of the same login changes only the page id and authuser, not the cookie.
+                combine(dataStoreManager.cookie, dataStoreManager.pageId, dataStoreManager.authUser, ::HomeSession),
                 params,
-            ) { location, language, cookie, params ->
-                HomeInputs(location, language, cookie, params)
+            ) { location, language, session, params ->
+                HomeInputs(location, language, session, params)
             }.distinctUntilChanged()
                 .collectLatest { inputs ->
-                    if (loadedCookie != inputs.cookie) {
+                    if (loadedSession != inputs.session) {
                         _accountInfo.value =
                             Pair(
                                 dataStoreManager.getString("AccountName").first(),
                                 dataStoreManager.getString("AccountThumbUrl").first(),
                             )
                     }
-                    if (loadedCookie != null && loadedCookie != inputs.cookie && inputs.cookie.isNotEmpty()) {
+                    if (loadedSession != null && loadedSession != inputs.session && inputs.session.cookie.isNotEmpty()) {
                         // Signed in while running: CommonRepositoryImpl's ytCookieJob puts the cookie on the
                         // client from the same store, give it a moment. At start there is nothing to wait for,
                         // CommonRepositoryImpl.init sets the stored cookie synchronously.
@@ -162,16 +163,22 @@ class HomeViewModel(
                         _homeItemList.value = listOf()
                         delay(1000)
                     }
-                    loadedCookie = inputs.cookie
+                    loadedSession = inputs.session
                     getHomeItemList(inputs.params)
                 }
         }
     }
 
+    private data class HomeSession(
+        val cookie: String,
+        val pageId: String,
+        val authUser: Int,
+    )
+
     private data class HomeInputs(
         val location: String,
         val language: String,
-        val cookie: String,
+        val session: HomeSession,
         val params: String?,
     )
 

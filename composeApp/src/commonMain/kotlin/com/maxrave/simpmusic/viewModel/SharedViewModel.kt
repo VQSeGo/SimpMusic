@@ -86,6 +86,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -1584,8 +1585,20 @@ class SharedViewModel(
                 }
             }
             launch {
-                dataStoreManager.loggedIn.distinctUntilChanged().collect { loggedIn ->
-                    if (loggedIn == TRUE) {
+                // Keyed on the session, not only on being signed in: switching to another account
+                // (or a channel of the same login) leaves loggedIn true, and the likes and follows of
+                // the previous account stayed until the next launch.
+                combine(
+                    dataStoreManager.loggedIn,
+                    dataStoreManager.cookie,
+                    dataStoreManager.pageId,
+                    dataStoreManager.authUser,
+                ) { loggedIn, cookie, pageId, authUser ->
+                    if (loggedIn == TRUE) Triple(cookie, pageId, authUser) else null
+                }.distinctUntilChanged().collectLatest { session ->
+                    if (session != null) {
+                        // CommonRepositoryImpl puts a changed session on the client from the same store.
+                        delay(1000)
                         songRepository.syncLikedSongs()
                         artistRepository.syncFollowedArtists()
                     }
