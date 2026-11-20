@@ -7,6 +7,8 @@ import com.maxrave.domain.data.entities.ArtistEntity
 import com.maxrave.domain.data.entities.DownloadState
 import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.extension.now
+import com.maxrave.domain.manager.DataStoreManager
+import com.maxrave.domain.mediaservice.handler.AutoDownloadGuard
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.mediaservice.handler.PlaylistType
 import com.maxrave.domain.mediaservice.handler.QueueData
@@ -50,6 +52,7 @@ class LibraryDynamicPlaylistViewModel(
     private val cacheRepository: CacheRepository,
 ) : BaseViewModel() {
     private val downloadUtils: DownloadHandler by inject()
+    private val dataStoreManager: DataStoreManager by inject()
 
     private val _listFavoriteSong: MutableStateFlow<List<SongEntity>> = MutableStateFlow(emptyList())
     val listFavoriteSong: StateFlow<List<SongEntity>> get() = _listFavoriteSong
@@ -237,6 +240,8 @@ class LibraryDynamicPlaylistViewModel(
             // Off the main thread: Desktop's removeDownload scans the downloads folder once per
             // song, and a selection can hold 25 of them.
             withContext(Dispatchers.IO) {
+                // Removed by hand: a downloaded playlist holding them does not fetch them again.
+                AutoDownloadGuard.markRemoved(dataStoreManager, videoIds)
                 videoIds.forEach { videoId ->
                     downloadUtils.removeDownload(videoId)
                     songRepository.updateDownloadState(videoId, DownloadState.STATE_NOT_DOWNLOADED)

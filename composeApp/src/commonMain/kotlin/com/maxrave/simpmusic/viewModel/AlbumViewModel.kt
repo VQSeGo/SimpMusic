@@ -11,6 +11,8 @@ import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.browse.artist.ResultAlbum
 import com.maxrave.domain.data.model.searchResult.songs.Artist
 import com.maxrave.domain.extension.now
+import com.maxrave.domain.manager.DataStoreManager
+import com.maxrave.domain.mediaservice.handler.AutoDownloadGuard
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.mediaservice.handler.PlaylistType
 import com.maxrave.domain.mediaservice.handler.QueueData
@@ -49,6 +51,7 @@ class AlbumViewModel(
     private val albumRepository: AlbumRepository,
 ) : BaseViewModel() {
     private val downloadUtils: DownloadHandler by inject<DownloadHandler>()
+    private val dataStoreManager: DataStoreManager by inject<DataStoreManager>()
     private val _uiState: MutableStateFlow<AlbumUIState> = MutableStateFlow(AlbumUIState.initial())
     val uiState: StateFlow<AlbumUIState> = _uiState
 
@@ -437,6 +440,8 @@ class AlbumViewModel(
                 return@launch
             }
             albumRepository.updateAlbumDownloadState(uiState.value.browseId, DownloadState.STATE_DOWNLOADING)
+            // The user asks for the whole album, tracks whose download they removed included.
+            AutoDownloadGuard.clearRemoved(dataStoreManager, listJob.map { it.videoId })
             listJob.forEach {
                 log("Download: ${it.videoId} ${it.thumbnails}")
                 downloadUtils.downloadTrack(

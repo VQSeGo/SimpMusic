@@ -16,6 +16,7 @@ import com.maxrave.domain.data.player.EightDEffect
 import com.maxrave.domain.data.player.ReverbPreset
 import com.maxrave.domain.extension.toNetScapeString
 import com.maxrave.domain.manager.DataStoreManager
+import com.maxrave.domain.mediaservice.handler.AutoDownloadGuard
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.mediaservice.handler.downloadNotificationsEnabled
 import com.maxrave.domain.mediaservice.handler.setDownloadNotificationsEnabled
@@ -829,6 +830,8 @@ class SettingsViewModel(
         viewModelScope.launch {
             cacheRepository.clearCache(Config.DOWNLOAD_CACHE)
             songRepository.getDownloadedSongs().singleOrNull()?.let { songs ->
+                // Cleared by hand: a downloaded playlist holding them does not fetch them again.
+                AutoDownloadGuard.markRemoved(dataStoreManager, songs.map { it.videoId })
                 songs.forEach { song ->
                     songRepository.updateDownloadState(song.videoId, DownloadState.STATE_NOT_DOWNLOADED)
                 }

@@ -14,6 +14,8 @@ import com.maxrave.domain.data.model.browse.playlist.Author
 import com.maxrave.domain.data.model.browse.playlist.PlaylistBrowse
 import com.maxrave.domain.data.model.browse.playlist.PlaylistState
 import com.maxrave.domain.extension.now
+import com.maxrave.domain.manager.DataStoreManager
+import com.maxrave.domain.mediaservice.handler.AutoDownloadGuard
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.mediaservice.handler.PlaylistType
 import com.maxrave.domain.mediaservice.handler.QueueData
@@ -72,6 +74,7 @@ class PlaylistViewModel(
     private val playlistRepository: PlaylistRepository,
 ) : BaseViewModel() {
     val downloadUtils: DownloadHandler by inject<DownloadHandler>()
+    private val dataStoreManager: DataStoreManager by inject<DataStoreManager>()
     private var _uiState = MutableStateFlow<PlaylistUIState>(Loading)
     val uiState: StateFlow<PlaylistUIState> = _uiState
 
@@ -130,8 +133,18 @@ class PlaylistViewModel(
                                             if (state == STATE_DOWNLOADED && listSongs.isNotEmpty()) {
                                                 listSongs.filter { it.downloadState != STATE_DOWNLOADED }.let { notDownloaded ->
                                                     if (notDownloaded.isNotEmpty()) {
-                                                        downloadTracks(notDownloaded.map { it.videoId })
-                                                        updatePlaylistDownloadState(id, STATE_DOWNLOADING)
+                                                        // Not a track whose download the user removed, and each track
+                                                        // only once per launch (see AutoDownloadGuard).
+                                                        val toQueue =
+                                                            AutoDownloadGuard.pick(
+                                                                dataStoreManager,
+                                                                notDownloaded.map { it.videoId },
+                                                                listSongs.filter { it.downloadState == STATE_DOWNLOADED }.map { it.videoId },
+                                                            )
+                                                        if (toQueue.isNotEmpty()) {
+                                                            downloadTracks(toQueue)
+                                                            updatePlaylistDownloadState(id, STATE_DOWNLOADING)
+                                                        }
                                                     } else {
                                                         updatePlaylistDownloadState(id, STATE_DOWNLOADED)
                                                     }
@@ -740,6 +753,8 @@ class PlaylistViewModel(
             makeToast(getString(Res.string.downloading))
             updatePlaylistDownloadState(id, STATE_DOWNLOADING)
             getFullTracks { tracks ->
+                // The user asks for all of them, those whose download they removed too.
+                viewModelScope.launch { AutoDownloadGuard.clearRemoved(dataStoreManager, tracks.map { it.videoId }) }
                 tracks.forEach {
                     viewModelScope.launch {
                         downloadUtils.downloadTrack(it.videoId, it.title, it.thumbnails?.lastOrNull()?.url ?: "")

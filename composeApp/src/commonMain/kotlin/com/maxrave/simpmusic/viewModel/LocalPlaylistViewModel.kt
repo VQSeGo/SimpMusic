@@ -26,6 +26,7 @@ import com.maxrave.domain.data.entities.SongEntity
 import com.maxrave.domain.data.entities.collectionDownloadState
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.manager.DataStoreManager
+import com.maxrave.domain.mediaservice.handler.AutoDownloadGuard
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.mediaservice.handler.PlaylistType
 import com.maxrave.domain.mediaservice.handler.QueueData
@@ -174,8 +175,18 @@ class LocalPlaylistViewModel(
                                                 ) {
                                                     updatePlaylistDownloadState(uiState.value.id, STATE_DOWNLOADING)
                                                 } else if (notDownloadedList.isNotEmpty()) {
-                                                    updatePlaylistDownloadState(uiState.value.id, STATE_DOWNLOADING)
-                                                    downloadTracks(notDownloadedList)
+                                                    // Not a track whose download the user removed, and each track
+                                                    // only once per launch (see AutoDownloadGuard).
+                                                    val toQueue =
+                                                        AutoDownloadGuard.pick(
+                                                            dataStoreManager,
+                                                            notDownloadedList,
+                                                            fullTracks.filter { it.downloadState == STATE_DOWNLOADED }.map { it.videoId },
+                                                        )
+                                                    if (toQueue.isNotEmpty()) {
+                                                        updatePlaylistDownloadState(uiState.value.id, STATE_DOWNLOADING)
+                                                        downloadTracks(toQueue)
+                                                    }
                                                 }
                                             }
                                     }
@@ -981,6 +992,8 @@ class LocalPlaylistViewModel(
             val fullTracks = localPlaylistRepository.getFullPlaylistTracks(id = uiState.value.id)
             val listJob = fullTracks.filter { it.downloadState != STATE_DOWNLOADED }.map { it.videoId }
             if (listJob.isNotEmpty()) {
+                // The user asks for all of them, those whose download they removed too.
+                AutoDownloadGuard.clearRemoved(dataStoreManager, listJob)
                 downloadTracks(listJob)
                 downloadFullPlaylistState(uiState.value.id, listJob)
             } else if (fullTracks.isNotEmpty() && fullTracks.all { it.downloadState == STATE_DOWNLOADED }) {

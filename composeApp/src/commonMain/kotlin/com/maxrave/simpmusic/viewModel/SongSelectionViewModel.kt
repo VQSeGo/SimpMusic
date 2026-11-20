@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.maxrave.domain.data.entities.DownloadState
 import com.maxrave.domain.data.entities.LocalPlaylistEntity
 import com.maxrave.domain.data.entities.SongEntity
+import com.maxrave.domain.manager.DataStoreManager
+import com.maxrave.domain.mediaservice.handler.AutoDownloadGuard
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.repository.LocalPlaylistRepository
 import com.maxrave.domain.repository.SongRepository
@@ -39,6 +41,7 @@ class SongSelectionViewModel(
     private val localPlaylistRepository: LocalPlaylistRepository,
 ) : BaseViewModel() {
     private val downloadUtils: DownloadHandler by inject()
+    private val dataStoreManager: DataStoreManager by inject()
 
     val listLocalPlaylist: StateFlow<List<LocalPlaylistEntity>> =
         localPlaylistRepository
@@ -89,6 +92,7 @@ class SongSelectionViewModel(
                     it.downloadState == DownloadState.STATE_NOT_DOWNLOADED
                 }
             if (pending.isEmpty()) return@launch
+            AutoDownloadGuard.clearRemoved(dataStoreManager, pending.map { it.videoId })
             pending.forEach { song ->
                 songRepository.updateDownloadState(
                     videoId = song.videoId,

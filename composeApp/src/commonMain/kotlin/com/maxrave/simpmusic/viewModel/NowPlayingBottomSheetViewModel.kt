@@ -10,6 +10,7 @@ import com.maxrave.domain.data.model.searchResult.songs.Album
 import com.maxrave.domain.data.model.searchResult.songs.Artist
 import com.maxrave.domain.data.model.streams.YouTubeWatchEndpoint
 import com.maxrave.domain.manager.DataStoreManager
+import com.maxrave.domain.mediaservice.handler.AutoDownloadGuard
 import com.maxrave.domain.mediaservice.handler.DownloadHandler
 import com.maxrave.domain.mediaservice.handler.PlaylistType
 import com.maxrave.domain.mediaservice.handler.QueueData
@@ -256,6 +257,7 @@ class NowPlayingBottomSheetViewModel(
                 is NowPlayingBottomSheetUIEvent.Download -> {
                     when (songUIState.downloadState) {
                         DownloadState.STATE_NOT_DOWNLOADED -> {
+                            AutoDownloadGuard.clearRemoved(dataStoreManager, listOf(songUIState.videoId))
                             songRepository.updateDownloadState(
                                 videoId = songUIState.videoId,
                                 downloadState = DownloadState.STATE_PREPARING,
@@ -269,6 +271,7 @@ class NowPlayingBottomSheetViewModel(
                         }
 
                         DownloadState.STATE_PREPARING, DownloadState.STATE_DOWNLOADING -> {
+                            AutoDownloadGuard.markRemoved(dataStoreManager, listOf(songUIState.videoId))
                             downloadUtils.removeDownload(songUIState.videoId)
                             songRepository.updateDownloadState(
                                 songUIState.videoId,
@@ -278,6 +281,7 @@ class NowPlayingBottomSheetViewModel(
                         }
 
                         DownloadState.STATE_DOWNLOADED -> {
+                            AutoDownloadGuard.markRemoved(dataStoreManager, listOf(songUIState.videoId))
                             downloadUtils.removeDownload(songUIState.videoId)
                             songRepository.updateDownloadState(
                                 songUIState.videoId,
