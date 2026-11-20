@@ -184,30 +184,13 @@ class SearchViewModel(
         }
     }
 
-    fun searchSongs(query: String) {
-        _searchScreenUIState.value = SearchScreenUIState.Loading
-        viewModelScope.launch {
-            searchRepository.getSearchDataSong(query).collect { values ->
-                when (values) {
-                    is Resource.Success -> {
-                        values.data?.let { songsList ->
-                            _searchScreenState.update { state ->
-                                state.copy(searchSongsResult = songsList)
-                            }
-                        }
-                        _searchScreenUIState.value = SearchScreenUIState.Success
-                    }
-
-                    is Resource.Error -> {
-                        _searchScreenUIState.value = SearchScreenUIState.Error
-                    }
-                }
-            }
-        }
-    }
+    // The search running now. A new one cancels it: two searches in a row used to race, and the
+    // slower one, often the older query, wrote its results (and, for "all", its chip) last.
+    private var searchJob: Job? = null
 
     fun searchAll(query: String): Job {
         _searchScreenUIState.value = SearchScreenUIState.Loading
+        searchJob?.cancel()
         return viewModelScope.launch {
             var song = ArrayList<SongsResult>()
             val video = ArrayList<VideosResult>()
@@ -216,12 +199,17 @@ class SearchViewModel(
             var playlist = ArrayList<PlaylistsResult>()
             var featuredPlaylist = ArrayList<PlaylistsResult>()
             val temp: ArrayList<SearchResultType> = ArrayList()
+            // Without a single answer (offline) this is an error with Retry, not "no results found".
+            var anySuccess = false
 
             val job1 =
                 launch {
                     searchRepository.getSearchDataSong(query).collect { values ->
                         when (values) {
-                            is Resource.Success -> values.data?.let { song = it }
+                            is Resource.Success -> values.data?.let {
+                                anySuccess = true
+                                song = it
+                            }
                             is Resource.Error -> {}
                         }
                     }
@@ -230,7 +218,10 @@ class SearchViewModel(
                 launch {
                     searchRepository.getSearchDataArtist(query).collect { values ->
                         when (values) {
-                            is Resource.Success -> values.data?.let { artist = it }
+                            is Resource.Success -> values.data?.let {
+                                anySuccess = true
+                                artist = it
+                            }
                             is Resource.Error -> {}
                         }
                     }
@@ -241,7 +232,10 @@ class SearchViewModel(
                         .getSearchDataAlbum(query)
                         .collect { values ->
                             when (values) {
-                                is Resource.Success -> values.data?.let { album = it }
+                                is Resource.Success -> values.data?.let {
+                                    anySuccess = true
+                                    album = it
+                                }
                                 is Resource.Error -> {}
                             }
                         }
@@ -250,7 +244,10 @@ class SearchViewModel(
                 launch {
                     searchRepository.getSearchDataPlaylist(query).collect { values ->
                         when (values) {
-                            is Resource.Success -> values.data?.let { playlist = it }
+                            is Resource.Success -> values.data?.let {
+                                anySuccess = true
+                                playlist = it
+                            }
                             is Resource.Error -> {}
                         }
                     }
@@ -259,7 +256,10 @@ class SearchViewModel(
                 launch {
                     searchRepository.getSearchDataVideo(query).collect { values ->
                         when (values) {
-                            is Resource.Success -> values.data?.let { video.addAll(it) }
+                            is Resource.Success -> values.data?.let {
+                                anySuccess = true
+                                video.addAll(it)
+                            }
                             is Resource.Error -> {}
                         }
                     }
@@ -268,7 +268,10 @@ class SearchViewModel(
                 launch {
                     searchRepository.getSearchDataFeaturedPlaylist(query).collect { values ->
                         when (values) {
-                            is Resource.Success -> values.data?.let { featuredPlaylist = it }
+                            is Resource.Success -> values.data?.let {
+                                anySuccess = true
+                                featuredPlaylist = it
+                            }
                             is Resource.Error -> {}
                         }
                     }
@@ -279,6 +282,10 @@ class SearchViewModel(
             job4.join()
             job5.join()
             job6.join()
+            if (!anySuccess) {
+                _searchScreenUIState.value = SearchScreenUIState.Error
+                return@launch
+            }
 
             try {
                 if (artist.size >= 3) {
@@ -300,8 +307,8 @@ class SearchViewModel(
                 }
 
                 _searchScreenState.update { state ->
+                    // The chip is left as it is: one tapped while this was loading used to jump back to "all".
                     state.copy(
-                        searchType = SearchType.ALL,
                         searchAllResult = temp,
                         searchSongsResult = song,
                         searchArtistsResult = artist,
@@ -316,7 +323,7 @@ class SearchViewModel(
                 Logger.e("SearchViewModel", "searchAll failed: ${e.message}", e)
                 _searchScreenUIState.value = SearchScreenUIState.Error
             }
-        }
+        }.also { searchJob = it }
     }
 
     fun suggestQuery(query: String) {
@@ -343,136 +350,11 @@ class SearchViewModel(
         }
     }
 
-    fun searchAlbums(query: String) {
-        _searchScreenUIState.value = SearchScreenUIState.Loading
-        viewModelScope.launch {
-            searchRepository.getSearchDataAlbum(query).collect { values ->
-                when (values) {
-                    is Resource.Success -> {
-                        values.data?.let { albumsList ->
-                            _searchScreenState.update { state ->
-                                state.copy(
-                                    searchType = SearchType.ALBUMS,
-                                    searchAlbumsResult = albumsList,
-                                )
-                            }
-                        }
-                        _searchScreenUIState.value = SearchScreenUIState.Success
-                    }
-
-                    is Resource.Error -> {
-                        _searchScreenUIState.value = SearchScreenUIState.Error
-                    }
-                }
-            }
-        }
-    }
-
-    fun searchFeaturedPlaylist(query: String) {
-        _searchScreenUIState.value = SearchScreenUIState.Loading
-        viewModelScope.launch {
-            searchRepository.getSearchDataFeaturedPlaylist(query).collect { values ->
-                when (values) {
-                    is Resource.Success -> {
-                        values.data?.let { featuredPlaylistList ->
-                            _searchScreenState.update { state ->
-                                state.copy(
-                                    searchType = SearchType.FEATURED_PLAYLISTS,
-                                    searchFeaturedPlaylistsResult = featuredPlaylistList,
-                                )
-                            }
-                        }
-                        _searchScreenUIState.value = SearchScreenUIState.Success
-                    }
-
-                    is Resource.Error -> {
-                        _searchScreenUIState.value = SearchScreenUIState.Error
-                    }
-                }
-            }
-        }
-    }
-
-    fun searchArtists(query: String) {
-        _searchScreenUIState.value = SearchScreenUIState.Loading
-        viewModelScope.launch {
-            searchRepository.getSearchDataArtist(query).collect { values ->
-                when (values) {
-                    is Resource.Success -> {
-                        values.data?.let { artistsList ->
-                            _searchScreenState.update { state ->
-                                state.copy(
-                                    searchType = SearchType.ARTISTS,
-                                    searchArtistsResult = artistsList,
-                                )
-                            }
-                        }
-                        _searchScreenUIState.value = SearchScreenUIState.Success
-                    }
-
-                    is Resource.Error -> {
-                        _searchScreenUIState.value = SearchScreenUIState.Error
-                    }
-                }
-            }
-        }
-    }
-
-    fun searchPlaylists(query: String) {
-        _searchScreenUIState.value = SearchScreenUIState.Loading
-        viewModelScope.launch {
-            searchRepository.getSearchDataPlaylist(query).collect { values ->
-                when (values) {
-                    is Resource.Success -> {
-                        values.data?.let { playlistsList ->
-                            _searchScreenState.update { state ->
-                                state.copy(
-                                    searchType = SearchType.PLAYLISTS,
-                                    searchPlaylistsResult = playlistsList,
-                                )
-                            }
-                        }
-                        _searchScreenUIState.value = SearchScreenUIState.Success
-                    }
-
-                    is Resource.Error -> {
-                        _searchScreenUIState.value = SearchScreenUIState.Error
-                    }
-                }
-            }
-        }
-    }
-
-    fun searchVideos(query: String) {
-        _searchScreenUIState.value = SearchScreenUIState.Loading
-        viewModelScope.launch {
-            searchRepository.getSearchDataVideo(query).collect { values ->
-                when (values) {
-                    is Resource.Success -> {
-                        values.data?.let { videosList ->
-                            _searchScreenState.update { state ->
-                                state.copy(
-                                    searchType = SearchType.VIDEOS,
-                                    searchVideosResult = videosList,
-                                )
-                            }
-                        }
-                        _searchScreenUIState.value = SearchScreenUIState.Success
-                    }
-
-                    is Resource.Error -> {
-                        _searchScreenUIState.value = SearchScreenUIState.Error
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * Gets back the results this screen was showing after the ViewModel was made again (the Android
      * activity re-creates the ViewModel module on every rotation, so the results are gone while the
      * screen's saved query and chip survive). One search for everything — the chips filter its
-     * lists — and then the chip, which a finished [searchAll] resets to "all".
+     * lists — and then the chip.
      */
     fun restoreSearch(
         query: String,
