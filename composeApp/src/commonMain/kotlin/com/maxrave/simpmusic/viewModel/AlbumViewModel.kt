@@ -346,28 +346,49 @@ class AlbumViewModel(
             }
         collectDownloadStateJob =
             viewModelScope.launch {
-                downloadUtils.downloadTask.collectLatest { downloadTask ->
-                    // An empty list is not a downloaded album.
-                    if (uiState.value.listTrack.isEmpty()) return@collectLatest
-                    var count = 0
-                    uiState.value.listTrack.forEach { track ->
-                        if (downloadTask[track.videoId] == DownloadState.STATE_DOWNLOADED ||
-                            track.videoId in uiState.value.downloadedTwins
-                        ) {
-                            count++
-                        }
-                    }
-                    if (count == uiState.value.listTrack.size) {
-                        albumRepository.updateAlbumDownloadState(uiState.value.browseId, DownloadState.STATE_DOWNLOADED)
-                        _uiState.update {
-                            it.copy(
-                                downloadState = DownloadState.STATE_DOWNLOADED,
+                // A new batch, a new watch: see DownloadBatchWatch for why "not downloaded" is not read at once.
+                val watch = DownloadBatchWatch()
+                combine(
+                    downloadUtils.downloadTask,
+                    _uiState
+                        .map { state ->
+                            AlbumDownloadView(
+                                trackIds = state.listTrack.map { it.videoId },
+                                twinIds = state.downloadedTwins.keys,
+                                mark = state.downloadState,
                             )
+                        }.distinctUntilChanged(),
+                ) { downloadTask, view ->
+                    view.trackIds.map { id ->
+                        if (id in view.twinIds) DownloadState.STATE_DOWNLOADED else downloadTask[id]
+                    } to view.mark
+                }.distinctUntilChanged()
+                    .collectLatest { (trackStates, mark) ->
+                        // An empty list is not a downloaded album.
+                        if (trackStates.isEmpty()) return@collectLatest
+                        val browseId = uiState.value.browseId
+                        if (trackStates.all { it == DownloadState.STATE_DOWNLOADED }) {
+                            if (mark != DownloadState.STATE_DOWNLOADED) {
+                                albumRepository.updateAlbumDownloadState(browseId, DownloadState.STATE_DOWNLOADED)
+                                _uiState.update { it.copy(downloadState = DownloadState.STATE_DOWNLOADED) }
+                            }
+                        } else if (watch.markShouldEnd(trackStates, mark)) {
+                            // The batch is over and a track is missing (failed, gone, closed in the region):
+                            // the album stops "downloading" and the button can try again.
+                            if (uiState.value.browseId == browseId && uiState.value.downloadState == DownloadState.STATE_DOWNLOADING) {
+                                albumRepository.updateAlbumDownloadState(browseId, DownloadState.STATE_NOT_DOWNLOADED)
+                                _uiState.update { it.copy(downloadState = DownloadState.STATE_NOT_DOWNLOADED) }
+                            }
                         }
                     }
-                }
             }
     }
+
+    private data class AlbumDownloadView(
+        val trackIds: List<String>,
+        val twinIds: Set<String>,
+        val mark: Int,
+    )
 
     /** The track as played: the downloaded copy from another edition of the album where there is one. */
     private fun Track.asPlayed(): Track = uiState.value.downloadedTwins[videoId]?.toTrack() ?: this

@@ -193,6 +193,36 @@ class LocalPlaylistViewModel(
                             }
                         }
                 }
+            // A playlist marked "downloading" whose batch is over with a track missing (failed, gone, closed in
+            // the region) goes back to "not downloaded", so the button can try again. A new mark or playlist,
+            // a new watch (see DownloadBatchWatch).
+            launch {
+                uiState
+                    .map { it.id to it.downloadState }
+                    .distinctUntilChanged()
+                    .collectLatest { (id, mark) ->
+                        if (mark != STATE_DOWNLOADING) return@collectLatest
+                        val trackIds = localPlaylistRepository.getFullPlaylistTracks(id = id).map { it.videoId }
+                        val watch = DownloadBatchWatch()
+                        downloadUtils.downloadTask
+                            .map { task -> trackIds.map { task[it] } }
+                            .distinctUntilChanged()
+                            .collectLatest { trackStates ->
+                                if (watch.markShouldEnd(trackStates, mark) &&
+                                    uiState.value.id == id &&
+                                    uiState.value.downloadState == STATE_DOWNLOADING
+                                ) {
+                                    // downloadTask lists this run's downloads only (desktop): the songs
+                                    // themselves say whether the playlist is complete.
+                                    val complete =
+                                        localPlaylistRepository
+                                            .getFullPlaylistTracks(id = id)
+                                            .let { full -> full.isNotEmpty() && full.all { it.downloadState == STATE_DOWNLOADED } }
+                                    updatePlaylistDownloadState(id, if (complete) STATE_DOWNLOADED else STATE_NOT_DOWNLOADED)
+                                }
+                            }
+                    }
+            }
             val resetSuggestions =
                 launch {
                     uiState

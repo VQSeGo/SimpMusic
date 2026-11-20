@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.maxrave.common.Config
 import com.maxrave.domain.data.entities.DownloadState.STATE_DOWNLOADED
 import com.maxrave.domain.data.entities.DownloadState.STATE_DOWNLOADING
+import com.maxrave.domain.data.entities.DownloadState.STATE_NOT_DOWNLOADED
 import com.maxrave.domain.data.entities.PlaylistEntity
 import com.maxrave.domain.data.entities.collectionDownloadState
 import com.maxrave.domain.data.model.browse.album.Track
@@ -43,6 +44,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
@@ -152,14 +154,39 @@ class PlaylistViewModel(
                                             }
                                             // Per-track states, not the raw audio/video pairs: a clip counts as
                                             // downloaded once its audio is, the video half comes on top.
-                                            downloadUtils.downloadTask.collectLatest { task ->
-                                                val resolved = collectionDownloadState(tracks.map { task[it.videoId] })
-                                                if ((resolved == STATE_DOWNLOADING || resolved == STATE_DOWNLOADED) &&
-                                                    resolved != playlistEntity.value?.downloadState
-                                                ) {
-                                                    updatePlaylistDownloadState(id, resolved)
+                                            // A new batch, a new watch (see DownloadBatchWatch).
+                                            val watch = DownloadBatchWatch()
+                                            downloadUtils.downloadTask
+                                                .map { task -> tracks.map { task[it.videoId] } }
+                                                .distinctUntilChanged()
+                                                .collectLatest { trackStates ->
+                                                    val resolved = collectionDownloadState(trackStates)
+                                                    val mark = playlistEntity.value?.downloadState ?: state
+                                                    if ((resolved == STATE_DOWNLOADING || resolved == STATE_DOWNLOADED) &&
+                                                        resolved != mark
+                                                    ) {
+                                                        updatePlaylistDownloadState(id, resolved)
+                                                    } else if (watch.markShouldEnd(trackStates, mark) &&
+                                                        playlistEntity.value?.downloadState == STATE_DOWNLOADING
+                                                    ) {
+                                                        // The batch is over and a track is missing (failed, gone,
+                                                        // closed in the region): stop "downloading", so the
+                                                        // button can try again.
+                                                        // downloadTask lists this run's downloads only (desktop): the
+                                                        // songs themselves say whether the playlist is complete.
+                                                        val downloadedIds =
+                                                            songRepository
+                                                                .getSongsByListVideoId(tracks.toListVideoId())
+                                                                .firstOrNull()
+                                                                .orEmpty()
+                                                                .filter { it.downloadState == STATE_DOWNLOADED }
+                                                                .mapTo(HashSet()) { it.videoId }
+                                                        updatePlaylistDownloadState(
+                                                            id,
+                                                            if (tracks.all { it.videoId in downloadedIds }) STATE_DOWNLOADED else STATE_NOT_DOWNLOADED,
+                                                        )
+                                                    }
                                                 }
-                                            }
                                         }
                                 }
                             }
