@@ -209,21 +209,35 @@ class SettingsViewModel(
 
     fun getAudioSessionId() = mediaPlayerHandler.player.audioSessionId
 
+    // The setting collectors below never finish, and getData() runs each time the screen comes back
+    // (from Credits, a login, the log): every return used to start another ~35 of them on this
+    // ViewModel. They are started once; the one-off reads (sizes, last update check) run each time.
+    private var settingCollectorsStarted = false
+
     fun getData() {
+        getPlayerCacheSize()
+        getDownloadedCacheSize()
+        getLastCheckForUpdate()
+        viewModelScope.launch {
+            calculateDataFraction(
+                cacheRepository,
+            )?.let {
+                _fraction.value = it
+            }
+        }
+        if (settingCollectorsStarted) return
+        settingCollectorsStarted = true
         getLocation()
         getLanguage()
         getQuality()
-        getPlayerCacheSize()
-        getDownloadedCacheSize()
         getPlayerCacheLimit()
         getLoggedIn()
         getNormalizeVolume()
         getSkipSilent()
         getSavedPlaybackState()
         getSendBackToGoogle()
-        getLastCheckForUpdate()
         getTranslationLanguage()
-        getYoutubeSubtitleLanguage()
+        // getYoutubeSubtitleLanguage() is started in init.
         getUseTranslation()
         getPlayVideoInsteadOfAudio()
         getRadioAudioOnly()
@@ -247,13 +261,6 @@ class SettingsViewModel(
         getDownloadQuality()
         getVideoDownloadQuality()
         getLocalTrackingEnabled()
-        viewModelScope.launch {
-            calculateDataFraction(
-                cacheRepository,
-            )?.let {
-                _fraction.value = it
-            }
-        }
     }
 
     private fun getLocalTrackingEnabled() {
