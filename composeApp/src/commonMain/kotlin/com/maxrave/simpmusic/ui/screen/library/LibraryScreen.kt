@@ -93,6 +93,7 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import kotlinx.coroutines.flow.first
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import simpmusic.composeapp.generated.resources.Res
@@ -165,6 +166,19 @@ fun LibraryScreen(
             viewModel.setCurrentScreen(it)
             sharedViewModel.requestLibraryTab(null)
         }
+    }
+
+    // A chip that left the row (local tracking turned off for Wrapped, signed out for the YouTube
+    // playlists) kept its list on screen with no chip lit. Read from the flows, not the states above:
+    // those start at false and would throw the saved chip away on every start.
+    LaunchedEffect(currentFilter, localTrackingEnabled, loggedIn) {
+        val gone =
+            when (currentFilter) {
+                LibraryChipType.WRAPPED -> !viewModel.localTrackingEnabled.first()
+                LibraryChipType.YOUTUBE_MUSIC_PLAYLIST -> !viewModel.youtubeLoggedIn.first()
+                else -> false
+            }
+        if (gone) viewModel.setCurrentScreen(LibraryChipType.YOUR_LIBRARY)
     }
 
     LaunchedEffect(currentFilter) {
