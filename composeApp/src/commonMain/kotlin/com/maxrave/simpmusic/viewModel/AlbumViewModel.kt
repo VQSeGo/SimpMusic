@@ -65,20 +65,32 @@ class AlbumViewModel(
                 _uiState.map { it.listTrack to it.title }.distinctUntilChanged(),
                 songRepository.observeDownloadedSongs(),
             ) { (tracks, title), downloaded ->
-                findDownloadedTwins(tracks, downloaded, title)
+                findDownloadedTwins(tracks, downloaded, title) to downloaded.mapTo(HashSet()) { it.videoId }
             }.distinctUntilChanged()
-                .collectLatest { twins ->
+                .collectLatest { (twins, downloadedIds) ->
+                    // The song rows count, not only downloadTask: on desktop that map holds only this run's
+                    // downloads, so an album downloaded before a restart never showed as downloaded.
+                    val before = _uiState.value
                     _uiState.update { state ->
                         val everyTrackDownloaded =
                             state.listTrack.isNotEmpty() &&
                                 state.listTrack.all {
-                                    it.videoId in twins || downloadUtils.downloadTask.value[it.videoId] == DownloadState.STATE_DOWNLOADED
+                                    it.videoId in twins ||
+                                        it.videoId in downloadedIds ||
+                                        downloadUtils.downloadTask.value[it.videoId] == DownloadState.STATE_DOWNLOADED
                                 }
                         state.copy(
                             downloadedTwins = twins,
                             downloadState =
                                 if (everyTrackDownloaded) DownloadState.STATE_DOWNLOADED else state.downloadState,
                         )
+                    }
+                    val after = _uiState.value
+                    if (after.downloadState == DownloadState.STATE_DOWNLOADED &&
+                        before.downloadState != DownloadState.STATE_DOWNLOADED &&
+                        after.browseId.isNotEmpty()
+                    ) {
+                        albumRepository.updateAlbumDownloadState(after.browseId, DownloadState.STATE_DOWNLOADED)
                     }
                 }
         }
@@ -418,6 +430,9 @@ class AlbumViewModel(
                 }
             log("List job: $listJob")
             if (listJob.isEmpty()) {
+                // Every track is downloaded already: the album is, too (the button stayed on "download").
+                albumRepository.updateAlbumDownloadState(uiState.value.browseId, DownloadState.STATE_DOWNLOADED)
+                _uiState.update { it.copy(downloadState = DownloadState.STATE_DOWNLOADED) }
                 makeToast(getString(Res.string.downloaded))
                 return@launch
             }
