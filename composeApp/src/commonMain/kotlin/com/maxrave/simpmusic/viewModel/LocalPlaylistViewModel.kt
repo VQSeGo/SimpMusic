@@ -124,6 +124,7 @@ class LocalPlaylistViewModel(
     }
 
     private var newUpdateJob: Job? = null
+    private var downloadStateJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -600,14 +601,18 @@ class LocalPlaylistViewModel(
         listJob: List<String>,
     ) {
         if (listJob.isEmpty()) return
-        viewModelScope.launch {
-            downloadUtils.downloadTask.collect { download ->
-                val resolved = collectionDownloadState(listJob.map { download[it] })
-                if (resolved == null || resolved == uiState.value.downloadState) return@collect
-                localPlaylistRepository.updateLocalPlaylistDownloadState(resolved, id)
-                _uiState.update { it.copy(downloadState = resolved) }
+        // Each press of "download" collects anew: the earlier collection, still running, would go on
+        // writing the state of its own (older) list next to this one.
+        downloadStateJob?.cancel()
+        downloadStateJob =
+            viewModelScope.launch {
+                downloadUtils.downloadTask.collect { download ->
+                    val resolved = collectionDownloadState(listJob.map { download[it] })
+                    if (resolved == null || resolved == uiState.value.downloadState) return@collect
+                    localPlaylistRepository.updateLocalPlaylistDownloadState(resolved, id)
+                    _uiState.update { it.copy(downloadState = resolved) }
+                }
             }
-        }
     }
 
     private var _listSetVideoId: MutableStateFlow<List<SetVideoIdEntity>?> =
