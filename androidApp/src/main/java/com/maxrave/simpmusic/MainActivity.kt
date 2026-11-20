@@ -148,7 +148,10 @@ class MainActivity : AppCompatActivity() {
         }
         Logger.d("MainActivity", "onCreate: ")
         val data = (intent?.data ?: intent?.getStringExtra(Intent.EXTRA_TEXT)?.toUri())?.toKmpUriOrNull()
-        if (data != null) {
+        // Only on a fresh start: a recreated activity (rotation, a language or theme change) gets
+        // the same launch intent back, and handling it again replayed the shared track or reopened
+        // the linked screen over wherever the user had gone since.
+        if (data != null && savedInstanceState == null) {
             viewModel.setIntent(
                 GenericIntent(
                     action = intent.action,

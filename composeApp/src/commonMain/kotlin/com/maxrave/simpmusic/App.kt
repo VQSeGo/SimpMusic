@@ -254,6 +254,9 @@ fun App(
                 // would lose a navigation waiting on these reads.
                 val localTrackingOn = viewModel.getLocalTrackingEnabled().first() == TRUE
                 val youTubeLoggedIn = viewModel.getYouTubeLoggedIn().first() == TRUE
+                // Loaded here for the same reason: getString suspends, and after setIntent(null) the
+                // toast for an unsupported link was cancelled with the effect before it showed.
+                val unsupportedLink = getString(Res.string.this_link_is_not_supported)
                 viewModel.setIntent(null)
                 when (appPath) {
                     "watch" -> {
@@ -287,7 +290,7 @@ fun App(
                             if (it.startsWith("UC")) {
                                 navController.navigateOnce(ArtistDestination(channelId = it))
                             } else {
-                                viewModel.makeToast(getString(Res.string.this_link_is_not_supported))
+                                viewModel.makeToast(unsupportedLink)
                             }
                         }
                     }
@@ -309,7 +312,7 @@ fun App(
                             // named as LibraryChipType stores them (a launch banner points at Wrapped).
                             val tab = libraryTabOf(data)
                             if (!isAppLinkAvailable(appPath, tab, localTrackingOn, youTubeLoggedIn)) {
-                                viewModel.makeToast(getString(Res.string.this_link_is_not_supported))
+                                viewModel.makeToast(unsupportedLink)
                             } else {
                                 viewModel.requestLibraryTab(tab)
                                 navController.navigateOnce(LibraryDestination)
@@ -324,12 +327,12 @@ fun App(
                         if (isAppLinkAvailable(appPath, null, localTrackingOn, youTubeLoggedIn)) {
                             navController.navigateOnce(AnalyticsDestination)
                         } else {
-                            viewModel.makeToast(getString(Res.string.this_link_is_not_supported))
+                            viewModel.makeToast(unsupportedLink)
                         }
                     }
 
                     else -> {
-                        viewModel.makeToast(getString(Res.string.this_link_is_not_supported))
+                        viewModel.makeToast(unsupportedLink)
                     }
                 }
             } else {
@@ -391,6 +394,10 @@ fun App(
                         }
                     }
                 }
+                // Cleared last, once every branch above is done: a link left in the flow made the same
+                // link opened again an equal value that StateFlow drops, so a second share of the
+                // same track did nothing.
+                viewModel.setIntent(null)
             }
         }
     }
