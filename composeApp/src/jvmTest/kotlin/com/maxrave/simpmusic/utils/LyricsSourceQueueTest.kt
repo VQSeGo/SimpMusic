@@ -43,29 +43,35 @@ class LyricsSourceQueueTest {
     fun `unknown and repeated ids are skipped, missing sources join the end switched on`() {
         val queue = LyricsSourceQueue.decode("musixmatch:1,spotify:0,lrclib:0,spotify:1")!!
         assertEquals(listOf(SPOTIFY, LRCLIB, SIMPMUSIC, BETTER_LYRICS, YOUTUBE), queue.order())
-        assertEquals(listOf(SPOTIFY, LRCLIB), queue.off())
+        assertEquals(listOf(SPOTIFY, LRCLIB, BETTER_LYRICS), queue.off())
     }
 
     @Test
     fun `a string with no known id is every source in the default order`() {
         val queue = LyricsSourceQueue.decode("canvas:1")!!
         assertEquals(LyricsSource.entries, queue.order())
-        assertTrue(queue.off().isEmpty())
+        assertEquals(listOf(BETTER_LYRICS), queue.off())
     }
 
     @Test
     fun `migration puts the old main provider first and keeps the old fallback order`() {
         val queue = LyricsSourceQueue.migrate("lrclib", spotifyFallbackOn = true)
         assertEquals(listOf(LRCLIB, SIMPMUSIC, SPOTIFY, BETTER_LYRICS, YOUTUBE), queue.order())
-        assertTrue(queue.off().isEmpty())
+        assertEquals(listOf(BETTER_LYRICS), queue.off())
     }
 
     @Test
     fun `migration keeps Spotify off unless it was asked before`() {
-        assertEquals(listOf(SPOTIFY), LyricsSourceQueue.migrate("youtube", spotifyFallbackOn = false).off())
+        assertEquals(listOf(SPOTIFY, BETTER_LYRICS), LyricsSourceQueue.migrate("youtube", spotifyFallbackOn = false).off())
         val spotifyMain = LyricsSourceQueue.migrate("spotify", spotifyFallbackOn = false)
         assertEquals(SPOTIFY, spotifyMain.first().source)
-        assertTrue(spotifyMain.off().isEmpty())
+        assertEquals(listOf(BETTER_LYRICS), spotifyMain.off())
+    }
+
+    @Test
+    fun `BetterLyrics starts off even as the old main provider, but a saved switch is kept`() {
+        assertEquals(listOf(BETTER_LYRICS), LyricsSourceQueue.migrate("better_lyrics", spotifyFallbackOn = true).off())
+        assertTrue(LyricsSourceQueue.decode("better_lyrics:1")!!.first { it.source == BETTER_LYRICS }.enabled)
     }
 
     @Test
@@ -78,7 +84,7 @@ class LyricsSourceQueueTest {
     fun `a saved queue wins over the old settings`() {
         val queue = LyricsSourceQueue.resolve("youtube:1", oldMain = "lrclib", spotifyFallbackOn = false)
         assertEquals(YOUTUBE, queue.first().source)
-        assertTrue(queue.off().isEmpty())
+        assertEquals(listOf(BETTER_LYRICS), queue.off())
     }
 
     @Test

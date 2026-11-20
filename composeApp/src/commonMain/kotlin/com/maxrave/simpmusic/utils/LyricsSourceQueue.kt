@@ -11,14 +11,18 @@ import kotlinx.coroutines.flow.distinctUntilChanged
  * provider" setting stored, so that setting can be read into a queue. Declared in the order the old
  * chains fell back in (SimpMusic, Spotify, LRCLIB; BetterLyrics and YouTube were asked only as the
  * main provider): a source missing from a saved queue joins its end in this order.
+ *
+ * [onByDefault] is false for BetterLyrics: its API answers 401 "API key required" to anything not
+ * cached, so it starts switched off (the user can still turn it on).
  */
 enum class LyricsSource(
     val id: String,
+    val onByDefault: Boolean = true,
 ) {
     SIMPMUSIC(DataStoreManager.SIMPMUSIC),
     SPOTIFY(DataStoreManager.SPOTIFY),
     LRCLIB(DataStoreManager.LRCLIB),
-    BETTER_LYRICS(DataStoreManager.BETTER_LYRICS),
+    BETTER_LYRICS(DataStoreManager.BETTER_LYRICS, onByDefault = false),
     YOUTUBE(DataStoreManager.YOUTUBE),
     ;
 
@@ -45,7 +49,7 @@ object LyricsSourceQueue {
     /**
      * The saved queue, or null when nothing is saved. An id this build does not know (a removed source)
      * is skipped, so is a repeat of one already read; a source the saved string lacks (added after it
-     * was written) joins the end, switched on.
+     * was written) joins the end, switched on unless it is off by default.
      */
     fun decode(raw: String?): List<LyricsSourceEntry>? {
         if (raw.isNullOrBlank()) return null
@@ -56,13 +60,13 @@ object LyricsSourceQueue {
                 if (!seen.add(source)) return@mapNotNull null
                 LyricsSourceEntry(source, enabled = token.substringAfter(':', "1").trim() != "0")
             }
-        return saved + LyricsSource.entries.filter { it !in seen }.map { LyricsSourceEntry(it, enabled = true) }
+        return saved + LyricsSource.entries.filter { it !in seen }.map { LyricsSourceEntry(it, enabled = it.onByDefault) }
     }
 
     /**
      * The queue a build with one main provider had in effect: [oldMain] first, then the others in
      * declaration order. Spotify stays on only where the old build asked it — as the main provider, or
-     * with its Enable Spotify lyrics switch on; the rest are on.
+     * with its Enable Spotify lyrics switch on; the rest are on, except a source off by default.
      */
     fun migrate(
         oldMain: String?,
@@ -72,7 +76,9 @@ object LyricsSourceQueue {
         return (listOf(main) + LyricsSource.entries.filter { it != main }).map { source ->
             LyricsSourceEntry(
                 source,
-                enabled = source != LyricsSource.SPOTIFY || main == LyricsSource.SPOTIFY || spotifyFallbackOn,
+                enabled =
+                    source.onByDefault &&
+                        (source != LyricsSource.SPOTIFY || main == LyricsSource.SPOTIFY || spotifyFallbackOn),
             )
         }
     }
