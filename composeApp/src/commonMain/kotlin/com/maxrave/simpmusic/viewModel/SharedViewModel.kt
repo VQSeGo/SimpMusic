@@ -1286,6 +1286,8 @@ class SharedViewModel(
                     .firstOrNull()
                     ?.data
                     ?.albumIdOf(song)
+            // The search takes a few seconds: a track skipped meanwhile must not open the previous one's album.
+            if (nowPlayingState.value?.songEntity?.videoId != song.videoId) return@launch
             if (albumId != null) onFound(albumId) else makeToast(getString(Res.string.album_not_found))
         }
     }
