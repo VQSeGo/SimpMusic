@@ -256,6 +256,8 @@
     <string name="backup_create_success">Backup create success</string>
     <string name="backup_create_failed">Backup create failed</string>
     <string name="lyrics_sources">Lyrics sources</string>
+    <string name="lyrics_over_video">Lyrics over music videos</string>
+    <string name="lyrics_over_video_description">Show the lyrics on top of the video</string>
     <string name="lyrics_sources_description">Asked from the top down until one has the lyrics. Synced lyrics further down win over plain ones. Drag a row to move it (on a phone, touch and hold it first).</string>
     <string name="lyrics_sources_all_off">All sources are off</string>
     <string name="other_lyrics">Other lyrics</string>

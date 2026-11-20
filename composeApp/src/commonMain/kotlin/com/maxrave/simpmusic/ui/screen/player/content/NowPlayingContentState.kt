@@ -102,6 +102,8 @@ class NowPlayingContentState(
      * this is for anything that times WITHIN a line (the Apple Music lyric strip's word sweep).
      */
     val lyricsOffsetMs: Long = 0L,
+    /** The lyrics are drawn over a music video (the "Lyrics over music videos" setting). */
+    val videoLyricsOverlay: Boolean = false,
     /**
      * Width / height of the video now playing, 16:9 until the player knows it. Every style sizes
      * its video frame from this one value, so a frame and the spacer that measures it cannot drift.
@@ -147,6 +149,8 @@ class NowPlayingContentActions(
     /** Writes the lyrics timing offset of the track playing. */
     val onLyricsOffsetChange: (Int) -> Unit,
     val onEnterFullscreenVideo: () -> Unit,
+    /** Saves the "Lyrics over music videos" setting. */
+    val onVideoLyricsOverlayChange: (Boolean) -> Unit = {},
     /** Shows (true) or hides the video of the downloaded clip playing, see [NowPlayingContentState.downloadedClip]. */
     val onShowDownloadedClip: (Boolean) -> Unit = {},
     val onDismiss: () -> Unit,

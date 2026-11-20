@@ -203,6 +203,7 @@ fun NowPlayingScreenContent(
     // the elapsed-time readout keep the raw position: they report where the player is, while a
     // lyric reports what the ear is hearing, and those two are what the offset separates.
     val lyricsOffsetMs by sharedViewModel.getLyricsOffsetMs().collectAsStateWithLifecycle(0)
+    val videoLyricsOverlay by sharedViewModel.videoLyricsOverlay.collectAsStateWithLifecycle()
     val likeStatus by sharedViewModel.likeStatus.collectAsStateWithLifecycle()
     val isDislikePending by sharedViewModel.isDislikePending.collectAsStateWithLifecycle()
     // Apple Music style's quality line under the progress bar — see NowPlayingContentState.toAudioQualityLabel.
@@ -599,6 +600,7 @@ fun NowPlayingScreenContent(
             dismissIcon = dismissIcon,
             audioQualityLabel = formatState.toAudioQualityLabel(),
             lyricsOffsetMs = lyricsOffsetMs.toLong(),
+            videoLyricsOverlay = videoLyricsOverlay,
             videoAspectRatio = rememberVideoAspectRatio(MAIN_PLAYER) ?: 16f / 9,
             artworkSeed = artworkSeed?.takeIf { it.first == artworkSeedKey }?.second,
             downloadedClip = downloadedClip,
@@ -662,6 +664,7 @@ fun NowPlayingScreenContent(
             onShowAddToPlaylist = { showAddToPlaylistDirectly = true },
             onShowFullscreenLyrics = { showFullscreenLyrics = true },
             onLyricsOffsetChange = { sharedViewModel.setLyricsOffsetMs(it) },
+            onVideoLyricsOverlayChange = { sharedViewModel.setVideoLyricsOverlay(it) },
             onEnterFullscreenVideo = {
                 onDismiss()
                 navController.navigateOnce(FullscreenDestination)

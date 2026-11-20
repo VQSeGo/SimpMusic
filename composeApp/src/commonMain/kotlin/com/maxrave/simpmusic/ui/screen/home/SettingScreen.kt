@@ -254,6 +254,8 @@ import simpmusic.composeapp.generated.resources.login_sync_desktop_description
 import simpmusic.composeapp.generated.resources.login_sync_desktop_title
 import simpmusic.composeapp.generated.resources.login_sync_section
 import simpmusic.composeapp.generated.resources.lyrics
+import simpmusic.composeapp.generated.resources.lyrics_over_video
+import simpmusic.composeapp.generated.resources.lyrics_over_video_description
 import simpmusic.composeapp.generated.resources.lyrics_sources
 import simpmusic.composeapp.generated.resources.manage_your_youtube_accounts
 import simpmusic.composeapp.generated.resources.no_account
@@ -404,6 +406,7 @@ fun SettingScreen(
     val savePlaybackState by remember { viewModel.savedPlaybackState.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = false)
     val killServiceOnExit by remember { viewModel.killServiceOnExit.map { it == TRUE } }.collectAsStateWithLifecycle(initialValue = true)
     val lyricsSources by viewModel.lyricsSources.collectAsStateWithLifecycle()
+    val videoLyricsOverlay by sharedViewModel.videoLyricsOverlay.collectAsStateWithLifecycle()
     val youtubeSubtitleLanguage by viewModel.youtubeSubtitleLanguage.collectAsStateWithLifecycle()
     val preferredAudioLanguage by viewModel.preferredAudioLanguage.collectAsStateWithLifecycle()
     val spotifyLoggedIn by viewModel.spotifyLogIn.collectAsStateWithLifecycle()
@@ -1328,6 +1331,11 @@ fun SettingScreen(
                     title = stringResource(Res.string.lyrics_sources),
                     subtitle = lyricsSourcesSummary(lyricsSources),
                     onClick = { if (lyricsSources.isNotEmpty()) showLyricsSourcesDialog = true },
+                )
+                SettingItem(
+                    title = stringResource(Res.string.lyrics_over_video),
+                    subtitle = stringResource(Res.string.lyrics_over_video_description),
+                    switch = (videoLyricsOverlay to { sharedViewModel.setVideoLyricsOverlay(it) }),
                 )
 
                 SettingItem(

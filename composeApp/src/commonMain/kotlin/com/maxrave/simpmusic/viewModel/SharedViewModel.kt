@@ -148,6 +148,7 @@ import kotlin.time.TimeSource
 // DataStore key for the kotlin-footguns star prompt. Cleared on every version bump,
 // so the ask comes back after an update - same policy as OPEN_APP_TIME.
 private const val SHOW_ANALYTICS_TAB_KEY = "show_analytics_tab"
+private const val VIDEO_LYRICS_OVERLAY_KEY = "video_lyrics_overlay"
 
 // The lyrics source queue in the log: which source was asked for which track, and what it gave.
 private const val LYRICS_QUEUE_TAG = "LyricsQueue"
@@ -359,6 +360,18 @@ class SharedViewModel(
 
     fun setAnalyticsTabEnabled(show: Boolean) {
         putString(SHOW_ANALYTICS_TAB_KEY, show.toString())
+    }
+
+    /** Whether a music video shows the lyrics over the picture; off until the user turns it on. */
+    val videoLyricsOverlay: StateFlow<Boolean> =
+        dataStoreManager
+            .getString(VIDEO_LYRICS_OVERLAY_KEY)
+            .map { it == "true" }
+            .distinctUntilChanged()
+            .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun setVideoLyricsOverlay(show: Boolean) {
+        viewModelScope.launch { dataStoreManager.putString(VIDEO_LYRICS_OVERLAY_KEY, show.toString()) }
     }
 
     fun putString(

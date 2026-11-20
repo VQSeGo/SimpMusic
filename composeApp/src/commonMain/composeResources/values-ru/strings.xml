@@ -258,6 +258,8 @@
     <string name="backup_create_success">Резервное копирование создает успех</string>
     <string name="backup_create_failed">Не удалось создать резервную копию</string>
     <string name="lyrics_sources">Источники текстов</string>
+    <string name="lyrics_over_video">Текст поверх клипа</string>
+    <string name="lyrics_over_video_description">Показывать текст песни поверх видео</string>
     <string name="lyrics_sources_description">Спрашиваются сверху вниз, пока у одного не найдётся текст. Синхронизированный текст ниже по списку берётся вместо простого. Перетащите строку, чтобы переместить её (на телефоне сначала нажмите и удерживайте).</string>
     <string name="lyrics_sources_all_off">Все источники выключены</string>
     <string name="other_lyrics">Другой текст</string>

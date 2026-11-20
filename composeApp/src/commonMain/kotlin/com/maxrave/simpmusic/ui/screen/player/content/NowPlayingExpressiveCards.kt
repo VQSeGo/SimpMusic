@@ -261,9 +261,7 @@ internal fun ExpressiveArtworkCardPage(
                         visible = state.screenData.isVideo && state.shouldShowVideo,
                         modifier = Modifier.align(Alignment.Center),
                     ) {
-                        var internalShowSubtitle by rememberSaveable {
-                            mutableStateOf(true)
-                        }
+                        val internalShowSubtitle = state.videoLyricsOverlay
                         // The card already has the video's shape, so this simply fills it.
                         Box(
                             modifier =
@@ -388,7 +386,7 @@ internal fun ExpressiveArtworkCardPage(
                                             if (state.screenData.lyricsData != null) {
                                                 IconButton(
                                                     onClick = {
-                                                        internalShowSubtitle = !internalShowSubtitle
+                                                        actions.onVideoLyricsOverlayChange(!internalShowSubtitle)
                                                     },
                                                     modifier = Modifier.align(Alignment.BottomEnd),
                                                 ) {

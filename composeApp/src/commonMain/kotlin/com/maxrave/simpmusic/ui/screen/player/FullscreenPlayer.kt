@@ -185,9 +185,7 @@ fun FullscreenPlayer(
         }
     }
 
-    var shouldShowSubtitle by rememberSaveable {
-        mutableStateOf(true)
-    }
+    val shouldShowSubtitle by sharedViewModel.videoLyricsOverlay.collectAsStateWithLifecycle()
 
     Box {
         MediaPlayerViewWithSubtitle(
@@ -705,7 +703,7 @@ fun FullscreenPlayer(
                                                         CircleShape,
                                                     ),
                                             onClick = {
-                                                shouldShowSubtitle = !shouldShowSubtitle
+                                                sharedViewModel.setVideoLyricsOverlay(!shouldShowSubtitle)
                                             },
                                         ) {
                                             Crossfade(shouldShowSubtitle) {
