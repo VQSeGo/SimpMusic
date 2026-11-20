@@ -45,3 +45,12 @@ fun NavController.navigateOnce(
     val onStack = currentBackStack.value.mapTo(HashSet()) { it.id }
     openedRoutes.keys.retainAll(onStack)
 }
+
+/**
+ * A tap on the tab that is already selected while a screen opened from it sits on top: goes back down
+ * to the tab's own screen, as the desktop sidebar does. A plain navigate here pushed another copy of
+ * the tab over the album or artist, so Back then led into the album again instead of out of the tab.
+ */
+fun NavController.reopenTab(destination: Any) {
+    if (!popBackStack(destination, inclusive = false)) navigate(destination)
+}

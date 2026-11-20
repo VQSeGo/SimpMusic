@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.maxrave.simpmusic.ui.navigation.reopenTab
 import com.maxrave.domain.data.player.GenericMediaItem
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.ui.navigation.destination.home.AnalyticsDestination
@@ -133,6 +134,15 @@ actual fun FoldingBottomNavigationBar(
             selectedIndex = BottomNavScreen.Home.ordinal
         }
     }
+
+    // The highlighted tab follows the back stack, as in the desktop sidebar: system Back from Library
+    // to Home used to leave Library lit, and a link that opened Library left Home lit.
+    LaunchedEffect(currentBackStackEntry) {
+        val hierarchy = currentBackStackEntry?.destination?.hierarchy ?: return@LaunchedEffect
+        bottomNavScreens
+            .firstOrNull { screen -> hierarchy.any { it.hasRoute(screen.destination::class) } }
+            ?.let { selectedIndex = it.ordinal }
+    }
     var isExpanded by rememberSaveable {
         mutableStateOf(true)
     }
@@ -176,7 +186,7 @@ actual fun FoldingBottomNavigationBar(
             ) {
                 reloadDestinationIfNeeded(screen.destination::class)
             } else {
-                navController.navigate(screen.destination)
+                navController.reopenTab(screen.destination)
             }
         } else {
             selectedIndex = index

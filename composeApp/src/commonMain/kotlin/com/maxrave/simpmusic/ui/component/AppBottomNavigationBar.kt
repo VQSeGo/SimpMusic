@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.maxrave.simpmusic.ui.navigation.reopenTab
 import com.maxrave.simpmusic.extension.greyScale
 import com.maxrave.simpmusic.ui.navigation.destination.home.AnalyticsDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.HomeDestination
@@ -100,6 +101,15 @@ fun AppBottomNavigationBar(
             selectedIndex = BottomNavScreen.Home.ordinal
         }
     }
+
+    // The highlighted tab follows the back stack, as in the desktop sidebar: system Back from Library
+    // to Home used to leave Library lit, and a link that opened Library left Home lit.
+    LaunchedEffect(currentBackStackEntry) {
+        val hierarchy = currentBackStackEntry?.destination?.hierarchy ?: return@LaunchedEffect
+        bottomNavScreens
+            .firstOrNull { screen -> hierarchy.any { it.hasRoute(screen.destination::class) } }
+            ?.let { selectedIndex = it.ordinal }
+    }
     val selectTab: (BottomNavScreen) -> Unit = { screen ->
         if (selectedIndex == screen.ordinal) {
             if (currentBackStackEntry?.destination?.hierarchy?.any {
@@ -108,7 +118,7 @@ fun AppBottomNavigationBar(
             ) {
                 reloadDestinationIfNeeded(screen.destination::class)
             } else {
-                navController.navigate(screen.destination)
+                navController.reopenTab(screen.destination)
             }
         } else {
             selectedIndex = screen.ordinal
@@ -430,6 +440,15 @@ fun AppNavigationRail(
             selectedIndex = BottomNavScreen.Home.ordinal
         }
     }
+
+    // The highlighted tab follows the back stack, as in the desktop sidebar: system Back from Library
+    // to Home used to leave Library lit, and a link that opened Library left Home lit.
+    LaunchedEffect(currentBackStackEntry) {
+        val hierarchy = currentBackStackEntry?.destination?.hierarchy ?: return@LaunchedEffect
+        bottomNavScreens
+            .firstOrNull { screen -> hierarchy.any { it.hasRoute(screen.destination::class) } }
+            ?.let { selectedIndex = it.ordinal }
+    }
     // Transparent, not the default `surface`: the rail sits on the Desktop window (pure black/white)
     // and on the page background on tablets, and must read as part of whatever is behind it.
     NavigationRail(containerColor = Color.Transparent) {
@@ -468,7 +487,7 @@ fun AppNavigationRail(
                                 screen.destination::class,
                             )
                         } else {
-                            navController.navigate(screen.destination)
+                            navController.reopenTab(screen.destination)
                         }
                     } else {
                         selectedIndex = screen.ordinal
