@@ -451,6 +451,15 @@ fun LyricsView(
     val mediaPlayerHandler = koinInject<MediaPlayerHandler>()
     val lyricsOffsetMs by remember { songRepository.currentLyricsOffsetMs(mediaPlayerHandler) }.collectAsStateWithLifecycle(0)
 
+    // A tap starts the line where the ear hears it: the sheet lights a line [lyricsOffsetMs] after the
+    // player reaches its time, so seeking to the bare time lit the line before for that long.
+    fun seekToLine(line: Line) {
+        val totalMs = timeLine.value.total
+        val startMs = line.startTimeMs.toLongOrNull() ?: return
+        if (totalMs <= 0L) return
+        onLineClick((startMs + lyricsOffsetMs).coerceIn(0L, totalMs).toFloat() * 100 / totalMs)
+    }
+
     // Apple Music is the lyrics style wherever the blur can be drawn; Classic stays only as the
     // fallback below Android 12, where Modifier.blur is a documented no-op.
     val appleStyle = isLyricsBlurSupported()
@@ -629,7 +638,7 @@ fun LyricsView(
                                                 Modifier
                                             } else {
                                                 Modifier.clickable {
-                                                    onLineClick(line.startTimeMs.toFloat() * 100 / timeLine.value.total)
+                                                    seekToLine(line)
                                                 }
                                             },
                                     )
@@ -656,7 +665,7 @@ fun LyricsView(
                                         modifier =
                                             Modifier
                                                 .clickable {
-                                                    onLineClick(line.startTimeMs.toFloat() * 100 / timeLine.value.total)
+                                                    seekToLine(line)
                                                 },
                                     )
                                 }
@@ -687,7 +696,7 @@ fun LyricsView(
                                     modifier =
                                         Modifier
                                             .clickable(enabled = lyricsData.lyrics.syncType == "LINE_SYNCED") {
-                                                onLineClick(line.startTimeMs.toFloat() * 100 / timeLine.value.total)
+                                                seekToLine(line)
                                             },
                                 )
                             }
@@ -723,7 +732,7 @@ fun LyricsView(
                                         enabled = lyricsData.lyrics.syncType == "LINE_SYNCED" ||
                                             lyricsData.lyrics.syncType == "RICH_SYNCED",
                                     ) {
-                                        onLineClick(line.startTimeMs.toFloat() * 100 / timeLine.value.total)
+                                        seekToLine(line)
                                     },
                         ) {
                             // Blur spans the FULL width; the gutter is applied inside it. Ordered
