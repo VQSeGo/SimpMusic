@@ -1338,7 +1338,8 @@ class SharedViewModel(
                     if (response == 200) {
                         // The reply can arrive after the player moved on; it belongs to the
                         // track it was sent for, so it only shows if that track is still playing.
-                        if (mediaPlayerHandler.nowPlaying.value?.mediaId == videoId) {
+                        // A music video plays under the "Video"-prefixed id, the menu sends the bare one.
+                        if (mediaPlayerHandler.nowPlaying.value?.mediaId?.removePrefix(MERGING_DATA_TYPE.VIDEO) == videoId) {
                             _likeStatus.value = YouTubeLikeStatus.DISLIKE
                         }
                         makeToast(getString(Res.string.disliked))
