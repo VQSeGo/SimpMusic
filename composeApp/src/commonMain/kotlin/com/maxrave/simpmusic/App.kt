@@ -392,6 +392,8 @@ fun App(
                     else -> {
                         when {
                             path == "watch" -> data.getQueryParameter("v")
+                            // youtube.com/v/ID and /embed/ID, which the manifest accepts too.
+                            path == "v" || path == "embed" -> data.pathSegments.getOrNull(1)
                             data.host == "youtu.be" -> path
                             else -> null
                         }?.let { videoId ->
