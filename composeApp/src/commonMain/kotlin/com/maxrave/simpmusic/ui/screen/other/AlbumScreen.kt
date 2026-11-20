@@ -1058,7 +1058,8 @@ fun AlbumScreen(
             }
 
             LocalPlaylistState.PlaylistLoadState.Error -> {
-                navController.navigateUp()
+                // Once, not on every recomposition of the leaving screen.
+                LaunchedEffect(Unit) { navController.navigateUp() }
             }
 
             LocalPlaylistState.PlaylistLoadState.Loading -> {

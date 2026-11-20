@@ -1421,8 +1421,11 @@ fun PlaylistScreen(
             }
 
             is PlaylistUIState.Error -> {
-                viewModel.makeToast("Error: ${state.message}")
-                navController.navigateUp()
+                // Once, not on every recomposition of the leaving screen.
+                LaunchedEffect(state) {
+                    viewModel.makeToast("Error: ${state.message}")
+                    navController.navigateUp()
+                }
             }
         }
     }

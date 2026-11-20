@@ -678,8 +678,13 @@ fun ArtistScreen(
             }
 
             is ArtistScreenState.Error -> {
-                viewModel.makeToast(state.message ?: stringResource(Res.string.error))
-                navController.navigateUp()
+                // Once, not on every recomposition: called straight from composition, the toast and
+                // the Back could run again while the screen was still leaving.
+                val message = state.message ?: stringResource(Res.string.error)
+                LaunchedEffect(state) {
+                    viewModel.makeToast(message)
+                    navController.navigateUp()
+                }
             }
         }
     }
