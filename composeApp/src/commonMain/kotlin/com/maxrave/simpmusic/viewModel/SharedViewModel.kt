@@ -1836,8 +1836,10 @@ class SharedViewModel(
             playlistNameJob.join()
             liveStreamJob.join()
         }
-        // Reset downloading songs & playlists to not downloaded
-        checkAllDownloadingSongs()
+        // Reset downloading songs & playlists to not downloaded. Not the songs on desktop: its download queue
+        // resumes them at launch and owns their rows, and this reset raced it (a resumed song showed "not
+        // downloaded" while it downloaded, or was reset before the queue read it and never resumed).
+        if (getPlatform() != Platform.Desktop) checkAllDownloadingSongs()
         checkAllDownloadingPlaylists()
         checkAllDownloadingLocalPlaylists()
     }
