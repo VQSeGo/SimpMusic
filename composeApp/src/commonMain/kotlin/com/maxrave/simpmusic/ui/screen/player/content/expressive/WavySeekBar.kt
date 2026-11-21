@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearWavyProgressIndicator
@@ -26,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.maxrave.simpmusic.ui.component.wavyIndicatorSpeed
@@ -43,6 +45,10 @@ import kotlin.math.roundToInt
  *   is interacting the displayed fraction comes from the drag, not from the player, so the
  *   bar never fights the position updates that keep streaming in mid-scrub.
  * - The thumb morphs from a Ø14dp circle into a 6×22dp rounded bar while dragging.
+ * - The indicator is inset by the idle thumb's radius, so the active part ends exactly at the
+ *   thumb's centre, and the gap before the empty part is measured from the thumb's edge. The
+ *   thumb used to sit up to 7dp behind the active end near the finish, and the empty part and
+ *   the stop dot stuck out past it.
  *
  * @param progressFraction current playback progress in 0..1 (shell's sliderValue / 100f).
  * @param onSliderChange scrub callback on the 0..100 scale, called during drag and on tap.
@@ -80,7 +86,22 @@ fun WavySeekBar(
         label = "wavySeekBarThumbMorph",
     )
 
-    fun fractionAt(x: Float): Float = if (widthPx <= 0) 0f else (x / widthPx).coerceIn(0f, 1f)
+    val density = LocalDensity.current
+    val thumbRadiusPx = with(density) { ThumbRadius.toPx() }
+    // The length the progress runs over: the thumb's centre travels from one inset to the other.
+    val trackPx = (widthPx - 2 * thumbRadiusPx).coerceAtLeast(0f)
+
+    fun fractionAt(x: Float): Float = if (trackPx <= 0f) 0f else ((x - thumbRadiusPx) / trackPx).coerceIn(0f, 1f)
+
+    val thumbWidthDp = (14f + (6f - 14f) * thumbMorph).dp
+    val thumbHeightDp = (14f + (22f - 14f) * thumbMorph).dp
+    // From the active end (the thumb's centre) to the empty part: half the thumb plus the usual gap.
+    val gapSize = thumbWidthDp / 2 + WavyProgressIndicatorDefaults.LinearIndicatorTrackGapSize
+    // The stop dot sits at the very end; once the thumb is about to cover it, it would only peek
+    // out from behind the thumb, so it goes.
+    val stopSize = WavyProgressIndicatorDefaults.LinearTrackStopIndicatorSize
+    val remainingPx = trackPx * (1f - displayedFraction)
+    val showStop = remainingPx > with(density) { (gapSize + stopSize).toPx() }
 
     Box(
         contentAlignment = Alignment.CenterStart,
@@ -131,6 +152,8 @@ fun WavySeekBar(
             // No wave on the empty part of the track, and none at progress 0.
             amplitude = { p -> if (p > 0f) targetAmplitude else 0f },
             // A flat bar's wave still moves, so the speed is what stops it redrawing while paused.
+            gapSize = gapSize,
+            stopSize = if (showStop) stopSize else 0.dp,
             wavelength = WavyProgressIndicatorDefaults.LinearDeterminateWavelength,
             waveSpeed =
                 wavyIndicatorSpeed(
@@ -140,18 +163,18 @@ fun WavySeekBar(
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = ThumbRadius)
                     .align(Alignment.Center),
         )
         // Thumb: Ø14dp circle morphing to a 6×22dp rounded bar while dragging.
-        val thumbWidthDp = (14f + (6f - 14f) * thumbMorph).dp
-        val thumbHeightDp = (14f + (22f - 14f) * thumbMorph).dp
         Box(
             modifier =
                 Modifier
                     .offset {
-                        val thumbWidthPx = thumbWidthDp.toPx()
+                        // Centred on the active end, whatever the thumb's current width.
+                        val centre = thumbRadiusPx + trackPx * displayedFraction
                         IntOffset(
-                            x = ((widthPx - thumbWidthPx) * displayedFraction).roundToInt(),
+                            x = (centre - thumbWidthDp.toPx() / 2).roundToInt(),
                             y = 0,
                         )
                     }.size(width = thumbWidthDp, height = thumbHeightDp)
@@ -160,3 +183,6 @@ fun WavySeekBar(
         )
     }
 }
+
+/** Half the idle thumb: the indicator is inset by it so its ends sit under the thumb's centre. */
+private val ThumbRadius = 7.dp
